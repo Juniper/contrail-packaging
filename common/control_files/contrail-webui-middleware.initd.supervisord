@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# chkconfig: 2345 99 01
+# description: Juniper Network Virtualization WebUI Middleware
+
+supervisorctl -s http://localhost:9008 ${1} `basename ${0}`
+

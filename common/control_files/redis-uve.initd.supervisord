@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# chkconfig: 2345 99 01
+# description: Juniper Redis Uve
+
+supervisorctl -s http://localhost:9002 ${1} `basename ${0}`

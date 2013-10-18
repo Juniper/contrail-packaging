@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# chkconfig: 2345 11 01
+# description: Supervisord instance for Contrail Agent Package
+
+ulimit -c unlimited
+. /etc/init.d/functions
+
+PID_FILE=/var/run/supervisord-vrouter.pid
+
+function daemon_start() {
+     echo  -n "Starting Supervisor Daemon for Contrail Agent Package"
+     /etc/contrail/vnagent_ExecStartPre.sh
+     ulimit -s unlimited
+     ulimit -c unlimited
+     ulimit -d unlimited
+     ulimit -v unlimited
+     ulimit -n 4096
+     /usr/bin/supervisord -c /etc/contrail/supervisord_vrouter.conf 
+     /etc/contrail/vnagent_ExecStartPost.sh
+     RETVAL=$?
+     [ $RETVAL -eq 0 ] && success || failure
+}
+
+function daemon_stop() {
+    /usr/bin/supervisorctl -s http://localhost:9005 stop all
+    /usr/bin/supervisorctl -s http://localhost:9005 shutdown
+    if [ -f $PID_FILE ]; then
+        kill `cat $PID_FILE`
+        rm -f $PID_FILE
+    fi
+    /usr/bin/supervisor_killall /etc/contrail/supervisord_vrouter_files
+    /etc/contrail/vnagent_ExecStopPost.sh
+
+}
+
+daemon_status() {
+    status -p $PID_FILE supervisord
+}
+
+daemon_status_q() {
+    daemon_status >/dev/null 2>&1
+}
+
+case $1 in
+     start)
+     daemon_status_q && exit 0
+     daemon_start
+     ;;
+
+     stop)
+     daemon_status_q || exit 0
+     daemon_stop
+     ;;
+
+     restart)
+     daemon_stop
+     daemon_start
+     ;;
+
+     status)
+        daemon_status
+     ;;
+esac

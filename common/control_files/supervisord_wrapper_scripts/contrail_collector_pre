@@ -1,0 +1,3 @@
+#!/bin/bash
+tries=0; while [ $tries -lt 10 ]; do redis-cli       ECHO "echo string" > /dev/null 2>&1; if [ $? -eq 0 ]; then sleep 1; break;      fi; tries=$(($tries + 1)); sleep 1; done
+echo "Redis is UP; now start vizd"

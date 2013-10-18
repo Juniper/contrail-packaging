@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# chkconfig: 2345 99 01
+# description: Juniper Network Virtualization Control Daemon
+ulimit -c unlimited
+. /etc/init.d/functions
+
+LOG=/var/log/contrail-control.log
+PID_FILE=/var/run/contrail-control.pid
+ENV_FILE=/etc/contrail/control_param
+. ${ENV_FILE}
+
+function daemon_start() {
+     echo  -n "Starting Contrail Control Node"
+     daemon --pidfile $PID_FILE "/usr/bin/control-node --map-server-url https://${IFMAP_SERVER}:${IFMAP_PORT} --map-user ${IFMAP_USER} --map-password ${IFMAP_PASWD} --hostname ${HOSTNAME} --host-ip ${HOSTIP} --bgp-port ${BGP_PORT} --discovery-server ${DISCOVERY} ${CERT_OPTS} ${LOGFILE} ${LOG_LOCAL} 2>&1 &>/dev/null & echo \$! > $PID_FILE"
+#     PID=$!
+     RETVAL=$?
+     [ $RETVAL -eq 0 ] && success || failure
+     echo
+#     echo $PID >$PID_FILE
+}
+
+function daemon_stop() {
+    if [ -f $PID_FILE ]; then
+        kill `cat $PID_FILE`
+        rm -f $PID_FILE
+    fi
+}
+
+daemon_status() {
+    status -p $PID_FILE control-node
+}
+
+daemon_status_q() {
+    daemon_status >/dev/null 2>&1
+}
+
+case $1 in
+     start)
+     daemon_status_q && exit 0
+     daemon_start
+     ;;
+
+     stop)
+     daemon_status_q || exit 0
+     daemon_stop
+     ;;
+
+     restart)
+     daemon_stop
+     daemon_start
+     ;;
+
+     status)
+        daemon_status
+     ;;
+esac

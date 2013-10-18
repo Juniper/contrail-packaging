@@ -1,0 +1,4 @@
+{ "Rules": [
+	  {"processname": "contrail-qe", "process_state": "PROCESS_STATE_FATAL", "action": "supervisorctl -s http://localhost:9002 stop contrail-opserver"}
+     ]
+}

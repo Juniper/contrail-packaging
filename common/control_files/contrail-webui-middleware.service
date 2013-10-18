@@ -1,0 +1,12 @@
+[Unit]
+Description="Contrail Web UI"
+After=redis.service
+Requires=redis.service
+
+[Service]
+ExecStart=/usr/src/contrail/contrail-webui/contrailWebMiddleware.sh
+Restart=always
+LimitCORE=infinity
+
+[Install]
+WantedBy=multi-user.target
