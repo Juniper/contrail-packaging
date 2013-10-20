@@ -181,11 +181,13 @@ contrail-webui:
 # NOT working - need to fix for the other repo for webui
 contrail-nodejs:
 	cp contrail-nodejs.spec $(BUILD_BASE)/SPECS/
-	rpmbuild --define '_topdir $(BUILD_BASE)'  -bb $(BUILD_BASE)/SPECS/contrail-nodejs.spec $(G_TAG)
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
+	-bb $(BUILD_BASE)/SPECS/contrail-nodejs.spec $(G_TAG)
 
 contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
-	rpmbuild -bb --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' contrail-install-packages.spec  $(G_TAG)
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
+	-bb contrail-install-packages.spec  $(G_TAG)
 
 
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
@@ -193,8 +195,7 @@ all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail
 	contrail-setup contrail-setup-with-guest contrail-api-venv contrail-analytics-venv \
 	contrail-vrouter-venv contrail-control-venv contrail-openstack-analytics \
 	contrail-openstack-config contrail-openstack-control contrail-openstack-database \
-	contrail-openstack-vrouter contrail-openstack-webui contrail-webui contrail-nodejs \
-	contrail-install-packages
+	contrail-openstack-vrouter contrail-openstack-webui contrail-webui contrail-nodejs
 
 
 clean:

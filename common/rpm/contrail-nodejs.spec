@@ -41,7 +41,10 @@ Contrail Systems NodeJS Package
 rm -rf %{_builddir}/%{_base}js-v%{version}
 
 %build
-cp -r -p %{_sourcedir}/contrail-webui/third-party/%{_base}-v%{version} %{_builddir}/
+#cp -r -p %{_sourcedir}/contrail-webui/third-party/%{_base}-v%{version} %{_builddir}/
+pushd %{_builddir}/..
+cp -r -p contrail-web-third-party/%{_base}-v%{version} %{_builddir}/
+
 cd %{_builddir}/%{_base}-v%{version}
 ./configure \
 	--prefix=/usr \
