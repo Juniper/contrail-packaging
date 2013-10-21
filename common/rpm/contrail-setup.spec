@@ -95,7 +95,9 @@ install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 install -p -m 644 cfgm_utils.tgz  %{buildroot}%{_contrailopt}/cfgm_utils.tgz
 install -p -m 644 dns_scripts.tgz  %{buildroot}%{_contrailopt}/dns_scripts.tgz
 %if 0%{?rhel}
-install -p -m 644 %{_provdir}/contrail_setup_utils/zope.interface-3.7.0.tar.gz %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/zope.interface-3.7.0.tar.gz
+pushd %{_builddir}/../third_party
+tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/zope.interface-3.7.0.tar.gz ./zope.interface-3.7.0 
+popd
 %endif
 
 if [ %{_flist} != None ] ; then

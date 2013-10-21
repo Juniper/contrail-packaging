@@ -47,17 +47,17 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_
 # install files
 # TODO - this needs to be fixed
 #install -p -m 644 tools/packaging/contrail_packages_%{_relstr}.tgz  %{buildroot}%{_contrailopt}/contrail_packages_%{_relstr}.tgz
-pushd %{_provdir}
-install -p -m 644 contrail_packages__HACK.tgz  %{buildroot}%{_contrailopt}/contrail_packages_%{_relstr}.tgz
+pushd %{_builddir}
+install -p -m 644 tools/packaging/build/contrail_packages_%{_relstr}.tgz  %{buildroot}%{_contrailopt}/contrail_packages_%{_relstr}.tgz
 
 # install etc files
 pushd %{_builddir}/build
 install -p -m 644 contrail_installer.tgz  %{buildroot}%{_contrailopt}/contrail_installer.tgz
 popd
-pushd %{_provdir}
-install -p -m 644 contrail_setup_utils/paramiko-1.11.0.tar.gz %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz
-install -p -m 644 contrail_setup_utils/Fabric-1.7.0.tar.gz %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
-install -p -m 644 contrail_setup_utils/pycrypto-2.6.tar.gz %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz
+pushd %{_builddir}/../third_party
+tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz ./paramiko-1.11.0
+tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz ./pycrypto-2.6
+tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz ./Fabric-1.7.0
 popd
 
 %post
