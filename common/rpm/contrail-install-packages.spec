@@ -47,7 +47,7 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_
 # install files
 # TODO - this needs to be fixed
 #install -p -m 644 tools/packaging/contrail_packages_%{_relstr}.tgz  %{buildroot}%{_contrailopt}/contrail_packages_%{_relstr}.tgz
-pushd %{_builddir}
+pushd %{_builddir}/..
 install -p -m 644 tools/packaging/build/contrail_packages_%{_relstr}.tgz  %{buildroot}%{_contrailopt}/contrail_packages_%{_relstr}.tgz
 
 # install etc files
