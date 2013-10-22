@@ -1,9 +1,5 @@
-PREP = prep
-PPREP = pprep
-
-
 LIST_SOURCES        := list
-REPOBIN             := /cs-shared/tools/bin/repo
+REPOBIN             := repo
 CPLANE_GIT_ROOT     := $(shell $(REPOBIN) info contrail-controller|grep 'Mount path'|cut -f3 -d" ")
 PKGING_GIT_ROOT     := $(CPLANE_GIT_ROOT)/../tools
 PKGING_DISTDIR      := $(PKGING_GIT_ROOT)/packaging/common/rpm
