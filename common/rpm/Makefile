@@ -105,26 +105,33 @@ contrail-setup-with-guest: $(PREP)
 	rpmbuild -bb --define '_topdir $(BUILD_BASE)' \
 	--define '_builddir $(CPLANE_GIT_ROOT)' contrail-setup-with-guest.spec $(G_TAG)
 
-contrail-api-venv: $(LOCAL_PY)
-	rpmbuild -bb --define "_builddir $(BUILD_BASE)" \
-	contrail-api-venv.spec $(G_TAG) $(RPM_PY) --define "_python_path $(LOCAL_PY_PTH)"
+
+
+
+	## rpmbuild --define '_topdir $(BUILD_BASE)' --define "_builddir $(BUILD_BASE)" \
+
 
 contrail-analytics-venv: $(LOCAL_PY)
-	rpmbuild -bb --define "_builddir $(BUILD_BASE)" \
-	contrail-analytics-venv.spec $(G_TAG) $(RPM_PY) --define "_python_path $(LOCAL_PY_PTH)"
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define "_builddir $(CPLANE_GIT_ROOT)" \
+	-bb contrail-analytics-venv.spec $(G_TAG) $(RPM_PY) --define "_python_path $(LOCAL_PY_PTH)"
 
-contrail-vrouter-venv: $(LOCAL_PY)
-	rpmbuild -bb --define "_builddir $(BUILD_BASE)" \
-	contrail-vrouter-venv.spec $(G_TAG) $(RPM_PY) --define "_python_path $(LOCAL_PY_PTH)"
+contrail-api-venv: $(LOCAL_PY)
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define "_builddir $(CPLANE_GIT_ROOT)" \
+	-bb contrail-api-venv.spec $(G_TAG) $(RPM_PY) --define "_python_path $(LOCAL_PY_PTH)"
 
 contrail-control-venv: $(LOCAL_PY)
-	rpmbuild -bb --define "_builddir $(BUILD_BASE)" \
-	contrail-control-venv.spec $(G_TAG) $(RPM_PY) --define "_python_path $(LOCAL_PY_PTH)"
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define "_builddir $(CPLANE_GIT_ROOT)" \
+	-bb contrail-control-venv.spec $(G_TAG) $(RPM_PY) --define "_python_path $(LOCAL_PY_PTH)"
 
 contrail-database-venv: $(LOCAL_PY)
-	rpmbuild -bb --define "_builddir $(BUILD_BASE)" \
-	contrail-database-venv.spec $(G_TAG) $(RPM_PY) --define "_python_path $(LOCAL_PY_PTH)"
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define "_builddir $(CPLANE_GIT_ROOT)" \
+	-bb contrail-database-venv.spec $(G_TAG) $(RPM_PY) --define "_python_path $(LOCAL_PY_PTH)"
 
+contrail-vrouter-venv: $(LOCAL_PY)
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define "_builddir $(CPLANE_GIT_ROOT)" \
+	-bb contrail-vrouter-venv.spec $(G_TAG) $(RPM_PY) --define "_python_path $(LOCAL_PY_PTH)"
+
+venv-packages: packaging
 packaging: contrail-api-venv contrail-analytics-venv contrail-vrouter-venv contrail-control-venv \
 	contrail-database-venv
 
@@ -192,10 +199,10 @@ contrail-install-packages: $(PREP)
 
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
-	contrail-setup contrail-setup-with-guest contrail-api-venv contrail-analytics-venv \
-	contrail-vrouter-venv contrail-control-venv contrail-openstack-analytics \
+	contrail-setup contrail-setup-with-guest  contrail-openstack-analytics \
 	contrail-openstack-config contrail-openstack-control contrail-openstack-database \
-	contrail-openstack-vrouter contrail-openstack-webui contrail-webui contrail-nodejs
+	contrail-openstack-vrouter contrail-openstack-webui contrail-webui contrail-nodejs \
+	venv-packages
 
 
 clean:

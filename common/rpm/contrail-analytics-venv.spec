@@ -1,3 +1,4 @@
+%define         _distrothirdpartydir distro/third_party
 %if 0%{?_buildTag:1}
 %define     _relstr      %{_buildTag}
 %else
@@ -17,6 +18,7 @@ License:    Commercial
 Group:      Applications/System
 URL:        http://www.contrailsystems.com/
 Autoreq:0
+%define     _buildshell     /bin/bash
 
 %if 0%{?_python_path:1}
 %define     _lpy  %(%{__python} -c 'import os; print os.path.expanduser ("%{_python_path}")')
@@ -46,7 +48,8 @@ Creates virtual env for contrail analytics role
 
 %build
 
-tar xzvf %{_builddir}/BUILD/packaging/archives/virtualenv-1.9.1.tar.gz 
+tar xzvf %{_builddir}/build/package-build/BUILD/packaging/archives/virtualenv-1.9.1.tar.gz
+
 #patch -p0 < %{_builddir}/archives/venv-always-cp.diff
 pushd virtualenv-1.9.1 
 mkdir -p reqs/cfgm
@@ -68,7 +71,7 @@ for f in greenlet-0.4.1.zip  lxml-2.3.3.tar.gz  \
         requests-1.1.0.tar.gz  virtualenv-1.9.1.tar.gz gevent-0.13.8.tar.gz    \
         geventhttpclient-1.0a.tar.gz wsgiref-0.1.2.zip bitarray-0.8.0.tar.gz   \
         thrift-0.8.0.tar.gz psutil-1.0.1.tar.gz pbr-0.5.21.tar.gz prettytable-0.7.2.zip; do
-    cp %{_builddir}/BUILD/packaging/archives/$f reqs/cfgm
+    cp %{_builddir}/build/package-build/BUILD/packaging/archives/$f reqs/cfgm
 done
 
 %install
@@ -83,7 +86,11 @@ popd
 pushd %{_target}
 
 source bin/activate
-pip install --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+bin/python bin/pip install --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+
+pushd %{_builddir}/../%{_distrothirdpartydir}/pycassa-1.10.0
+%{__python} setup.py install
+popd
 
 rm -rf %{_builddir}/virtualenv-1.9.1
 deactivate

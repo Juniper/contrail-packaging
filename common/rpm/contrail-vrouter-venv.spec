@@ -46,7 +46,7 @@ Creates virtual env for contrail vrouter role
 
 %build
 
-tar xzvf %{_builddir}/BUILD/packaging/archives/virtualenv-1.9.1.tar.gz 
+tar xzvf %{_builddir}/build/package-build/BUILD/packaging/archives/virtualenv-1.9.1.tar.gz
 #patch -p0 < %{_builddir}/archives/venv-always-cp.diff
 pushd virtualenv-1.9.1 
 mkdir -p reqs/cfgm
@@ -99,7 +99,7 @@ for f in greenlet-0.4.1.zip lxml-2.3.3.tar.gz netaddr-0.7.5.zip           \
         eventlet-0.9.17.tar.gz repoze.lru-0.6.tar.gz Paste-1.7.5.1.tar.gz    \
         PasteDeploy-1.5.0.tar.gz SQLAlchemy-0.8.2.tar.gz Routes-1.13.tar.gz  \
         qpid-python-0.20.tar.gz stevedore-0.11.tar.gz; do
-    cp %{_builddir}/BUILD/packaging/archives/$f reqs/cfgm
+    cp %{_builddir}/build/package-build/BUILD/packaging/archives/$f reqs/cfgm
 done
 
 %install
@@ -115,7 +115,7 @@ popd
 pushd %{_target}
 
 source bin/activate
-pip install --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+bin/python bin/pip install --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
 #PYTHONPATH=%{_target}/lib/python2.7/site-packages:$PYTHONPATH pip install --index-url='' --install-option="--install-lib=%{_target}/lib/python2.7/site-packages" --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
 
 deactivate
