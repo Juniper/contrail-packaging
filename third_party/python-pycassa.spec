@@ -45,19 +45,19 @@ pushd %{_builddir}/..
 pushd %{_distrothirdpartydir}/pycassa-1.10.0
 install -d -m 755 %{buildroot}%{_bindir}
 install -m 755 pycassaShell %{buildroot}%{_bindir}
-%{__python} setup.py install --root=%{buildroot} %{?_anl_venvtr}
+##%{__python} setup.py install --root=%{buildroot} %{?_anl_venvtr}
 popd
 
 %files
 %defattr(-,root,root,-)
-%{_venv_root}%{_pysitepkg}/pycassa
-%{_venv_root}%{_pysitepkg}/ez_setup.py*
-%{_venv_root}%{_pysitepkg}/pycassa*egg-info
-%{_venv_root}/bin/pycassaShell
-%{_anl_venv_root}%{_pysitepkg}/pycassa
-%{_anl_venv_root}%{_pysitepkg}/ez_setup.py*
-%{_anl_venv_root}%{_pysitepkg}/pycassa*egg-info
-%{_anl_venv_root}/bin/pycassaShell
+## %{_venv_root}%{_pysitepkg}/pycassa
+## %{_venv_root}%{_pysitepkg}/ez_setup.py*
+## %{_venv_root}%{_pysitepkg}/pycassa*egg-info
+## %{_venv_root}/bin/pycassaShell
+## %{_anl_venv_root}%{_pysitepkg}/pycassa
+## %{_anl_venv_root}%{_pysitepkg}/ez_setup.py*
+## %{_anl_venv_root}%{_pysitepkg}/pycassa*egg-info
+## %{_anl_venv_root}/bin/pycassaShell
 /usr/bin/pycassaShell
 
 %post
