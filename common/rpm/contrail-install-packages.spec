@@ -55,9 +55,15 @@ pushd %{_builddir}/build
 install -p -m 644 contrail_installer.tgz  %{buildroot}%{_contrailopt}/contrail_installer.tgz
 popd
 pushd %{_builddir}/../third_party
-tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz ./paramiko-1.11.0
-tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz ./pycrypto-2.6
-tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz ./Fabric-1.7.0
+pushd paramiko-1.11.0
+tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz *
+popd
+pushd pycrypto-2.6
+tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz *
+popd
+pushd Fabric-1.7.0
+tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz *
+popd
 popd
 
 %post
