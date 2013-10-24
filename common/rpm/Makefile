@@ -63,7 +63,7 @@ contrail-api-extension: $(PREP) $(LOCAL_PY)
 
 contrail-api-lib: $(PREP)
 	@echo making rpm for contrail-api-lib
-	rpmbuild contrail-api-lib.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) contrail-api-lib.spec $(G_TAG)
 
 contrail-config: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-config
@@ -118,6 +118,10 @@ packaging: contrail-api-venv contrail-analytics-venv contrail-vrouter-venv contr
 	contrail-database-venv
 
 # Contrail Openstack stuff
+contrail-openstack: $(PREP) $(LOCAL_PY)
+	@echo making rpm for contrail-openstack
+	rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG) $(RPM_PY)
+
 contrail-openstack-analytics: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-openstack-analytics
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-analytics.spec $(G_TAG) $(RPM_PY)
@@ -142,6 +146,10 @@ contrail-openstack-webui: $(PREP)
 	@echo making rpm for contrail-openstack-webui
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-webui.spec $(G_TAG)
 
+contrail-openstack-all: contrail-openstack contrail-openstack-analytics contrail-openstack-config \
+	contrail-openstack-control contrail-openstack-database contrail-openstack-vrouter \
+	contrail-openstack-webui
+
 contrail-webui:
 	@echo making rpm for contrail-webui
 	cd $(CPLANE_GIT_ROOT)/../contrail-web-core && make package
@@ -162,7 +170,7 @@ contrail-webui:
 	cp ../control_files/redis-webui.conf $(BUILD_SRC)/
 	cp ../control_files/redis-webui.ini $(BUILD_SRC)/
 	cp ../control_files/redis-webui.initd.supervisord $(BUILD_SRC)/
-	rpmbuild $(BUILD_BASE)/SPECS/contrail-webui.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-webui.spec $(G_TAG)
 
 contrail-nodejs:
 	cp contrail-nodejs.spec $(BUILD_BASE)/SPECS/
@@ -175,9 +183,8 @@ contrail-install-packages: $(PREP)
 
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
-	contrail-setup contrail-openstack-analytics contrail-openstack-config \
-	contrail-openstack-control contrail-openstack-database contrail-openstack-vrouter \
-	contrail-openstack-webui contrail-webui contrail-nodejs venv-packages
+	contrail-setup contrail-openstack-all contrail-openstack-webui contrail-webui \
+	contrail-nodejs venv-packages
 
 clean:
 	@echo clean
