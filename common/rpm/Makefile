@@ -183,8 +183,7 @@ contrail-install-packages: $(PREP)
 
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
-	contrail-setup contrail-openstack-all contrail-openstack-webui contrail-webui \
-	contrail-nodejs venv-packages
+	contrail-setup contrail-openstack-all contrail-webui contrail-nodejs venv-packages
 
 clean:
 	@echo clean
