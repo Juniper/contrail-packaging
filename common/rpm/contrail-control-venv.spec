@@ -52,56 +52,41 @@ tar xzvf %{_builddir}/build/package-build/BUILD/packaging/archives/virtualenv-1.
 pushd virtualenv-1.9.1 
 mkdir -p reqs/cfgm
 cat > reqs/reqs.txt <<END
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/greenlet-0.4.1.zip
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/gevent-0.13.8.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/eventlet-0.9.17.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/lxml-2.3.3.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/geventhttpclient-1.0a.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/netaddr-0.7.5.zip
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/extras-0.0.3.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/requests-1.1.0.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/wsgiref-0.1.2.zip
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/zope.interface-3.8.0.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/netifaces-0.8.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/pycrypto-2.6.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/paramiko-1.11.0.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/Fabric-1.7.0.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/bitarray-0.8.0.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/thrift-0.8.0.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/psutil-1.0.1.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/iso8601-0.1.4.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/prettytable-0.7.2.zip
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/simplejson-3.3.0.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/argparse-1.2.1.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/oslo.config-1.1.1.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/d2to1-0.2.11.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/pyparsing-1.5.7.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/cmd2-0.6.5.1.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/cliff-1.4.4.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/httplib2-0.8.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/repoze.lru-0.6.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/Paste-1.7.5.1.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/PasteDeploy-1.5.0.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/SQLAlchemy-0.8.2.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/Routes-1.13.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/qpid-python-0.20.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/stevedore-0.11.tar.gz
+%{_builddir}/../third_party/greenlet-0.4.1.zip
+%{_builddir}/../third_party/gevent-0.13.8.tar.gz
+%{_builddir}/../third_party/eventlet-0.9.17.tar.gz
+%{_builddir}/../third_party/lxml-2.3.3.tar.gz
+%{_builddir}/../third_party/geventhttpclient-1.0a.tar.gz
+%{_builddir}/../third_party/netaddr-0.7.5.tar.gz
+%{_builddir}/../third_party/extras-0.0.3.tar.gz
+%{_builddir}/../third_party/requests-1.1.0.tar.gz
+%{_builddir}/../third_party/wsgiref-0.1.2.zip
+%{_builddir}/../third_party/zope.interface-3.8.0.tar.gz
+%{_builddir}/../third_party/netifaces-0.8.tar.gz
+%{_builddir}/../third_party/pycrypto-2.6.tar.gz
+%{_builddir}/../third_party/paramiko-1.11.0.tar.gz
+%{_builddir}/../third_party/Fabric-1.7.0.tar.gz
+%{_builddir}/../third_party/bitarray-0.8.0.tar.gz
+%{_builddir}/../third_party/thrift-0.8.0.tar.gz
+%{_builddir}/../third_party/psutil-1.0.1.tar.gz
+%{_builddir}/../third_party/iso8601-0.1.8.tar.gz
+%{_builddir}/../third_party/prettytable-0.7.2.tar.gz
+%{_builddir}/../third_party/simplejson-3.3.0.tar.gz
+%{_builddir}/../third_party/argparse-1.2.1.tar.gz
+%{_builddir}/../third_party/oslo.config-1.1.1.tar.gz
+%{_builddir}/../third_party/d2to1-0.2.11.tar.gz
+%{_builddir}/../third_party/pyparsing-1.5.7.tar.gz
+%{_builddir}/../third_party/cmd2-0.6.5.1.tar.gz
+%{_builddir}/../third_party/cliff-1.4.4.tar.gz
+%{_builddir}/../third_party/httplib2-0.8.tar.gz
+%{_builddir}/../third_party/repoze.lru-0.6.tar.gz
+%{_builddir}/../third_party/Paste-1.7.5.1.tar.gz
+%{_builddir}/../third_party/PasteDeploy-1.5.0.tar.gz
+%{_builddir}/../third_party/SQLAlchemy-0.8.2.tar.gz
+%{_builddir}/../third_party/Routes-1.13.tar.gz
+%{_builddir}/../third_party/qpid-python-0.20.tar.gz
+%{_builddir}/../third_party/stevedore-0.12.tar.gz
 END
-
-for f in greenlet-0.4.1.zip lxml-2.3.3.tar.gz netaddr-0.7.5.zip           \
-        requests-1.1.0.tar.gz virtualenv-1.9.1.tar.gz gevent-0.13.8.tar.gz   \
-        geventhttpclient-1.0a.tar.gz extras-0.0.3.tar.gz wsgiref-0.1.2.zip   \
-        zope.interface-3.8.0.tar.gz netifaces-0.8.tar.gz pycrypto-2.6.tar.gz \
-        paramiko-1.11.0.tar.gz Fabric-1.7.0.tar.gz bitarray-0.8.0.tar.gz     \
-        thrift-0.8.0.tar.gz psutil-1.0.1.tar.gz iso8601-0.1.4.tar.gz         \
-        prettytable-0.7.2.zip simplejson-3.3.0.tar.gz argparse-1.2.1.tar.gz  \
-        oslo.config-1.1.1.tar.gz d2to1-0.2.11.tar.gz pyparsing-1.5.7.tar.gz  \
-        cmd2-0.6.5.1.tar.gz cliff-1.4.4.tar.gz httplib2-0.8.tar.gz           \
-        eventlet-0.9.17.tar.gz repoze.lru-0.6.tar.gz Paste-1.7.5.1.tar.gz    \
-        PasteDeploy-1.5.0.tar.gz SQLAlchemy-0.8.2.tar.gz Routes-1.13.tar.gz  \
-        qpid-python-0.20.tar.gz stevedore-0.11.tar.gz; do
-    cp %{_builddir}/build/package-build/BUILD/packaging/archives/$f reqs/cfgm
-done
 
 %install
 install -d -m 755 %{buildroot}/opt/contrail/

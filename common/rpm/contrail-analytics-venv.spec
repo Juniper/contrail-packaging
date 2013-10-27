@@ -54,25 +54,19 @@ tar xzvf %{_builddir}/build/package-build/BUILD/packaging/archives/virtualenv-1.
 pushd virtualenv-1.9.1 
 mkdir -p reqs/cfgm
 cat > reqs/reqs.txt <<END
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/greenlet-0.4.1.zip
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/gevent-0.13.8.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/lxml-2.3.3.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/geventhttpclient-1.0a.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/requests-1.1.0.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/wsgiref-0.1.2.zip
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/bitarray-0.8.0.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/thrift-0.8.0.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/psutil-1.0.1.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/pbr-0.5.21.tar.gz
-%{_builddir}/virtualenv-1.9.1/reqs/cfgm/prettytable-0.7.2.zip
+%{_builddir}/../third_party/greenlet-0.4.1.zip
+%{_builddir}/../third_party/gevent-0.13.8.tar.gz
+%{_builddir}/../third_party/lxml-2.3.3.tar.gz
+%{_builddir}/../third_party/geventhttpclient-1.0a.tar.gz
+%{_builddir}/../third_party/requests-1.1.0.tar.gz
+%{_builddir}/../third_party/wsgiref-0.1.2.zip
+%{_builddir}/../third_party/bitarray-0.8.0.tar.gz
+%{_builddir}/../third_party/thrift-0.8.0.tar.gz
+%{_builddir}/../third_party/psutil-1.0.1.tar.gz
+%{_builddir}/../third_party/pbr-0.5.21.tar.gz
+%{_builddir}/../third_party/prettytable-0.7.2.tar.gz
 END
 
-for f in greenlet-0.4.1.zip  lxml-2.3.3.tar.gz  \
-        requests-1.1.0.tar.gz  virtualenv-1.9.1.tar.gz gevent-0.13.8.tar.gz    \
-        geventhttpclient-1.0a.tar.gz wsgiref-0.1.2.zip bitarray-0.8.0.tar.gz   \
-        thrift-0.8.0.tar.gz psutil-1.0.1.tar.gz pbr-0.5.21.tar.gz prettytable-0.7.2.zip; do
-    cp %{_builddir}/build/package-build/BUILD/packaging/archives/$f reqs/cfgm
-done
 
 %install
 install -d -m 755 %{buildroot}/opt/contrail/
