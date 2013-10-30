@@ -31,12 +31,15 @@ Requires:           contrail-analytics-venv
 Requires:           contrail-api-venv
 Requires:           contrail-vrouter-venv
 Requires:           contrail-control-venv
+Requires:           contrail-database-venv
 %define             _venv_root    /opt/contrail/analytics-venv
 %define             _venvtr       --prefix=%{_venv_root}
 %define             _venv_root_api    /opt/contrail/api-venv
 %define             _venvtr_api       --prefix=%{_venv_root_api}
 %define             _venv_root_control    /opt/contrail/control-venv
 %define             _venvtr_control       --prefix=%{_venv_root_control}
+%define             _venv_root_database    /opt/contrail/database-venv
+%define             _venvtr_database       --prefix=%{_venv_root_database}
 %define             _venv_root_vrouter    /opt/contrail/vrouter-venv
 %define             _venvtr_vrouter       --prefix=%{_venv_root_vrouter}
 Autoreq:0

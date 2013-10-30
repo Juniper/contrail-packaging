@@ -43,7 +43,8 @@ Requires:	    libcurl
 Requires:	    contrail-libs
 %if 0%(if [ "%{dist}" != ".xen" ]; then echo 1; fi)
 Requires:           supervisor
-Requires: contrail-vrouter-venv
+Requires:           contrail-vrouter-venv
+Requires:           xmltodict
 %define _venv_root    /opt/contrail/vrouter-venv
 %define _venvtr       --prefix=%{_venv_root}
 
@@ -116,7 +117,7 @@ install -p -m 755 build/debug/vrouter/utils/nh          %{buildroot}%{_bindir}/n
 install -p -m 755 build/debug/vrouter/utils/rt          %{buildroot}%{_bindir}/rt
 install -p -m 755 build/debug/vrouter/utils/vrfstats    %{buildroot}%{_bindir}/vrfstats
 install -p -m 755 build/debug/vrouter/utils/dropstats    %{buildroot}%{_bindir}/dropstats
-#install -p -m 755 build/debug/vrouter/utils/vxlan       %{buildroot}%{_bindir}/vxlan
+install -p -m 755 build/debug/vrouter/utils/vxlan       %{buildroot}%{_bindir}/vxlan
 install -p -m 755 build/debug/vnsw/agent/vnswad         %{buildroot}%{_bindir}/vnswad
 
 # install etc files
@@ -129,7 +130,6 @@ install -p -m 755 %{_distropkgdir}/vnagent_ExecStopPost.sh  %{buildroot}%{_contr
 install -p -m 755 %{_distropkgdir}/vnagent_param_setup.sh   %{buildroot}%{_contrailetc}/vnagent_param_setup.sh
 install -p -m 755 %{_distropkgdir}/contrail_reboot          %{buildroot}%{_contrailetc}/contrail_reboot
 install -p -m 755 %{_distropkgdir}/supervisor-vrouter.service %{buildroot}%{_servicedir}/supervisor-vrouter.service
-install -D -m 755 %{_distropkgdir}/ifup-eth.diff            %{buildroot}/etc/sysconfig/network-scripts/ifup-eth.diff
 else
 install -D -m 755 %{_distropkgdir}/contrail-vrouter	%{buildroot}/etc/init.d/contrail-vrouter
 fi
@@ -190,12 +190,6 @@ popd
 %if 0%{?fedora} >= 17 || 0%{?rhel}
 # patch ifup-eth
 #if [ $1 -eq 1 ]; then
-pushd /etc/sysconfig/network-scripts/
-grep 'contrail workaround' ifup-eth &> /dev/null
-if [ $? -ne 0 ] ; then
-    cp ifup-eth ifup-eth.rpmsave
-    patch < ifup-eth.diff
-fi
 # create the agent_param file
 /etc/contrail/vnagent_param_setup.sh %{_osVer}
 #fi
@@ -236,6 +230,7 @@ exit 0
 %{_bindir}/nh
 %{_bindir}/rt
 %{_bindir}/vrfstats
+%{_bindir}/vxlan
 %{_bindir}/dropstats
 %{_bindir}/vnswad
 
@@ -243,7 +238,6 @@ exit 0
 %{_sysconfdir}/init.d/contrail-vrouter
 %else
 %{_venv_root}
-/etc/sysconfig/network-scripts/ifup-eth.diff
 %{_contrailetc}/rpm_agent.conf
 %{_contrailetc}/vnagent_ExecStartPre.sh
 %{_contrailetc}/vnagent_ExecStartPost.sh
@@ -257,6 +251,10 @@ exit 0
 %{_supervisordir}/contrail-vrouter.kill
 %endif
 %if 0%{?rhel}
+/etc/init.d/contrail-vrouter
+/etc/init.d/supervisor-vrouter
+%endif
+%if 0%{?fedora} >= 17
 /etc/init.d/contrail-vrouter
 /etc/init.d/supervisor-vrouter
 %endif

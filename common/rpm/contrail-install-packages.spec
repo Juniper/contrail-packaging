@@ -49,6 +49,7 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_
 #install -p -m 644 tools/packaging/contrail_packages_%{_relstr}.tgz  %{buildroot}%{_contrailopt}/contrail_packages_%{_relstr}.tgz
 pushd %{_builddir}/..
 install -p -m 644 tools/packaging/build/contrail_packages_%{_relstr}.tgz  %{buildroot}%{_contrailopt}/contrail_packages_%{_relstr}.tgz
+install -p -m 755 tools/packaging/common/control_files/contrail_ifrename.sh %{buildroot}%{_contrailopt}/bin/getifname.sh
 
 # install etc files
 pushd %{_builddir}/build
@@ -73,6 +74,7 @@ tar xzvf contrail_installer.tgz
 
 %files
 %defattr(-, root, root)
+%{_contrailopt}/bin/getifname.sh
 %{_contrailopt}/contrail_packages_%{_relstr}.tgz
 %{_contrailopt}/contrail_installer.tgz
 %{_contrailopt}/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz

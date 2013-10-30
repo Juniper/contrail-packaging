@@ -32,7 +32,8 @@ Vendor:             Juniper Networks Inc
 
 Requires:	  contrail-libs
 Requires:         supervisor
-Requires: contrail-control-venv
+Requires:         contrail-control-venv
+Requires:         xmltodict
 %define _venv_root    /opt/contrail/control-venv
 %define _venvtr       --prefix=%{_venv_root}
 
@@ -89,6 +90,8 @@ install -d -m 755 %{buildroot}%{_servicedir}
 %if 0%{?fedora} >= 17
 install -D -m 644 %{_distropkgdir}/supervisor-control.service %{buildroot}%{_servicedir}/supervisor-control.service
 %endif
+install -D -m 755 %{_distropkgdir}/supervisor-control.initd %{buildroot}%{_initddir}/supervisor-control
+install -D -m 755 %{_distropkgdir}/contrail-control.initd.supervisord %{buildroot}%{_initddir}/contrail-control
 %if 0%{?rhel}
 install -D -m 755 %{_distropkgdir}/supervisor-control.initd %{buildroot}%{_initddir}/supervisor-control
 install -D -m 755 %{_distropkgdir}/contrail-control.initd.supervisord %{buildroot}%{_initddir}/contrail-control
@@ -140,6 +143,8 @@ popd
 /usr/share/doc/
 %if 0%{?fedora} >= 17
 /usr/lib/systemd/system
+%{_initddir}/supervisor-control
+%{_initddir}/contrail-control
 %endif
 %if 0%{?rhel}
 %{_initddir}/supervisor-control

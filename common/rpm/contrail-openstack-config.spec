@@ -23,17 +23,12 @@ BuildArch: noarch
 Requires: contrail-api-lib
 Requires: contrail-api-extension
 Requires: contrail-config
-Requires: openstack-dashboard
 Requires: openstack-quantum-contrail
-Requires: openstack-glance
-Requires: openstack-keystone
-Requires: openstack-nova
-Requires: openstack-cinder
+Requires: python-novaclient
+Requires: python-keystoneclient >= 0.2.0
 Requires: python-psutil
 Requires: mysql-server
 Requires: contrail-setup
-Requires: memcached
-Requires: openstack-nova-novncproxy
 Requires: python-zope-interface
 %if 0%{?rhel} 
 Requires: python-importlib

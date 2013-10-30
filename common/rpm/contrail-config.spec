@@ -36,6 +36,8 @@ Requires: irond
 Requires: zookeeper
 Requires: zkpython
 Requires: xmltodict >= 0.1
+Requires: redis
+Requires: redis-py
 Requires: supervisor
 
 Requires: contrail-api-venv
@@ -141,14 +143,17 @@ install -D -m 755 %{_distropkgdir}/contrail-svc-monitor.initd.supervisord %{buil
 %endif
 install -p -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
+install -p -m 755 %{_distropkgdir}/redis_config.conf %{buildroot}%{_sysconfdir}/contrail/
 install -p -m 755 %{_distropkgdir}/contrail-api.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
 install -p -m 755 %{_distropkgdir}/contrail-schema.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 install -p -m 755 %{_distropkgdir}/contrail-svc-monitor.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 install -p -m 755 %{_distropkgdir}/contrail-discovery.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
+install -p -m 755 %{_distropkgdir}/redis-config.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/
 install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-api.kill %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.kill
 install -p -m 755 %{_distropkgdir}/contrail-config.rules %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config.rules
 pushd %{_builddir}
 install -D -m 755 src/config/schema-transformer/ifmap_view.py %{buildroot}%{_bindir}/ifmap_view.py
+install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py
 popd
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 
@@ -178,6 +183,7 @@ install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helpe
 %dir %attr(0777, root, root) %{_localstatedir}/log/contrail
 %{_bindir}/ifmap_view.py
 %{_bindir}/venv-helper
+%{_bindir}/encap.py
 %if 0%{?rhel}
 %{_initddir}
 %endif
