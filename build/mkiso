@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -o -x
+
+function is_in_git_ws ()
+{
+    git status &> /dev/null
+    return $?
+}
+
+function error_exit
+{
+#   ----------------------------------------------------------------
+#   Function for exit due to fatal program error
+#       Accepts 1 argument:
+#               string containing descriptive error message
+#   ----------------------------------------------------------------
+
+
+    echo "${PROGNAME}: ${1:-''} ${2:-'Unknown Error'}" 1>&2
+    exit ${3:-1}
+}
+
+CWD=$(pwd)
+prog=$(basename $0)
+apath=$(dirname $0)
+
+cd $apath
+is_in_git_ws  || error_exit ${LINENO}
+
+SRCD=$(pwd)
+PDIR=$(date +%y%m%d%H%M%S)
+cd  $SRCD
+
+unset LD_LIBRARY_PATH
+python mkiso.py $*
+ret=$?
+
+cd $CWD
+exit $ret
