@@ -197,6 +197,11 @@ popd
 /usr/bin/euca-describe-route-tables
 /usr/bin/eustore-describe-images
 /usr/bin/eustore-install-image
+/usr/bin/euca-attach-internet-gateway
+/usr/bin/euca-create-internet-gateway
+/usr/bin/euca-delete-internet-gateway
+/usr/bin/euca-describe-internet-gateways
+/usr/bin/euca-detach-internet-gateway
 %{python_sitelib}/euca2ools-0.0.0-py*.egg-info
 %{python_sitelib}/euca2ools/
 

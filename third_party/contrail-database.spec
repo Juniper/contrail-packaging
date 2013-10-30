@@ -56,13 +56,13 @@ Requires: supervisor
 
 %build
 pushd %{_builddir}/..
-pushd third_party/apache-cassandra-1.1.7-src
+pushd distro/third_party/apache-cassandra-1.1.7-src
 #%{__python} setup.py install --root=%{buildroot} %{?_venvtr}
 ant
 
 %install
 pushd %{_builddir}/..
-pushd third_party/apache-cassandra-1.1.7-src
+pushd distro/third_party/apache-cassandra-1.1.7-src
 install -D -m 755 bin/cassandra %{buildroot}%{_bindir}/cassandra
 install -D -m 755 bin/cassandra-cli %{buildroot}%{_bindir}/cassandra-cli
 install -D -m 755 bin/cqlsh %{buildroot}%{_bindir}/cqlsh

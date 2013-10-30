@@ -1,3 +1,4 @@
+%define         _distrothirdpartydir distro/third_party
 %if 0%{?_buildTag:1}
 %define     _relstr      %{_buildTag}
 %else
@@ -51,41 +52,41 @@ tar xzvf %{_builddir}/build/package-build/BUILD/packaging/archives/virtualenv-1.
 pushd virtualenv-1.9.1 
 mkdir -p reqs/cfgm
 cat > reqs/reqs.txt <<END
-%{_builddir}/../third_party/greenlet-0.4.1.zip
-%{_builddir}/../third_party/gevent-0.13.8.tar.gz
-%{_builddir}/../third_party/eventlet-0.9.17.tar.gz
-%{_builddir}/../third_party/lxml-2.3.3.tar.gz
-%{_builddir}/../third_party/geventhttpclient-1.0a.tar.gz
-%{_builddir}/../third_party/netaddr-0.7.5.tar.gz
-%{_builddir}/../third_party/extras-0.0.3.tar.gz
-%{_builddir}/../third_party/requests-1.1.0.tar.gz
-%{_builddir}/../third_party/wsgiref-0.1.2.zip
-%{_builddir}/../third_party/zope.interface-3.8.0.tar.gz
-%{_builddir}/../third_party/netifaces-0.8.tar.gz
-%{_builddir}/../third_party/pycrypto-2.6.tar.gz
-%{_builddir}/../third_party/paramiko-1.11.0.tar.gz
-%{_builddir}/../third_party/Fabric-1.7.0.tar.gz
-%{_builddir}/../third_party/bitarray-0.8.0.tar.gz
-%{_builddir}/../third_party/thrift-0.8.0.tar.gz
-%{_builddir}/../third_party/psutil-1.0.1.tar.gz
-%{_builddir}/../third_party/iso8601-0.1.8.tar.gz
-%{_builddir}/../third_party/prettytable-0.7.2.tar.gz
-%{_builddir}/../third_party/simplejson-3.3.0.tar.gz
-%{_builddir}/../third_party/argparse-1.2.1.tar.gz
-%{_builddir}/../third_party/oslo.config-1.1.1.tar.gz
-%{_builddir}/../third_party/d2to1-0.2.11.tar.gz
-%{_builddir}/../third_party/pyparsing-1.5.7.tar.gz
-%{_builddir}/../third_party/cmd2-0.6.5.1.tar.gz
-%{_builddir}/../third_party/cliff-1.4.4.tar.gz
-%{_builddir}/../third_party/httplib2-0.8.tar.gz
-%{_builddir}/../third_party/repoze.lru-0.6.tar.gz
-%{_builddir}/../third_party/Paste-1.7.5.1.tar.gz
-%{_builddir}/../third_party/PasteDeploy-1.5.0.tar.gz
-%{_builddir}/../third_party/SQLAlchemy-0.8.2.tar.gz
-%{_builddir}/../third_party/Routes-1.13.tar.gz
-%{_builddir}/../third_party/qpid-python-0.20.tar.gz
-%{_builddir}/../third_party/stevedore-0.12.tar.gz
-%{_builddir}/../third_party/pbr-0.5.21.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/greenlet-0.4.1.zip
+%{_builddir}/../%{_distrothirdpartydir}/gevent-0.13.8.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/eventlet-0.9.17.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/lxml-2.3.3.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/geventhttpclient-1.0a.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/netaddr-0.7.5.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/extras-0.0.3.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/requests-1.1.0.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/wsgiref-0.1.2.zip
+%{_builddir}/../%{_distrothirdpartydir}/zope.interface-3.8.0.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/netifaces-0.8.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/pycrypto-2.6.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/paramiko-1.11.0.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/Fabric-1.7.0.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/bitarray-0.8.0.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/thrift-0.8.0.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/psutil-1.0.1.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/iso8601-0.1.8.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/prettytable-0.7.2.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/simplejson-3.3.0.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/argparse-1.2.1.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/oslo.config-1.1.1.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/d2to1-0.2.11.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/pyparsing-1.5.7.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/cmd2-0.6.5.1.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/cliff-1.4.4.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/httplib2-0.8.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/repoze.lru-0.6.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/Paste-1.7.5.1.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/PasteDeploy-1.5.0.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/SQLAlchemy-0.8.2.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/Routes-1.13.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/qpid-python-0.20.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/stevedore-0.12.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/pbr-0.5.21.tar.gz
 END
 
 %install

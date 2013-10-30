@@ -54,17 +54,17 @@ tar xzvf %{_builddir}/build/package-build/BUILD/packaging/archives/virtualenv-1.
 pushd virtualenv-1.9.1 
 mkdir -p reqs/cfgm
 cat > reqs/reqs.txt <<END
-%{_builddir}/../third_party/greenlet-0.4.1.zip
-%{_builddir}/../third_party/gevent-0.13.8.tar.gz
-%{_builddir}/../third_party/lxml-2.3.3.tar.gz
-%{_builddir}/../third_party/geventhttpclient-1.0a.tar.gz
-%{_builddir}/../third_party/requests-1.1.0.tar.gz
-%{_builddir}/../third_party/wsgiref-0.1.2.zip
-%{_builddir}/../third_party/bitarray-0.8.0.tar.gz
-%{_builddir}/../third_party/thrift-0.8.0.tar.gz
-%{_builddir}/../third_party/psutil-1.0.1.tar.gz
-%{_builddir}/../third_party/pbr-0.5.21.tar.gz
-%{_builddir}/../third_party/prettytable-0.7.2.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/greenlet-0.4.1.zip
+%{_builddir}/../%{_distrothirdpartydir}/gevent-0.13.8.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/lxml-2.3.3.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/geventhttpclient-1.0a.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/requests-1.1.0.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/wsgiref-0.1.2.zip
+%{_builddir}/../%{_distrothirdpartydir}/bitarray-0.8.0.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/thrift-0.8.0.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/psutil-1.0.1.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/pbr-0.5.21.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/prettytable-0.7.2.tar.gz
 END
 
 
