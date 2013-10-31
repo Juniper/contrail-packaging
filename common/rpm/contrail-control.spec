@@ -125,6 +125,10 @@ if [ -d doc ]; then
    cp -R doc/* %{buildroot}/usr/share/doc/python-Control-Node
 fi
 popd
+tar zxf %{_build_dist}/sandesh/common/dist/sandesh-common-0.1dev.tar.gz
+pushd sandesh-common-0.1dev
+%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
+popd
 tar zxf %{_build_dist}/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz
 pushd sandesh-0.1dev
 %{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
