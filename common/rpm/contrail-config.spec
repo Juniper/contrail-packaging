@@ -174,6 +174,8 @@ install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helpe
 %{_venv_root}%{_pysitepkg}/ncclient-*
 %{_venv_root}%{_pysitepkg}/pysandesh
 %{_venv_root}%{_pysitepkg}/sandesh-*
+%{_venv_root}%{_pysitepkg}/sandesh_common
+%{_venv_root}%{_pysitepkg}/sandesh_common-*
 %{_venv_root}%{_pysitepkg}/schema_transformer
 %{_venv_root}%{_pysitepkg}/schema_transformer-*
 %{_venv_root}%{_pysitepkg}/svc_monitor
