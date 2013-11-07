@@ -68,45 +68,39 @@ BuildRequires:  gcc
 
 
 %build
-if [ ! -f build/debug/analytics/vizd ] ; then
-    scons -U src/analytics
-    if [ $? -ne 0 ] ; then
-        echo " analytics build failed"
-        exit -1
-    fi
+scons -U src/analytics
+if [ $? -ne 0 ] ; then
+    echo " analytics build failed"
+    exit -1
 fi
 
-if [ ! -f build/debug/query_engine/qed ] ; then
-    scons -U src/query_engine
-    if [ $? -ne 0 ] ; then
-        echo " analytics query engine build failed"
-        exit -1
-    fi
+scons -U src/query_engine
+if [ $? -ne 0 ] ; then
+    echo " analytics query engine build failed"
+    exit -1
 fi
 
-if [ ! -f build/debug/opserver/dist/opserver-0.1dev.tar.gz ] ; then
-    scons -U src/opserver
-    if [ $? -ne 0 ] ; then
-        echo " opserver build failed"
-        exit -1
-    fi
-    scons -U src/sandesh/common
-    if [ $? -ne 0 ] ; then
-        echo " sandesh common build failed"
-        exit -1
-    fi
-    pushd %{_builddir}/../tools/
-    scons -U sandesh/library/python
-    popd
-    if [ $? -ne 0 ] ; then
-        echo " sandesh python build failed"
-        exit -1
-    fi
-    scons -U src/discovery
-    if [ $? -ne 0 ] ; then
-        echo " discovery build failed"
-        exit -1
-    fi
+scons -U src/opserver
+if [ $? -ne 0 ] ; then
+    echo " opserver build failed"
+    exit -1
+fi
+scons -U src/sandesh/common
+if [ $? -ne 0 ] ; then
+    echo " sandesh common build failed"
+    exit -1
+fi
+pushd %{_builddir}/../tools/
+scons -U sandesh/library/python
+popd
+if [ $? -ne 0 ] ; then
+    echo " sandesh python build failed"
+    exit -1
+fi
+scons -U src/discovery
+if [ $? -ne 0 ] ; then
+    echo " discovery build failed"
+    exit -1
 fi
 
 %define _build_dist build/debug
