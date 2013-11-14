@@ -30,6 +30,8 @@ Requires: mysql-server
 Requires: contrail-setup
 Requires: memcached
 Requires: openstack-nova-novncproxy
+Requires: python-glance
+Requires: python-glanceclient
 %if 0%{?rhel} 
 Requires: python-importlib
 %endif
