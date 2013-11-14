@@ -92,15 +92,15 @@ popd
 
 pushd %{_builddir}/..
 # save these files to restore
-#cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save
-#cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save
+cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save
+cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save
 pushd %{_distrothirdpartydir}/supervisor-3.0b2
 %{__python} setup.py install --root=%{buildroot} %{?_venvtr}
 %{__python} setup.py sdist
 cp dist/* %{buildroot}%{_venv_root}/archive
 popd
-#mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
-#mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
+mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
+mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
 # done install in analytics venv
 
@@ -118,16 +118,16 @@ popd
 
 # save these files to restore
 pushd %{_builddir}/..
-#cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save
-#cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save
+cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save
+cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save
 #pushd %{_builddir}..
 pushd %{_distrothirdpartydir}/supervisor-3.0b2
 %{__python} setup.py install --root=%{buildroot} %{?_venvtr_api}
 %{__python} setup.py sdist
 cp dist/* %{buildroot}%{_venv_root_api}/archive
 popd
-#mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
-#mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
+mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
+mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root_api}/bin/contrail-nodemgr
 #done install in api venv
 
@@ -146,15 +146,15 @@ popd
 
 # save these files to restore
 pushd %{_builddir}/..
-#cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save
-#cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save
+cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save
+cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save
 pushd %{_distrothirdpartydir}/supervisor-3.0b2
 %{__python} setup.py install --root=%{buildroot} %{?_venvtr_vrouter}
 %{__python} setup.py sdist
 cp dist/* %{buildroot}%{_venv_root_vrouter}/archive
 popd
-#mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
-#mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
+mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
+mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root_vrouter}/bin/contrail-nodemgr
 #done install in vrouter venv
 
@@ -173,15 +173,15 @@ popd
 
 # save these files to restore
 pushd %{_builddir}/..
-#cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save
-#cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save
+cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save
+cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save
 pushd %{_distrothirdpartydir}/supervisor-3.0b2
 %{__python} setup.py install --root=%{buildroot} %{?_venvtr_control}
 %{__python} setup.py sdist
 cp dist/* %{buildroot}%{_venv_root_control}/archive
 popd
-#mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
-#mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
+mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
+mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root_control}/bin/contrail-nodemgr
 #done install in control venv
 
