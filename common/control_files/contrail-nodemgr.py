@@ -65,7 +65,20 @@ class EventManager:
         self.stdout = sys.stdout
         self.stderr = sys.stderr
         self.rules_data = rules 
+        self.max_cores = 5
         self.node_type = node_type
+        if (node_type == 'contrail-vrouter'):
+            os_nova_comp = process_stat()
+            (os_nova_comp_state, error_value) = Popen("openstack-status | grep openstack-nova-compute | cut -d ':' -f2", shell=True, stdout=PIPE).communicate()
+            os_nova_comp.process_state = os_nova_comp_state.strip()
+            if (os_nova_comp.process_state == 'active'):
+                os_nova_comp.process_state = 'PROCESS_STATE_RUNNING'
+                os_nova_comp.start_time = str(int(time.time()*1000000))
+                os_nova_comp.start_count += 1
+            if (os_nova_comp.process_state == 'dead'):
+                os_nova_comp.process_state = 'PROCESS_STATE_FATAL'
+            sys.stderr.write('Openstack Nova Compute status:' + os_nova_comp.process_state + "\n")
+            self.process_state_db['openstack-nova-compute'] = os_nova_comp
 
     def send_process_state(self, pname, pstate, pheaders, sandeshconn):
         # update process stats
@@ -100,8 +113,16 @@ class EventManager:
                 self.stderr.write("find command option for cores:" + find_command_option + "\n")
                 (corename, stderr) = Popen(find_command_option.split(), stdout=PIPE).communicate()
                 self.stderr.write("core file: " + corename + "\n")
-                proc_stat.core_file_list.append(corename.rstrip())
 
+                if ((corename is not None) and (len(corename.rstrip()) >= 1)):
+                    proc_stat.core_file_list.append(corename.rstrip())
+                    sys.stderr.write("# of cores for " + pname + ":" + str(len(proc_stat.core_file_list)) + "\n")
+
+                if (len(proc_stat.core_file_list) == self.max_cores):
+                    #stop the process which just crashed
+                    sys.stderr.write("stopping " + pname + " because of too many cores\n")
+                    service_stop_command = "service " + pname + " stop"
+                    subprocess.call(service_stop_command, shell=True)
 
         # update process state database
         self.process_state_db[pname] = proc_stat
@@ -113,22 +134,26 @@ class EventManager:
         if not(send_uve):
             return
 
-        # send UVE for updated process state
+        if (send_uve):
+            self.send_process_state_db(sandeshconn)
 
+
+    # send UVE for updated process state database
+    def send_process_state_db(self, sandeshconn):
         # code to import appropriate sandesh odules based on node-type
-        if ((self.node_type == 'contrail-config') and (send_uve)):
+        if (self.node_type == 'contrail-config'):
             from cfgm_common.uve.cfgm_cpuinfo.ttypes import *
             from cfgm_common.uve.cfgm_cpuinfo.cpuinfo.ttypes import *
 
-        if ((self.node_type == 'contrail-control') and (send_uve)):
+        if (self.node_type == 'contrail-control'):
             from control_node.control_node.ttypes import *
             from control_node.control_node.cpuinfo.ttypes import *
 
-        if ((self.node_type == 'contrail-vrouter') and (send_uve)):
+        if (self.node_type == 'contrail-vrouter'):
             from vrouter.vrouter.ttypes import *
-            from vrouter.cpuinfo.ttypes import *
+            from vrouter.vrouter.cpuinfo.ttypes import *
 
-        if ((self.node_type == 'contrail-analytics') and (send_uve)):
+        if (self.node_type == 'contrail-analytics'):
             from opserver.sandesh.analytics_cpuinfo.ttypes import *
             from opserver.sandesh.analytics_cpuinfo.cpuinfo.ttypes import *
 
@@ -153,10 +178,9 @@ class EventManager:
             #sys.stderr.write("Sending process state list:" + str(process_state_list))
 
         # send UVE based on node type
-        if ( (send_uve) and 
-            ((self.node_type == 'contrail-analytics') or 
+        if ( (self.node_type == 'contrail-analytics') or 
              (self.node_type == 'contrail-config')
-            )):
+            ):
             mod_cpu_state = ModuleCpuState()
             mod_cpu_state.name = socket.gethostname()
             mod_cpu_state.process_state_list = process_state_list
@@ -164,7 +188,7 @@ class EventManager:
             sys.stderr.write('sending UVE:' + str(cpu_state_trace))
             cpu_state_trace.send()
 
-        if ( (send_uve) and (self.node_type == 'contrail-control')):
+        if (self.node_type == 'contrail-control'):
             bgp_router_state = BgpRouterState()
             bgp_router_state.name = socket.gethostname()
             bgp_router_state.process_state_list = process_state_list
@@ -172,7 +196,7 @@ class EventManager:
             sys.stderr.write('sending UVE:' + str(bgp_router_state_trace))
             bgp_router_state_trace.send()
 
-        if ( (send_uve) and (self.node_type == 'contrail-vrouter')):
+        if (self.node_type == 'contrail-vrouter'):
             vrouter_stats_agent = VrouterStatsAgent()
             vrouter_stats_agent.name = socket.gethostname()
             vrouter_stats_agent.process_state_list = process_state_list
@@ -219,6 +243,38 @@ class EventManager:
                             self.stderr.write("got a hit with:" + str(rules) + '\n')
                             cmd_and_args = ['/usr/bin/bash', '-c' , rules['action']]
                             subprocess.Popen(cmd_and_args)
+            
+            # do periodic events
+            if headers['eventname'].startswith("TICK_60"):
+                # check for openstack nova compute status
+                if (self.node_type == "contrail-vrouter"):
+                    os_nova_comp = self.process_state_db['openstack-nova-compute']
+                    (os_nova_comp_state, error_value) = Popen("openstack-status | grep openstack-nova-compute | cut -d ':' -f2", shell=True, stdout=PIPE).communicate()
+                    if (os_nova_comp_state.strip() == 'active'):
+                        os_nova_comp_state = 'PROCESS_STATE_RUNNING'
+                    if (os_nova_comp_state.strip() == 'dead'):
+                        os_nova_comp_state = 'PROCESS_STATE_FATAL'
+                    if (os_nova_comp_state.strip() == 'inactive'):
+                        os_nova_comp_state = 'PROCESS_STATE_STOPPED'
+                    if (os_nova_comp.process_state != os_nova_comp_state):
+                        os_nova_comp.process_state = os_nova_comp_state.strip()
+                        sys.stderr.write('Openstack Nova Compute status changed to:' + os_nova_comp.process_state + "\n")
+                        if (os_nova_comp.process_state == 'PROCESS_STATE_RUNNING'):
+                            os_nova_comp.start_time = str(int(time.time()*1000000))
+                            os_nova_comp.start_count += 1
+                        if (os_nova_comp.process_state == 'PROCESS_STATE_FATAL'):
+                            os_nova_comp.exit_time = str(int(time.time()*1000000))
+                            os_nova_comp.exit_count += 1
+                        if (os_nova_comp.process_state == 'PROCESS_STATE_STOPPED'):
+                            os_nova_comp.stop_time = str(int(time.time()*1000000))
+                            os_nova_comp.stop_count += 1
+                        self.process_state_db['openstack-nova-compute'] = os_nova_comp
+                        self.send_process_state_db(sandeshconn)
+                    else:
+                        sys.stderr.write('Openstack Nova Compute status unchanged at:' + os_nova_comp.process_state + "\n")
+                        
+                    self.process_state_db['openstack-nova-compute'] = os_nova_comp
+                             
 
             childutils.listener.ok(self.stdout)
 
@@ -234,7 +290,7 @@ def main(argv=sys.argv):
                         default = 'contrail-analytics', 
                         help = 'Type of node which nodemgr is managing')
     parser.add_argument("--discovery_server", 
-                        default = socket.gethostname(), 
+                        default = socket.gethostname(),
                         help = 'IP address of Discovery Server')
     parser.add_argument("--discovery_port", 
                         type = int,
@@ -247,7 +303,9 @@ def main(argv=sys.argv):
     rule_file = _args.rules
     node_type = _args.nodetype
     discovery_server = _args.discovery_server
+    sys.stderr.write("Discovery server: " + discovery_server + "\n")
     discovery_port = _args.discovery_port
+    sys.stderr.write("Discovery port: " + str(discovery_port) + "\n")
 #done parsing arguments
     
     if not 'SUPERVISOR_SERVER_URL' in os.environ:
@@ -269,7 +327,6 @@ def main(argv=sys.argv):
     if (node_type is 'contrail-analytics'):
         # since this is local node, wait for sometime to let collector come up
         import time
-        time.sleep(10)
         sandesh_global.init_generator('Contrail-Analytics-Nodemgr', socket.gethostname(), [('127.0.0.1', 8086)], 'Contrail-Analytics-Nodemgr', 8099, ['opserver.sandesh'])
         sandesh_global.set_logging_params(enable_local_log=True)
 
@@ -277,7 +334,14 @@ def main(argv=sys.argv):
         import discovery.client as client
         # since this may be a local node, wait for sometime to let collector come up
         import time
-        time.sleep(10)
+        # read discovery client info from config file 
+        import ConfigParser
+        Config = ConfigParser.ConfigParser()
+        Config.read("/etc/contrail/api_server.conf")
+        discovery_server = Config.get("DEFAULTS", "disc_server_ip")
+        discovery_port = Config.get("DEFAULTS", "disc_server_port")
+        sys.stderr.write("Updated discovery server: " + discovery_server + "\n")
+        sys.stderr.write("Updated discovery port: " + str(discovery_port) + "\n")
         _disc= client.DiscoveryClient(discovery_server, discovery_port, 'Contrail-Config-Nodemgr')
         sandesh_global.init_generator('Contrail-Config-Nodemgr', socket.gethostname(), [ ], 'Contrail-Config-Nodemgr', 8100, ['cfgm_common.sandesh'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
@@ -286,20 +350,18 @@ def main(argv=sys.argv):
         import discovery.client as client
         # since this may be a local node, wait for sometime to let collector come up
         import time
-        time.sleep(10)
         _disc= client.DiscoveryClient(discovery_server, discovery_port, 'Contrail-Control-Nodemgr')
 
-        sandesh_global.init_generator('Contrail-Control-Nodemgr', socket.gethostname(), [], 'Contrail-Control-Nodemgr', 8101, ['control_node.sandesh'], _disc)
+        sandesh_global.init_generator('Contrail-Control-Nodemgr', socket.gethostname(), [], 'Contrail-Control-Nodemgr', 8101, ['control_node.control_node'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-vrouter'):
         import discovery.client as client
         # since this may be a local node, wait for sometime to let collector come up
         import time
-        time.sleep(10)
         _disc= client.DiscoveryClient(discovery_server, discovery_port, 'Contrail-Vrouter-Nodemgr')
 
-        sandesh_global.init_generator('Contrail-Vrouter-Nodemgr', socket.gethostname(), [], 'Contrail-Vrouter-Nodemgr', 8102, ['vrouter.sandesh'], _disc)
+        sandesh_global.init_generator('Contrail-Vrouter-Nodemgr', socket.gethostname(), [], 'Contrail-Vrouter-Nodemgr', 8102, ['vrouter.vrouter'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
     
     gevent.joinall([gevent.spawn(prog.runforever, sandesh_global)])

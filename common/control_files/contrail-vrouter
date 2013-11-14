@@ -56,10 +56,6 @@ interface_setup() {
 	ifup $BR_IF
     fi
 
-    brname=$(xe network-list name-label="cloud_link_local_network" | awk '/bridge/{print $4;}')
-    if [ -n "$brname" ]; then
-        vif --create ${brname}
-    fi
 }
 
 start() {
