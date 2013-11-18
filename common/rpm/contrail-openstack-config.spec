@@ -35,6 +35,8 @@ Requires: python-importlib
 %endif
 Requires: euca2ools
 Requires: m2crypto
+Requires: openstack-nova
+Requires: java-1.7.0-openjdk
 
 %description
 Contrail Package Requirements for Contrail Config

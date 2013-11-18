@@ -100,6 +100,9 @@ tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/zop
 popd
 %endif
 
+# This dir is needed as setup scripts look for it
+install -d -m 755 %{buildroot}/etc/contrail
+
 if [ %{_flist} != None ] ; then
     install -d -m 755 %{buildroot}/etc/contrail
     install -p -m 644 %{_flist}  %{buildroot}/etc/contrail/rpm_list.txt
@@ -129,6 +132,7 @@ tar xzvf dns_scripts.tgz -C utils
 %if 0%{?_fileList:1}
     /etc/contrail/rpm_list.txt
 %endif
+/etc/contrail
 %dir %attr(0777, root, root) %{_localstatedir}/log/contrail
 %{_bindir}/contrail-version
 %{_bindir}/contrail-status
