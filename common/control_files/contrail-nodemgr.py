@@ -65,7 +65,9 @@ class EventManager:
         self.stdout = sys.stdout
         self.stderr = sys.stderr
         self.rules_data = rules 
-        self.max_cores = 5
+        self.max_cores = 4
+        self.max_old_cores = 3
+        self.max_new_cores = 1
         self.node_type = node_type
         if (node_type == 'contrail-vrouter'):
             os_nova_comp = process_stat()
@@ -115,14 +117,24 @@ class EventManager:
                 self.stderr.write("core file: " + corename + "\n")
 
                 if ((corename is not None) and (len(corename.rstrip()) >= 1)):
+                    # before adding to the core file list make sure that we do not have too many cores
+                    sys.stderr.write('core_file_list:'+str(proc_stat.core_file_list)+", self.max_cores:"+str(self.max_cores)+"\n")
+                    if (len(proc_stat.core_file_list) == self.max_cores):
+                        # get rid of old cores
+                        sys.stderr.write('max # of cores reached:' + str(self.max_cores) + "\n")
+                        core_files_to_be_deleted = proc_stat.core_file_list[self.max_old_cores:(self.max_cores - self.max_new_cores+1)]
+                        sys.stderr.write('deleting core file list:' + str(core_files_to_be_deleted) + "\n")
+                        for core_file in core_files_to_be_deleted:
+                            sys.stderr.write('deleting core file:' + core_file + "\n")
+                            try:
+                                os.remove(core_file)
+                            except:
+                                pass
+                        # now delete the list as well
+                        del proc_stat.core_file_list[self.max_old_cores:(self.max_cores - self.max_new_cores+1)]
+                    # now add the new core to the core file list
                     proc_stat.core_file_list.append(corename.rstrip())
                     sys.stderr.write("# of cores for " + pname + ":" + str(len(proc_stat.core_file_list)) + "\n")
-
-                if (len(proc_stat.core_file_list) == self.max_cores):
-                    #stop the process which just crashed
-                    sys.stderr.write("stopping " + pname + " because of too many cores\n")
-                    service_stop_command = "service " + pname + " stop"
-                    subprocess.call(service_stop_command, shell=True)
 
         # update process state database
         self.process_state_db[pname] = proc_stat
@@ -327,7 +339,7 @@ def main(argv=sys.argv):
     if (node_type is 'contrail-analytics'):
         # since this is local node, wait for sometime to let collector come up
         import time
-        sandesh_global.init_generator('Contrail-Analytics-Nodemgr', socket.gethostname(), [('127.0.0.1', 8086)], 'Contrail-Analytics-Nodemgr', 8099, ['opserver.sandesh'])
+        sandesh_global.init_generator('Contrail-Analytics-Nodemgr', socket.gethostname(), ['127.0.0.1:8086'], 'Contrail-Analytics-Nodemgr', 8099, ['opserver.sandesh'])
         sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-config'):

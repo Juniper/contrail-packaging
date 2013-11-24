@@ -54,6 +54,7 @@ fi
 scons -U src/sandesh/common
 scons -U src/api-lib
 scons -U src/config/common
+scons -U src/discovery/client
 pushd %{_builddir}/../tools/
 scons -U sandesh/library/python
 popd
@@ -81,16 +82,25 @@ pushd cfgm_common-0.1dev
 %{__python}  setup.py install --root=%{buildroot}
 popd
 
+install -D -p -m 644 %{_build_dist}/discovery/client/dist/discoveryclient-0.1dev.tar.gz %{buildroot}%{_api_venv_archv}/discoveryclient-0.1dev.tar.gz
+tar zxf %{_build_dist}/discovery/client/dist/discoveryclient-0.1dev.tar.gz
+pushd discoveryclient-0.1dev
+%{__python}  setup.py install --root=%{buildroot}
+popd
+
 %files
 %defattr(-,root,root,-)
 %{python_sitelib}/vnc_api
 %{python_sitelib}/vnc_api-*
 %{python_sitelib}/cfgm_common
 %{python_sitelib}/cfgm_common-*
+%{python_sitelib}/discoveryclient
+%{python_sitelib}/discoveryclient-*
 %{_api_venv_archv}/vnc_api-0.1dev.tar.gz
 %{_anl_venv_archv}/vnc_api-0.1dev.tar.gz
 %{_api_venv_archv}/cfgm_common-0.1dev.tar.gz
 %{_anl_venv_archv}/cfgm_common-0.1dev.tar.gz
+%{_api_venv_archv}/discoveryclient-0.1dev.tar.gz
 
 %post
 
@@ -100,6 +110,10 @@ fi
 
 if [ -f /opt/contrail/analytics-venv/bin/activate ] ; then
    source /opt/contrail/analytics-venv/bin/activate && pip install --upgrade %{_anl_venv_archv}/vnc_api-0.1dev.tar.gz %{_anl_venv_archv}/cfgm_common-0.1dev.tar.gz
+fi
+
+if [ -f /opt/contrail/api-venv/bin/activate ] ; then
+   source /opt/contrail/api-venv/bin/activate && pip install --upgrade %{_api_venv_archv}/discoveryclient-0.1dev.tar.gz %{_api_venv_archv}/discoveryclient-0.1dev.tar.gz
 fi
 
 %changelog

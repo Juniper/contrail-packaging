@@ -8,6 +8,7 @@ ulimit -c unlimited
 LOG=/var/log/contrail-agent.log
 PID_FILE=/var/run/contrail-agent.pid
 CONF_FILE=/etc/contrail/agent.conf
+AGENT="vnswad"
 
 insert_kmod() {
     KMOD=/lib/modules/$(uname -r)/extra/net/vrouter/vrouter.ko
@@ -58,7 +59,21 @@ interface_setup() {
 
 }
 
+check_process()
+{
+	if [[ -n `pgrep $1` ]]; then
+		return 1
+	else
+		return 0
+	fi
+}
+
 start() {
+    check_process $AGENT
+    if [ $? -eq 1 ]; then
+	echo "$AGENT is running, use stop/start or restart"
+	exit 1
+    fi
     kmod_present=$(lsmod | grep vrouter)
     if [ -z "${kmod_present}" ]; then
 	insert_kmod

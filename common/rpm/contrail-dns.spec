@@ -59,21 +59,17 @@ fi
 #fi
 
 #pushd $BUILD_DIR
-if [ ! -f build/debug/dns/dnsd ] ; then
-    scons  -U --target=%{_target_cpu}  src/dns
-    if [ $? -ne 0 ] ; then
-        echo " Dnsd build failed"
-        exit -1
-    fi
+scons  -U --target=%{_target_cpu}  src/dns
+if [ $? -ne 0 ] ; then
+    echo " Dnsd build failed"
+    exit -1
 fi
 
 #pushd $BUILD_DIR
-if [ ! -f build/third_party/bind/bin/named/named ] || [ ! -f build/third_party/bind/bin/rndc/rndc ] ; then
-    scons -U --target=%{_target_cpu}  lib/bind
-    if [ $? -ne 0 ] ; then
-        echo " Bind build failed"
-        exit -1
-    fi
+scons -U --target=%{_target_cpu}  lib/bind
+if [ $? -ne 0 ] ; then
+    echo " Bind build failed"
+    exit -1
 fi
 
 %install

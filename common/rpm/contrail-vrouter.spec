@@ -210,19 +210,15 @@ fi
 exit 0
 
 %postun
-%if 0%{?fedora} >= 17
 if [ $1 = 0 ] ; then
-    /bin/systemctl daemon-reload
-    /bin/systemctl enable NetworkManager.service
-    /bin/systemctl disable network.service
-    /bin/systemctl stop network.service
-    /bin/systemctl start NetworkManager.service
-
-    #rm -rf /etc/sysconfig/network-scripts/ifcfg-$(cat /etc/contrail/default_if) \
-    #    /etc/sysconfig/network-scripts/ifcfg-vhost0 
+    /bin/systemctl daemon-reload || true
     cp /etc/sysconfig/network-scripts/ifup-eth.rpmsave /etc/sysconfig/network-scripts/ifup-eth
+    phydev=`cat /etc/contrail/agent_param | grep dev | sed 's/dev=//g'`
+    phydev_save_file=/etc/sysconfig/network-scripts/ifcfg-${phydev}.rpmsave
+    phydev_file=/etc/sysconfig/network-scripts/ifcfg-${phydev}
+    [ -f ${phydev_save_file} ] && mv ${phydev_save_file} ${phydev_file} || rm -f /etc/sysconfig/network-scripts/ifcfg-${phydev}
+    rm -f /etc/sysconfig/network-scripts/ifcfg-vhost0
 fi
-%endif
 exit 0
 
 %files

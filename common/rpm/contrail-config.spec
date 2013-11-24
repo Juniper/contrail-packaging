@@ -158,7 +158,7 @@ install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-api.kill
 install -p -m 755 %{_distropkgdir}/contrail-config.rules %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config.rules
 pushd %{_builddir}
 install -D -m 755 src/config/schema-transformer/ifmap_view.py %{buildroot}%{_bindir}/ifmap_view.py
-install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py
+#install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py
 popd
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 
@@ -190,7 +190,7 @@ install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helpe
 %dir %attr(0777, root, root) %{_localstatedir}/log/contrail
 %{_bindir}/ifmap_view.py
 %{_bindir}/venv-helper
-%{_bindir}/encap.py
+#%{_bindir}/encap.py
 %if 0%{?rhel}
 %{_initddir}
 %endif

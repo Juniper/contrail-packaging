@@ -1,5 +1,5 @@
 %{!?ruby_sitelibdir: %define ruby_sitelibdir %(ruby -rrbconfig -e 'puts Config::CONFIG["sitelibdir"]')}
-%define pbuild %{_builddir}/%{name}-%{version}
+%define pbuild %{_builddir}/../third_party/%{name}-%{version}
 %define confdir conf/suse
 
 %if 0%{?_buildTag:1}
@@ -11,8 +11,7 @@
 
 Summary: Puppet Agent %{?_gitVer}
 Name:    puppet
-#Version: 2.7.20
-Version: 2.7.x
+Version: 2.7.20
 Release: %{_relstr}
 License: Apache 2.0
 Group:   Productivity/Networking/System
@@ -42,19 +41,14 @@ Provides the central puppet server daemon which provides manifests to clients.
 The server can also function as a certificate authority and file server.
 
 %prep
-pushd %{_builddir}/..
-pushd third_party/%{name}-%{version}
-#%setup -D -T -n %{name}-%{version}
+##pushd %{_builddir}/..
+##pushd third_party/%{name}-%{version}
+##%setup -D -T -n %{name}-%{version}
 
-%build
-pushd %{_builddir}/..
-#for f in bin/* sbin/*; do
-# sed -i -e '1s,^#!.*ruby$,#!/usr/bin/ruby,' $f
-#done
 
 %install
 pushd %{_builddir}/..
-pushd third_party/puppet-2.7.x
+pushd third_party/%{name}-%{version}
 %{__install} -d -m0755 %{buildroot}%{_sbindir}
 %{__install} -d -m0755 %{buildroot}%{_bindir}
 %{__install} -d -m0755 %{buildroot}%{_confdir}
@@ -66,41 +60,41 @@ pushd third_party/puppet-2.7.x
 %{__install} -d -m0755 %{buildroot}%{_localstatedir}/log/puppet
 %{__install} -d -m0755 %{buildroot}/opt/contrail/puppet
 %{__install} -d -m0755 %{buildroot}/opt/contrail/puppet/store
-%{__install} -Dp -m0755 bin/* %{buildroot}%{_bindir}
-%{__install} -Dp -m0755 sbin/* %{buildroot}%{_sbindir}
-%{__install} -Dp -m0644 lib/puppet.rb %{buildroot}%{ruby_sitelibdir}/puppet.rb
-%{__install} -Dp -m0644 lib/semver.rb %{buildroot}%{ruby_sitelibdir}/semver.rb
-%{__cp} -a lib/puppet %{buildroot}%{ruby_sitelibdir}
+%{__install} -Dp -m0755 %{pbuild}/bin/* %{buildroot}%{_bindir}
+%{__install} -Dp -m0755 %{pbuild}/sbin/* %{buildroot}%{_sbindir}
+%{__install} -Dp -m0644 %{pbuild}/lib/puppet.rb %{buildroot}%{ruby_sitelibdir}/puppet.rb
+%{__install} -Dp -m0644 %{pbuild}/lib/semver.rb %{buildroot}%{ruby_sitelibdir}/semver.rb
+%{__cp} -a %{pbuild}/lib/puppet %{buildroot}%{ruby_sitelibdir}
 find %{buildroot}%{ruby_sitelibdir} -type f -perm +ugo+x -exec chmod a-x '{}' \;
-%{__cp} -a conf/redhat/client.sysconfig %{buildroot}%{_confdir}/client.sysconfig
+%{__cp} -a %{pbuild}/conf/redhat/client.sysconfig %{buildroot}%{_confdir}/client.sysconfig
 %{__install} -Dp -m0644 %{buildroot}%{_confdir}/client.sysconfig %{buildroot}/var/adm/fillup-templates/sysconfig.puppet
-%{__cp} -a conf/redhat/server.sysconfig %{buildroot}%{_confdir}/server.sysconfig
+%{__cp} -a %{pbuild}/conf/redhat/server.sysconfig %{buildroot}%{_confdir}/server.sysconfig
 %{__install} -Dp -m0644 %{buildroot}%{_confdir}/server.sysconfig %{buildroot}/var/adm/fillup-templates/sysconfig.puppetmaster
-%{__cp} -a conf/redhat/fileserver.conf %{buildroot}%{_confdir}/fileserver.conf
+%{__cp} -a %{pbuild}/conf/redhat/fileserver.conf %{buildroot}%{_confdir}/fileserver.conf
 %{__install} -Dp -m0644 %{buildroot}%{_confdir}/fileserver.conf %{buildroot}%{_sysconfdir}/puppet/fileserver.conf
-%{__cp} -a conf/redhat/puppet.conf %{buildroot}%{_confdir}/puppet.conf
+%{__cp} -a %{pbuild}/conf/redhat/puppet.conf %{buildroot}%{_confdir}/puppet.conf
 %{__install} -Dp -m0644 %{buildroot}%{_confdir}/puppet.conf %{buildroot}%{_sysconfdir}/puppet/puppet.conf
-%{__cp} -a conf/redhat/logrotate %{buildroot}%{_confdir}/logrotate
+%{__cp} -a %{pbuild}/conf/redhat/logrotate %{buildroot}%{_confdir}/logrotate
 %{__install} -Dp -m0644 %{buildroot}%{_confdir}/logrotate %{buildroot}%{_sysconfdir}/logrotate.d/puppet
-%{__install} -Dp -m0644 puppetagent.service %{buildroot}/usr/lib/systemd/system/puppetagent.service
-%{__install} -Dp -m0644 puppetmaster.service %{buildroot}/usr/lib/systemd/system/puppetmaster.service
-%{__install} -Dp -m0644 ext/contrail/setup-pki.sh %{buildroot}/opt/contrail/puppet/setup-pki.sh
-%{__install} -Dp -m0644 ext/contrail/pupp_const.py %{buildroot}/opt/contrail/puppet/pupp_const.py
-%{__install} -Dp -m0644 ext/contrail/pupp_config_init.py %{buildroot}/opt/contrail/puppet/pupp_config_init.py
-%{__install} -Dp -m0644 ext/contrail/pupp_cmn.py %{buildroot}/opt/contrail/puppet/pupp_cmn.py
-%{__install} -Dp -m0644 ext/contrail/pupp_sqlite.py %{buildroot}/opt/contrail/puppet/pupp_sqlite.py
-%{__install} -Dp -m0644 ext/contrail/example.json %{buildroot}/opt/contrail/puppet/example.json
-%{__install} -Dp -m0644 ext/contrail/example-1.json %{buildroot}/opt/contrail/puppet/example-1.json
-%{__install} -Dp -m0644 ext/contrail/store/schema_trans.erb %{buildroot}/opt/contrail/puppet/store/schema_trans.erb
-%{__install} -Dp -m0644 ext/contrail/store/quantum_server.erb %{buildroot}/opt/contrail/puppet/store/quantum_server.erb
-%{__install} -Dp -m0644 ext/contrail/store/ctrl_details_template.erb %{buildroot}/opt/contrail/puppet/store/ctrl_details_template.erb
-%{__install} -Dp -m0644 ext/contrail/store/control_conf.erb %{buildroot}/opt/contrail/puppet/store/control_conf.erb
-%{__install} -Dp -m0644 ext/contrail/store/compute-server-setup.erb %{buildroot}/opt/contrail/puppet/store/compute-server-setup.erb
-%{__install} -Dp -m0644 ext/contrail/store/api_server_template.erb %{buildroot}/opt/contrail/puppet/store/api_server_template.erb
-%{__install} -Dp -m0644 ext/contrail/store/service.token %{buildroot}/opt/contrail/puppet/store/service.token
-%{__install} -Dp -m0644 ext/contrail/store/contrail_all_init.pp %{buildroot}/opt/contrail/puppet/store/contrail_all_init.pp
-%{__install} -Dp -m0644 ext/contrail/store/agent_conf_template.erb %{buildroot}/opt/contrail/puppet/store/agent_conf_template.erb
-%{__install} -Dp -m0644 ext/contrail/store/agent_conf.py %{buildroot}/opt/contrail/puppet/store/agent_conf.py
+%{__install} -Dp -m0644 %{pbuild}/puppetagent.service %{buildroot}/usr/lib/systemd/system/puppetagent.service
+%{__install} -Dp -m0644 %{pbuild}/puppetmaster.service %{buildroot}/usr/lib/systemd/system/puppetmaster.service
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/setup-pki.sh %{buildroot}/opt/contrail/puppet/setup-pki.sh
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/pupp_const.py %{buildroot}/opt/contrail/puppet/pupp_const.py
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/pupp_config_init.py %{buildroot}/opt/contrail/puppet/pupp_config_init.py
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/pupp_cmn.py %{buildroot}/opt/contrail/puppet/pupp_cmn.py
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/pupp_sqlite.py %{buildroot}/opt/contrail/puppet/pupp_sqlite.py
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/example.json %{buildroot}/opt/contrail/puppet/example.json
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/example-1.json %{buildroot}/opt/contrail/puppet/example-1.json
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/store/schema_trans.erb %{buildroot}/opt/contrail/puppet/store/schema_trans.erb
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/store/quantum_server.erb %{buildroot}/opt/contrail/puppet/store/quantum_server.erb
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/store/ctrl_details_template.erb %{buildroot}/opt/contrail/puppet/store/ctrl_details_template.erb
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/store/control_conf.erb %{buildroot}/opt/contrail/puppet/store/control_conf.erb
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/store/compute-server-setup.erb %{buildroot}/opt/contrail/puppet/store/compute-server-setup.erb
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/store/api_server_template.erb %{buildroot}/opt/contrail/puppet/store/api_server_template.erb
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/store/service.token %{buildroot}/opt/contrail/puppet/store/service.token
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/store/contrail_all_init.pp %{buildroot}/opt/contrail/puppet/store/contrail_all_init.pp
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/store/agent_conf_template.erb %{buildroot}/opt/contrail/puppet/store/agent_conf_template.erb
+%{__install} -Dp -m0644 %{pbuild}/ext/contrail/store/agent_conf.py %{buildroot}/opt/contrail/puppet/store/agent_conf.py
 
 %files
 %defattr(-, root, root, 0755)
