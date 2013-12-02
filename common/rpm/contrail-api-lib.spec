@@ -23,7 +23,6 @@ BuildArch: noarch
 Requires: python-gevent
 Requires: python-requests
 Requires: python-zope-interface
-Requires: qpid-cpp-server
 
 %define _api_venv_archv    /opt/contrail/api-venv/archive
 %define _anl_venv_archv    /opt/contrail/analytics-venv/archive
