@@ -11,6 +11,7 @@ help() {
     echo $"Usage: $0 [all|database|cfgm|collector|webui|control|vrouter]" 1>&2
     echo
     echo $"Eg: $0 all       ; #To install all the contrail packages in one server." 1>&2
+    echo $"Eg: $0 openstack  ; #To install contrail openstack packages in this server." 1>&2
     echo $"Eg: $0 database  ; #To install contrail database packages in this server." 1>&2
     echo $"Eg: $0 cfgm      ; #To install contrail cfgm packages in this server." 1>&2
     echo $"Eg: $0 collector ; #To install contrail collector packages in this server." 1>&2
@@ -28,6 +29,11 @@ if [ $package = "-h" ] || [ $package = "-help" ] || [ $package = "--h" ] || [ $p
 fi
 
 case "$package" in
+  "openstack" )
+      echo
+      echo "Installing contrail openstack package"
+      yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-openstack
+  ;;
   "database" )
       echo
       echo "Installing contrail database package"
@@ -37,6 +43,7 @@ case "$package" in
       echo
       echo "Installing contrail cfgm package"
       yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-openstack-cfgm
+      yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-openstack-storage
   ;;
   "collector" )
       echo
@@ -45,7 +52,7 @@ case "$package" in
   ;;
   "control" )
       echo
-      echo "Installing contrail control package"
+      echo "Installing contrail control packages"
       yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-openstack-control
   ;;
   "webui" )
@@ -55,13 +62,14 @@ case "$package" in
   ;;
   "vrouter" )
       echo
-      echo "Installing contrail vrouter package"
+      echo "Installing contrail vrouter packages"
       yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-openstack-vrouter
+      yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-openstack-storage
   ;;
   "all" )
       echo
       echo "Installing all contrail packages"
-      yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-openstack-database contrail-openstack-cfgm contrail-openstack-analytics contrail-openstack-control contrail-openstack-webui contrail-openstack-vrouter
+      yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-openstack-database contrail-openstack-cfgm contrail-openstack-analytics contrail-openstack-control contrail-openstack-webui contrail-openstack-vrouter contrail-openstack-storage
   ;;
   * )
       echo

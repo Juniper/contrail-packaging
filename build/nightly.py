@@ -174,6 +174,7 @@ class NightlyBuilder (CommonUtil):
             'contrail-setup', 'python-pycassa',
             'python-thrift', 'supervisor', 'contrail-openstack-analytics', 'contrail-openstack-config',
             'contrail-openstack', 'contrail-openstack-control', 'contrail-openstack-vrouter',
+            'contrail-openstack-storage',
             'contrail-openstack-webui', 'contrail-api-lib', 'contrail-api-extension', 'contrail-openstack-database']),
         Repo ("packaging", "ssh://git@bitbucket.org/contrail_admin/packaging",
             ["contrail-api-venv", "contrail-analytics-venv", "contrail-control-venv", "contrail-vrouter-venv", "contrail-database-venv"]),

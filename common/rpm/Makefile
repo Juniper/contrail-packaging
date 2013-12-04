@@ -146,9 +146,13 @@ contrail-openstack-webui: $(PREP)
 	@echo making rpm for contrail-openstack-webui
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-webui.spec $(G_TAG)
 
+contrail-openstack-storage: $(PREP) $(LOCAL_PY)
+	@echo making rpm for contrail-openstack-storage
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-storage.spec $(G_TAG) $(RPM_PY)
+
 contrail-openstack-all: contrail-openstack contrail-openstack-analytics contrail-openstack-config \
 	contrail-openstack-control contrail-openstack-database contrail-openstack-vrouter \
-	contrail-openstack-webui
+	contrail-openstack-webui contrail-openstack-storage
 
 contrail-webui:
 	@echo making rpm for contrail-webui
