@@ -81,6 +81,7 @@ scons -U src/discovery
 %define _build_dist %{_builddir}/../build/debug
 %install
 install -d -m 755 %{buildroot}%{_venv_root}
+install -d -m 755 %{buildroot}%{_venv_root}/bin
 
 mkdir -p build/python_dist
 pushd build/python_dist
@@ -164,6 +165,9 @@ install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 
 install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helper
 
+# install nodemgr
+install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
+
 %files
 %defattr(-,root,root,-)
 %{_venv_root}%{_pysitepkg}/discovery
@@ -194,6 +198,7 @@ install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helpe
 %if 0%{?rhel}
 %{_initddir}
 %endif
+%{_venv_root}/bin/contrail-nodemgr
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then

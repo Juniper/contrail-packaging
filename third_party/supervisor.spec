@@ -101,7 +101,6 @@ cp dist/* %{buildroot}%{_venv_root}/archive
 popd
 mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
 mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
-install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
 # done install in analytics venv
 
 # install in api venv
@@ -128,7 +127,6 @@ cp dist/* %{buildroot}%{_venv_root_api}/archive
 popd
 mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
 mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
-install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root_api}/bin/contrail-nodemgr
 #done install in api venv
 
 # install in vrouter venv
@@ -155,7 +153,6 @@ cp dist/* %{buildroot}%{_venv_root_vrouter}/archive
 popd
 mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
 mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
-install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root_vrouter}/bin/contrail-nodemgr
 #done install in vrouter venv
 
 # install in control venv
@@ -182,7 +179,6 @@ cp dist/* %{buildroot}%{_venv_root_control}/archive
 popd
 mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
 mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
-install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root_control}/bin/contrail-nodemgr
 #done install in control venv
 
 
@@ -214,7 +210,6 @@ install -p -m 755 %{_helper} %{buildroot}%{_bindir}/contrail-nodemgr
 %{_venv_root}/bin/pidproxy
 %{_venv_root}/bin/supervisorctl
 %{_venv_root}/bin/supervisord
-%{_venv_root}/bin/contrail-nodemgr
 %{_venv_root}/archive/supervisor-3.0b2.tar.gz
 %{_venv_root_api}%{_pysitepkg}/supervisor
 %{_venv_root_api}%{_pysitepkg}/supervisor-*
@@ -226,7 +221,6 @@ install -p -m 755 %{_helper} %{buildroot}%{_bindir}/contrail-nodemgr
 %{_venv_root_api}/bin/pidproxy
 %{_venv_root_api}/bin/supervisorctl
 %{_venv_root_api}/bin/supervisord
-%{_venv_root_api}/bin/contrail-nodemgr
 %{_venv_root_api}/archive/supervisor-3.0b2.tar.gz
 %{_venv_root_control}%{_pysitepkg}/supervisor
 %{_venv_root_control}%{_pysitepkg}/supervisor-*
@@ -238,7 +232,6 @@ install -p -m 755 %{_helper} %{buildroot}%{_bindir}/contrail-nodemgr
 %{_venv_root_control}/bin/pidproxy
 %{_venv_root_control}/bin/supervisorctl
 %{_venv_root_control}/bin/supervisord
-%{_venv_root_control}/bin/contrail-nodemgr
 %{_venv_root_control}/archive/supervisor-3.0b2.tar.gz
 %{_venv_root_vrouter}%{_pysitepkg}/supervisor
 %{_venv_root_vrouter}%{_pysitepkg}/supervisor-*
@@ -250,7 +243,6 @@ install -p -m 755 %{_helper} %{buildroot}%{_bindir}/contrail-nodemgr
 %{_venv_root_vrouter}/bin/pidproxy
 %{_venv_root_vrouter}/bin/supervisorctl
 %{_venv_root_vrouter}/bin/supervisord
-%{_venv_root_vrouter}/bin/contrail-nodemgr
 %{_venv_root_vrouter}/archive/supervisor-3.0b2.tar.gz
 %changelog
 * Mon Jul 22 2013 Chandan Mishra <cdmishra@juniper.net> - config-1
