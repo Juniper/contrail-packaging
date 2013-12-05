@@ -19,6 +19,9 @@ cd /opt/contrail/contrail_install_repo; tar xvzf /opt/contrail/contrail_packages
 # create shell scripts and put to bin
 cp /opt/contrail/contrail_packages/helpers/* /opt/contrail/bin/
 
+# Remove any existing rpm of python-crypto
+yum -y --disablerepo=* remove python-crypto
+
 #Install basic packages 
 yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-setup contrail-fabric-utils python-pip
 pip-python install /opt/contrail/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz
