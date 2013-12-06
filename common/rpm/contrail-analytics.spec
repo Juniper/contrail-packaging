@@ -200,6 +200,9 @@ install -p -m 755 %{_distropkgdir}/sentinel.conf %{buildroot}%{_contrailetc}/sen
 rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/gen_py/__init__.*
 rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/bottle.py*
 
+# install nodemgr
+install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
+
 %post
 %if 0%{?fedora} >= 17
 chmod -R 777 /var/log/contrail
@@ -282,6 +285,7 @@ fi
 %if 0%{?fedora} >= 17
 %{_servicedir}/supervisor-analytics.service
 %endif
+%{_venv_root}/bin/contrail-nodemgr
 
 %changelog
 

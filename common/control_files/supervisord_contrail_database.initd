@@ -1,0 +1,54 @@
+#!/bin/sh
+
+# chkconfig: 2345 99 01
+# description: Supervisord instance for Contrail Database Package
+
+ulimit -c unlimited
+. /etc/init.d/functions
+
+PID_FILE=/var/run/supervisord_contrail_database.pid
+
+function daemon_start() {
+     echo  -n "Starting Supervisor Daemon for Contrail Database Package"
+     /usr/bin/supervisord -c /etc/contrail/supervisord_contrail_database.conf
+     RETVAL=$?
+     [ $RETVAL -eq 0 ] && success || failure
+}
+
+function daemon_stop() {
+    /usr/bin/supervisorctl -s http://localhost:9007 stop all
+    /usr/bin/supervisorctl -s http://localhost:9007 shutdown
+    if [ -f $PID_FILE ]; then
+        kill `cat $PID_FILE`
+        rm -f $PID_FILE
+    fi
+}
+
+daemon_status() {
+    status -p $PID_FILE supervisord
+}
+
+daemon_status_q() {
+    daemon_status >/dev/null 2>&1
+}
+
+case $1 in
+     start)
+     daemon_status_q && exit 0
+     daemon_start
+     ;;
+
+     stop)
+     daemon_status_q || exit 0
+     daemon_stop
+     ;;
+
+     restart)
+     daemon_stop
+     daemon_start
+     ;;
+
+     status)
+        daemon_status
+     ;;
+esac

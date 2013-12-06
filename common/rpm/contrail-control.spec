@@ -81,6 +81,7 @@ install -d -m 755 %{buildroot}%{_contrailetc}
 install -d -m 755 %{buildroot}%{_contrailcontrol}
 install -d -m 755 %{buildroot}%{_supervisordir}
 install -d -m 755 %{buildroot}%{_venv_root}
+install -d -m 755 %{buildroot}%{_venv_root}/bin
 
 pushd %{_builddir}/..
 
@@ -108,7 +109,7 @@ install -p -m 755 %{_distropkgdir}/contrail-control.ini %{buildroot}%{_superviso
  
 install -D -m 644 %{_distropkgdir}/control_param %{buildroot}/etc/contrail/control_param
 install -p -m 755 %{_distropkgdir}/contrail-control.rules %{buildroot}%{_supervisordir}/contrail-control.rules
-
+install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
 
 # install pysandesh files
 %define _build_dist %{_builddir}/../build/debug
@@ -159,7 +160,7 @@ popd
 %endif
 
 %config(noreplace) /etc/contrail/control_param
-
+%{_venv_root}/bin/contrail-nodemgr
 
 %post
 (umask 007; /bin/echo "HOSTNAME=$(hostname)" >> /etc/contrail/control_param)

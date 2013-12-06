@@ -184,10 +184,18 @@ contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
 	rpmbuild $(RPMBLDOPTS) contrail-install-packages.spec  $(G_TAG)
 
+contrail-database: $(PREP)
+	@echo making rpm for contrail-database
+	cp contrail-database.spec $(BUILD_BASE)/SPECS/
+	cp ../control_files/contrail-database.initd $(BUILD_SRC)/
+	cp ../control_files/supervisord_contrail_database.conf $(BUILD_SRC)/
+	cp ../control_files/supervisord_contrail_database.initd $(BUILD_SRC)/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-database.spec $(G_TAG)
 
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
-	contrail-setup contrail-openstack-all contrail-webui contrail-nodejs venv-packages
+	contrail-setup contrail-openstack-all contrail-webui contrail-nodejs venv-packages \
+	contrail-database
 
 clean:
 	@echo clean

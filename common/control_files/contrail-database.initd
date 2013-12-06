@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# chkconfig: 2345 99 01
+# description: Juniper Network Virtualization Collector
+
+supervisorctl -s http://localhost:9007 ${1} `basename ${0}`

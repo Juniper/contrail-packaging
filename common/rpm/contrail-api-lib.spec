@@ -104,16 +104,17 @@ popd
 %post
 
 if [ -f /opt/contrail/api-venv/bin/activate ] ; then
-   source /opt/contrail/api-venv/bin/activate && pip install --upgrade %{_api_venv_archv}/vnc_api-0.1dev.tar.gz %{_api_venv_archv}/cfgm_common-0.1dev.tar.gz
+   source /opt/contrail/api-venv/bin/activate
+   pip install --upgrade --index-url "" --no-deps %{_api_venv_archv}/vnc_api-0.1dev.tar.gz %{_api_venv_archv}/cfgm_common-0.1dev.tar.gz %{_api_venv_archv}/discoveryclient-0.1dev.tar.gz
+   deactivate
 fi
 
 if [ -f /opt/contrail/analytics-venv/bin/activate ] ; then
-   source /opt/contrail/analytics-venv/bin/activate && pip install --upgrade %{_anl_venv_archv}/vnc_api-0.1dev.tar.gz %{_anl_venv_archv}/cfgm_common-0.1dev.tar.gz
+   source /opt/contrail/analytics-venv/bin/activate
+   pip install --upgrade --index-url "" --no-deps %{_anl_venv_archv}/vnc_api-0.1dev.tar.gz %{_anl_venv_archv}/cfgm_common-0.1dev.tar.gz
+   deactivate
 fi
 
-if [ -f /opt/contrail/api-venv/bin/activate ] ; then
-   source /opt/contrail/api-venv/bin/activate && pip install --upgrade %{_api_venv_archv}/discoveryclient-0.1dev.tar.gz %{_api_venv_archv}/discoveryclient-0.1dev.tar.gz
-fi
 
 %changelog
 * Mon Dec 17 2012 Pedro Marques <roque@build01> - config-1

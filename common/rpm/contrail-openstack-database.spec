@@ -25,7 +25,6 @@ Requires: contrail-api-lib
 Requires: contrail-analytics
 Requires: openstack-quantum-contrail
 Requires: contrail-setup
-Requires: java-1.7.0-openjdk
 
 %description
 Contrail Package Requirements for Contrail Database

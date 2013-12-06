@@ -104,14 +104,6 @@ all-openstack-client: $(PREP) cinderclient glanceclient keystoneclient novaclien
 
 
 # Other 3rd party packages
-cassandra: $(PREP)
-	@echo making rpm for cassandra
-	cp contrail-database.spec $(DISTRO_SRCDIR)/cassandra/ && \
-	cd $(DISTRO_SRCDIR)/cassandra && \
-	cp `grep '^Source[1-9]\+:' contrail-database.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb contrail-database.spec $(G_TAG)
-
 contrail-fabric-utils:
 	@echo making rpm for contrail-fabric-utils
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
@@ -215,7 +207,7 @@ zookeeper: $(PREP)
 	cp $(DISTRO_SRCDIR)/zookeeper/build/contrib/zkpython/*[0-9].rpm $(BUILD_BASE)/RPMS/x86_64/
 
 
-all: $(PREP) all-openstack-client cassandra contrail-fabric-utils euca2ools hiredis-py \
+all: $(PREP) all-openstack-client contrail-fabric-utils euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
 	libvirt puppet python-bitarray python-geventhttpclient python-pycassa python-thrift \
 	redis-py supervisor webob xmltodict zookeeper
