@@ -68,19 +68,19 @@ BuildRequires:  gcc
 
 
 %build
-scons -U src/analytics
+scons -U src/analytics:vizd
 if [ $? -ne 0 ] ; then
     echo " analytics build failed"
     exit -1
 fi
 
-scons -U src/query_engine
+scons -U src/query_engine:qed
 if [ $? -ne 0 ] ; then
     echo " analytics query engine build failed"
     exit -1
 fi
 
-scons -U src/opserver
+scons -U src/opserver:opserver
 if [ $? -ne 0 ] ; then
     echo " opserver build failed"
     exit -1
@@ -91,13 +91,13 @@ if [ $? -ne 0 ] ; then
     exit -1
 fi
 pushd %{_builddir}/../tools/
-scons -U sandesh/library/python
+scons -U sandesh/library/python:pysandesh
 popd
 if [ $? -ne 0 ] ; then
     echo " sandesh python build failed"
     exit -1
 fi
-scons -U src/discovery
+scons -U src/discovery:discovery
 if [ $? -ne 0 ] ; then
     echo " discovery build failed"
     exit -1
