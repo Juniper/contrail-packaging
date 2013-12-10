@@ -15,6 +15,7 @@ import logging
 from fabric.api import local,env
 from fabric.operations import get, put, run
 from fabric.context_managers import lcd, settings, cd
+import packages
 
 printlog = logging.getLogger('nightly')
 form = '%(asctime)-15s::%(lineno)s::%(funcName)s::  %(message)s'
@@ -26,16 +27,6 @@ fh.setFormatter(formatter)
 printlog.addHandler(sh)
 printlog.addHandler(fh)
 printlog.setLevel(logging.INFO)
-
-import packages
-DISTRO = packages.find_distro()
-if 'el' in DISTRO:
-    from centos.base import packages as base_pkgs
-    BASE_PKGS = base_pkgs[DISTRO]
-elif 'fc' in DISTRO:
-    from fedora.base import packages as base_pkgs
-    BASE_PKGS = base_pkgs[DISTRO]
-
 
 class CommonUtil (object):
     def getstatusoutput(self, cmd):
@@ -149,7 +140,7 @@ class Repo (CommonUtil):
 
         
 class NightlyBuilder (CommonUtil):
-    __package_list = [
+    package_list = [
         Repo ('nova', "ssh://git@bitbucket.org/contrail_admin/nova",
             ["openstack-nova-cert", "openstack-nova-objectstore",
              "openstack-nova-scheduler", "openstack-nova-api", "python-nova",
@@ -262,12 +253,12 @@ class NightlyBuilder (CommonUtil):
 
     def _build_rpms (self):
         s = []
-        for p in self.__package_list:
+        for p in self.package_list:
             s += filter (self._dist_filter, p.pkgs)
         return s
 
     def repos (self):
-        for i in self.__package_list:
+        for i in self.package_list:
             yield i
 
     def find_repo_by_pkg (self, name):
@@ -377,7 +368,7 @@ class NightlyBuilder (CommonUtil):
                     printlog.info('Nothing to build, consider -a to build all')
                     sys.exit (3)
         elif self.args.all or self.args._id:
-            self.build_targets |= set (self.__package_list)
+            self.build_targets |= set (self.package_list)
 
         bl = list (self.build_targets)
         fl = []
@@ -762,6 +753,13 @@ class NightlyBuilder (CommonUtil):
             raise IOError, 'Error on %d packages:\n%s' % (cnt, err)
 
 if __name__ == '__main__':
+    DISTRO = packages.find_distro()
+    if 'el' in DISTRO:
+        from centos.base import packages as base_pkgs
+        BASE_PKGS = base_pkgs[DISTRO]
+    elif 'fc' in DISTRO:
+        from fedora.base import packages as base_pkgs
+        BASE_PKGS = base_pkgs[DISTRO]
+
     nb = NightlyBuilder (' '.join (sys.argv[1:]))
     nb.build ()
-
