@@ -74,7 +74,7 @@ scons -U src/config/api-server
 scons -U src/config/schema-transformer
 scons -U src/config/svc-monitor
 pushd %{_builddir}/../tools/
-scons -U sandesh/library/python
+scons -U sandesh/library/python:pysandesh
 popd
 scons -U src/discovery
 
