@@ -15,7 +15,6 @@ import logging
 from fabric.api import local,env
 from fabric.operations import get, put, run
 from fabric.context_managers import lcd, settings, cd
-import packages
 
 printlog = logging.getLogger('nightly')
 form = '%(asctime)-15s::%(lineno)s::%(funcName)s::  %(message)s'
@@ -246,7 +245,7 @@ class NightlyBuilder (CommonUtil):
 
     def _dist_filter (self, rpm):
     	dist = platform.dist()[0]
-    	if  dist == 'centos':
+    	if  dist == 'centos' or dist == 'redhat':
     	    if rpm in ('ixgbe', ):
     	    	return False
     	return rpm not in self.cache_rpms
@@ -753,13 +752,19 @@ class NightlyBuilder (CommonUtil):
             raise IOError, 'Error on %d packages:\n%s' % (cnt, err)
 
 if __name__ == '__main__':
-    DISTRO = packages.find_distro()
-    if 'el' in DISTRO:
+    DISTRO = platform.dist()[0]
+    if 'centos' in DISTRO:
+        import packages
         from centos.base import packages as base_pkgs
-        BASE_PKGS = base_pkgs[DISTRO]
-    elif 'fc' in DISTRO:
+    elif 'fedora' in DISTRO:
+        import packages
         from fedora.base import packages as base_pkgs
-        BASE_PKGS = base_pkgs[DISTRO]
+    elif 'redhat' in DISTRO:
+        import redhat.dependent as packages
+        from redhat.base import packages as base_pkgs
+    rel = packages.find_distro()
+    BASE_PKGS = base_pkgs[rel]
+
 
     nb = NightlyBuilder (' '.join (sys.argv[1:]))
     nb.build ()
