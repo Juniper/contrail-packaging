@@ -89,7 +89,7 @@ popd
 %if 0%(if [ "%{dist}" != ".xen" ]; then echo 1; fi)
 scons -U src/sandesh/common
 pushd %{_builddir}/../tools/
-scons -U sandesh/library/python
+scons -U sandesh/library/python:pysandesh
 popd
 scons -U src/discovery
 scons -U --target=%{_target_cpu} ${OPT_KERNEL} src/vnsw/agent/uve

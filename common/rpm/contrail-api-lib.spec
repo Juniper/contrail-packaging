@@ -55,7 +55,7 @@ scons -U src/api-lib
 scons -U src/config/common
 scons -U src/discovery/client
 pushd %{_builddir}/../tools/
-scons -U sandesh/library/python
+scons -U sandesh/library/python:pysandesh
 popd
 
 %define _build_dist %{_builddir}/../build/debug

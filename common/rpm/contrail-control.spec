@@ -65,7 +65,7 @@ fi
 %build
 scons -U src/sandesh/common
 pushd %{_builddir}/../tools/
-scons -U sandesh/library/python
+scons -U sandesh/library/python:pysandesh
 popd
 scons -U src/discovery
 scons -U src/control-node
