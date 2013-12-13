@@ -707,8 +707,12 @@ class NightlyBuilder (CommonUtil):
         err, cnt = '', 0
         dist = packages.find_distro ()
         for pkg in self.cache_rpms:
-            filename = os.path.join (self.args.cache, 
-                            packages.packages[pkg][dist]['filename'])
+            try:
+                filename = os.path.join(self.args.cache,
+                                        packages.packages[pkg][dist]['filename'])
+            except KeyError:
+                filename = os.path.join(self.args.cache,
+                                        BASE_PKGS[pkg]['filename'])
             if os.path.isfile (filename):
                 shutil.copy (filename, linkpath)
                 printlog.info('copying %s ...' % filename)
