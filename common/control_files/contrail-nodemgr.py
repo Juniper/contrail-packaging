@@ -233,11 +233,15 @@ class EventManager:
 
             # check for process state change events
             if headers['eventname'].startswith("PROCESS_STATE"):
-                self.stderr.write("process:" + pheaders['processname'] + "," + "eventname:" + headers['eventname'] + '\n')
-                self.send_process_state(pheaders['processname'], headers['eventname'], pheaders, sandeshconn)
+                self.stderr.write("process:" + pheaders['processname'] + "," + "groupname:" + pheaders['groupname'] + "," + "eventname:" + headers['eventname'] + '\n')
+                pname = pheaders['processname']
+                if (pheaders['processname'] != pheaders['groupname']):
+                    pname = pheaders['groupname'] + ":" + pheaders['processname']
+                    
+                self.send_process_state(pname, headers['eventname'], pheaders, sandeshconn)
                 for rules in self.rules_data['Rules']:
                     if 'processname' in rules:
-                        if ((rules['processname'] == pheaders['processname']) and (rules['process_state'] == headers['eventname'])):
+                        if ((rules['processname'] == pheaders['groupname']) and (rules['process_state'] == headers['eventname'])):
                             self.stderr.write("got a hit with:" + str(rules) + '\n')
                             # do not make async calls
                             #cmd_and_args = ['/usr/bin/bash', '-c' , rules['action']]
