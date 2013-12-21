@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 
+import sys
 import github
 from lxml import etree as ET
 import base64
@@ -34,7 +35,12 @@ agh = github.Github('mganley', '83236c3a4678abeda0cf2235552cac8a6b75ab9f')
 # print contentFile.encoding
 
 # Now parse the manifest.xml file.
-root = ET.parse("manifest.xml").getroot()
+# Should be the first (and only) argument
+if len(sys.argv) < 2:
+	print "usage: fix-manifest.py <manifest.xml filename>"
+	exit(1)
+
+root = ET.parse(str(sys.argv[1])).getroot()
 
 for demo in root.iter('project'):
 	reponame = demo.get('name')
