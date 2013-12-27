@@ -148,7 +148,17 @@ libvirt:
 		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
 		-ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
 	fi
-	
+
+ixgbe-debuginfo: ixgbe
+ixgbe: $(PPREP)
+	@echo making rpm for ixgbe
+	@echo "Distro is $(DISTRO)"
+	if [ "$(DISTRO)" == "Fedora" ]; then \
+		cd $(BUILD_BASE)/SOURCES && cp -ar $(DISTRO_SRCDIR)/ixgbe/* . && \
+		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+		-bb ixgbe.spec $(G_TAG); \
+	fi
+
 puppet: $(PREP)
 	@echo making rpm for puppet
 	rpmbuild $(RPMBLDOPTS) puppet.spec $(G_TAG)
