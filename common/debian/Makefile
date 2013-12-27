@@ -3,7 +3,8 @@ SB_TOP := $(PWD:/tools/packaging/common/debian=)
 VENV_SPEC_DIR := $(SB_TOP)/distro/python-venv-packaging/DEBIAN
 
 VENV = contrail-api-venv
-PACKAGES = contrail-libs-deb contrail-vrouter-deb contrail-config-deb
+PACKAGES = contrail-libs-deb contrail-vrouter-deb contrail-config-deb \
+	contrail-control-deb
 
 all: ${PACKAGES} ${VENV}
 	echo "Build complete"
