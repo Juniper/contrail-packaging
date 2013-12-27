@@ -119,7 +119,9 @@ install -d -m 755 %{buildroot}%{_servicedir}
 %endif
 
 %if 0%{?fedora} >= 17
+pushd %{_builddir}/..
 install -p -m 755 %{_distropkgdir}/supervisor-analytics.service          %{buildroot}%{_servicedir}/supervisor-analytics.service
+popd
 %endif
 install -d -m 755 %{buildroot}%{_initddir}
 
