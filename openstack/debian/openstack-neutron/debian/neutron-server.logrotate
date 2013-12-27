@@ -1,0 +1,7 @@
+/var/log/neutron/server.log {
+    daily
+    missingok
+    compress
+    delaycompress
+    notifempty
+}

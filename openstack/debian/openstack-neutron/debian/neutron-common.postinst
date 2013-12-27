@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -e 
+
+if [ "$1" = "configure" ]
+then
+	if ! getent group neutron > /dev/null 2>&1
+	then
+		addgroup --system neutron >/dev/null
+	fi
+	if ! getent passwd neutron > /dev/null 2>&1
+	then
+		adduser --system --home /var/lib/neutron --ingroup neutron --no-create-home --shell /bin/false neutron
+	fi
+	chown -R neutron:neutron /var/lib/neutron/
+
+	chown -R neutron:adm /var/log/neutron/ 
+	chmod 0750 /var/log/neutron/
+
+    chown -R root:neutron /etc/neutron/
+    chmod 0750 /etc/neutron/
+	chown root:root /etc/neutron/rootwrap.conf
+	chown -R root:root /etc/neutron/rootwrap.d
+	chmod 0755 /etc/neutron/rootwrap.d
+
+	if [ -f /etc/sudoers.d/neutron_sudoers ] ; then
+		chmod 0440 /etc/sudoers.d/neutron_sudoers
+	fi
+fi
+
+#DEBHELPER#
