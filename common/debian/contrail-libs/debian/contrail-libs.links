@@ -1,0 +1,10 @@
+/usr/lib64/contrail/libtbb_debug.so.2 /usr/lib64/contrail/libtbb_debug.so
+/usr/lib64/contrail/libthriftasio.so.0.0.0 /usr/lib64/contrail/libthriftasio.so.0
+/usr/lib64/contrail/libthriftasio.so.0.0.0 /usr/lib64/contrail/libthriftasio.so
+/usr/lib64/contrail/libboost_program_options.so.1.48.0 /usr/lib64/contrail/libboost_program_options.so
+/usr/lib64/contrail/libboost_filesystem.so.1.48.0 /usr/lib64/contrail/libboost_filesystem.so
+/usr/lib64/contrail/libboost_regex.so.1.48.0 /usr/lib64/contrail/libboost_regex.so
+/usr/lib64/contrail/libboost_system.so.1.48.0 /usr/lib64/contrail/libboost_system.so
+/usr/lib64/contrail/libboost_python.so.1.48.0 /usr/lib64/contrail/libboost_python.so
+/usr/lib64/contrail/liblog4cplus-1.1.so.7.0.0 /usr/lib64/contrail/liblog4cplus-1.1.so.7
+/usr/lib64/contrail/liblog4cplus-1.1.so.7.0.0 /usr/lib64/contrail/liblog4cplus-1.1.so
