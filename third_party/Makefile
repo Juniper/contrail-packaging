@@ -17,6 +17,7 @@ THIRDPARTY_DIR      := $(CPLANE_GIT_ROOT)/../third_party
 THIRDPARTY_PKGDIR   := $(CPLANE_GIT_ROOT)/../tools/packaging/third_party
 RPM_PY              := --define "__python $(LOCAL_PY)"
 DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu" /etc/issue)
+RPMBLDOPTS          := --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' -bb
 PREP = prep
 PPREP = pprep
 
@@ -60,43 +61,37 @@ cinderclient: package-python-cinderclient
 python-cinderclient: package-python-cinderclient
 package-python-cinderclient:
 	@echo making rpm for package-python-cinderclient
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb python-cinderclient.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) python-cinderclient.spec $(G_TAG)
 
 glanceclient: package-python-glanceclient
 python-glanceclient: package-python-glanceclient
 package-python-glanceclient:
 	@echo making rpm for package-python-glanceclient
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb python-glanceclient.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) python-glanceclient.spec $(G_TAG)
 
 keystoneclient: package-python-keystoneclient
 python-keystoneclient: package-python-keystoneclient
 package-python-keystoneclient:
 	@echo making rpm for package-python-keystoneclient
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb python-keystoneclient.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) python-keystoneclient.spec $(G_TAG)
 
 novaclient: package-python-novaclient
 python-novaclient: package-python-novaclient
 package-python-novaclient:
 	@echo making rpm for package-python-novaclient
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb python-novaclient.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) python-novaclient.spec $(G_TAG)
 
 quantumclient:package-python-quantumclient
 python-quantumclient:package-python-quantumclient
 package-python-quantumclient:
 	@echo making rpm for package-python-quantumclient
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb python-quantumclient.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) python-quantumclient.spec $(G_TAG)
 
 swiftclient: package-python-swiftclient
 python-swiftclient: package-python-swiftclient
 package-python-swiftclient:
 	@echo making rpm for package-python-swiftclient
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb python-swiftclient.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) python-swiftclient.spec $(G_TAG)
 
 all-openstack-client: $(PREP) cinderclient glanceclient keystoneclient novaclient quantumclient \
 	swiftclient
@@ -106,31 +101,25 @@ all-openstack-client: $(PREP) cinderclient glanceclient keystoneclient novaclien
 # Other 3rd party packages
 contrail-fabric-utils:
 	@echo making rpm for contrail-fabric-utils
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb fabric-utils.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) fabric-utils.spec $(G_TAG)
 
 euca2ools:
 	@echo making rpm for euca2ools
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb euca2ools.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) euca2ools.spec $(G_TAG)
 
 hiredis-py: $(PREP) $(LOCAL_PY)
 	@echo making rpm for hiredis-py
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb hiredis-py.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) hiredis-py.spec $(G_TAG) $(RPM_PY)
 
 ifmap-server:
 	@echo making rpm for ifmap-server
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb irond.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) irond.spec $(G_TAG)
 
 python-boto:
 	@echo making rpm for python-boto
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb boto.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) boto.spec $(G_TAG)
 
-# NOTE: Removed the Fedora stuff. Only CentOS here. Need to add that back
-# Also, the patch thing should get out of here
+
 libvirt-client: libvirt
 libvirt-devel: libvirt
 libvirt-lock-sanlock: libvirt
@@ -139,65 +128,63 @@ libvirt-debuginfo: libvirt
 libvirt:
 	@echo making rpm for libvirt
 	@echo "Distro is $(DISTRO)"
-	cp $(THIRDPARTY_DIR)/libvirt/libvirt-0.10.2-18.el6.src.rpm $(BUILD_BASE)/SOURCES/ && \
-	cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.patch  $(BUILD_BASE)/SOURCES/ && \
-	cd $(BUILD_BASE)/SOURCES && \
-	rpm --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
-	-i libvirt-0.10.2-18.el6.src.rpm && \
-	cd $(BUILD_BASE)/SPECS && \
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
-	-bp libvirt.spec && \
-	cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch  $(BUILD_BASE)/SPECS/ && \
-	patch -p0 -i $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch && \
-	cd $(THIRDPARTY_DIR) && \
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
-	-ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG)
+	if [ "$(DISTRO)" == "Fedora" ]; then \
+		[ -d $(BUILD_BASE)/SOURCES/libvirt ] || mkdir -p $(BUILD_BASE)/SOURCES/libvirt && \
+		cd $(BUILD_BASE)/SOURCES/libvirt && cp -ar $(DISTRO_SRCDIR)/libvirt-0.9.12 . && \
+		cd libvirt-0.9.12 && ./configure --localstatedir=/var && \
+		$(MAKE) $(MFLAGS) dist && \
+		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(PKGBLDDIR)' -ta libvirt-0.9.12.tar.gz ; \
+	else cp $(THIRDPARTY_DIR)/libvirt/libvirt-0.10.2-18.el6.src.rpm $(BUILD_BASE)/SOURCES/ && \
+		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.patch  $(BUILD_BASE)/SOURCES/ && \
+		cd $(BUILD_BASE)/SOURCES && \
+		rpm --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+		-i libvirt-0.10.2-18.el6.src.rpm && \
+		cd $(BUILD_BASE)/SPECS && \
+		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+		-bp libvirt.spec && \
+		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch  $(BUILD_BASE)/SPECS/ && \
+		patch -p0 -i $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch && \
+		cd $(THIRDPARTY_DIR) && \
+		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+		-ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
+	fi
 	
 puppet: $(PREP)
 	@echo making rpm for puppet
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb puppet.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) puppet.spec $(G_TAG)
 
 python-bitarray: $(PREP) $(LOCAL_PY)
 	@echo making rpm for python-bitarray
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb python-bitarray.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) python-bitarray.spec $(G_TAG) $(RPM_PY)
 
 python-geventhttpclient: $(PREP) $(LOCAL_PY)
 	@echo making rpm for python-geventhttpclient
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb python-geventhttpclient.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) python-geventhttpclient.spec $(G_TAG) $(RPM_PY)
 
 python-pycassa: $(PREP) $(LOCAL_PY)
 	@echo making rpm for python-pycassa
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb python-pycassa.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) python-pycassa.spec $(G_TAG) $(RPM_PY)
 
 python-thrift: $(PREP)
 	@echo making rpm for python-thrift
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb python-thrift.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) python-thrift.spec $(G_TAG)
 
 redis-py: $(PREP) $(LOCAL_PY)
 	@echo making rpm for redis-py
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb redis-py.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) redis-py.spec $(G_TAG) $(RPM_PY)
 
 supervisor: $(PREP) $(LOCAL_PY)
 	@echo making rpm for supervisor
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb supervisor.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) supervisor.spec $(G_TAG) $(RPM_PY)
 
 webob:
 	@echo making rpm for webob
 	cp $(THIRDPARTY_DIR)/webob/WebOb-1.2.3.tar.gz $(BUILD_BASE)/SOURCES/ && \
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
-	-bb python-webob.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) python-webob.spec $(G_TAG)
 
 xmltodict: $(PREP)
 	@echo making rpm for xmltodict
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' \
-	-bb xmltodict.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) xmltodict.spec $(G_TAG)
 
 zookeeper: $(PREP)
 	@echo making rpm for zookeeper
