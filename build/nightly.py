@@ -207,10 +207,6 @@ class NightlyBuilder (CommonUtil):
         Repo ("contrail-fabric-utils",
             "ssh://git@bitbucket.org/contrail_admin/fabric-utils.git",
             ["contrail-fabric-utils"]),
-        Repo ("libvirt",
-            "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
-            ["libvirt", 'libvirt-client',
-             'libvirt-python', 'libvirt-debuginfo']),
         Repo ("ixgbe",
             "ssh://git@bitbucket.org/contrail_admin/ixgbe.git",
             ["ixgbe"]),
@@ -222,6 +218,17 @@ class NightlyBuilder (CommonUtil):
             ["python-boto"],
             branch='2.12.0'),
     ]
+    if 'fedora' in platform.dist()[0]:
+        package_list.append(Repo ("libvirt",
+            "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
+            ["libvirt", 'libvirt-client', 'libvirt-python',
+             'libvirt-debuginfo', 'libvirt-daemon',
+             'libvirt-daemon-config-nwfilter', 'libvirt-daemon-config-network']))
+    else:
+        package_list.append(Repo ("libvirt",
+            "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
+            ["libvirt", 'libvirt-client', 'libvirt-python',
+             'libvirt-debuginfo']))
 
     def __init__ (self, args = ''):
         if not isinstance(args, str):
