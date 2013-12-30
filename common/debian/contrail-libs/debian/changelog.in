@@ -1,0 +1,6 @@
+contrail-libs (BUILDTAG) swamy; urgency=low
+
+  [swamy ]
+  * debian/changelog: changelog
+
+ -- swamy <swamy@juniper.net>  Wed, 19 Jun 2013 13:00:11 -0500

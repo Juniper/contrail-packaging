@@ -1,0 +1,6 @@
+contrail-config (BUILDTAG) amoghe; urgency=low
+
+  [amoghe ]
+  * debian/changelog: changelog
+
+ -- amoghe <amoghe@juniper.net>  Wed, 16 Oct 2013 13:00:11 +0800

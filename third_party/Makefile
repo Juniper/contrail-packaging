@@ -207,7 +207,7 @@ zookeeper: $(PREP)
 all: $(PREP) all-openstack-client contrail-fabric-utils euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
 	libvirt puppet python-bitarray python-geventhttpclient python-pycassa python-thrift \
-	redis-py supervisor webob xmltodict zookeeper
+	redis-py supervisor webob xmltodict zookeeper ixgbe
 
 clean:
 	@echo clean
