@@ -156,16 +156,6 @@ class NightlyBuilder (CommonUtil):
             ["openstack-glance", "python-glance", "openstack-glance-doc"]),
         Repo ("keystone", "ssh://git@bitbucket.org/contrail_admin/keystone",
             ["openstack-keystone", "python-keystone"]),
-        Repo ("ctrlplane",
-            "ssh://git@bitbucket.org/contrail_admin/ctrlplane",
-            ['contrail-config', 'contrail-control', 'contrail-dns', 'contrail-libs',
-            'python-bitarray', 'xmltodict', 'redis-py', 'hiredis-py', 'contrail-webui',
-            'contrail-nodejs', 'contrail-vrouter', 'contrail-interface-name', 'contrail-analytics',
-            'contrail-setup', 'python-pycassa',
-            'python-thrift', 'supervisor', 'contrail-openstack-analytics', 'contrail-openstack-config',
-            'contrail-openstack', 'contrail-openstack-control', 'contrail-openstack-vrouter',
-            'contrail-openstack-storage',
-            'contrail-openstack-webui', 'contrail-api-lib', 'contrail-api-extension', 'contrail-openstack-database']),
         Repo ("packaging", "ssh://git@bitbucket.org/contrail_admin/packaging",
             ["contrail-api-venv", "contrail-analytics-venv", "contrail-control-venv", "contrail-vrouter-venv", "contrail-database-venv"]),
         Repo ("horizon", "ssh://git@bitbucket.org/contrail_admin/horizon",
@@ -219,16 +209,39 @@ class NightlyBuilder (CommonUtil):
             branch='2.12.0'),
     ]
     if 'fedora' in platform.dist()[0]:
-        package_list.append(Repo ("libvirt",
-            "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
-            ["libvirt", 'libvirt-client', 'libvirt-python',
-             'libvirt-debuginfo', 'libvirt-daemon',
-             'libvirt-daemon-config-nwfilter', 'libvirt-daemon-config-network']))
+        package_list.append(
+            Repo ("libvirt",
+                "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
+                ["libvirt", 'libvirt-client', 'libvirt-python',
+                 'libvirt-debuginfo', 'libvirt-daemon',
+                 'libvirt-daemon-config-nwfilter', 'libvirt-daemon-config-network']))
+        package_list.append(
+            Repo ("ctrlplane",
+                "ssh://git@bitbucket.org/contrail_admin/ctrlplane",
+                ['contrail-config', 'contrail-control', 'contrail-dns', 'contrail-libs',
+                'python-bitarray', 'xmltodict', 'redis-py', 'hiredis-py', 'contrail-webui',
+                'contrail-nodejs', 'contrail-vrouter', 'contrail-interface-name', 'contrail-analytics',
+                'contrail-setup', 'python-pycassa',
+                'python-thrift', 'supervisor', 'contrail-openstack-analytics', 'contrail-openstack-config',
+                'contrail-openstack', 'contrail-openstack-control', 'contrail-openstack-vrouter',
+                'contrail-openstack-webui', 'contrail-api-lib', 'contrail-api-extension', 'contrail-openstack-database']))
     else:
-        package_list.append(Repo ("libvirt",
-            "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
-            ["libvirt", 'libvirt-client', 'libvirt-python',
-             'libvirt-debuginfo']))
+        package_list.append(
+            Repo ("libvirt",
+                 "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
+                ["libvirt", 'libvirt-client', 'libvirt-python',
+                 'libvirt-debuginfo']))
+        package_list.append(
+            Repo ("ctrlplane",
+                "ssh://git@bitbucket.org/contrail_admin/ctrlplane",
+                ['contrail-config', 'contrail-control', 'contrail-dns', 'contrail-libs',
+                'python-bitarray', 'xmltodict', 'redis-py', 'hiredis-py', 'contrail-webui',
+                'contrail-nodejs', 'contrail-vrouter', 'contrail-interface-name', 'contrail-analytics',
+                'contrail-setup', 'python-pycassa',
+                'python-thrift', 'supervisor', 'contrail-openstack-analytics', 'contrail-openstack-config',
+                'contrail-openstack', 'contrail-openstack-control', 'contrail-openstack-vrouter',
+                'contrail-openstack-storage',
+                'contrail-openstack-webui', 'contrail-api-lib', 'contrail-api-extension', 'contrail-openstack-database']))
 
     def __init__ (self, args = ''):
         if not isinstance(args, str):
