@@ -140,14 +140,12 @@ install -D -m 644 %{_distropkgdir}/discovery.conf %{buildroot}%{_sysconfdir}/con
 %if 0%{?fedora} >= 17
 install -D -m 644 %{_distropkgdir}/supervisor-config.service %{buildroot}/usr/lib/systemd/system/supervisor-config.service
 %endif
-%if 0%{?rhel}
 install -D -m 755 %{_distropkgdir}/supervisor-config.initd %{buildroot}%{_initddir}/supervisor-config
 install -D -m 755 %{_distropkgdir}/contrail-api.initd.supervisord %{buildroot}%{_initddir}/contrail-api
 install -D -m 755 %{_distropkgdir}/contrail-discovery.initd.supervisord %{buildroot}%{_initddir}/contrail-discovery
 install -D -m 755 %{_distropkgdir}/contrail-zookeeper.initd.supervisord %{buildroot}%{_initddir}/contrail-zookeeper
 install -D -m 755 %{_distropkgdir}/contrail-schema.initd.supervisord %{buildroot}%{_initddir}/contrail-schema
 install -D -m 755 %{_distropkgdir}/contrail-svc-monitor.initd.supervisord %{buildroot}%{_initddir}/contrail-svc-monitor
-%endif
 install -p -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
 install -p -m 755 %{_distropkgdir}/redis_config.conf %{buildroot}%{_sysconfdir}/contrail/
