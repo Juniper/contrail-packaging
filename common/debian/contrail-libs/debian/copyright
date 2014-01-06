@@ -1,0 +1,6 @@
+Name:     contrail-libs
+Maintainer: swamy <swamy@juniper.net>
+License:  Apache 2.0
+Files: *
+Copyright (c) 2013 Juniper Networks, Inc. All rights reserved.
+

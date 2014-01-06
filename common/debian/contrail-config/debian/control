@@ -1,0 +1,14 @@
+Source: contrail-config
+Maintainer: amoghe <amoghe@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends: debhelper (>= 8)
+
+Package: contrail-config
+Architecture: all
+Maintainer: amoghe <amoghe@juniper.net>
+Depends: python-bitarray, python-gevent, python-keystone, python-requests, python-zope.interface, ifmap-server, zookeeper, python-zookeeper, redis-server, python-redis, supervisor, contrail-api-venv
+Section: contrail-config
+Priority: extra
+Description: Contrail Config package

@@ -148,7 +148,9 @@ contrail-openstack-webui: $(PREP)
 
 contrail-openstack-storage: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-openstack-storage
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-storage.spec $(G_TAG) $(RPM_PY)
+	if [ "$(DISTRO)" == "CentOS" ]; then \
+		rpmbuild $(RPMBLDOPTS) contrail-openstack-storage.spec $(G_TAG) $(RPM_PY); \
+	fi
 
 contrail-openstack-all: contrail-openstack contrail-openstack-analytics contrail-openstack-config \
 	contrail-openstack-control contrail-openstack-database contrail-openstack-vrouter \
