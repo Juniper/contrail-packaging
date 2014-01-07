@@ -195,9 +195,7 @@ install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}
 %{_bindir}/ifmap_view.py
 %{_bindir}/venv-helper
 #%{_bindir}/encap.py
-%if 0%{?rhel}
 %{_initddir}
-%endif
 %{_venv_root}/bin/contrail-nodemgr
 
 %post
