@@ -5,6 +5,7 @@ PACKAGES = contrail-libs-deb contrail-vrouter-deb \
 	contrail-config-venv-deb \
 	contrail-config-deb \
 	contrail-control-deb \
+	contrail-api-lib-deb \
 	ifmap-server-deb
 
 all: ${PACKAGES}

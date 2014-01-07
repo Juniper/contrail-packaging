@@ -1,0 +1,14 @@
+Source: contrail-api-lib
+Maintainer: amoghe <amoghe@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends: debhelper (>= 8)
+
+Package: contrail-api-lib
+Architecture: all
+Maintainer: amoghe <amoghe@juniper.net>
+Depends: python-gevent, python-requests, python-zope.interface
+Section: contrail-api-lib
+Priority: extra
+Description: Contrail Config API Library package
