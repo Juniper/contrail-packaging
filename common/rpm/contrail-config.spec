@@ -189,9 +189,7 @@ install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helpe
 %{_bindir}/ifmap_view.py
 %{_bindir}/venv-helper
 #%{_bindir}/encap.py
-%if 0%{?rhel}
 %{_initddir}
-%endif
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then
