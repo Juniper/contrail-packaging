@@ -74,13 +74,14 @@ scons -U src/config/api-server
 scons -U src/config/schema-transformer
 scons -U src/config/svc-monitor
 pushd %{_builddir}/../tools/
-scons -U sandesh/library/python
+scons -U sandesh/library/python:pysandesh
 popd
 scons -U src/discovery
 
 %define _build_dist %{_builddir}/../build/debug
 %install
 install -d -m 755 %{buildroot}%{_venv_root}
+install -d -m 755 %{buildroot}%{_venv_root}/bin
 
 mkdir -p build/python_dist
 pushd build/python_dist
@@ -142,6 +143,7 @@ install -D -m 644 %{_distropkgdir}/supervisor-config.service %{buildroot}/usr/li
 install -D -m 755 %{_distropkgdir}/supervisor-config.initd %{buildroot}%{_initddir}/supervisor-config
 install -D -m 755 %{_distropkgdir}/contrail-api.initd.supervisord %{buildroot}%{_initddir}/contrail-api
 install -D -m 755 %{_distropkgdir}/contrail-discovery.initd.supervisord %{buildroot}%{_initddir}/contrail-discovery
+install -D -m 755 %{_distropkgdir}/contrail-zookeeper.initd.supervisord %{buildroot}%{_initddir}/contrail-zookeeper
 install -D -m 755 %{_distropkgdir}/contrail-schema.initd.supervisord %{buildroot}%{_initddir}/contrail-schema
 install -D -m 755 %{_distropkgdir}/contrail-svc-monitor.initd.supervisord %{buildroot}%{_initddir}/contrail-svc-monitor
 install -p -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
@@ -151,6 +153,7 @@ install -p -m 755 %{_distropkgdir}/contrail-api.ini %{buildroot}%{_sysconfdir}/c
 install -p -m 755 %{_distropkgdir}/contrail-schema.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 install -p -m 755 %{_distropkgdir}/contrail-svc-monitor.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 install -p -m 755 %{_distropkgdir}/contrail-discovery.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
+install -p -m 755 %{_distropkgdir}/contrail-zookeeper.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-zookeeper.ini
 install -p -m 755 %{_distropkgdir}/redis-config.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/
 install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-api.kill %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.kill
 install -p -m 755 %{_distropkgdir}/contrail-config.rules %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config.rules
@@ -161,6 +164,9 @@ popd
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 
 install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helper
+
+# install nodemgr
+install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
 
 %files
 %defattr(-,root,root,-)
@@ -190,6 +196,7 @@ install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helpe
 %{_bindir}/venv-helper
 #%{_bindir}/encap.py
 %{_initddir}
+%{_venv_root}/bin/contrail-nodemgr
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then

@@ -68,19 +68,19 @@ BuildRequires:  gcc
 
 
 %build
-scons -U src/analytics
+scons -U src/analytics:vizd
 if [ $? -ne 0 ] ; then
     echo " analytics build failed"
     exit -1
 fi
 
-scons -U src/query_engine
+scons -U src/query_engine:qed
 if [ $? -ne 0 ] ; then
     echo " analytics query engine build failed"
     exit -1
 fi
 
-scons -U src/opserver
+scons -U src/opserver:opserver
 if [ $? -ne 0 ] ; then
     echo " opserver build failed"
     exit -1
@@ -91,13 +91,13 @@ if [ $? -ne 0 ] ; then
     exit -1
 fi
 pushd %{_builddir}/../tools/
-scons -U sandesh/library/python
+scons -U sandesh/library/python:pysandesh
 popd
 if [ $? -ne 0 ] ; then
     echo " sandesh python build failed"
     exit -1
 fi
-scons -U src/discovery
+scons -U src/discovery:discovery
 if [ $? -ne 0 ] ; then
     echo " discovery build failed"
     exit -1
@@ -119,7 +119,9 @@ install -d -m 755 %{buildroot}%{_servicedir}
 %endif
 
 %if 0%{?fedora} >= 17
+pushd %{_builddir}/..
 install -p -m 755 %{_distropkgdir}/supervisor-analytics.service          %{buildroot}%{_servicedir}/supervisor-analytics.service
+popd
 %endif
 install -d -m 755 %{buildroot}%{_initddir}
 
@@ -199,6 +201,9 @@ install -p -m 755 %{_distropkgdir}/sentinel.conf %{buildroot}%{_contrailetc}/sen
 
 rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/gen_py/__init__.*
 rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/bottle.py*
+
+# install nodemgr
+install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
 
 %post
 %if 0%{?fedora} >= 17
@@ -282,6 +287,7 @@ fi
 %if 0%{?fedora} >= 17
 %{_servicedir}/supervisor-analytics.service
 %endif
+%{_venv_root}/bin/contrail-nodemgr
 
 %changelog
 

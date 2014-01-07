@@ -27,16 +27,6 @@ printlog.addHandler(sh)
 printlog.addHandler(fh)
 printlog.setLevel(logging.INFO)
 
-import packages
-DISTRO = packages.find_distro()
-if 'el' in DISTRO:
-    from centos.base import packages as base_pkgs
-    BASE_PKGS = base_pkgs[DISTRO]
-elif 'fc' in DISTRO:
-    from fedora.base import packages as base_pkgs
-    BASE_PKGS = base_pkgs[DISTRO]
-
-
 class CommonUtil (object):
     def getstatusoutput(self, cmd):
         """Return (status, output) of executing cmd in a shell."""
@@ -149,7 +139,7 @@ class Repo (CommonUtil):
 
         
 class NightlyBuilder (CommonUtil):
-    __package_list = [
+    package_list = [
         Repo ('nova', "ssh://git@bitbucket.org/contrail_admin/nova",
             ["openstack-nova-cert", "openstack-nova-objectstore",
              "openstack-nova-scheduler", "openstack-nova-api", "python-nova",
@@ -166,15 +156,6 @@ class NightlyBuilder (CommonUtil):
             ["openstack-glance", "python-glance", "openstack-glance-doc"]),
         Repo ("keystone", "ssh://git@bitbucket.org/contrail_admin/keystone",
             ["openstack-keystone", "python-keystone"]),
-        Repo ("ctrlplane",
-            "ssh://git@bitbucket.org/contrail_admin/ctrlplane",
-            ['contrail-config', 'contrail-control', 'contrail-dns', 'contrail-libs',
-            'python-bitarray', 'xmltodict', 'redis-py', 'hiredis-py', 'contrail-webui',
-            'contrail-nodejs', 'contrail-vrouter', 'contrail-interface-name', 'contrail-analytics',
-            'contrail-setup', 'python-pycassa',
-            'python-thrift', 'supervisor', 'contrail-openstack-analytics', 'contrail-openstack-config',
-            'contrail-openstack', 'contrail-openstack-control', 'contrail-openstack-vrouter',
-            'contrail-openstack-webui', 'contrail-api-lib', 'contrail-api-extension', 'contrail-openstack-database']),
         Repo ("packaging", "ssh://git@bitbucket.org/contrail_admin/packaging",
             ["contrail-api-venv", "contrail-analytics-venv", "contrail-control-venv", "contrail-vrouter-venv", "contrail-database-venv"]),
         Repo ("horizon", "ssh://git@bitbucket.org/contrail_admin/horizon",
@@ -216,10 +197,6 @@ class NightlyBuilder (CommonUtil):
         Repo ("contrail-fabric-utils",
             "ssh://git@bitbucket.org/contrail_admin/fabric-utils.git",
             ["contrail-fabric-utils"]),
-        Repo ("libvirt",
-            "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
-            ["libvirt", 'libvirt-client',
-             'libvirt-python', 'libvirt-debuginfo']),
         Repo ("ixgbe",
             "ssh://git@bitbucket.org/contrail_admin/ixgbe.git",
             ["ixgbe"]),
@@ -231,6 +208,40 @@ class NightlyBuilder (CommonUtil):
             ["python-boto"],
             branch='2.12.0'),
     ]
+    if 'fedora' in platform.dist()[0]:
+        package_list.append(
+            Repo ("libvirt",
+                "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
+                ["libvirt", 'libvirt-client', 'libvirt-python',
+                 'libvirt-debuginfo', 'libvirt-daemon',
+                 'libvirt-daemon-config-nwfilter', 'libvirt-daemon-config-network']))
+        package_list.append(
+            Repo ("ctrlplane",
+                "ssh://git@bitbucket.org/contrail_admin/ctrlplane",
+                ['contrail-config', 'contrail-control', 'contrail-dns', 'contrail-libs',
+                'python-bitarray', 'xmltodict', 'redis-py', 'hiredis-py', 'contrail-webui',
+                'contrail-nodejs', 'contrail-vrouter', 'contrail-interface-name', 'contrail-analytics',
+                'contrail-setup', 'python-pycassa',
+                'python-thrift', 'supervisor', 'contrail-openstack-analytics', 'contrail-openstack-config',
+                'contrail-openstack', 'contrail-openstack-control', 'contrail-openstack-vrouter',
+                'contrail-openstack-webui', 'contrail-api-lib', 'contrail-api-extension', 'contrail-openstack-database']))
+    else:
+        package_list.append(
+            Repo ("libvirt",
+                 "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
+                ["libvirt", 'libvirt-client', 'libvirt-python',
+                 'libvirt-debuginfo']))
+        package_list.append(
+            Repo ("ctrlplane",
+                "ssh://git@bitbucket.org/contrail_admin/ctrlplane",
+                ['contrail-config', 'contrail-control', 'contrail-dns', 'contrail-libs',
+                'python-bitarray', 'xmltodict', 'redis-py', 'hiredis-py', 'contrail-webui',
+                'contrail-nodejs', 'contrail-vrouter', 'contrail-interface-name', 'contrail-analytics',
+                'contrail-setup', 'python-pycassa',
+                'python-thrift', 'supervisor', 'contrail-openstack-analytics', 'contrail-openstack-config',
+                'contrail-openstack', 'contrail-openstack-control', 'contrail-openstack-vrouter',
+                'contrail-openstack-storage',
+                'contrail-openstack-webui', 'contrail-api-lib', 'contrail-api-extension', 'contrail-openstack-database']))
 
     def __init__ (self, args = ''):
         if not isinstance(args, str):
@@ -254,19 +265,19 @@ class NightlyBuilder (CommonUtil):
 
     def _dist_filter (self, rpm):
     	dist = platform.dist()[0]
-    	if  dist == 'centos':
+    	if  dist == 'centos' or dist == 'redhat':
     	    if rpm in ('ixgbe', ):
     	    	return False
     	return rpm not in self.cache_rpms
 
     def _build_rpms (self):
         s = []
-        for p in self.__package_list:
+        for p in self.package_list:
             s += filter (self._dist_filter, p.pkgs)
         return s
 
     def repos (self):
-        for i in self.__package_list:
+        for i in self.package_list:
             yield i
 
     def find_repo_by_pkg (self, name):
@@ -376,7 +387,7 @@ class NightlyBuilder (CommonUtil):
                     printlog.info('Nothing to build, consider -a to build all')
                     sys.exit (3)
         elif self.args.all or self.args._id:
-            self.build_targets |= set (self.__package_list)
+            self.build_targets |= set (self.package_list)
 
         bl = list (self.build_targets)
         fl = []
@@ -716,8 +727,12 @@ class NightlyBuilder (CommonUtil):
         err, cnt = '', 0
         dist = packages.find_distro ()
         for pkg in self.cache_rpms:
-            filename = os.path.join (self.args.cache, 
-                            packages.packages[pkg][dist]['filename'])
+            try:
+                filename = os.path.join(self.args.cache,
+                                        packages.packages[pkg][dist]['filename'])
+            except KeyError:
+                filename = os.path.join(self.args.cache,
+                                        BASE_PKGS[pkg]['filename'])
             if os.path.isfile (filename):
                 shutil.copy (filename, linkpath)
                 printlog.info('copying %s ...' % filename)
@@ -761,6 +776,19 @@ class NightlyBuilder (CommonUtil):
             raise IOError, 'Error on %d packages:\n%s' % (cnt, err)
 
 if __name__ == '__main__':
+    DISTRO = platform.dist()[0]
+    if 'centos' in DISTRO:
+        import packages
+        from centos.base import packages as base_pkgs
+    elif 'fedora' in DISTRO:
+        import packages
+        from fedora.base import packages as base_pkgs
+    elif 'redhat' in DISTRO:
+        import redhat.dependent as packages
+        from redhat.base import packages as base_pkgs
+    rel = packages.find_distro()
+    BASE_PKGS = base_pkgs[rel]
+
+
     nb = NightlyBuilder (' '.join (sys.argv[1:]))
     nb.build ()
-

@@ -89,7 +89,7 @@ popd
 %if 0%(if [ "%{dist}" != ".xen" ]; then echo 1; fi)
 scons -U src/sandesh/common
 pushd %{_builddir}/../tools/
-scons -U sandesh/library/python
+scons -U sandesh/library/python:pysandesh
 popd
 scons -U src/discovery
 scons -U --target=%{_target_cpu} ${OPT_KERNEL} src/vnsw/agent/uve
@@ -159,6 +159,9 @@ install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-vrouter.
 %if 0%(if [ "%{dist}" != ".xen" ]; then echo 1; fi)
 %define _build_dist %{_builddir}/../build/debug
 install -d -m 755 %{buildroot}%{_venv_root}
+install -d -m 755 %{buildroot}%{_venv_root}/bin
+
+install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
 
 mkdir -p build/python_dist
 pushd build/python_dist
@@ -184,7 +187,6 @@ pushd discovery-0.1dev
 %{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
 popd
 %endif
-
 
 %post
 %if 0%{?fedora} >= 17
@@ -249,6 +251,7 @@ exit 0
 %{_supervisordir}/contrail-vrouter.ini
 %{_supervisordir}/contrail-vrouter.rules
 %{_supervisordir}/contrail-vrouter.kill
+%{_venv_root}/bin/contrail-nodemgr
 %endif
 %if 0%{?rhel}
 /etc/init.d/contrail-vrouter

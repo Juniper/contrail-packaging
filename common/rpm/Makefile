@@ -146,9 +146,15 @@ contrail-openstack-webui: $(PREP)
 	@echo making rpm for contrail-openstack-webui
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-webui.spec $(G_TAG)
 
+contrail-openstack-storage: $(PREP) $(LOCAL_PY)
+	@echo making rpm for contrail-openstack-storage
+	if [ "$(DISTRO)" == "CentOS" ]; then \
+		rpmbuild $(RPMBLDOPTS) contrail-openstack-storage.spec $(G_TAG) $(RPM_PY); \
+	fi
+
 contrail-openstack-all: contrail-openstack contrail-openstack-analytics contrail-openstack-config \
 	contrail-openstack-control contrail-openstack-database contrail-openstack-vrouter \
-	contrail-openstack-webui
+	contrail-openstack-webui contrail-openstack-storage
 
 contrail-webui:
 	@echo making rpm for contrail-webui
@@ -180,10 +186,18 @@ contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
 	rpmbuild $(RPMBLDOPTS) contrail-install-packages.spec  $(G_TAG)
 
+contrail-database: $(PREP)
+	@echo making rpm for contrail-database
+	cp contrail-database.spec $(BUILD_BASE)/SPECS/
+	cp ../control_files/contrail-database.initd $(BUILD_SRC)/
+	cp ../control_files/supervisord_contrail_database.conf $(BUILD_SRC)/
+	cp ../control_files/supervisord_contrail_database.initd $(BUILD_SRC)/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-database.spec $(G_TAG)
 
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
-	contrail-setup contrail-openstack-all contrail-webui contrail-nodejs venv-packages
+	contrail-setup contrail-openstack-all contrail-webui contrail-nodejs venv-packages \
+	contrail-database
 
 clean:
 	@echo clean

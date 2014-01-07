@@ -1,0 +1,14 @@
+Source: contrail-libs
+Maintainer: swamy <swamy@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends: debhelper (>= 8)
+
+Package: contrail-libs
+Version: 1.04
+Architecture: amd64
+Maintainer: swamy <swamy@juniper.net>
+Depends: ${shlibs:Depends}
+Description: Libraries used by the Contrail Virtual Router
+
