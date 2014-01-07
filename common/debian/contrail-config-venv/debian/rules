@@ -57,10 +57,15 @@ override_dh_auto_build:
 #	build the venv
 	$(__python) $(_venvdist)/$(_venvdir)/virtualenv.py $(_vpy) --extra-search-dir=$(buildroot)/$(_venvdir)/reqs --extra-search-dir=$(_venvdist)/$(_venvdir)/virtualenv_support --never-download --system-site-packages $(buildroot)$(_target)
 	cd $(buildroot)$(_target); bash -xc "source bin/activate && \
-           pwd && cat bin/pip && \
            bin/python bin/pip install --index-url='' --requirement \
            $(buildroot)/$(_venvdir)/reqs/reqs.txt \
 	   && deactivate"
+
+	(cd ${SB_TOP}/distro/third_party/pycassa-1.10.0; \
+	 bash -xc "source $(buildroot)$(_target)/bin/activate && \
+           $(buildroot)$(_target)/bin/python setup.py install && \
+	   deactivate")
+
 
 override_dh_auto_install:
 #	Setup directories
