@@ -38,6 +38,7 @@ endif
 
 TARGETS=controller/src/api-lib \
 	controller/src/config/api-server \
+	controller/src/config/common \
 	controller/src/config/schema-transformer \
 	controller/src/config/svc-monitor \
 	controller/src/discovery
@@ -51,6 +52,7 @@ override_dh_auto_build:
 
 	mkdir -p $(_srcdir)
 	(cd $(_srcdir); tar zxf $(_build_dist)/config/api-server/dist/vnc_cfg_api_server-0.1dev.tar.gz)
+	(cd $(_srcdir); tar zxf $(_build_dist)/config/common/dist/cfgm_common-0.1dev.tar.gz)
 	(cd $(_srcdir); tar zxf $(_build_dist)/config/schema-transformer/dist/schema_transformer-0.1dev.tar.gz)
 	(cd $(_srcdir); tar zxf $(_build_dist)/config/svc-monitor/dist/svc_monitor-0.1dev.tar.gz)
 	(cd $(_srcdir); tar zxf $(_build_dist)/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz)
@@ -63,6 +65,8 @@ override_dh_auto_install:
 #	Install vnc_api-0.1dev
 	echo $(_build_dist)
 	(cd $(_srcdir)/vnc_cfg_api_server-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
+
+	(cd $(_srcdir)/cfgm_common-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
 
 #	Install schema_transformer 	
 	(cd $(_srcdir)/schema_transformer-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
