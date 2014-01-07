@@ -37,6 +37,7 @@ Requires: euca2ools
 Requires: m2crypto
 Requires: openstack-nova
 Requires: java-1.7.0-openjdk
+Requires: haproxy
 
 %description
 Contrail Package Requirements for Contrail Config
