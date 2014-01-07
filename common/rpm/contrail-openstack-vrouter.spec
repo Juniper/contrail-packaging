@@ -34,6 +34,7 @@ Requires: openstack-nova-compute
 Requires: openstack-utils
 Requires: python-thrift
 Requires: contrail-setup
+Requires: haproxy
 
 %if 0%{?rhel}
 Requires: tunctl

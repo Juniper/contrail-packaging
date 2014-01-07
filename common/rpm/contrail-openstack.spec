@@ -38,6 +38,7 @@ Requires: python-importlib
 Requires: euca2ools
 Requires: m2crypto
 Requires: qpid-cpp-server
+Requires: haproxy
 
 %description
 Contrail Package Requirements for Contrail Openstack
