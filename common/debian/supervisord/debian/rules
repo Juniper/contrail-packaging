@@ -39,7 +39,7 @@ override_dh_auto_build:
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
 override_dh_auto_install:
-	(cd ${SB_TOP}/distro/third_party/supervisor-3.0b2; python setup.py install --root=${buildroot} --prefix=/usr)
+	(cd ${SB_TOP}/distro/third_party/supervisor-3.0b2; python setup.py install --install-layout=deb --root=${buildroot})
 
 	install -p -m 755 ${SB_TOP}/tools/packaging/common/control_files/supervisor_killall ${buildroot}/usr/bin
 

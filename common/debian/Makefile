@@ -6,7 +6,8 @@ PACKAGES = contrail-libs-deb contrail-vrouter-deb \
 	contrail-config-deb \
 	contrail-control-deb \
 	contrail-api-lib-deb \
-	ifmap-server-deb
+	ifmap-server-deb \
+	supervisord-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
