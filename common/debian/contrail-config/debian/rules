@@ -41,7 +41,9 @@ TARGETS=controller/src/api-lib \
 	controller/src/config/common \
 	controller/src/config/schema-transformer \
 	controller/src/config/svc-monitor \
-	controller/src/discovery
+	controller/src/sandesh/common \
+	controller/src/discovery \
+	sandesh/library/python:pysandesh
 
 %:
 	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
@@ -55,6 +57,7 @@ override_dh_auto_build:
 	(cd $(_srcdir); tar zxf $(_build_dist)/config/common/dist/cfgm_common-0.1dev.tar.gz)
 	(cd $(_srcdir); tar zxf $(_build_dist)/config/schema-transformer/dist/schema_transformer-0.1dev.tar.gz)
 	(cd $(_srcdir); tar zxf $(_build_dist)/config/svc-monitor/dist/svc_monitor-0.1dev.tar.gz)
+	(cd $(_srcdir); tar zxf $(_build_dist)/sandesh/common/dist/sandesh-common-0.1dev.tar.gz)
 	(cd $(_srcdir); tar zxf $(_build_dist)/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz)
 	(cd $(_srcdir); tar zxf $(_build_dist)/discovery/dist/discovery-0.1dev.tar.gz)
 
@@ -76,6 +79,8 @@ override_dh_auto_install:
 
 #	Install sandesh
 	(cd $(_srcdir)/sandesh-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
+
+	(cd $(_srcdir)/sandesh-common-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
 
 #	Install discovery
 	(cd $(_srcdir)/discovery-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
