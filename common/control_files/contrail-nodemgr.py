@@ -38,6 +38,9 @@ from supervisor import childutils
 from pysandesh.sandesh_base import *
 from pysandesh.sandesh_session import SandeshWriter
 from pysandesh.gen_py.sandesh_trace.ttypes import SandeshTraceRequest 
+from pysandesh.gen_py.vns.ttypes import Module, NodeType
+from pysandesh.gen_py.vns.constants import ModuleNames, NodeTypeNames,\
+    Module2NodeType, INSTANCE_ID_DEFAULT 
 from subprocess import Popen, PIPE
 
 def usage():
@@ -343,7 +346,15 @@ def main(argv=sys.argv):
     if (node_type is 'contrail-analytics'):
         # since this is local node, wait for sometime to let collector come up
         import time
-        sandesh_global.init_generator('Contrail-Analytics-Nodemgr', socket.gethostname(), ['127.0.0.1:8086'], 'Contrail-Analytics-Nodemgr', 8099, ['opserver.sandesh'])
+        from opserver.sandesh.vns.ttypes import *
+        module = Module.ANALYTICS_NODE_MGR
+        module_name = ModuleNames[module]
+        node_type = Module2NodeType[module]
+        node_type_name = NodeTypeNames[node_type]
+        instance_id = INSTANCE_ID_DEFAULT
+        sandesh_global.init_generator(module_name, socket.gethostname(), 
+            node_type_name, instance_id, ['127.0.0.1:8086'], 
+            module_name, 8099, ['opserver.sandesh'])
         sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-config'):
@@ -352,32 +363,54 @@ def main(argv=sys.argv):
         import time
         # read discovery client info from config file 
         import ConfigParser
+        from cfgm_common.sandesh.vns.ttypes import *
+        module = Module.CONFIG_NODE_MGR
+        module_name = ModuleNames[module]
+        node_type = Module2NodeType[module]
+        node_type_name = NodeTypeNames[node_type]
+        instance_id = INSTANCE_ID_DEFAULT
         Config = ConfigParser.ConfigParser()
         Config.read("/etc/contrail/api_server.conf")
         discovery_server = Config.get("DEFAULTS", "disc_server_ip")
         discovery_port = Config.get("DEFAULTS", "disc_server_port")
         sys.stderr.write("Updated discovery server: " + discovery_server + "\n")
         sys.stderr.write("Updated discovery port: " + str(discovery_port) + "\n")
-        _disc= client.DiscoveryClient(discovery_server, discovery_port, 'Contrail-Config-Nodemgr')
-        sandesh_global.init_generator('Contrail-Config-Nodemgr', socket.gethostname(), [ ], 'Contrail-Config-Nodemgr', 8100, ['cfgm_common.sandesh'], _disc)
+        _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
+        sandesh_global.init_generator(module_name, socket.gethostname(), 
+            node_type_name, instance_id, [ ], module_name, 
+            8100, ['cfgm_common.sandesh'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-control'):
         import discovery.client as client
         # since this may be a local node, wait for sometime to let collector come up
         import time
-        _disc= client.DiscoveryClient(discovery_server, discovery_port, 'Contrail-Control-Nodemgr')
-
-        sandesh_global.init_generator('Contrail-Control-Nodemgr', socket.gethostname(), [], 'Contrail-Control-Nodemgr', 8101, ['control_node.control_node'], _disc)
+        from control_node.vns.ttypes import *
+        module = Module.CONTROL_NODE_MGR
+        module_name = ModuleNames[module]
+        node_type = Module2NodeType[module]
+        node_type_name = NodeTypeNames[node_type]
+        instance_id = INSTANCE_ID_DEFAULT
+        _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
+        sandesh_global.init_generator(module_name, socket.gethostname(), 
+            node_type_name, instance_id, [], module_name, 
+            8101, ['control_node.control_node'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-vrouter'):
         import discovery.client as client
         # since this may be a local node, wait for sometime to let collector come up
         import time
-        _disc= client.DiscoveryClient(discovery_server, discovery_port, 'Contrail-Vrouter-Nodemgr')
-
-        sandesh_global.init_generator('Contrail-Vrouter-Nodemgr', socket.gethostname(), [], 'Contrail-Vrouter-Nodemgr', 8102, ['vrouter.vrouter'], _disc)
+        from vrouter.sandesh.vns.ttypes import *
+        module = Module.COMPUTE_NODE_MGR
+        module_name = ModuleNames[module]
+        node_type = Module2NodeType[module]
+        node_type_name = NodeTypeNames[node_type]
+        instance_id = INSTANCE_ID_DEFAULT
+        _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
+        sandesh_global.init_generator(module_name, socket.gethostname(), 
+            node_type_name, instance_id, [], module_name, 
+            8102, ['vrouter.vrouter'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
     
     gevent.joinall([gevent.spawn(prog.runforever, sandesh_global)])
