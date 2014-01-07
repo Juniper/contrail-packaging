@@ -2,3 +2,4 @@ quantum_server quantum-server
 quantum_common quantum-common
 setuptools-git
 jsonrpclib
+alembic alembic
