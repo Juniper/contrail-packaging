@@ -1,0 +1,32 @@
+supervisor (3.0a8-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Rebuild to add Python 2.7 support
+
+ -- Piotr Ożarowski <piotr@debian.org>  Sun, 08 May 2011 16:45:52 +0200
+
+supervisor (3.0a8-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Anders Hammarquist <iko@debian.org>  Tue, 26 Jan 2010 13:17:32 +0100
+
+supervisor (3.0a7-2.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix "manipulates site-packages/ directly, failing with Python 2.6"
+    Applied and uploaded Kumar's patch. (Closes: #547858)
+
+ -- Bastian Venthur <venthur@debian.org>  Sat, 07 Nov 2009 13:06:00 +0100
+
+supervisor (3.0a7-2) unstable; urgency=low
+
+  * Fix build-depdends (Closes: #545624)
+
+ -- Anders Hammarquist <iko@debian.org>  Wed, 09 Sep 2009 23:12:43 +0200
+
+supervisor (3.0a7-1) unstable; urgency=low
+
+  * Initial release (Closes: #491665).
+
+ -- Anders Hammarquist <iko@debian.org>  Thu, 30 Jul 2009 11:29:24 +0200
