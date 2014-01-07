@@ -4,7 +4,7 @@
 # description: Supervisord instance for Contrail Config Package
 
 ulimit -c unlimited
-. /etc/init.d/functions
+. /lib/lsb/init-functions
 
 PID_FILE=/var/run/supervisord-config.pid
 
@@ -17,7 +17,7 @@ function daemon_start() {
      ulimit -n 4096
      /usr/bin/supervisord -c /etc/contrail/supervisord_config.conf 
      RETVAL=$?
-     [ $RETVAL -eq 0 ] && success || failure
+     log_end_msg $RETVAL
 }
 
 function daemon_stop() {

@@ -65,7 +65,7 @@ override_dh_auto_build:
 override_dh_auto_install:
 #	Setup directories
 	install -m 755 -d $(installroot)$(_target)
-	cp -r $(buildroot)$(_target) $(installroot)$(_target)
+	cp -r $(buildroot)$(_target) $(installroot)/opt/contrail
 
 	(cd $(installroot); for f in $$(find $(_target) -type f -exec grep -nH $(buildroot) {} \; | grep -v 'Binary file' | cut -d: -f1); do sed -i 's/$(sedpattern)//g' $$f && echo "changed $$f ..." ; done)
 #	cd $(_builddir); rm -rf virtualenv-1.9.1
