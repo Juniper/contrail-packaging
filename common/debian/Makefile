@@ -4,13 +4,25 @@ SB_TOP := $(PWD:/tools/packaging/common/debian=)
 PACKAGES = contrail-libs-deb contrail-vrouter-deb \
 	contrail-config-venv-deb \
 	contrail-config-deb \
-	contrail-control-deb
+	contrail-control-deb \
+	ifmap-server-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
 
 clean: $(PACKAGES:%-deb=%-clean)
 	@echo "Clean"
+
+ifmap-server-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/third_party/ifmap-server)
+	mkdir -p ${SB_TOP}/third_party
+	cp -R ${SB_TOP}/third_party/ifmap-server ${BUILDDIR}
+	cp -R ifmap-server/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+ifmap-server-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/third_party/ifmap-server)
+	rm -rf ${BUILDDIR}
 
 %-deb:
 	(cd $(@:-deb=); fakeroot debian/rules binary)
