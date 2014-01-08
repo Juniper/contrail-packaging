@@ -1,0 +1,3 @@
+contrail-nova-vif (BUILDTAG) roque; urgency=low
+   [roque]
+   * debian/changelog: initial version

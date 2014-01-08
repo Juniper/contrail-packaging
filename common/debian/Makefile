@@ -7,6 +7,7 @@ PACKAGES = contrail-libs-deb contrail-vrouter-deb \
 	contrail-config-extension-deb \
 	contrail-control-deb \
 	contrail-api-lib-deb \
+	contrail-nova-vif-deb \
 	ifmap-server-deb \
 	supervisord-deb
 
