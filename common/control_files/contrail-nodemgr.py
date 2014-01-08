@@ -38,8 +38,8 @@ from supervisor import childutils
 from pysandesh.sandesh_base import *
 from pysandesh.sandesh_session import SandeshWriter
 from pysandesh.gen_py.sandesh_trace.ttypes import SandeshTraceRequest 
-from pysandesh.gen_py.vns.ttypes import Module, NodeType
-from pysandesh.gen_py.vns.constants import ModuleNames, NodeTypeNames,\
+from sandesh_common.vns.ttypes import Module, NodeType
+from sandesh_common.vns.constants import ModuleNames, NodeTypeNames,\
     Module2NodeType, INSTANCE_ID_DEFAULT 
 from subprocess import Popen, PIPE
 
@@ -346,7 +346,6 @@ def main(argv=sys.argv):
     if (node_type is 'contrail-analytics'):
         # since this is local node, wait for sometime to let collector come up
         import time
-        from opserver.sandesh.vns.ttypes import *
         module = Module.ANALYTICS_NODE_MGR
         module_name = ModuleNames[module]
         node_type = Module2NodeType[module]
@@ -363,7 +362,6 @@ def main(argv=sys.argv):
         import time
         # read discovery client info from config file 
         import ConfigParser
-        from cfgm_common.sandesh.vns.ttypes import *
         module = Module.CONFIG_NODE_MGR
         module_name = ModuleNames[module]
         node_type = Module2NodeType[module]
@@ -385,7 +383,6 @@ def main(argv=sys.argv):
         import discovery.client as client
         # since this may be a local node, wait for sometime to let collector come up
         import time
-        from control_node.vns.ttypes import *
         module = Module.CONTROL_NODE_MGR
         module_name = ModuleNames[module]
         node_type = Module2NodeType[module]
@@ -401,7 +398,6 @@ def main(argv=sys.argv):
         import discovery.client as client
         # since this may be a local node, wait for sometime to let collector come up
         import time
-        from vrouter.sandesh.vns.ttypes import *
         module = Module.COMPUTE_NODE_MGR
         module_name = ModuleNames[module]
         node_type = Module2NodeType[module]
