@@ -17,20 +17,16 @@ pre-start script
 end script
 
 script
-    . /opt/contrail/vrouter-venv/bin/activate
     supervisord --nodaemon -c /etc/contrail/supervisord_vrouter.conf
-    deactivate
 end script
 
 post-start script
-    /etc/contrail/vnagent_ExecStartPost.sh
+    /opt/contrail/bin/vrouter-post-start.sh
 end script
 
 pre-stop script
-    . /opt/contrail/vrouter-venv/bin/activate
     supervisorctl -s http://localhost:9005 stop all
     supervisorctl -s http://localhost:9005 shutdown
     /usr/bin/supervisor_killall /etc/contrail/supervisord_vrouter_files
-    /etc/contrail/vnagent_ExecStopPost.sh
-    deactivate
+    /opt/contrail/bin/vrouter-pre-stop.sh
 end script
