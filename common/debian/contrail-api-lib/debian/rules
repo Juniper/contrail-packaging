@@ -50,13 +50,13 @@ override_dh_auto_install:
 	install -d -m 777 $(buildroot)$(python_sitelib)
 	mkdir -p ${_python_dist}
 
-	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/api-lib/dist/vnc_api-0.1dev.tar.gz; cd vnc_api-0.1dev; python setup.py install --root=${buildroot} --prefix=/usr)
+	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/api-lib/dist/vnc_api-0.1dev.tar.gz; cd vnc_api-0.1dev; python setup.py install --root=${buildroot} --install-layout=deb)
 
-	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/config/common/dist/cfgm_common-0.1dev.tar.gz; cd cfgm_common-0.1dev; python setup.py install --root=${buildroot} --prefix=/usr)
+	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/config/common/dist/cfgm_common-0.1dev.tar.gz; cd cfgm_common-0.1dev; python setup.py install --root=${buildroot} --install-layout=deb)
 
-	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/sandesh/common/dist/sandesh-common-0.1dev.tar.gz; cd sandesh-common-0.1dev; python setup.py install --root=${buildroot} --prefix=/usr)
+	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/sandesh/common/dist/sandesh-common-0.1dev.tar.gz; cd sandesh-common-0.1dev; python setup.py install --root=${buildroot} --install-layout=deb)
 
-	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz; cd sandesh-0.1dev; python setup.py install --root=${buildroot} --prefix=/usr)
+	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz; cd sandesh-0.1dev; python setup.py install --root=${buildroot} --install-layout=deb)
 
 
 

@@ -71,6 +71,11 @@ override_dh_auto_build:
            $(buildroot)$(_target)/bin/python setup.py install && \
 	   deactivate")
 
+	(cd ${SB_TOP}/distro/third_party/redis-2.8.0; \
+	 bash -xc "source $(buildroot)$(_target)/bin/activate && \
+           $(buildroot)$(_target)/bin/python setup.py install && \
+	   deactivate")
+
 
 override_dh_auto_install:
 #	Setup directories
