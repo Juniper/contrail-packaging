@@ -86,6 +86,7 @@ Requires:	python-routes
 Requires:	python-sqlalchemy
 Requires:	python-webob
 Requires:	sudo
+Requires:	qpid-cpp-server
 
 
 
