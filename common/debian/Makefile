@@ -4,6 +4,7 @@ SB_TOP := $(PWD:/tools/packaging/common/debian=)
 PACKAGES = contrail-libs-deb contrail-vrouter-deb \
 	contrail-config-venv-deb \
 	contrail-config-deb \
+	contrail-config-extension-deb \
 	contrail-control-deb \
 	contrail-api-lib-deb \
 	ifmap-server-deb \
