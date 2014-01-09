@@ -27,7 +27,10 @@ function daemon_stop() {
         kill `cat $PID_FILE`
         rm -f $PID_FILE
     fi
+    if [ -e "/etc/contrail/supervisord_analytics_files/*.kill" ]
+    then
     /usr/bin/supervisor_killall /etc/contrail/supervisord_analytics_files
+    fi
 
 }
 
