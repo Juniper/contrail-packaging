@@ -1,0 +1,35 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+export DH_VERBOSE=1
+
+SPEC_DIR := $(shell pwd)
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+
+export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+export buildroot := ${SB_TOP}/build/debian/contrail-vrouter-init
+export _confsrcdir := ${SB_TOP}/tools/packaging/common/control_files
+
+export _supervisorconf := /etc/contrail/supervisord_vrouter_files
+
+BUILDTAG =
+ifdef TAG
+BUILDTAG = $(TAG)
+else
+BUILDTAG = $(BUILDTIME)
+endif
+
+%:
+	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
+
+override_dh_auto_build: 
+	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
+
+override_dh_auto_install:
+	install -d -m 755 ${buildroot}/etc/init.d
+	install -d -m 755 ${buildroot}${_supervisorconf}
+	install -p -m 644 $(_confsrcdir)/supervisor-vrouter.upstart ${buildroot}/etc/supervisor-vrouter.conf
+	install -p -m 644 $(_confsrcdir)/contrail-vrouter.initd.supervisord ${buildroot}/etc/init.d/contrail-vrouter
+	install -p -m 644 $(_confsrcdir)/supervisord_vrouter.conf ${buildroot}${_supervisorconf}
+	install -p -m 644 $(_confsrcdir)/contrail-vrouter.ini ${buildroot}${_supervisorconf}
+	install -p -m 644 $(_confsrcdir)/contrail-vrouter.rules ${buildroot}${_supervisorconf}

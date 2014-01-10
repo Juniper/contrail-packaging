@@ -47,7 +47,7 @@ override_dh_auto_build:
 	(cd ${SB_TOP}; scons ${TARGETS})
 
 override_dh_auto_install:
-	install -d -m 777 $(buildroot)$(python_sitelib)
+	install -d -m 755 $(buildroot)$(python_sitelib)
 	mkdir -p ${_python_dist}
 
 	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/api-lib/dist/vnc_api-0.1dev.tar.gz; cd vnc_api-0.1dev; python setup.py install --root=${buildroot} --install-layout=deb)

@@ -1,12 +1,15 @@
 PWD := ${CURDIR}
 SB_TOP := $(PWD:/tools/packaging/common/debian=)
 
-PACKAGES = contrail-libs-deb contrail-vrouter-deb \
+PACKAGES = contrail-libs-deb \
+	contrail-vrouter-deb \
+	contrail-vrouter-init-deb \
 	contrail-config-venv-deb \
 	contrail-config-deb \
 	contrail-config-extension-deb \
 	contrail-control-deb \
 	contrail-api-lib-deb \
+	contrail-nova-vif-deb \
 	ifmap-server-deb \
 	supervisord-deb
 
