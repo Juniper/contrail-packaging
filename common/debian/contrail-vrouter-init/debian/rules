@@ -11,6 +11,7 @@ export buildroot := ${SB_TOP}/build/debian/contrail-vrouter-init
 export _confsrcdir := ${SB_TOP}/tools/packaging/common/control_files
 
 export _supervisorconf := /etc/contrail/supervisord_vrouter_files
+export _opt_bin := /opt/contrail/bin
 
 BUILDTAG =
 ifdef TAG
@@ -26,10 +27,17 @@ override_dh_auto_build:
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
 override_dh_auto_install:
+	install -d -m 755 ${buildroot}/etc/init
 	install -d -m 755 ${buildroot}/etc/init.d
+	install -d -m 755 ${buildroot}${_opt_bin}
 	install -d -m 755 ${buildroot}${_supervisorconf}
-	install -p -m 644 $(_confsrcdir)/supervisor-vrouter.upstart ${buildroot}/etc/supervisor-vrouter.conf
+	install -d -m 755 ${buildroot}/var/log/contrail
+	install -p -m 644 $(_confsrcdir)/supervisor-vrouter.upstart ${buildroot}/etc/init/supervisor-vrouter.conf
+	ln -sf /lib/init/upstart-job ${buildroot}/etc/init.d/supervisor-vrouter
 	install -p -m 644 $(_confsrcdir)/contrail-vrouter.initd.supervisord ${buildroot}/etc/init.d/contrail-vrouter
-	install -p -m 644 $(_confsrcdir)/supervisord_vrouter.conf ${buildroot}${_supervisorconf}
+	install -p -m 644 $(_confsrcdir)/supervisord_vrouter.conf ${buildroot}/etc/contrail
 	install -p -m 644 $(_confsrcdir)/contrail-vrouter.ini ${buildroot}${_supervisorconf}
 	install -p -m 644 $(_confsrcdir)/contrail-vrouter.rules ${buildroot}${_supervisorconf}
+	install -p -m 755 $(_confsrcdir)/vrouter-post-start.sh ${buildroot}${_opt_bin}
+	install -p -m 755 $(_confsrcdir)/vrouter-pre-stop.sh ${buildroot}${_opt_bin}
+

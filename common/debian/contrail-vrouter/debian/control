@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-vrouter
 Architecture: amd64
 Maintainer: swamy <swamy@juniper.net>
-Depends: libcurl3, contrail-libs, supervisor
+Depends: libcurl3, contrail-libs
 Section: contrail-vrouter
 Priority: extra
 Description: Contrail Virtual Router
