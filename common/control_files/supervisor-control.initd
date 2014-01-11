@@ -4,7 +4,10 @@
 # description: Supervisord instance for Contrail Control Package
 
 ulimit -c unlimited
-. /etc/init.d/functions
+if [ -f /lib/lsb/init-functions ]; then
+    . /lib/lsb/init-functions
+else
+    . /etc/init.d/functions
 
 PID_FILE=/var/run/supervisord_control.pid
 
