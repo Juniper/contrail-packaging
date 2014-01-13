@@ -21,7 +21,9 @@ function daemon_start() {
      ulimit -n 4096
      /usr/bin/supervisord -c /etc/contrail/supervisord_control.conf 
      RETVAL=$?
-     [ $RETVAL -eq 0 ] && success || failure
+     if [ $RETVAL -ne 0 ]; then
+	log_failure_msg "Could not start controller"
+     fi
 }
 
 function daemon_stop() {
