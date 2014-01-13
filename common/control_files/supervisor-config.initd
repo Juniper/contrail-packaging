@@ -8,7 +8,6 @@ if [ -f /lib/lsb/init-functions ]; then
     . /lib/lsb/init-functions
 else
     . /etc/init.d/functions
-fi
 
 function log_success_msg() {
     success

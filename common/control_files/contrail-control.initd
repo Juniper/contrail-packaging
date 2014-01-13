@@ -7,6 +7,14 @@ if [ -f /lib/lsb/init-functions ]; then
     . /lib/lsb/init-functions
 else
     . /etc/init.d/functions
+
+function log_success_msg() {
+    success
+}
+function log_failure_msg() {
+    failure
+}
+
 fi
 
 LOG=/var/log/contrail-control.log
