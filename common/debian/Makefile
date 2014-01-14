@@ -2,6 +2,8 @@ PWD := ${CURDIR}
 SB_TOP := $(PWD:/tools/packaging/common/debian=)
 
 PACKAGES = contrail-libs-deb \
+	contrail-analytics-venv-deb \
+	contrail-analytics-deb \
 	contrail-vrouter-deb \
 	contrail-vrouter-init-deb \
 	contrail-config-venv-deb \
@@ -39,3 +41,4 @@ ifmap-server-clean:
 
 contrail-vrouter-deb: contrail-libs-deb
 contrail-config-deb: contrail-config-venv-deb
+contrail-analytics-deb: contrail-analytics-venv-deb

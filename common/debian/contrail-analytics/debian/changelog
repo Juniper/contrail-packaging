@@ -1,0 +1,6 @@
+contrail-analytics (1401141933) anantha; urgency=low
+
+  [swamy ]
+  * debian/changelog: changelog
+
+ -- anantha <anantha@juniper.net>  Wed, 10 Jul 2013 13:00:11 -0500

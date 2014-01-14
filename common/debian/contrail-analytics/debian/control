@@ -1,0 +1,14 @@
+Source: contrail-analytics
+Maintainer: Chandan <cdmishra@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends: debhelper (>= 8)
+
+Package: contrail-analytics
+Architecture: amd64
+Maintainer: Chandan <cdmishra@juniper.net>
+Depends: redis-server, python-redis, contrail-analytics-venv, contrail-libs
+Section: contrail-analytics
+Priority: extra
+Description: Contrail analytics package
