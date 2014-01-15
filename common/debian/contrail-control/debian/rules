@@ -28,7 +28,6 @@ export _pyver := 2.7
 export _pysitepkg := /lib/python$(_pyver)/site-packages
 export _build_dist := $(_builddir)/build/debug
 export _sysconfdir := /etc
-export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 
 BUILDTAG =
 ifdef TAG
