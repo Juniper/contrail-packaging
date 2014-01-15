@@ -40,16 +40,22 @@ endif
 TARGETS=src/analytics:vizd \
 	src/query_engine:qed \
 	src/opserver:opserver \
+	controller/src/sandesh/common \
+	controller/src/discovery/client \
+	sandesh/library/python:pysandesh \
 
 %:
 	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
 
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
-	(cd ${SB_TOP}; scons ${TARGETS})
+	(cd ${SB_TOP}; scons -U ${TARGETS})
 
 	mkdir -p $(_srcdir)
 	(cd $(_srcdir); tar zxf $(_build_dist)/opserver/dist/opserver-0.1dev.tar.gz)
+	(cd $(_srcdir); tar zxf $(_build_dist)/discovery/client/dist/discoveryclient-0.1dev.tar.gz)
+	(cd $(_srcdir); tar zxf $(_build_dist)/sandesh/common/dist/sandesh-common-0.1dev.tar.gz)
+	(cd $(_srcdir); tar zxf $(_build_dist)/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz)
 
 override_dh_auto_install: 
 	# Setup directories
@@ -67,6 +73,9 @@ override_dh_auto_install:
 
 # 	Install opserver pkg
 	(cd $(_srcdir)/opserver-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
+	(cd $(_srcdir)/discoveryclient-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
+	(cd $(_srcdir)/sandesh-common-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
+	(cd $(_srcdir)/sandesh-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
 
 	# install files
 	install -d -m 755 $(buildroot)$(_bindir)
