@@ -86,6 +86,7 @@ override_dh_auto_install:
 #	cd $(_builddir); rm -rf virtualenv-1.9.1
 
 #	modify symlinks
+	chmod -R a+x $(installroot)/opt/contrail/api-venv/bin/*
 	for f in $$(find $(_target) -type l -print ); \
 		do x=$$(pwd); cd $$(dirname $$f); \
 		F=$$(basename $$f); p=$$(readlink $$F); rm -f $$F; \

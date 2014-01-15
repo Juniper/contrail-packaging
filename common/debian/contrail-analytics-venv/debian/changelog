@@ -1,6 +1,6 @@
-contrail-analytics-venv (1401141933) Ananth; urgency=low
+contrail-analytics-venv (1401142355) amoghe; urgency=low
 
-  [swamy ]
+  [amoghe ]
   * debian/changelog: changelog
 
- -- Ananth <anantha@juniper.net>  Wed, 10 Jul 2013 13:00:11 -0500
+ -- amoghe <amoghe@juniper.net>  Wed, 16 Oct 2013 13:00:11 +0800
