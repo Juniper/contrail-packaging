@@ -2,6 +2,8 @@ PWD := ${CURDIR}
 SB_TOP := $(PWD:/tools/packaging/common/debian=)
 
 PACKAGES = contrail-libs-deb \
+	contrail-nodejs \
+	contrail-webui \
 	contrail-analytics-venv-deb \
 	contrail-analytics-deb \
 	contrail-vrouter-deb \

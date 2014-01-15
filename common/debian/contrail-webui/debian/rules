@@ -1,0 +1,85 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+SPEC_DIR := $(shell pwd)
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+
+export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+export buildroot := $(SB_TOP)/build/debian/contrail-webui
+
+export WS := `cat ~/rpmbuild/SOURCES/git_root`
+export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):debian/contrail-control/usr/lib64/contrail:debian/contrail-libs/usr/lib64/contrail
+export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+export _initddir := /etc/init.d
+export _initdir := /etc/init
+export _contrailetc := /etc/contrail
+export _supervisordir := /etc/contrail/supervisord_webui_files
+export _sourcedir := $(WS)/tools/packaging
+export _distropkgdir := $(SB_TOP)/tools/packaging/common/control_files
+export _distrothirdpartydir := $(SB_TOP)/contrail-web-third-party
+export _contrailwebsrc := /usr/src/contrail/contrail-webui
+export _libdir := /usr/lib64
+export _contraillogdir := /var/log/contrail
+export _nodemodules := node_modules
+export _supervisordir := /etc/contrail/supervisord_webui_files
+export _config := $(SB_TOP)/contrail-web-core/config
+
+export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+
+BUILDTAG =
+ifdef TAG
+BUILDTAG = $(TAG)
+else
+BUILDTAG = $(BUILDTIME)
+endif
+
+%:
+	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
+
+override_dh_auto_build: 
+	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog 
+#	cd ~/rpmbuild/SOURCES/contrail-webui/contrail-ui; pwd;
+#	make package
+
+override_dh_auto_install: 
+	# Cleanup directories
+	rm -rf $(buildroot)/$(_contrailwebsrc)
+	rm -rf $(buildroot)/$(_libdir)/node_modules
+	rm -rf $(buildroot)/$(_contrailetc)
+	rm -rf $(buildroot)/$(_contraillogdir)
+
+	mkdir -p $(buildroot)/$(_contrailwebsrc)
+	mkdir -p $(buildroot)/$(_libdir)/node_modules
+	mkdir -p $(buildroot)/$(_contrailetc)
+	mkdir -p $(buildroot)/$(_contraillogdir)
+
+	cp -r -p $(SB_TOP)/contrail-web-core/* $(buildroot)/$(_contrailwebsrc)/.
+
+	cp -p $(_distropkgdir)/contrailWebServer.sh $(buildroot)/$(_contrailwebsrc)/
+	cp -p $(_distropkgdir)/contrailWebMiddleware.sh $(buildroot)/$(_contrailwebsrc)/
+	cp -r -p $(_distrothirdpartydir)/$(_nodemodules)/* $(buildroot)/$(_libdir)/node_modules
+
+	rm -rf  $(buildroot)/$(_contrailwebsrc)/node_modules
+
+	ln -s $(_libdir)/node_modules $(buildroot)/$(_contrailwebsrc)/node_modules
+	rm -rf $(buildroot)/$(_contrailwebsrc)/config/config.global.js
+	cp -p $(_config)/config.global.js $(buildroot)/$(_contrailetc)/
+	ln -s $(_contrailetc)/config.global.js $(buildroot)/$(_contrailwebsrc)/config/config.global.js
+	touch $(buildroot)/$(_contraillogdir)/webui.log
+
+	#install .ini files for supervisord
+	install -d -m 755 $(buildroot)/$(_supervisordir)
+	install -p -m 644 $(_distropkgdir)/supervisord_webui.conf $(buildroot)/$(_contrailetc)/supervisord_webui.conf
+	install -p -m 644 $(_distropkgdir)/redis-webui.conf $(buildroot)/$(_contrailetc)/redis-webui.conf
+	install -p -m 644 $(_distropkgdir)/contrail-webui.ini $(buildroot)/$(_supervisordir)/contrail-webui.ini
+	install -p -m 644 $(_distropkgdir)/contrail-webui-middleware.ini $(buildroot)/$(_supervisordir)/contrail-webui-middleware.ini
+	install -p -m 644 $(_distropkgdir)/supervisord_wrapper_scripts/contrail-webui.kill $(buildroot)/$(_supervisordir)/contrail-webui.kill
+	install -p -m 644 $(_distropkgdir)/supervisord_wrapper_scripts/contrail-webui-middleware.kill $(buildroot)/$(_supervisordir)/contrail-webui-middleware.kill
+	install -p -m 644 $(_distropkgdir)/redis-webui.ini $(buildroot)/$(_supervisordir)/redis-webui.ini
