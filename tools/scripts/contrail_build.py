@@ -38,6 +38,13 @@ class ContrailBuild(object):
             print 'Error: Only centos64_os is only architecture that is currently supported'
             sys.exit(1)
 
+        required_commands = ["package", "all", "iso"]
+        if self.opt.command in required_commands:
+            if not self.opt.build_num:
+                if not self.opt.tag_name:
+                    print "Error: Package/Iso commands need either build number or tag"
+                    sys.exit(1)
+
         """ Make sure we are in sandbox """
         if self.opt.command != 'sandbox':
             if not os.path.exists(".repo"):
@@ -62,6 +69,10 @@ class ContrailBuild(object):
         print "Creating Sandbox "
         command = 'repo init -u '
         command += str(self.opt.manifest_url)
+        if self.opt.branch_name:
+            command += " -m manifest-"
+            command += str(self.opt.branch_name)
+            command += ".xml"
         if not os.path.exists(self.opt.sandbox_name):
             os.mkdir (self.opt.sandbox_name)
         os.chdir (self.opt.sandbox_name)
@@ -77,7 +88,12 @@ class ContrailBuild(object):
 
         if self.opt.build_num:
             print "Using supplied build number"
-            buildArchive = '/volume/junosv-storage01/contrail/daily/'
+            buildArchive = '/volume/junosv-storage01/contrail/'
+            if self.opt.branch_name:
+                buildArchive += str(self.opt.branch_name)
+                buildArchive += '/'
+            else:
+                buildArchive += 'mainline/'
             buildArchive += str(self.opt.build_num)
             buildArchive += '/'
             buildArchive += str(self.opt.arch_type)
@@ -128,7 +144,7 @@ class ContrailBuild(object):
         if self.opt.build_num:
             command += str(self.opt.build_num)
         else:
-            command += "1000"
+            command += str(self.opt.tag_name)
         command += " all"
 
         f = open("package.log", mode='w')
@@ -194,6 +210,9 @@ def parse_options(args):
 
     parser.add_argument('-b', '--branch', nargs='?', dest='branch_name',
                         help='Branch to use to fetch manifest file')
+
+    parser.add_argument('-t', '--tag', nargs='?', dest='tag_name',
+                        help='Tag to use when creating packages')
 
     parser.add_argument('-a', '--arch', nargs='?', dest='arch_type',
                         default='centos64_os',
