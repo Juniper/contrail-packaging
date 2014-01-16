@@ -44,8 +44,7 @@ endif
 
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog 
-#	cd ~/rpmbuild/SOURCES/contrail-webui/contrail-ui; pwd;
-#	make package
+	(cd $(SB_TOP)/contrail-web-core && make package)
 
 override_dh_auto_install: 
 	# Cleanup directories

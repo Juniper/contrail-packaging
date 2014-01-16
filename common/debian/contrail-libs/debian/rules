@@ -14,6 +14,7 @@ export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := $(SB_TOP)/build/debian/contrail-libs
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):${buildroot}/usr/lib64/contrail
 export _libdir := /usr/lib64
+export _binddir := /usr/bin
 export _ldconfdir := /etc/ld.so.conf.d
 
 BUILDTAG =
@@ -41,6 +42,7 @@ override_dh_auto_install:
 	rm -rf $(buildroot)
 	install -d -m 755 $(buildroot)$(_libdir)/contrail
 	install -d -m 755 $(buildroot)$(_ldconfdir)
+	install -d -m 755 $(buildroot)$(_binddir)
 
 	install -p -m 755 ${SB_TOP}/build/lib/libtbb_debug.so.2 $(buildroot)$(_libdir)/contrail/libtbb_debug.so.2
 	install -p -m 755 ${SB_TOP}/build/lib/libthrift-0.8.0.so $(buildroot)$(_libdir)/contrail/libthrift-0.8.0.so
@@ -51,6 +53,7 @@ override_dh_auto_install:
 	install -p -m 755 ${SB_TOP}/build/lib/libboost_system.so.1.48.0 $(buildroot)$(_libdir)/contrail/libboost_system.so.1.48.0
 	install -p -m 755 ${SB_TOP}/build/lib/libboost_python.so.1.48.0 $(buildroot)$(_libdir)/contrail/libboost_python.so.1.48.0
 	install -p -m 755 ${SB_TOP}/build/lib/liblog4cplus-1.1.so.7.0.0 $(buildroot)$(_libdir)/contrail/liblog4cplus-1.1.so.7.0.0
+	install -p -m 755 ${SB_TOP}/controller/src/config/utils/contrail-status $(buildroot)$(_binddir)/contrail-status
 	echo "$(_libdir)/contrail" > $(buildroot)$(_ldconfdir)/contrail-64.conf
 
 get-orig-source:
