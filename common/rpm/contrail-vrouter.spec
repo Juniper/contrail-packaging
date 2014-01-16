@@ -162,6 +162,8 @@ install -d -m 755 %{buildroot}%{_venv_root}
 install -d -m 755 %{buildroot}%{_venv_root}/bin
 
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
+install -p -m 755 src/vnsw/agent/uve/mock_generator.py %{buildroot}%{_venv_root}/bin/mock_generator
+install -p -m 755 src/vnsw/agent/uve/run_mock_generator %{buildroot}%{_venv_root}/bin/run_mock_generator
 
 mkdir -p build/python_dist
 pushd build/python_dist
@@ -252,6 +254,8 @@ exit 0
 %{_supervisordir}/contrail-vrouter.rules
 %{_supervisordir}/contrail-vrouter.kill
 %{_venv_root}/bin/contrail-nodemgr
+%{_venv_root}/bin/mock_generator
+%{_venv_root}/bin/run_mock_generator
 %endif
 %if 0%{?rhel}
 /etc/init.d/contrail-vrouter
