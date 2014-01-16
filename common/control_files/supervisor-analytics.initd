@@ -47,7 +47,15 @@ function daemon_stop() {
 }
 
 daemon_status() {
-    status -p $PID_FILE supervisord
+    declare -f -F status > /dev/null
+    if [ "$?" = "0" ]; then
+        status -p $PID_FILE supervisord
+    else
+        declare -f -F status_of_proc > /dev/null
+        if [ "$?" = "0" ]; then
+            status_of_proc -p $PID_FILE supervisord analytics
+        fi
+    fi
 }
 
 daemon_status_q() {
