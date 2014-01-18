@@ -1,0 +1,14 @@
+Source: contrail-nodemgr
+Maintainer: amoghe <amoghe@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends: debhelper (>= 8)
+
+Package: contrail-nodemgr
+Architecture: all
+Maintainer: amoghe <amoghe@juniper.net>
+Depends: contrail-api-lib
+Section: contrail-nodemgr
+Priority: extra
+Description: Contrail Config API Library package

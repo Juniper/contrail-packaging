@@ -14,6 +14,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-nova-vif-deb \
 	contrail-nodejs-deb \
 	contrail-webui-deb \
+	contrail-nodemgr-deb \
 	ifmap-server-deb \
 	supervisord-deb
 
@@ -45,3 +46,4 @@ contrail-vrouter-deb: contrail-libs-deb
 contrail-config-deb: contrail-config-venv-deb
 contrail-analytics-deb: contrail-analytics-venv-deb
 contrail-webui-deb: contrail-nodejs-deb
+contrail-nodemgr-deb: contrail-api-lib-deb

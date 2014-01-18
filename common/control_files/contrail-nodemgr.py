@@ -169,8 +169,12 @@ class EventManager:
             from vrouter.vrouter.cpuinfo.ttypes import *
 
         if (self.node_type == 'contrail-analytics'):
-            from opserver.sandesh.analytics_cpuinfo.ttypes import *
-            from opserver.sandesh.analytics_cpuinfo.cpuinfo.ttypes import *
+            try:
+                from opserver.sandesh.analytics_cpuinfo.ttypes import *
+                from opserver.sandesh.analytics_cpuinfo.cpuinfo.ttypes import *
+            except:
+                from analytics_cpuinfo.ttypes import *
+                from analytics_cpuinfo.cpuinfo.ttypes import *
 
         # following code is node independent
         process_state_list = []
@@ -357,7 +361,11 @@ def main(argv=sys.argv):
         sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-config'):
-        import discovery.client as client
+        try:
+            import discovery.client as client
+        except:
+            import discoveryclient.client as client
+
         # since this may be a local node, wait for sometime to let collector come up
         import time
         # read discovery client info from config file 
@@ -380,7 +388,11 @@ def main(argv=sys.argv):
         #sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-control'):
-        import discovery.client as client
+        try:
+            import discovery.client as client
+        except:
+            import discoveryclient.client as client
+
         # since this may be a local node, wait for sometime to let collector come up
         import time
         module = Module.CONTROL_NODE_MGR
@@ -395,7 +407,11 @@ def main(argv=sys.argv):
         #sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-vrouter'):
-        import discovery.client as client
+        try:
+            import discovery.client as client
+        except:
+            import discoveryclient.client as client
+
         # since this may be a local node, wait for sometime to let collector come up
         import time
         module = Module.COMPUTE_NODE_MGR
