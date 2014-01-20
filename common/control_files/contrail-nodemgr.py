@@ -384,7 +384,7 @@ def main(argv=sys.argv):
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         sandesh_global.init_generator(module_name, socket.gethostname(), 
             node_type_name, instance_id, [ ], module_name, 
-            8100, ['cfgm_common.sandesh'], _disc)
+            8100, ['cfgm_common.uve'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-control'):
