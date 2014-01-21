@@ -579,6 +579,12 @@ class NightlyBuilder (CommonUtil):
             self.mk_ks ()
             self.update_repo ('-g comps.xml %s' % self.repo_dir)
             self.run_pungi ()
+            self.copy_tools()
+
+    def copy_tools(self):
+        tools = glob.glob('%s/../TOOLS/contrail*.tgz' % self.args.master)
+        for tool in tools:
+        shutil.copy(tool, '%s' % self.store_dir)
 
     def write_new_pkg_list (self):
         self.rpm_list_file=os.path.join (self.store_dir, 'log','file-list-%s' % self.datestr)

@@ -33,15 +33,20 @@ ifdef FILE_LIST
 endif
 G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
 
+ifdef  TAG
+ TOOLS_VERSION := $(CPLANE_SRC_VER)-$(TAG)
+else
+ TOOLS_VERSION := $(CPLANE_SRC_VER)
+endif
 
 $(PPREP):
 	@echo some $(PPREP) work ...
-	[ -d $(BUILD_BASE)/SOURCES ] || mkdir -p $(BUILD_BASE)/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+	[ -d $(BUILD_BASE)/SOURCES ] || mkdir -p $(BUILD_BASE)/{BUILD,RPMS,SOURCES,SPECS,SRPMS,TOOLS}
 
 $(PREP): $(PPREP)
 	@echo some $(PREP) work ...
 	@echo CPLANE_GIT_ROOT = $(CPLANE_GIT_ROOT)
-	[ -d $(BUILD_BASE)/SOURCES ] || mkdir -p $(BUILD_BASE)/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+	[ -d $(BUILD_BASE)/SOURCES ] || mkdir -p $(BUILD_BASE)/{BUILD,RPMS,SOURCES,SPECS,SRPMS,TOOLS}
 
 localpy: $(LOCAL_PY)
 $(LOCAL_PY): $(PPREP)
@@ -102,6 +107,11 @@ all-openstack-client: $(PREP) cinderclient glanceclient keystoneclient novaclien
 contrail-fabric-utils:
 	@echo making rpm for contrail-fabric-utils
 	rpmbuild $(RPMBLDOPTS) fabric-utils.spec $(G_TAG)
+	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-fabric-utils-$(TOOLS_VERSION).tgz fabric-utils
+
+contrail-test:
+	@echo making tgz for contrail-test
+	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz contrail-test
 
 euca2ools:
 	@echo making rpm for euca2ools
@@ -204,7 +214,7 @@ zookeeper: $(PREP)
 	cp $(DISTRO_SRCDIR)/zookeeper/build/contrib/zkpython/*[0-9].rpm $(BUILD_BASE)/RPMS/x86_64/
 
 
-all: $(PREP) all-openstack-client contrail-fabric-utils euca2ools hiredis-py \
+all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
 	libvirt puppet python-bitarray python-geventhttpclient python-pycassa python-thrift \
 	redis-py supervisor webob xmltodict zookeeper ixgbe
