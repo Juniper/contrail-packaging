@@ -4,6 +4,7 @@ SB_TOP := $(PWD:/tools/packaging/common/debian=)
 PACKAGES = contrail-libs-deb \
 	contrail-analytics-venv-deb \
 	contrail-analytics-deb \
+	contrail-dns-deb \
 	contrail-vrouter-deb \
 	contrail-vrouter-init-deb \
 	contrail-config-venv-deb \
