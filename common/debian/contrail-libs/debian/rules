@@ -53,7 +53,6 @@ override_dh_auto_install:
 	install -p -m 755 ${SB_TOP}/build/lib/libboost_system.so.1.48.0 $(buildroot)$(_libdir)/contrail/libboost_system.so.1.48.0
 	install -p -m 755 ${SB_TOP}/build/lib/libboost_python.so.1.48.0 $(buildroot)$(_libdir)/contrail/libboost_python.so.1.48.0
 	install -p -m 755 ${SB_TOP}/build/lib/liblog4cplus-1.1.so.7.0.0 $(buildroot)$(_libdir)/contrail/liblog4cplus-1.1.so.7.0.0
-	install -p -m 755 ${SB_TOP}/controller/src/config/utils/contrail-status $(buildroot)$(_binddir)/contrail-status
 	echo "$(_libdir)/contrail" > $(buildroot)$(_ldconfdir)/contrail-64.conf
 
 get-orig-source:
