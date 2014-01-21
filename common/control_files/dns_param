@@ -4,4 +4,6 @@ IFMAP_USER=control-user
 IFMAP_PASWD=control-user-passwd
 COLLECTOR=127.0.0.1
 COLLECTOR_PORT=8086
+DISCOVERY=127.0.0.1
+HOSTIP=127.0.0.1
 LOGFILE=--log-file=/var/log/contrail/dns.log
