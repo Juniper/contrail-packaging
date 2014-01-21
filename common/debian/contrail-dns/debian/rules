@@ -61,7 +61,7 @@ override_dh_auto_install:
 	install -p -m 755 $(SB_TOP)/build/debug/dns/dnsd $(buildroot)$(_bindir)/dnsd
 	install -p -m 755 $(_srcdir)/rndc.conf $(buildroot)$(_contrailetc)/dns/rndc.conf
 	install -p -m 755 $(_srcdir)/named.conf $(buildroot)$(_contrailetc)/dns/named.conf
-	install -p -m 755 $(_srcdir)/dns_param $(buildroot)$(_contrailetc)/dns/dns_param
+	install -p -m 755 $(_srcdir)/dns_param $(buildroot)$(_contrailetc)/dns_param
 	#install .ini files for supervisord
 	install -p -m 755 $(_srcdir)/supervisord_dns.conf $(buildroot)$(_contrailetc)/supervisord_dns.conf
 	install -p -m 755 $(_srcdir)/contrail-dns.ini $(buildroot)$(_supervisordir)/contrail-dns.ini
