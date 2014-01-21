@@ -16,6 +16,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-nodejs-deb \
 	contrail-webui-deb \
 	contrail-nodemgr-deb \
+	contrail-setup-deb \
 	ifmap-server-deb \
 	supervisord-deb
 
