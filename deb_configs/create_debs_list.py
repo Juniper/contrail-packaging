@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+"""
+Copyright (c) 2014, Juniper Networks, Inc.
+All rights reserved.
+Author : Michael Ganley
+
+Build wrapper script.
+"""
+
 ''' Create Debs list '''
 
 import os
