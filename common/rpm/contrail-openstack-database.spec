@@ -22,7 +22,6 @@ BuildArch: noarch
 
 Requires: contrail-database
 Requires: contrail-api-lib
-Requires: contrail-analytics
 Requires: openstack-quantum-contrail
 Requires: contrail-setup
 
