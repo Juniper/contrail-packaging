@@ -1,0 +1,5 @@
+var/log/quantum
+var/lib/quantum
+etc/quantum
+etc/quantum/rootwrap.d
+etc/quantum/plugins

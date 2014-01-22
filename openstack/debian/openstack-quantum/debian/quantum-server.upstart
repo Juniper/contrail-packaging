@@ -1,0 +1,20 @@
+description "Quantum server"
+author "Chuck Short <zulcss@ubuntu.com>"
+
+start on runlevel [2345]
+stop on runlevel [016]
+
+chdir /var/run
+
+pre-start script
+	mkdir -p /var/run/quantum
+	chown quantum:root /var/run/quantum
+end script
+
+script
+        [ -r /etc/default/quantum-server ] && . /etc/default/quantum-server
+        [ -r "$QUANTUM_PLUGIN_CONFIG" ] && CONF_ARG="--config-file $QUANTUM_PLUGIN_CONFIG"
+        exec start-stop-daemon --start --chuid quantum --exec /usr/bin/quantum-server -- \
+            --config-file /etc/quantum/quantum.conf \
+            --log-file /var/log/quantum/server.log $CONF_ARG
+end script

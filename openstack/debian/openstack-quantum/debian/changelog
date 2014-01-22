@@ -1,0 +1,303 @@
+quantum (2012.2-0ubuntu1) quantal; urgency=low
+
+  [ Chuck Short ]
+  * New upstream release. 
+
+  [ Adam Gandelman ]
+  * debian/cron.d/quantum-{l3, dhcp]-agent-netns-cleanup: Schedule hourly
+    cleanups of leaked Quantum network namespsaces using the
+    quantum-netns-cleanup utility.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 27 Sep 2012 13:19:33 -0500
+
+quantum (2012.2~rc3-0ubuntu1) quantal; urgency=low
+
+  * New upstream release.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Wed, 26 Sep 2012 15:14:31 -0500
+
+quantum (2012.2~rc2-0ubuntu1) quantal; urgency=low
+
+  [ Adam Gandelman ]
+  * debian/quantum-server.{default, upstart}: Use default file to specify
+    path to plugin config, which is passed to quantum-server as
+    '--config-file' during startup. (LP: #1009294)
+  * debian/control:
+    - Remove quantum-server's dependency on 'quantum-plugin'.
+    - Specify >= 1:0.1.0.1-0ubuntu1 requirement for python-quantumclient.
+    - Add dnsmasq dependencies to quantum-dhcp-agent Depends.
+
+  [ Chuck Short ]
+  * New upstream version.
+  * debian/patches/fix-ubuntu-tests.patch: Refreshed.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 21 Sep 2012 13:01:18 -0500
+
+quantum (2012.2~rc1-0ubuntu1) quantal; urgency=low
+
+  [ Adam Gandelman ]
+  * debain/*.postrm: Fix argument-less calls to update-rc.d, redirect
+    to /dev/null.  (LP: #1047560)
+  * debian/quantum-server.upstart: Invoke start-stop-daemon properly.
+    (LP: #1047404)
+  * debain/*.postrm, *.upstart: Ensure files are named for corresponding
+    agent package, not plugin package.
+  * debian/control:
+    - Group agents with plugins.
+    - Fix some copy/paste mistakes.
+    - Set dependencies between agents and corresponding plugins.
+    - Recommend quantum-plugin-openvswitch for quantum-server.
+    - Require the same version of quantum-common and python-quantum.
+    - Add quantum-netns-cleanup utility to quantum-common.
+  * debian/patches/fix-quantum-configuration.patch: Use correct database
+    for linuxbridge plugin, use OVS plugin by default, call quantum-rootwrap
+    correctly. (LP: #1048668)
+  * Fix all use of /usr/sbin, things should go in /usr/bin.
+  * Remove dhcp and l3 plugins, they are not actually plugins.
+  * Rename packages quantum-plugin-{l3, dhcp}-agent to
+    quantum-{l3, dhcp}-agent.
+  * debain/quantum-*-agent.upstart: Specify config files as a
+    parameter to --config-file, specify log files for all.
+  * debian/*.logrotate: Add logrotate configs for server and agents.
+  * Install quantum_sudoers with quantum-common, not quantum-server.
+  * Install rootwrap filters only with the packages that require them.
+  * debian/*-agent.upstart: Specify --config-file=/etc/quantum/quantum.conf
+    in addition to plugin-specific config.  Specify log files for all agents.
+  * Allow group 'adm' read access to /var/log/quantum.
+  * debian/quantum-server.postinst: Drop, all has been moved to quantum-common.
+  * Add packaging for quantum-plugin-nec.
+
+  [ Chuck Short ]
+  * New usptream release.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Wed, 12 Sep 2012 13:41:20 -0500
+
+quantum (2012.2~rc1~20120907.1154-0ubuntu1) quantal; urgency=low
+
+  [ Adam Gandelman ]
+  * debian/control: Add missing python-keystone dependency.
+  * wrap-and-sort.
+
+  [ Chuck Short ]
+  * debian/rules:
+    - Run testsuite on build.
+    - Use get-orig-source.
+    - Add python-amqplib, python-anyjson, python-httplib2, python-iso8601,
+      python-kombu, python-lxml, python-netadr, python-pyudev to build depends
+      and run time deps.
+    - Add python-mock, python-mox, and python-unitest2 to build deps.
+    - Add adduser as a dep to quantum-common.
+  * debian/control: Bump standards version to 3.9.3
+  * debian/quantum-common.install: Add missing configuration files.
+    (LP: #988999)
+  * debian/quantum-plugin-linuxbridge.install: Make isntallable.
+  * Add manpages: gratitously ripped from debian.
+  * Fix up lintian warnings. (LP: #1025203), (LP: #1021921)
+  * Add metaplugin plugin.
+  * debian/patches/fix-namespace.patch: Dropped it was causing
+    python namespace issues.
+    (LP: #1045064)
+  * debian/*.upstart:
+    - Specify configuration file and log directory.
+    - Start on the right transition.
+  * debian/rules:
+    - Allow to disable testsuite.
+    - Dont fail if the testsuite fails.
+  * debian/patches/fix-quantum-configuration.patch: Fix configuration files.
+  * Add packaging for quantum-plugin-l3 and quantum-plugin-l3-agent
+  * Add packaging for quantum-plugin-dhcp-agent and quantum-plugin-dchp-agent
+  * debian/patches/fix-ubuntu-tests.patch: Fix testsuite failures.
+
+  [ Soren Hansen ]
+  * Update debian/watch to account for symbolically named tarballs and
+    use newer URL.
+  * Add python-configobj as a build and run time dependency. Recently added
+    tests need it, and the Cisco plugin has needed it for a while.
+  * Fix Launchpad URLs in debian/watch.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 07 Sep 2012 18:50:09 -0500
+
+quantum (2012.2~f3-0ubuntu1~cloud0) precise-folsom; urgency=low
+
+  * New upstream release.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 17 Aug 2012 10:42:58 -0500
+
+quantum (2012.2~f2-0ubuntu1~cloud0) precise-folsom; urgency=low
+
+  [ Chuck Short ]
+  * New upstream release.
+
+  [ Adam Gandelman ]
+  * debian/control, pydist-overrides: Add python-setuptools-git as a
+    Build-Depends, override as necessary. 
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 06 Jul 2012 12:41:43 -0400
+
+quantum (2012.2~f1-0ubuntu1~cloud0) precise-folsom; urgency=low
+
+  [ Chuck Short ]
+  * New upstream release.
+  * Add missing upsart jobs for agents. 
+  * Add sudo wrapper for quantum-rootwrap. (LP: #999142)
+
+  [ Adam Gandelman ]
+  * debian/control: Fix spacing issues that cause mk-build-deps to fail.
+  * debian/quantum-server.install: Install new plugins config directory
+    instead of old .ini.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 22 Jun 2012 12:49:23 -0400
+
+quantum (2012.1-0ubuntu1) precise; urgency=low
+
+  [Adam Gandelman]
+  * Open precise-folsom-proposed.
+  * Merge with current precise-folsom-folsom-proposed.
+
+  [Chuck Short]
+  * New upstream release.
+  * Add missing upsart jobs for agents. 
+  * Add sudo wrapper for quantum-rootwrap. (LP: #999142)
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 01 Jun 2012 10:26:49 -0400
+
+quantum (2012.1-0ubuntu4) precise; urgency=low
+
+  * debian/control: Add breaks replaces since files have moved around. 
+  * Fix typo in upstart job.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Mon, 23 Apr 2012 11:23:38 -0400
+
+quantum (2012.1-0ubuntu3) precise; urgency=low
+
+  * Split out agents into its own packages. (LP: #979192) 
+    Thanks to Ghe Rivero.
+  * Add upstart job. (LP: #979190)
+  * Fix installation issues. (LP: #979159)
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 12 Apr 2012 13:39:06 -0400
+
+quantum (2012.1-0ubuntu2) precise; urgency=low
+
+  * Fix lintian warnings about empty packages. 
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 06 Apr 2012 22:14:42 -0400
+
+quantum (2012.1-0ubuntu1) precise; urgency=low
+
+  * New upstream release. 
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 05 Apr 2012 11:07:46 -0400
+
+quantum (2012.1~rc2-0ubuntu1) precise; urgency=low
+
+  *  New upstream release: 
+     - debian/quantum-plugin-{ryu,openvswitch}.install: 
+       Install agents.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Tue, 03 Apr 2012 20:29:11 -0400
+
+quantum (2012.1~rc1-0ubuntu5) precise; urgency=low
+
+  * Add missing files. (LP: #972019, LP: #971981, LP: #960731) 
+
+ -- Chuck Short <zulcss@ubuntu.com>  Mon, 02 Apr 2012 20:29:29 -0400
+
+quantum (2012.1~rc1-0ubuntu4) precise; urgency=low
+
+  * Make quantum installable again (LP: #965551):
+    - debian/control: quantum-server depends on quantum-common.
+    - debian/control: Add python-quantumclient dependency.
+    - debian/upstart: Rename and update upstart job.
+    - Fix typos in debian/quantum-common.postinst.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 30 Mar 2012 14:14:42 -0400
+
+quantum (2012.1~rc1-0ubuntu3) precise; urgency=low
+
+  * debian/control: Fix spelling typos. (LP: #960713) 
+
+ -- Paolo Rotolo <paolorotolo@ubuntu-it.org>  Fri, 23 Mar 2012 21:35:54 +0100
+
+quantum (2012.1~rc1-0ubuntu2) precise; urgency=low
+
+  * debian/control: Fix spelling typos.
+  * debian/upstart: Fix typo in upstart job
+  * debian/control: Rename quantum to quantum-server again.
+  * debian/control: Fix empty plugins.
+  * debian/upstart: use start-stop-daemon in upstart job.
+  * debian/patches/fix-namespace.patch: Fix namespace patch
+  * debian/control: Update vcs info. (LP: #960690)
+
+ -- Chuck Short <zulcss@ubuntu.com>  Tue, 20 Mar 2012 13:58:24 -0400
+
+quantum (2012.1~rc1~20120316.764-0ubuntu1) precise; urgency=low
+
+  * New upstream release. 
+  * debian/watch: Watch correct URL
+
+ -- Adam Gandelman <adamg@canonical.com>  Fri, 16 Mar 2012 12:04:48 -0700
+
+quantum (2012.1~e4-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+  * debian/rules: Take in account the new build changes.
+  * debian/quantum-server.install: Install the right files due to 
+    build changes.
+  * Client no longer is a part of quantum.
+  * debian/control: Add python-lxml
+  * Add ryu and niciria plugins.
+  * debian/rules: Run right tests script.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Mon, 05 Mar 2012 09:47:22 -0500
+
+quantum (2012.1~e2+git20120112-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+  * debian/rules: 
+    - Fix git snapshot creation.
+    - Fix running test suite during the build.
+  * debian/control: Add adduser for quantum-server.
+  * debian/quantum-plugin-{cisco,openvswitch}.install: Install
+    everything needed for the plugins.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 12 Jan 2012 04:19:33 -0500
+
+quantum (2012.1~e2-0ubuntu2) precise; urgency=low
+
+  * debian/control: Build for architecture all. 
+
+ -- Chuck Short <zulcss@ubuntu.com>  Mon, 19 Dec 2011 10:28:16 -0500
+
+quantum (2012.1~e2-0ubuntu1) precise; urgency=low
+
+  * New upstream release. 
+  * debian/rules: Add alternate get-orig-source.
+  * debian/patches/fix-version.patch: Removed no longer needed.
+  * Fix lintian warnings.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 16 Dec 2011 15:26:41 -0500
+
+quantum (2012.1~e2~20111209.f8152-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+  * debian/rules, debian/README.Source: Add support fo generating
+    new tarballs from git since tarball snapshots are not available
+    from jenkins yet.
+  * debian/rules: Update for new build system.
+  * debian/rules: Clean up files when running clean.
+  * debian/quantum-server.install, debian/quantum-server.dirs, 
+    debian/quantum-plugins.*: Update for build system changes.
+  * debian/quantum-server.postinst: Fix user creation.
+  * debian/rules: Enable testsuite when building.
+  * Fix lintian errors (LP: #899352)
+  * debian/patches/fix-quantum-version.patch: Fix generating *.pyc
+    when trying to build.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 09 Dec 2011 15:31:35 -0500
+
+quantum (2012.1~e1-0ubuntu1) precise; urgency=low
+
+  * Initial release.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 18 Nov 2011 15:29:53 -0500

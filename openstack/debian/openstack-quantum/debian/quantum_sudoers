@@ -1,0 +1,3 @@
+Defaults:quantum !requiretty
+
+quantum ALL = (root) NOPASSWD: /usr/bin/quantum-rootwrap
