@@ -4,6 +4,7 @@
 %define         _servicedir  /usr/lib/systemd/system
 %define         _supervisordir /etc/contrail/supervisord_vrouter_files
 %define         _distropkgdir tools/packaging/common/control_files
+%define         _controllersrcdir controller/src 
 
 %if 0%{?_kernel_dir:1}
 %define         _osVer	%(cat %{_kernel_dir}/include/linux/utsrelease.h | cut -d'"' -f2)
@@ -162,8 +163,8 @@ install -d -m 755 %{buildroot}%{_venv_root}
 install -d -m 755 %{buildroot}%{_venv_root}/bin
 
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
-install -p -m 755 src/vnsw/agent/uve/mock_generator.py %{buildroot}%{_venv_root}/bin/mock_generator
-install -p -m 755 src/vnsw/agent/uve/run_mock_generator %{buildroot}%{_venv_root}/bin/run_mock_generator
+install -p -m 755 %{_controllersrcdir}/vnsw/agent/uve/mock_generator.py %{buildroot}%{_venv_root}/bin/mock_generator
+install -p -m 755 %{_controllersrcdir}/vnsw/agent/uve/run_mock_generator %{buildroot}%{_venv_root}/bin/run_mock_generator
 
 mkdir -p build/python_dist
 pushd build/python_dist
