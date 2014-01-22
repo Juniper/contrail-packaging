@@ -1,2 +1,2 @@
-etc/quantum/plugins/juniper/contrail/* etc/quantum/plugins/juniper/contrail
+etc/quantum/plugins/contrail/* etc/quantum/plugins/contrail
 
