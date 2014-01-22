@@ -1,0 +1,8 @@
+etc/api-paste.ini etc/quantum
+etc/policy.json etc/quantum
+etc/quantum.conf etc/quantum
+etc/rootwrap.conf etc/quantum
+bin/quantum-rootwrap usr/bin
+bin/quantum-netns-cleanup usr/bin
+debian/quantum_sudoers etc/sudoers.d
+
