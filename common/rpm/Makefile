@@ -33,12 +33,12 @@ G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
 
 $(PPREP):
 	@echo some $(PPREP) work ...
-	[ -d $(BUILD_SRC) ] || mkdir -p $(BUILD_BASE)/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+	mkdir -p $(BUILD_BASE)/{BUILD,RPMS,SOURCES,SPECS,SRPMS,TOOLS}
 
 $(PREP): $(PPREP)
 	@echo some $(PREP) work ...
 	@echo CPLANE_GIT_ROOT = $(CPLANE_GIT_ROOT)
-	[ -d $(BUILD_SRC) ] || mkdir -p $(BUILD_BASE)/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+	mkdir -p $(BUILD_BASE)/{BUILD,RPMS,SOURCES,SPECS,SRPMS,TOOLS}
 
 localpy: $(LOCAL_PY)
 $(LOCAL_PY): $(PPREP)
