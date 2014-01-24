@@ -129,5 +129,7 @@ package-quantum: $(PREP)
 
 all: $(PREP) auth cinder glance horizon keystone nova quantum
 
+openstack-all: $(PREP) auth cinder glance horizon keystone nova quantum
+
 clean:
 	@echo clean

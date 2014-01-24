@@ -199,6 +199,11 @@ all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail
 	contrail-setup contrail-openstack-all contrail-webui contrail-nodejs venv-packages \
 	contrail-database
 
+contrail-all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
+	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
+	contrail-setup contrail-openstack-all contrail-webui contrail-nodejs venv-packages \
+	contrail-database
+
 clean:
 	@echo clean
 
