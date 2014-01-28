@@ -94,6 +94,23 @@ function insert_vrouter() {
     return 0
 }
 
+function create_virtual_gateway() {
+
+    echo "$(date): Adding intreface vgw for virtual gateway"
+    #    sysctl -w net.ipv4.ip_forward=1
+    echo 1 > /proc/sys/net/ipv4/ip_forward
+    vif --create vgw --mac 00:01:00:5e:00:00
+    if [ $? != 0 ]
+    then
+        echo "$(date): Error adding intreface vgw"
+    fi
+ 
+    ifconfig vgw up
+    vgw_subnet=$vgw_subnet_ip"/"$vgw_subnet_mask
+    route add -net $vgw_subnet dev vgw
+    
+}
+
 lsmod |grep vrouter &>> $LOG
 if [ $? != 0 ]
 then
@@ -102,3 +119,11 @@ then
 else
     echo "$(date): vrouter module already inserted." &>> $LOG
 fi
+
+ echo "$(date): Value $vgw_subnet_ip" &>> $LOG
+if [ $vgw_subnet_ip != __VGW_SUBNET_IP__ ] 
+then
+    echo "$(date): Creating VGW Intreface as VGW Subnet is present" &>> $LOG
+    create_virtual_gateway &>>$LOG
+fi
+
