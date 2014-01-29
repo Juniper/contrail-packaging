@@ -119,7 +119,7 @@ class Repo (CommonUtil):
 	    for arch in ('x86_64', 'noarch'):
 		for f in self.rpm_list_by_pattern (pk, os.path.join (
 		    os.path.expanduser('~'), 'rpmbuild', 'RPMS', arch,
-			  "%s*-%s.*.rpm" % (pk, tag))):
+			  "%s*%s*.rpm" % (pk, tag))):
 		    printlog.info('rpm = %s' % f)
 		    blist.append ((pk, f))
         for pk, f in blist:
