@@ -108,6 +108,7 @@ function create_virtual_gateway() {
     ifconfig vgw up
     vgw_subnet=$vgw_subnet_ip"/"$vgw_subnet_mask
     route add -net $vgw_subnet dev vgw
+    openstack-config --set /etc/nova/nova.conf DEFAULT firewall_driver nova.virt.firewall.NoopFirewallDriver
     
 }
 
