@@ -208,13 +208,7 @@ class NightlyBuilder (CommonUtil):
             ["python-boto"],
             branch='2.12.0'),
     ]
-    if 'fedora' in platform.dist()[0]:
-        package_list.append(
-            Repo ("libvirt",
-                "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
-                ["libvirt", 'libvirt-client', 'libvirt-python',
-                 'libvirt-debuginfo', 'libvirt-daemon',
-                 'libvirt-daemon-config-nwfilter', 'libvirt-daemon-config-network']))
+    if platform.dist()[0] in ['fedora', 'redhat']:
         package_list.append(
             Repo ("ctrlplane",
                 "ssh://git@bitbucket.org/contrail_admin/ctrlplane",
@@ -242,6 +236,21 @@ class NightlyBuilder (CommonUtil):
                 'contrail-openstack', 'contrail-openstack-control', 'contrail-openstack-vrouter',
                 'contrail-openstack-storage',
                 'contrail-openstack-webui', 'contrail-api-lib', 'contrail-api-extension', 'contrail-openstack-database']))
+
+    if 'redhat' in platform.dist()[0]:
+        package_list.append(
+            Repo ("libvirt",
+                 "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
+                ["libvirt", 'libvirt-client', 'libvirt-python',
+                 'libvirt-debuginfo']))
+
+    if 'fedora' in platform.dist()[0]:
+        package_list.append(
+            Repo ("libvirt",
+                "ssh://git@bitbucket.org/contrail_admin/libvirt.git",
+                ["libvirt", 'libvirt-client', 'libvirt-python',
+                 'libvirt-debuginfo', 'libvirt-daemon',
+                 'libvirt-daemon-config-nwfilter', 'libvirt-daemon-config-network']))
 
     def __init__ (self, args = ''):
         if not isinstance(args, str):
