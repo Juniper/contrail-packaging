@@ -5,6 +5,6 @@ Priority: optional
 
 Package: contrail-vrouter-init
 Architecture: all
-Depends: contrail-vrouter, supervisor
+Depends: contrail-vrouter, supervisor, contrail-setup
 Priority: optional
 Description: OpenContrail compute-node startup and monitoring scripts.
