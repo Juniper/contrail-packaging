@@ -7676,7 +7676,14 @@ packages = {
                     'url': None,
                     'version': '1.2.11',
                     }},
-
+    'haproxy': {    'el6':  { 'arch': 'x86_64',
+                              'default-repo': '/var/www/html/third_party_repo',
+                              'filename': 'haproxy-1.4.8-1.el6.x86_64.rpm',
+                              'release': '1.el6',
+                              'repos': {'/var/www/html/third_party_repo': [ 'haproxy-1.4.8-1.el6.x86_64.rpm' ]},
+                              'summary': 'HA-Proxy is a TCP/HTTP reverse proxy for high availability environments',
+                              'url': None,
+                              'version': '1.4.8',}},
 }
 
 def find_distro ():
