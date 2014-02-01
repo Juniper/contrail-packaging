@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-control
 Architecture: amd64
 Maintainer: swamy <swamy@juniper.net>
-Depends: supervisor, contrail-libs, contrail-dns, contrail-nodemgr, contrail-setup
+Depends: contrail-libs
 Section: contrail-control
 Priority: extra
 Description: Control node package
