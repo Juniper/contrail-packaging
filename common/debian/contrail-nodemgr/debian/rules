@@ -13,6 +13,7 @@ export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := ${SB_TOP}/build/debian/contrail-nodemgr
 export _python_dist := ${SB_TOP}/build/python_dist
 export _bindir := /usr/bin
+export _contrailetc := /etc/contrail
 
 BUILDTAG =
 ifdef TAG
@@ -39,3 +40,6 @@ override_dh_auto_install:
 	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/control-node/dist/Control-Node-0.1dev.tar.gz; cd Control-Node-0.1dev; python setup.py install --root=${buildroot} --install-layout=deb)
 	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/vnsw/agent/uve/dist/vrouter-0.1dev.tar.gz; cd vrouter-0.1dev; python setup.py install --root=${buildroot} --install-layout=deb)
 	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/opserver/node_mgr/dist/node_mgr-0.1dev.tar.gz; cd node_mgr-0.1dev; python setup.py install --root=${buildroot} --install-layout=deb)
+#	install etc files
+	install -d -m 755 $(buildroot)$(_contrailetc)
+	install -p -m 644 ${SB_TOP}/tools/packaging/common/control_files/vrouter_nodemgr_param $(buildroot)$(_contrailetc)/vrouter_nodemgr_param
