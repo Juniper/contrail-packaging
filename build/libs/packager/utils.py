@@ -167,7 +167,8 @@ class Utils(object):
     def create_tgz(filename, srcdir, untar_as=''):
         ''' create a compressed tar file from the given directory
         '''
-        log.info('Create tgz file (%s) from Dir (%s)' %(filename, srcdir))
+        log.info('Create tgz file (%s) from Dir (%s) and to untar as (\'%s\')' %(
+                 filename, srcdir, untar_as))
         tar = tarfile.open(filename, 'w:gz')
         tar.add(srcdir, arcname=untar_as)
         tar.close()

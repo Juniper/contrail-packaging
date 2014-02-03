@@ -99,7 +99,8 @@ class BasePackager(Utils):
         if self.contrail_pkg_dir:
             # update make targets if contrail dir is supplied
             for target in self.contrail_pkgs.keys():
-                if target in self.targets:
+                if target in self.targets or \
+                   target == 'contrail-install-packages':
                     continue
                 self.contrail_pkgs[target]['builtloc'] = self.contrail_pkg_dir
 
