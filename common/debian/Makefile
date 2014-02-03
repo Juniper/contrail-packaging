@@ -19,12 +19,12 @@ PACKAGES = contrail-libs-deb \
 	contrail-setup-deb \
 	ifmap-server-deb \
 	supervisord-deb \
-	contrail-openstack-analytics \
+	contrail-openstack-analytics-deb \
 	contrail-openstack-config-deb \
 	contrail-openstack-deb \
 	contrail-openstack-control-deb \
 	contrail-openstack-vrouter-deb \
-	contrail-openstack-webui
+	contrail-openstack-webui-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -59,5 +59,5 @@ contrail-nodemgr-deb: contrail-api-lib-deb
 contrail-openstack-config-deb: contrail-config-deb
 contrail-openstack-control-deb: contrail-control-deb
 contrail-openstack-vrouter-deb: contrail-vrouter-deb
-contrail-openstack-webui-deb: contrail-webui-deb
 contrail-openstack-analytics-deb: contrail-analytics-deb
+contrail-openstack-webui-deb: contrail-webui-deb
