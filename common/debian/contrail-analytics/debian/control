@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-analytics
 Architecture: amd64
 Maintainer: Chandan <cdmishra@juniper.net>
-Depends: redis-server, python-redis, contrail-analytics-venv, contrail-libs
+Depends: redis-server (>= 2.6.13-1), python-redis, contrail-analytics-venv, contrail-libs
 Section: contrail-analytics
 Priority: extra
 Description: Contrail analytics package
