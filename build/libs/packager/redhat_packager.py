@@ -19,7 +19,7 @@ class Packager(BasePackager):
         self.create_tgz(self.pkgs_tgz, self.pkg_repo)
         self.create_contrail_pkg()
         self.verify_built_pkgs_exists(['contrail-install-packages'])        
-        self.copy_built_pkg_files(self.store, ['contrail-install-packages'])
+        self.copy_built_pkg_files([self.store, self.pkg_repo], ['contrail-install-packages'])
         self.copy_pkg_files(self.base_pkgs, self.pkg_repo)
         self.create_log()
         self.create_git_ids()
