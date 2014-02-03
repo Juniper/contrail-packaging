@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo "Running Postinst for contrail-database"
+sudo service cassandra stop
+sudo rm -rf /var/lib/cassandra/
+sudo rm -rf /etc/init.d/cassandra
+echo "Postinst for contrail-database done"
