@@ -59,3 +59,5 @@ contrail-nodemgr-deb: contrail-api-lib-deb
 contrail-openstack-config-deb: contrail-config-deb
 contrail-openstack-control-deb: contrail-control-deb
 contrail-openstack-vrouter-deb: contrail-vrouter-deb
+contrail-openstack-webui-deb: contrail-webui-deb
+contrail-openstack-analytics-deb: contrail-analytics-deb
