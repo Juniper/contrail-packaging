@@ -19,6 +19,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-setup-deb \
 	ifmap-server-deb \
 	supervisord-deb \
+	contrail-openstack-analytics \
 	contrail-openstack-config-deb \
 	contrail-openstack-deb \
 	contrail-openstack-control-deb \
