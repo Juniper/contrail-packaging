@@ -22,7 +22,6 @@ PACKAGES = contrail-libs-deb \
 	contrail-openstack-config-deb \
 	contrail-openstack-deb \
 	contrail-openstack-control-deb \
-	contrail-openstack-database-deb \
 	contrail-openstack-vrouter-deb \
 	contrail-openstack-webui
 
