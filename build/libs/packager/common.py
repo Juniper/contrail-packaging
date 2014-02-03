@@ -42,8 +42,8 @@ class BasePackager(Utils):
         self.pkg_type              = pkg_types[self.platform]
         self.pkg_repo              = os.path.join(self.store, 'pkg_repo')
         self.store_log_dir         = os.path.join(self.store, 'log')
-        self.cont_pkgs_dir         = os.path.join(self.store, 'contrail_packages')
-        self.pkgs_tgz              = os.path.join(self.cont_pkgs_dir, 
+        self.contrail_pkgs_store   = os.path.join(self.store, 'contrail_packages')
+        self.pkgs_tgz              = os.path.join(self.contrail_pkgs_store,
                                                   'contrail_%ss.tgz' %self.pkg_type)
         self.packager_dir          = os.getcwd()
         self.contrail_pkgs_tgz     = os.path.join(self.packager_dir, \
@@ -69,7 +69,7 @@ class BasePackager(Utils):
         # create dirs
         self.create_dir(self.store)
         self.create_dir(self.pkg_repo)
-        self.create_dir(self.cont_pkgs_dir)
+        self.create_dir(self.contrail_pkgs_store)
         self.create_dir(self.store_log_dir)
 
         # Update make location with git local repo
@@ -262,11 +262,12 @@ class BasePackager(Utils):
             tgz files
         '''
         # create contrail_packages_(id).tgz
-        shutil.copy2('setup.sh', self.cont_pkgs_dir)
-        shutil.copy2('README', self.cont_pkgs_dir)
-        with open(os.path.join(self.cont_pkgs_dir, 'VERSION'), 'w') as fid:
+        shutil.copy2('setup.sh', self.contrail_pkgs_store)
+        shutil.copy2('README', self.contrail_pkgs_store)
+        with open(os.path.join(self.contrail_pkgs_store, 'VERSION'), 'w') as fid:
             fid.writelines('BUILDID=%s\n' %self.id)
-        self.create_tgz(self.contrail_pkgs_tgz, self.cont_pkgs_dir)
+        self.create_tgz(self.contrail_pkgs_tgz, self.contrail_pkgs_store,
+                        os.path.basename(self.contrail_pkgs_store))
         #make contrail-install-packages
         pkg = 'contrail-install-packages'
         pkginfo = self.contrail_pkgs[pkg]
