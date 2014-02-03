@@ -24,9 +24,6 @@ sys.path.append(os.path.abspath(os.path.join('libs', 'packager')))
 PLATFORM = platform.dist()[0].lower()
 packager = __import__('%s_packager'%PLATFORM)
 
-# Define except hook to redirect all erros to file
-sys.excepthook = lambda tp, v, tb: log.error('ERROR', exc_info=(tp,v,tb))
-
 log = logging.getLogger("pkg.%s" %__name__)
 
 class PackagerArgParser(Utils):
@@ -44,11 +41,14 @@ class PackagerArgParser(Utils):
     @staticmethod
     def is_file_exists(filename):
         if not os.path.isfile(filename):
-            raise RuntimeError('file (%s) doesnot exists' %filename)
+            raise RuntimeError('file (%s) does not exists' %filename)
         return filename
 
-    def validate_args(self):
-        self.is_file_exists(self.cliargs['config'])
+    @staticmethod
+    def is_dir_exists(dirname):
+        if not os.path.isdir(dirname):
+            raise RuntimeError('Directory (%s) does not exists' %dirname)
+        return dirname
 
     def set_cli_defaults(self):
         usrname = getpass.getuser()
@@ -68,7 +68,7 @@ class PackagerArgParser(Utils):
         
         self.defaults = {
             'build_id'              : random.randint(1000, 9999),  
-            'build_name'            : 'contrail',     
+            'iso_prefix'            : 'contrail',     
             'store_dir'             : os.path.join(usrhome, '%s_{id}' %usrname, 'store'),
             'package_dir'           : None,
             'contrail_package_dir'  : None,
@@ -82,6 +82,7 @@ class PackagerArgParser(Utils):
             'log_config'            : os.path.join(cwd, 'logger', 'logging.cfg'),
             'git_local_repo'        : git_local_repo,
             'comps_xml_template'    : comps_xml.template,
+            'default_targets'       : ['thirdparty-all', 'openstack-all', 'contrail-all'],
         }
   
     def parse(self):
@@ -90,7 +91,7 @@ class PackagerArgParser(Utils):
                                          parents=[self.parser])
         cfg_file_defaults = self.parse_cfg_file(self.cfg_file)
         parser.set_defaults(**self.defaults)
-        parser.set_defaults(**cfg_file_defaults)
+        parser.set_defaults(**cfg_file_defaults['config'])
         ns_cliargs = parser.parse_args(self.unparsed_args)
         # Update store dir
         ns_cliargs.store_dir = ns_cliargs.store_dir.format(id=ns_cliargs.build_id)
@@ -107,13 +108,14 @@ class PackagerArgParser(Utils):
     def define_args(self):
         ''' Define arguments for packager script '''
         cparser = argparse.ArgumentParser(add_help=False)
-        cparser.add_argument('--config',
+        cparser.add_argument('--config', '-c',
                              action='store',
                              default=os.path.abspath('config.cfg'),
                              help='Config File for the Packager')
         file_ns, rargs = cparser.parse_known_args(self.unparsed_args)
         self.cfg_file = file_ns.config
-        aparser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
+        aparser = argparse.ArgumentParser(parents=[cparser],
+                                          formatter_class=argparse.RawDescriptionHelpFormatter,
                                           description=self.desc)
         aparser.add_argument('--version', '-v',
                              action='version',
@@ -122,35 +124,41 @@ class PackagerArgParser(Utils):
         aparser.add_argument('--build-id', '-i',
                              action='store',
                              help='Build ID of the new packages')
+        aparser.add_argument('--iso-prefix', '-n',
+                             action='store',
+                             help='Prefix name of the ISO image')
         aparser.add_argument('--store-dir', '-s',
                              action='store',
                              help='Directory Location to which new packages be saved')
-        aparser.add_argument('--package-dir', '-r',
+        aparser.add_argument('--package-dir', '-p',
                              action='store',
+                             type=lambda fn: self.is_dir_exists(fn),
                              help='Directory Location where OS and third party packages\
                                    are available')
-        aparser.add_argument('--contrail-package-dir', '-cr',
+        aparser.add_argument('--contrail-package-dir', '-P',
                              action='store',
+                             type=lambda fn: self.is_dir_exists(fn),
                              help='Directory Location where pre-maked Contrail packages\
                                    are available')
-        aparser.add_argument('--base-package-file', '-bf',
+        aparser.add_argument('--base-package-file', '-b',
                              action='store',
                              type=lambda fn: self.is_file_exists(fn),
                              help='Config files specifying base packages info')
-        aparser.add_argument('--depends-package-file', '-df',
+        aparser.add_argument('--depends-package-file', '-d',
                              action='store',
                              type=lambda fn: self.is_file_exists(fn),
                              help='Config files specifying dependant pacakges info')
-        aparser.add_argument('--contrail-package-file', '-cf',
+        aparser.add_argument('--contrail-package-file', '-f',
                              action='store',
                              type=lambda fn: self.is_file_exists(fn),
                              help='Config files specifying Contrail packages info')
-        aparser.add_argument('--make-targets',
+        aparser.add_argument('--make-targets', '-t',
                              action='store',
                              nargs='+',
                              help='List of Contrail make targets to build')
-        aparser.add_argument('--make-targets-file',
+        aparser.add_argument('--make-targets-file', '-T',
                              action='store',
+                             type=lambda fn: self.is_file_exists(fn),
                              help='Line seperated text file containing list of \
                                    make targets')
         aparser.parse_args(self.unparsed_args)
@@ -158,9 +166,11 @@ class PackagerArgParser(Utils):
 
 
 ######## MAIN ##############
-
 args = PackagerArgParser(__doc__, VERSION, sys.argv[1:])
 args.parse()
+
+# Define except hook to redirect all erros to file
+sys.excepthook = lambda tp, v, tb: log.error('ERROR', exc_info=(tp,v,tb))
 
 log.info('Received CLI: %s' %" ".join(sys.argv))
 log.info('')

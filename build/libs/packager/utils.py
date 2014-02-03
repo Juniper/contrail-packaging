@@ -15,6 +15,7 @@ import logging
 import fnmatch
 import operator
 import tempfile
+import itertools
 import subprocess
 
 from ConfigParser import SafeConfigParser
@@ -31,6 +32,15 @@ class Utils(object):
             log.debug('Dir %s exists' %dirname)
         return dirname
 
+    @staticmethod
+    def copyfiles(files, dirs):
+        files = [files] if type(files) is str else files
+        dirs  = [dirs] if type(dirs) is str else dirs
+        copyiter = itertools.product(files, dirs)
+        for item in copyiter:
+            log.debug('Copying ({0}) to dir ({1})'.format(*item))
+            shutil.copy(*item)
+            
     def read_async(self, fd):
         '''read data from a file descriptor, ignoring EAGAIN errors'''
         try:
@@ -105,17 +115,18 @@ class Utils(object):
     @staticmethod
     def rtrv_lsv_file_info(fname):
         ''' read given file and create a line with every line as list element '''
-        rlist = []
+        file_info_list = []
         if fname and os.path.isfile(fname) and\
            os.lstat(fname).st_size != 0:
             with open(fname, 'r') as fid:
-                rlist = fid.read().split('\n')
-        return rlist
+                file_info_list = fid.read().split('\n')
+        return file_info_list
 
     @staticmethod
     def get_file_list(dirs, pattern, recursion=True):
         ''' get a list of files that matches given pattern '''
         filelist = []
+        dirs = [dirs] if type(dirs) is str else dirs
         for dirname in dirs:
             if recursion:
                 for dir, sdir, flist in os.walk(dirname):
@@ -293,9 +304,9 @@ class Utils(object):
             raise ImportError('Unable to import "%s" file.\nERROR: %s' %(cfile_name, err))
         return cfgfile
 
-    def copy_pkg_files(self, pkginfo, destdir, error=True):
+    def copy_pkg_files(self, pkginfo, destdirs, error=True):
         ''' copy the packages present in location specified in package data structure
-            to given destination directory
+            to given destination directories
         '''
         for pkg in pkginfo.keys():
             if pkginfo[pkg]['found_at'] == '':
@@ -304,12 +315,11 @@ class Utils(object):
                 else:
                     log.warn('Info about package file for Package (%s) is not found' %pkg)
             pkgfile = pkginfo[pkg]['found_at']
-            log.debug('Copying (%s) to Dir (%s)' %(pkgfile, destdir))
-            shutil.copy(pkgfile, destdir)
+            self.copyfiles(pkgfile, destdirs)
 
-    def copy_built_pkg_files(self, destdir, targets=None, skips=None, error=True):
+    def copy_built_pkg_files(self, destdirs, targets=None, skips=None, error=True):
         ''' copy the contrail packages present in location specified in 
-            package data structure to given destination directory
+            package data structure to given destination directories
         '''
         targets = targets if targets else self.contrail_pkgs.keys()
         targets = list(set(targets) - set(skips)) if skips else targets     
@@ -323,5 +333,4 @@ class Utils(object):
                     else:
                         log.warn('Info about package file for Package (%s) is not found' %pkg)
                 pkgfile = self.contrail_pkgs[each]['found_at'][pkg]
-                log.debug('Copying (%s) to Dir (%s)' %(pkgfile, destdir))
-                shutil.copy(pkgfile, destdir)
+                self.copyfiles(pkgfile, destdirs)
