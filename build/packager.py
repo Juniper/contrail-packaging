@@ -128,9 +128,9 @@ class PackagerArgParser(Utils):
         aparser.add_argument('--build-id', '-i',
                              action='store',
                              help='Build ID of the new packages')
-        aparser.add_argument('--build-tag',
+        aparser.add_argument('--sku',
                              action='store',
-                             help='Build ID of the new packages')
+                             help='Specify Openstack release')
         aparser.add_argument('--iso-prefix', '-n',
                              action='store',
                              help='Prefix name of the ISO image')
