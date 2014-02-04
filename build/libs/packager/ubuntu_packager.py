@@ -10,9 +10,6 @@ log = logging.getLogger("pkg.%s" %__name__)
 
 class Packager(BasePackager):
     ''' Ubuntu Packager '''
-    def get_pkg_file_info(self, pkgfile, *infolist):
-        self.get_deb_file_info(pkgfile, *infolist)
-
     def ks_build(self):
         self.setup_env()
         self.make_pkgs()

@@ -8,6 +8,7 @@ import rpm
 import copy
 import fcntl
 import errno
+import Queue
 import select
 import shutil
 import tarfile
@@ -101,7 +102,7 @@ class Utils(object):
         if proc.returncode != 0:
             log.error('Cmd: %s; **FAILED**' %cmd)
             raise RuntimeError('Cmd: %s; **FAILED**' %cmd)
-
+        
     @staticmethod
     def str_to_list(tstr, force=False):
         ''' convert string separated with comma into a list '''
@@ -122,6 +123,32 @@ class Utils(object):
                 file_info_list = fid.read().split('\n')
         return file_info_list
 
+    def get_md5(self, files):
+        md5dict = {}
+        if files is None or len(files) == 0:
+            return
+        files = [files] if type(files) is str else files
+        for filename in files:
+            if not os.path.isfile(filename):
+                raise RuntimeError('File (%s) is not present' %filename)
+            md5out = self.exec_cmd_out('md5sum %s' %filename)
+            md5dict[filename] = md5out[0].split()[0]
+        return md5dict
+
+    def check_package_md5(self, pkginfo):
+        for pkg in pkginfo.keys():
+            pkgfile = self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'])
+            pkgfile = self.get_latest_file(pkgfile)
+            actual_md5 = self.get_md5(pkgfile)
+            print actual_md5
+            if actual_md5 is None:
+                raise RuntimeError('MD5 checksum is empty for file (%s)' %pkgfile)
+            if pkginfo[pkg]['md5'] != actual_md5[pkgfile]:
+                raise RuntimeError('MD5 Checksum validation for Package (%s) failed' %(
+                                    pkgfile))
+            else:
+                pkginfo[pkg]['found_at'] = pkgfile
+            
     @staticmethod
     def get_file_list(dirs, pattern, recursion=True):
         ''' get a list of files that matches given pattern '''
@@ -159,8 +186,14 @@ class Utils(object):
         ''' get the latest file based on creation time from the 
             given list of files
         '''
+        if len(filelist) == 0:
+            return
+        filelist = [filelist] if type(filelist) is str else filelist
         ctime = operator.attrgetter('st_ctime')
         filestats = map(lambda fname: (ctime(os.lstat(fname)), fname), filelist)
+        if len(filestats) == 0:
+            raise RuntimeError('File list is empty; file list (%s) for given filelist (%s)' %(
+                                filestats, filelist))
         return sorted(filestats)[-1][-1]
 
     @staticmethod
@@ -263,35 +296,6 @@ class Utils(object):
             else:
                 pkgfiles_filtered.append(pkgfile)
         return pkgfiles_filtered
-
-    def verify_pkgs_exists(self, pkginfo):
-        ''' check if the given package is present in location
-            specified in package data structure
-        '''
-        missing = []
-        for pkg in pkginfo.keys():
-            verifylist = pkginfo[pkg]['verifylist']
-            pattern = pkginfo[pkg]['pattern'].format(pkg=pkg)
-            locs = pkginfo[pkg]['location']
-            if type(locs) is str:
-                locs = [locs]       
-            log.debug('Verify PKG (%s) is present in Directories (%s)' %(pkg, locs))
-            pkgfiles = self.get_file_list(locs, pattern)
-            if len(pkgfiles) == 0:
-                log.error('Missing PKG (%s)' %pkg)
-                missing.append(pkg)
-            else:
-                f_pkgfiles = self.filter_pkg_file(pkg, pkgfiles, pkginfo[pkg], *verifylist)
-                if len(f_pkgfiles) == 0:
-                    log.error('Missing PKG (%s)' %pkg)
-                    missing.append(pkg)
-                else:
-                    pkgfile = self.get_latest_file(f_pkgfiles)
-                    log.debug(pkgfile)
-                    pkginfo[pkg]['found_at'] = pkgfile
-        if len(missing) != 0:
-            log.error('Required PKGs are missing: \n%s' %"\n".join(missing))
-            raise IOError('One or More PKGs are not found')
 
     def import_file(self, cfile):
         ''' import a module based on its absolute path '''

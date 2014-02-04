@@ -26,7 +26,8 @@ class BasePackager(Utils):
         self.depends_pkg_files     = kwargs['depends_package_file']
         self.cont_pkg_files        = kwargs['contrail_package_file']
         self.id                    = kwargs.get('build_id', 999)
-        self.store                 = kwargs['store_dir'].format(id=self.id)
+        store                      = kwargs['store_dir'].format(id=self.id)
+        self.store                 = os.path.join(store, self.id)
         self.iso_prefix            = kwargs.get('iso_prefix', getpass.getuser())
         self.pkg_dir               = kwargs['package_dir']
         self.contrail_pkg_dir      = kwargs.get('contrail_package_dir', None)
@@ -124,8 +125,8 @@ class BasePackager(Utils):
             self.targets = self.default_targets
                     
         # OS PKGs and Depends PKGs
-        self.verify_pkgs_exists(self.base_pkgs)
-        self.verify_pkgs_exists(self.depends_pkgs)
+        self.check_package_md5(self.base_pkgs)
+        self.check_package_md5(self.depends_pkgs)
         self.copy_pkg_files(self.depends_pkgs, self.pkg_repo)
 
     def make_pkgs(self):
