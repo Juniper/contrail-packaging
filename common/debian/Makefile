@@ -42,8 +42,8 @@ contrail-install-packages-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
 	mkdir -p ${BUILDDIR}
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-install-packages/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-	@echo "Wrote: ${BUILDDIR}/../contrail-install-packages_*_all.deb"
+	(cd ${BUILDDIR}; fakeroot debian/rules binary && mv ../contrail-install-packages_*_all.deb ../debian/)
+	@echo "Wrote: ${BUILDDIR}/../debian/contrail-install-packages_*_all.deb"
 
 contrail-install-packages-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
