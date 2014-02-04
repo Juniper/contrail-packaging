@@ -61,24 +61,25 @@ class PackagerArgParser(Utils):
         pkg_file_dir = os.path.join(cwd, 'pkg_configs')
         base_pkg_file = 'base_%s_pkgs.cfg' %("_".join(dist[:2]))
         deps_pkg_file = 'depends_%s_pkgs.cfg' %("_".join(dist[:2]))
-        cont_pkg_file = '%s_packages.cfg' %dist[0]
+        cont_pkg_file = 'contrail_packages.cfg'
         usrhome = os.path.expanduser('~')
         cmd = os.popen('repo info contrail-controller | grep "Mount path"|cut -f3 -d" "')
         git_local_repo = os.path.dirname(cmd.read().strip('\n'))
+        sku = 'grizzly'
 
         
         self.defaults = {
             'build_id'              : random.randint(1000, 9999), 
-            'sku'                   : 'grizzly',
+            'sku'                   : sku,
             'branch'                : None, 
             'iso_prefix'            : 'contrail',     
             'store_dir'             : os.path.join(usrhome, '%s_{id}' %usrname, 
                                                    'store', '{id}'),
             'package_dir'           : None,
             'contrail_package_dir'  : None,
-            'base_package_file'     : os.path.join(pkg_file_dir, dist[0], base_pkg_file),
-            'depends_package_file'  : os.path.join(pkg_file_dir, dist[0], deps_pkg_file),
-            'contrail_package_file' : os.path.join(pkg_file_dir, 'contrail', cont_pkg_file),
+            'base_package_file'     : os.path.join(pkg_file_dir, dist[0], sku, base_pkg_file),
+            'depends_package_file'  : os.path.join(pkg_file_dir, dist[0], sku, deps_pkg_file),
+            'contrail_package_file' : os.path.join(pkg_file_dir, dist[0], sku, cont_pkg_file),
             'make_targets'          : [],
             'make_targets_file'     : None,
             'loglevel'              : 'DEBUG',
