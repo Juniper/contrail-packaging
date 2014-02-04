@@ -137,10 +137,9 @@ class Utils(object):
 
     def check_package_md5(self, pkginfo):
         for pkg in pkginfo.keys():
-            pkgfile = self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'])
+            pkgfile = self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'], False)
             pkgfile = self.get_latest_file(pkgfile)
             actual_md5 = self.get_md5(pkgfile)
-            print actual_md5
             if actual_md5 is None:
                 raise RuntimeError('MD5 checksum is empty for file (%s)' %pkgfile)
             if pkginfo[pkg]['md5'] != actual_md5[pkgfile]:
@@ -163,23 +162,6 @@ class Utils(object):
                 filelist += [os.path.abspath('%s/%s' %(dirname, fname)) \
                               for fname in fnmatch.filter(os.listdir(dirname), pattern)]
         return filelist
-
-    def get_pkg_availability(self, pkgs, dirs, recursion=True):
-        ''' check given list of packages availability in the given directories
-        '''
-        found = []
-        missing = []
-        for pkg in pkgs:
-            pat = r'%s-[0-9]*.rpm' %pkg
-            flist = self.get_file_list(dirs, pat, recursion)
-            if len(flist) == 0:
-                log.debug('No File found for given rpm (%s)' %pkg)
-                missing += pkg
-            else:
-                flist = flist if len(flist) == 1 else self.get_latest_file(flist)
-                log.debug('File (%s) found for given rpm (%s)' %(flist, pkg))
-                found += (pkg, flist)
-        return found, missing
 
     @staticmethod
     def get_latest_file(filelist):
@@ -233,40 +215,6 @@ class Utils(object):
                 for item in additems.keys():
                     parsed_dict[sect][item] = copy.deepcopy(additems[item])
         return parsed_dict
-
-    def get_deb_file_info(self, pkgfiles, *infolist):
-        ''' Returns deb info requested in infolist by querying given deb '''
-        infolist = infolist or ['Package', 'Version', 'Architecture']
-        out = subprocess.check_output('dpkg --info %s' %filename, shell=True)
-        out = [each.strip() for each in out.split('\n')]
-        if 'dpkg-deb: error' in out:
-            raise RuntimeError('Unable to get Deb info. (%s) is not readable' %pkgfile)
-        pat = r'\n(%s)\: (.*)' % "|".join(infolist)
-        match = re.findall(pat, "\n".join(out))
-        mdict = dict(match)
-        return {mdict['Package'] : mdict}
-
-    def get_rpm_file_info(self, pkgfile, *infolist):
-        ''' Returns rpm info requested in infolist by querying given rpm '''
-        ret_dict = {}
-        ts = rpm.ts()
-        ts.setVSFlags(rpm._RPMVSF_NOSIGNATURES)
-        infolist = infolist or [RELEASE, VERSION, ARCH, NAME]
-        if not os.access(pkgfile, os.R_OK):
-            raise RuntimeError('Unable to get RPM info. (%s) is not readable' %pkgfile)
-        fdno = os.open(pkgfile, os.O_RDONLY)
-        hdr = ts.hdrFromFdno(fdno)
-        os.close(fdno)
-        ret_dict[hdr[rpm.RPMTAG_NAME]] = dict([(infoname, 
-                                                hdr[getattr(rpm, 'RPMTAG_%s' %infoname.upper())]) \
-                                                for infoname in infolist])
-        return ret_dict
-
-    def get_pkg_file_info(self, pkgfile, *infolist):
-        ''' Return package file info requested in infolist by
-            querying given package
-        '''
-        return self.get_rpm_file_info(pkgfile, *infolist)
 
     def check_pkg_file_info(self, pkg, pkgfile, pkginfo, *verifylist):
         ''' check if the given package file matches the requested

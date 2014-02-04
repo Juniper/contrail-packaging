@@ -26,6 +26,8 @@ class BasePackager(Utils):
         self.depends_pkg_files     = kwargs['depends_package_file']
         self.cont_pkg_files        = kwargs['contrail_package_file']
         self.id                    = kwargs.get('build_id', 999)
+        self.skew                  = kwargs.get('skew', 'grizzly')
+        self.branch                = kwargs.get('branch', '1.03')
         store                      = kwargs['store_dir'].format(id=self.id)
         self.store                 = os.path.join(store, self.id)
         self.iso_prefix            = kwargs.get('iso_prefix', getpass.getuser())
@@ -54,7 +56,8 @@ class BasePackager(Utils):
         self.contrail_pkgs         = {}
         self.imgname               = ''
         self.targets               = []
-
+        if self.platform == 'ubuntu': 
+            self.default_targets = ['openstack-all', 'contrail-all']
 
     def setup_env(self):
         ''' setup basic environment necessary for packager like
