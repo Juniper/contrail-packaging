@@ -74,7 +74,9 @@ class AnsibleConfig(object):
         file.close()
 
         print "VM should be configured, but please check the log file for errors or warnings"
-
+        print "Only errors running the ansible command itself will be printed here"
+        print "Any errors installing packages will be in the log file."
+        
     def key (self):
 
         """ Key from contrail-ec-build03
@@ -154,6 +156,10 @@ def execute(command, ignore_errors=False):
         sys.exit(1)
     return data.strip()
 
+def cmd_exists(cmd):
+    return subprocess.call("type " + cmd, shell=True,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
+
 
 def parse_options(args):
     """ Parse command line arguments """
@@ -211,6 +217,14 @@ if __name__ == '__main__':
     options = parse_options(sys.argv[1:])
     DEBUG = options.debug
     config = AnsibleConfig(options)
+
+    if not cmd_exists("scp"):
+        print "Error: Missing scp command.  Please install the ssh clients and utilities"
+	sys.exit(1)
+
+    if not cmd_exists("sshpass"):
+        print "Missing sshpass command.  Please install the sshpass command"
+	sys.exit(1)
 
     if config.opt.command == 'key':
         config.key()
