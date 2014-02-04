@@ -38,8 +38,14 @@ class AnsibleConfig(object):
                    'Edit your /etc/hosts and remove your hostname from the loopback line (127.0.0.1)'
              sys.exit(1)
 
-
-
+        if self.opt.local_file:
+            if not os.path.isfile(self.opt.local_file):
+                print "ERROR: Can't find local YML file: %s" % self.opt.local_file
+                sys.exit(1)
+            else:
+                command = "sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no " + self.opt.local_file
+                command += " contrail@" + str(self.opt.remote_hostname) + ":"
+                execute(command, ignore_errors=False)
 
     def config(self):
         """
@@ -52,37 +58,21 @@ class AnsibleConfig(object):
               "This can take quite sometime"
         print "Log file is ansible.log"
 
-        command = 'ssh '
+        command = 'sshpass -p c0ntrail123 ssh '
         command += str(self.opt.user_name) + "@" + str(self.opt.remote_hostname)
         command += " config-ansible-server " + "-n " + str(self.opt.hostname)
         command += " -i " + str(self.opt.ip)
 
-        print "\nConfiguring sudo"
-        fcommand = command + " -f sudo.yml config"
+        print "\nConfiguring server"
+        fcommand = command + " -s " + str(self.opt.set) + " -d " + str(self.opt.distro)
+        if self.opt.local_file:
+            fcommand += " -f " + str(self.opt.local_file)
+        fcommand += " config"
         output = execute(fcommand, ignore_errors=False)
         file = open ('ansible.log', 'w')
         file.write (str(output))
-        print "sudo configured"
-
-        print "\nInstalling and Configuring NIS"
-        fcommand = command + " -f nis.yml config"
-        output = execute(fcommand, ignore_errors=False)
-        file.write (str(output))
-        print "NIS configured"
-
-        print "\nInstalling Build Packages"
-        fcommand = command + " -f contrail-dev.yml config"
-        output = execute(fcommand, ignore_errors=False)
-        file.write (str(output))
-        print "Build packages installed"
-
-        print "\nInstalling Final Packages and Configuring system"
-        fcommand = command + " -f contrail-dev.yml config"
-        output = execute(fcommand, ignore_errors=False)
-        file.write (str(output))
         file.close()
 
-        print "Final packages installed"
         print "VM should be configured, but please check the log file for errors or warnings"
 
     def key (self):
@@ -137,11 +127,11 @@ class AnsibleConfig(object):
 
         print "Adding host key to remote known_hosts"
 
-        command = "scp /etc/ssh/ssh_host_rsa_key.pub " + "contrail@" + self.opt.remote_hostname + ":"
+        command = "sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no /etc/ssh/ssh_host_rsa_key.pub " + "contrail@" + self.opt.remote_hostname + ":"
         command += "ssh_host_rsa_key.pub." + self.opt.hostname
         execute (command, ignore_errors=False)
 
-        command = "ssh contrail@" + self.opt.remote_hostname + " install-key " + self.opt.hostname + " " + self.opt.ip
+        command = "sshpass -p c0ntrail123 ssh contrail@" + self.opt.remote_hostname + " install-key " + self.opt.hostname + " " + self.opt.ip
         execute (command, ignore_errors=False)
 
 
@@ -184,6 +174,21 @@ def parse_options(args):
                         default='contrail',
                         help='Remote user to login as to run ansible, \n \
                               default : %(default)s')
+
+    parser.add_argument('-d', '--distro', nargs='?', dest='distro',
+                        default='centos64_os',
+                        help='distribution to config (centos64_os, ubuntu-12-04, \n \
+                              default : %(default)s')
+
+    parser.add_argument('-s', '--set', nargs='?', dest='set',
+                        default='base',
+                        help='set of packages to install, \n \
+                              default : %(default)s')
+
+    parser.add_argument('-f',  '--file', nargs='?', dest='local_file',
+                        help='local yml file to execute as well')
+
+
 
     subparsers = parser.add_subparsers(title='Config Ansible Commands',
                                        description='Select one command',
