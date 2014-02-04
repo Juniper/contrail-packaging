@@ -1,5 +1,5 @@
-Name:     contrail-database
-Maintainer: amoghe <amoghe@juniper.net>
+Name:     contrail-openstack-database
+Maintainer: rrugge <rrugge@juniper.net>
 License:  Commercial
 Files: *
  Copyright (c) 2013 Juniper Networks, Inc. All rights reserved.
