@@ -12,23 +12,13 @@ SPEC_DIR := $(shell pwd)
 export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export buildroot := $(SB_TOP)/build/debian/contrail-database
+export buildroot := $(SB_TOP)/build/debian/contrail-openstack-database
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
 
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 export _bindir := /usr/bin
 export _datadir := /usr/share
 export _sysconfdir := /etc
-export _initddir := /etc/init.d
-export _venv_root := /opt/contrail/analytics-venv
-export _venvtr := --prefix=$(_venv_root)
-export _pyver := 2.7
-export _pysitepkg := /lib/python$(_pyver)/site-packages
-export _contrailetc := /etc/contrail
-export _contrailanalytics := /opt/contrail/analytics
-export _contrailutils := /opt/contrail/utils
-export _supervisordir := /etc/contrail/supervisord_analytics_files
-export _servicedir := /usr/lib/systemd/system
 
 BUILDTAG =
 ifdef TAG
@@ -54,6 +44,7 @@ override_dh_auto_install:
 	install -D -m 755 $(_src_config)/contrail-database.initd $(buildroot)$(_sysconfdir)/init.d/contrail-database
 	install -D -m 755 $(_src_config)/supervisord_contrail_database.initd $(buildroot)$(_sysconfdir)/init.d/supervisord-contrail-database
 
+	
 override_dh_shlibdeps: 
 
 override_dh_usrlocal:	
