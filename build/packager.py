@@ -47,7 +47,7 @@ class PackagerArgParser(Utils):
             ns_cliargs.git_local_repo = cfg_file.git_lrepo.format(id=ns_cliargs.id)
         elif ns_cliargs.install_local_repo is False and ns_cliargs.git_local_repo is None:
             cmd = os.popen('repo info contrail-controller | grep "Mount path"|cut -f3 -d" "')
-            ns_cliargs.git_local_repo = cmd.read().strip('\n')
+            ns_cliargs.git_local_repo = os.path.dirname(cmd.read().strip('\n'))
 
         # update logger and create required env
         logfile = cfg_file.logfile.format(id=ns_cliargs.id)

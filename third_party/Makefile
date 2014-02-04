@@ -22,6 +22,7 @@ PREP = prep
 PPREP = pprep
 
 G_TAG :=
+TAG := $(shell date -u +%y%m%d%H%M)
 ifdef GIT_VER
  G_TAG := --define "_gitVer $(GIT_VER)"
 endif 
@@ -208,6 +209,7 @@ xmltodict: $(PREP)
 
 zookeeper: $(PREP)
 	@echo making rpm for zookeeper
+	sed -i 's#<property name="version" value="3.4.3"#<property name="version" value="3.4.3.$(CPLANE_SRC_VER).$(TAG)"#g' $(DISTRO_SRCDIR)/zookeeper/build.xml
 	cd $(DISTRO_SRCDIR)/zookeeper  && \
 	ant rpm
 	cp $(DISTRO_SRCDIR)/zookeeper/build/*[0-9].rpm $(BUILD_BASE)/RPMS/x86_64/

@@ -98,11 +98,11 @@ CLI_DEFAULTS = {
     'exec'                   : None,
     'git_local_repo'         : None, #updated based on install_git_repo and git_lrepo var
     'git_url'                : 'git@github.com:Juniper/contrail-vnc-private',
-    'git_fetch_pkgdirs'      : ['third_party', os.path.join('distro', 'third_party')],
+    'git_fetch_pkgdirs'      : [],
     'log_level'              : 'DEBUG',
     'make_targets'           : ['thirdparty-all', 'openstack-all', 'contrail-all'],
     'make_targets_file'      : None,    
-    'no_sync_repo'           : False,
+    'no_sync_repo'           : True,
 }
 
 NAMEMAP = {

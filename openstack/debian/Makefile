@@ -1,7 +1,7 @@
 PWD := ${CURDIR}
 SB_TOP := $(PWD:/tools/packaging/openstack/debian=)
 
-PACKAGES = openstack-neutron-deb
+PACKAGES = openstack-quantum-deb openstack-neutron-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -12,10 +12,13 @@ clean: $(PACKAGES:%-deb=%-clean)
 %-deb:
 	$(eval PKGNAME:=$(@:openstack-%-deb=%))
 	$(eval BUILDDIR=${SB_TOP}/build/openstack/${PKGNAME})
-	mkdir -p ${SB_TOP}/build/openstack
-	cp -R ${SB_TOP}/distro/openstack/${PKGNAME} ${BUILDDIR}
-	cp -R $(@:-deb=)/debian ${BUILDDIR}/debian
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	$(eval DISTRODIR=${SB_TOP}/distro/openstack/${PKGNAME})
+	if test -d ${DISTRODIR}; then \
+		mkdir -p ${SB_TOP}/build/openstack; \
+		cp -R ${SB_TOP}/distro/openstack/${PKGNAME} ${BUILDDIR}; \
+		cp -R $(@:-deb=)/debian ${BUILDDIR}/debian; \
+		(cd ${BUILDDIR}; fakeroot debian/rules binary) \
+	fi
 
 %-clean:
 	$(eval PKGNAME:=$(@:openstack-%-clean=%))

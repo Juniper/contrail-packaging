@@ -89,14 +89,15 @@ class ContrailBuild(object):
         if self.opt.build_num:
             print "Using supplied build number"
             buildArchive = '/volume/junosv-storage01/contrail/'
+            if not os.path.isdir(buildArchive):
+	        print "Can't find the build archive:", buildArchive
+                sys.exit(1)
             if self.opt.branch_name:
                 buildArchive += str(self.opt.branch_name)
                 buildArchive += '/'
             else:
                 buildArchive += 'mainline/'
             buildArchive += str(self.opt.build_num)
-            buildArchive += '/'
-            buildArchive += str(self.opt.arch_type)
             buildArchive += '/'
             buildArchive += "manifest.xml"
             shutil.copyfile (buildArchive, ".repo/manifest.xml")
@@ -186,6 +187,10 @@ def execute(command, ignore_errors=False):
         sys.exit(1)
     return data.strip()
 
+def cmd_exists(cmd):
+    return subprocess.call("type " + cmd, shell=True, 
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
+
 
 def parse_options(args):
     """ Parse command line arguments """
@@ -236,6 +241,21 @@ if __name__ == '__main__':
     options = parse_options(sys.argv[1:])
     DEBUG = options.debug
     build = ContrailBuild(options)
+
+    """ Test to make sure all our commands exist """
+
+	
+    if not cmd_exists("git"):
+        print "Missing git command"
+	sys.exit(1)
+ 
+    if not cmd_exists("repo"):
+        print "Missing git command"
+	sys.exit(1)
+
+    if not cmd_exists("scons"):
+	print "Missing scons command"
+	sys.exit(1)
 
     if build.opt.command == 'sandbox':
         build.sandbox()
