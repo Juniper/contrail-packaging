@@ -40,17 +40,17 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_contrailopt)/bin
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils
 	# install files
-	install -p -m 644 $(SB_TOP)/../tools/packaging/build/contrail_packages_${BUILDTAG}.tgz  $(buildroot)$(_contrailopt)/contrail_packages/contrail_packages.tgz
+	install -p -m 644 $(SB_TOP)/../../tools/packaging/build/contrail_packages_${BUILDTAG}.tgz  $(buildroot)$(_contrailopt)/contrail_packages/contrail_packages.tgz
 	# install etc files
-	install -p -m 644 $(SB_TOP)/../controller/build/contrail_installer.tgz  $(buildroot)$(_contrailopt)/contrail_installer.tgz
+	install -p -m 644 $(SB_TOP)/../../controller/build/contrail_installer.tgz  $(buildroot)$(_contrailopt)/contrail_installer.tgz
 	# install pkgs needed first
-	install -p -m 644 $(SB_TOP)/../distro/third_party/ecdsa-0.10.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/ecdsa-0.10.tar.gz
-	install -p -m 644 $(SB_TOP)/../distro/third_party/Fabric-1.7.0.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
-	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2` > $(SB_TOP)/../tools/packaging/build/VERSION_ubuntu; fi
-	install -p -m 755 $(SB_TOP)/../tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_packages/VERSION
-	install -p -m 755 $(SB_TOP)/../tools/packaging/build/setup_ubuntu.sh  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
+	install -p -m 644 $(SB_TOP)/../../distro/third_party/ecdsa-0.10.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/ecdsa-0.10.tar.gz
+	install -p -m 644 $(SB_TOP)/../../distro/third_party/Fabric-1.7.0.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
+	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2` > $(SB_TOP)/../../tools/packaging/build/VERSION_ubuntu; fi
+	install -p -m 755 $(SB_TOP)/../../tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_packages/VERSION
+	install -p -m 755 $(SB_TOP)/../../tools/packaging/build/setup_ubuntu.sh  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
 	# need this for openstack-config for keystone specific, this needs to move away to openstack-config package
-	install -p -m 755 $(SB_TOP)/../tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh $(buildroot)/usr/bin/contrail-keystone-setu
+	install -p -m 755 $(SB_TOP)/../../tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh $(buildroot)/usr/bin/contrail-keystone-setu
 	# extract contrail_installer 
 	cd $(buildroot)$(_contrailopt); tar xzvf contrail_installer.tgz
 	

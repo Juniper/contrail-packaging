@@ -34,11 +34,19 @@ ifmap-server-deb:
 	cp -R ifmap-server/debian ${BUILDDIR}/debian
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
-contrail-install-packages-deb:
-	cd ${SB_TOP}/build/ && cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-install-packages/debian . && fakeroot debian/rules binary
-
 ifmap-server-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/ifmap-server)
+	rm -rf ${BUILDDIR}
+
+contrail-install-packages-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
+	mkdir -p ${BUILDDIR}
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-install-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	@echo "Wrote: ${BUILDDIR}/../contrail-install-packages_*_all.deb"
+
+contrail-install-packages-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
 	rm -rf ${BUILDDIR}
 
 %-deb:
