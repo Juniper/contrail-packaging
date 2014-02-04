@@ -19,6 +19,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-setup-deb \
 	ifmap-server-deb \
 	supervisord-deb
+  
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -32,6 +33,9 @@ ifmap-server-deb:
 	cp -R ${SB_TOP}/third_party/ifmap-server ${BUILDDIR}
 	cp -R ifmap-server/debian ${BUILDDIR}/debian
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-install-packages-deb:
+	cd ${SB_TOP}/build/ && cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-install-packages/debian . && fakeroot debian/rules binary
 
 ifmap-server-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/ifmap-server)
