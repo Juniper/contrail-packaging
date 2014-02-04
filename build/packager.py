@@ -52,7 +52,8 @@ class PackagerArgParser(Utils):
 
     def set_cli_defaults(self):
         usrname = getpass.getuser()
-        dist = platform.dist()
+        dist = list(platform.dist())
+        dist = [dist[0].lower()] + dist[1:]
         cwd = os.getcwd()
         timestamp = time.strftime('%m%d%y%H%M%S')
         logname = 'packager_{id}_%s.log' %timestamp
@@ -67,9 +68,12 @@ class PackagerArgParser(Utils):
 
         
         self.defaults = {
-            'build_id'              : random.randint(1000, 9999),  
+            'build_id'              : random.randint(1000, 9999), 
+            'sku'                   : 'grizzly',
+            'branch'                : None, 
             'iso_prefix'            : 'contrail',     
-            'store_dir'             : os.path.join(usrhome, '%s_{id}' %usrname, 'store'),
+            'store_dir'             : os.path.join(usrhome, '%s_{id}' %usrname, 
+                                                   'store', '{id}'),
             'package_dir'           : None,
             'contrail_package_dir'  : None,
             'base_package_file'     : os.path.join(pkg_file_dir, dist[0], base_pkg_file),
@@ -122,6 +126,9 @@ class PackagerArgParser(Utils):
                              version=self.version,
                              help='Print version and exit')
         aparser.add_argument('--build-id', '-i',
+                             action='store',
+                             help='Build ID of the new packages')
+        aparser.add_argument('--build-tag',
                              action='store',
                              help='Build ID of the new packages')
         aparser.add_argument('--iso-prefix', '-n',

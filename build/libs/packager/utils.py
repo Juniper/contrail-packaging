@@ -216,35 +216,6 @@ class Utils(object):
                     parsed_dict[sect][item] = copy.deepcopy(additems[item])
         return parsed_dict
 
-    def check_pkg_file_info(self, pkg, pkgfile, pkginfo, *verifylist):
-        ''' check if the given package file matches the requested
-            package info
-        '''
-        pkgfile_info = self.get_pkg_file_info(pkgfile, *verifylist)
-        diff = filter(lambda verifies: pkginfo[verifies.lower()] != pkgfile_info[pkg][verifies], \
-                      verifylist)
-        if diff:
-            log.warn('PKG File (%s):: Required (%s = %s) != Actual (%s = %s)' \
-                     %(pkgfile, diff[0], pkginfo[diff[0].lower()], 
-                       diff[0], pkgfile_info[pkg][diff[0]]))
-            raise FileNotFoundError('PKG File (%s) didnt match with given specs' %pkgfile)
-        
-    def filter_pkg_file(self, pkg, pkgfiles, pkginfo, *verifylist):
-        ''' get package files which matches given specs '''
-        pkgfiles_filtered = []
-        for pkgfile in pkgfiles:
-            pkgfile_info = self.get_pkg_file_info(pkgfile, *verifylist)
-            diff = filter(lambda verifies: pkginfo[verifies.lower()] != pkgfile_info[pkg][verifies], \
-                          verifylist)
-            if diff:
-                log.warn('PKG File (%s):: Required (%s = %s) != Actual (%s = %s)' \
-                         %(pkgfile, diff[0], pkginfo[diff[0].lower()], 
-                           diff[0], pkgfile_info[pkg][diff[0]]))
-                log.warn('Skipping PKG File (%s)' %pkgfile)
-            else:
-                pkgfiles_filtered.append(pkgfile)
-        return pkgfiles_filtered
-
     def import_file(self, cfile):
         ''' import a module based on its absolute path '''
         cfile = os.path.abspath(os.path.expanduser(cfile))

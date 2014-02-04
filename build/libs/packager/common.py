@@ -24,12 +24,11 @@ class BasePackager(Utils):
     def __init__(self, **kwargs):
         self.base_pkg_files        = kwargs['base_package_file']
         self.depends_pkg_files     = kwargs['depends_package_file']
-        self.cont_pkg_files        = kwargs['contrail_package_file']
+        self.contrail_pkg_file     = kwargs['contrail_package_file']
         self.id                    = kwargs.get('build_id', 999)
-        self.skew                  = kwargs.get('skew', 'grizzly')
-        self.branch                = kwargs.get('branch', '1.03')
-        store                      = kwargs['store_dir'].format(id=self.id)
-        self.store                 = os.path.join(store, self.id)
+        self.sku                   = kwargs.get('sku', 'grizzly')
+        self.branch                = kwargs.get('branch', None)
+        self.store                 = kwargs['store_dir'].format(id=self.id)
         self.iso_prefix            = kwargs.get('iso_prefix', getpass.getuser())
         self.pkg_dir               = kwargs['package_dir']
         self.contrail_pkg_dir      = kwargs.get('contrail_package_dir', None)
@@ -56,6 +55,7 @@ class BasePackager(Utils):
         self.contrail_pkgs         = {}
         self.imgname               = ''
         self.targets               = []
+        self.build_tag             = self.id
         if self.platform == 'ubuntu': 
             self.default_targets = ['openstack-all', 'contrail-all']
 
@@ -64,11 +64,18 @@ class BasePackager(Utils):
             updating config data structures, creating dirs,
             copying package files..etc
         '''
+        
+        # update branch and build tag
+        if self.branch is None:
+            self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
+                                             %self.git_local_repo)[0]
+        self.build_tag = '%s.%s.%s' %(self.branch, self.sku, self.id)
+        
         # get pkg info
         additems = {'found_at': {}}
         self.base_pkgs = self.parse_cfg_file(self.base_pkg_files)
         self.depends_pkgs = self.parse_cfg_file(self.depends_pkg_files)
-        self.contrail_pkgs = self.parse_cfg_file(self.cont_pkg_files, additems)
+        self.contrail_pkgs = self.parse_cfg_file(self.contrail_pkg_file, additems)
 
         # create dirs
         self.create_dir(self.store)
@@ -137,10 +144,13 @@ class BasePackager(Utils):
         if len(self.targets) == 0:
             log.warn('make target list is empty...Nothing to make')
             return
-        for each in self.targets:
-            log.info('Making Target: %s' %each)
-            cmd = 'make TAG=%s %s' %(self.id, each)
-            self.exec_cmd(cmd, wd=self.contrail_pkgs[each]['makeloc'])
+        for target in self.targets:
+            log.info('Making Target: %s' %target)
+            if not self.contrail_pkgs.has_key(target):
+                raise RuntimeError('Target (%s) is not defined in %s' %(
+                                    target, self.contrail_pkg_file))
+            cmd = 'make TAG=%s %s' %(self.id, self.contrail_pkgs[target]['target'])
+            self.exec_cmd(cmd, wd=self.contrail_pkgs[target]['makeloc'])
 
     def verify_built_pkgs_exists(self, targets=None, skips=None):
         ''' verify that contrail built packages are created and 
@@ -276,5 +286,5 @@ class BasePackager(Utils):
         #make contrail-install-packages
         pkg = 'contrail-install-packages'
         pkginfo = self.contrail_pkgs[pkg]
-        self.exec_cmd('make TAG=%s %s' %(self.id, pkg),
+        self.exec_cmd('make TAG=%s %s' %(self.build_tag, pkg),
                        pkginfo['makeloc'])

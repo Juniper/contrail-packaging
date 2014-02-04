@@ -6,9 +6,6 @@ PACKAGES = openstack-quantum-deb openstack-neutron-deb
 all: ${PACKAGES}
 	@echo "Build complete"
 
-openstack-all: ${PACKAGES}
-	@echo "Build complete"
-
 clean: $(PACKAGES:%-deb=%-clean)
 	@echo "Clean"
 
