@@ -70,6 +70,8 @@ class BasePackager(Utils):
             self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
                                              %self.git_local_repo)[0]
         self.build_tag = '%s.%s.%s' %(self.branch, self.sku, self.id)
+        self.contrail_pkgs_tgz = os.path.join(self.packager_dir, \
+                                                  'contrail_packages_%s.tgz' %self.build_tag)
         
         # get pkg info
         additems = {'found_at': {}}
