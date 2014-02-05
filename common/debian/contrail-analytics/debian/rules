@@ -92,6 +92,9 @@ override_dh_auto_install:
 	install -D -m 644 $(_src_config)/contrail-collector.initd.supervisord $(buildroot)$(_initddir)/contrail-collector
 	install -D -m 644 $(_src_config)/contrail-qe.initd.supervisord $(buildroot)$(_initddir)/contrail-qe
 	install -D -m 644 $(_src_config)/contrail-opserver.initd.supervisord $(buildroot)$(_initddir)/contrail-opserver
+	install -p -m 755 $(_src_config)/redis-query.initd.supervisord $(buildroot)$(_initddir)/redis-query
+	install -p -m 755 $(_src_config)/redis-uve.initd.supervisord $(buildroot)$(_initddir)/redis-uve
+	install -p -m 755 $(_src_config)/redis-sentinel.initd.supervisord $(buildroot)$(_initddir)/redis-sentinel
 
 	install -p -m 644 $(_src_config)/supervisord_analytics.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_analytics.conf
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_analytics_files
