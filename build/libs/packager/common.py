@@ -28,7 +28,8 @@ class BasePackager(Utils):
         self.id                    = kwargs.get('build_id', 999)
         self.sku                   = kwargs.get('sku', 'grizzly')
         self.branch                = kwargs.get('branch', None)
-        self.store                 = kwargs['store_dir'].format(id=self.id)
+        store                      = kwargs['store_dir']
+        self.store                 = os.path.join(store, self.id)
         self.iso_prefix            = kwargs.get('iso_prefix', getpass.getuser())
         self.pkg_dir               = kwargs['package_dir']
         self.contrail_pkg_dir      = kwargs.get('contrail_package_dir', None)

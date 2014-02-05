@@ -9,7 +9,6 @@ import textwrap
 import logging
 import time
 import platform
-import getpass
 import random
 import pprint
 import datetime
@@ -50,7 +49,6 @@ class PackagerArgParser(Utils):
         return dirname
 
     def set_cli_defaults(self):
-        usrname = getpass.getuser()
         dist = list(platform.dist())
         dist = [dist[0].lower()] + dist[1:]
         cwd = os.getcwd()
@@ -75,8 +73,7 @@ class PackagerArgParser(Utils):
             'sku'                   : sku,
             'branch'                : None, 
             'iso_prefix'            : 'contrail',     
-            'store_dir'             : os.path.join(usrhome, '%s_{id}' %usrname, 
-                                                   'store', '{id}'),
+            'store_dir'             : os.path.join(usrhome, 'packager_store'),
             'package_dir'           : None,
             'contrail_package_dir'  : None,
             'base_package_file'     : os.path.join(pkg_file_dir, dist[0], sku, base_pkg_file),
@@ -173,7 +170,8 @@ class PackagerArgParser(Utils):
                                    make targets')
         aparser.add_argument('--iso-prefix', '-n',
                              action='store',
-                             help='Prefix name of the ISO image')
+                             help='Prefix name of the ISO image\
+                                   eg: <isoprefix>-<buildid>-x86_64-DVD.iso')
         aparser.parse_args(self.unparsed_args)
         self.parser = aparser
 
