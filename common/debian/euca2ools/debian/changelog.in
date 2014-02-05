@@ -1,0 +1,6 @@
+euca2ools (BUILDTAG) amoghe; urgency=low
+
+  [amoghe]
+  * debian/changelog: changelog
+
+ -- amoghe <amoghe@juniper.net>  Tue, 4 Feb 2014 17:00:11 +0800
