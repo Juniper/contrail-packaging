@@ -288,5 +288,6 @@ class BasePackager(Utils):
                         os.path.basename(self.contrail_pkgs_store))
         #make contrail-install-packages
         pkginfo = self.contrail_pkgs['contrail-install-packages']
-        self.exec_cmd('make TAG=%s %s' %(self.build_tag, pkginfo['target']),
-                       pkginfo['makeloc'])
+        cleanerpkg = re.sub(r'-deb$', '-clean', pkginfo['target'])
+        self.exec_cmd('make TAG=%s %s %s' %(self.build_tag, cleanerpkg, 
+                                            pkginfo['target']), pkginfo['makeloc'])
