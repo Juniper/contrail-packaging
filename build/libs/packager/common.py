@@ -72,7 +72,7 @@ class BasePackager(Utils):
         self.build_tag = '%s.%s' %(self.sku, self.id)
         self.contrail_pkgs_tgz = os.path.join(self.packager_dir, \
                                               'contrail_packages_%s-%s.tgz' %(
-                                                  self.branch, self.build_tag)
+                                                  self.branch, self.build_tag))
         
         # get pkg info
         additems = {'found_at': {}}
