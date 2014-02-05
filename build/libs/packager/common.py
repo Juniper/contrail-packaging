@@ -63,15 +63,16 @@ class BasePackager(Utils):
             copying package files..etc
         '''
         
-        # update branch and build tag
+        # update branch and build tag and tgz name
         if self.branch is None:
             pass
-            # Temporarily commented. branch info from manifest or version.info?
-            #self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
-            #                                 %self.git_local_repo)[0]
+            self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
+                                             %self.git_local_repo)[0]
+        # ** Attn: Not using branch info in build tag for now ***
         self.build_tag = '%s.%s' %(self.sku, self.id)
         self.contrail_pkgs_tgz = os.path.join(self.packager_dir, \
-                                                  'contrail_packages_%s.tgz' %self.build_tag)
+                                              'contrail_packages_%s-%s.tgz' %(
+                                                  self.branch, self.build_tag)
         
         # get pkg info
         additems = {'found_at': {}}
