@@ -280,7 +280,8 @@ class BasePackager(Utils):
             tgz files
         '''
         # create contrail_packages_(id).tgz
-        shutil.copy2('setup.sh', self.contrail_pkgs_store)
+        setupfile = 'setup_ubuntu.sh' if self.platform == 'ubuntu' else 'setup.sh'
+        shutil.copy2(setupfile, os.path.join(self.contrail_pkgs_store, 'setup.sh'))
         shutil.copy2('README', self.contrail_pkgs_store)
         with open(os.path.join(self.contrail_pkgs_store, 'VERSION'), 'w') as fid:
             fid.writelines('BUILDID=%s\n' %self.id)
