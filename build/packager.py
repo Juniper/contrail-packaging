@@ -67,7 +67,7 @@ class PackagerArgParser(Utils):
             sku = 'havana'
             default_targets = ['openstack-all', 'contrail-all']
         else:
-            default_targets = ['thirdparty-all', 'openstack-all', 'contrail-all'],
+            default_targets = ['thirdparty-all', 'openstack-all', 'contrail-all']
 
         self.defaults = {
             'build_id'              : random.randint(1000, 9999), 
