@@ -56,8 +56,6 @@ class BasePackager(Utils):
         self.imgname               = ''
         self.targets               = []
         self.build_tag             = self.id
-        if self.platform == 'ubuntu': 
-            self.default_targets = ['openstack-all', 'contrail-all']
 
     def setup_env(self):
         ''' setup basic environment necessary for packager like

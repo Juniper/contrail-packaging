@@ -14,7 +14,6 @@ import random
 import pprint
 import datetime
 import logging.config
-import pdb
 
 from libs.packager.utils import Utils
 from templates import comps_xml
@@ -22,7 +21,7 @@ from templates import comps_xml
 # Import packager based on distribution
 sys.path.append(os.path.abspath(os.path.join('libs', 'packager')))
 PLATFORM = platform.dist()[0].lower()
-packager = __import__('%s_packager'%PLATFORM)
+packager = __import__('%s_packager' %PLATFORM)
 
 log = logging.getLogger("pkg.%s" %__name__)
 
@@ -66,8 +65,11 @@ class PackagerArgParser(Utils):
         cmd = os.popen('repo info contrail-controller | grep "Mount path"|cut -f3 -d" "')
         git_local_repo = os.path.dirname(cmd.read().strip('\n'))
         sku = 'grizzly'
+        if dist[0] == 'ubuntu':
+            default_targets = ['openstack-all', 'contrail-all']
+        else:
+            default_targets = ['thirdparty-all', 'openstack-all', 'contrail-all'],
 
-        
         self.defaults = {
             'build_id'              : random.randint(1000, 9999), 
             'sku'                   : sku,
@@ -87,7 +89,7 @@ class PackagerArgParser(Utils):
             'log_config'            : os.path.join(cwd, 'logger', 'logging.cfg'),
             'git_local_repo'        : git_local_repo,
             'comps_xml_template'    : comps_xml.template,
-            'default_targets'       : ['thirdparty-all', 'openstack-all', 'contrail-all'],
+            'default_targets'       : default_targets,
         }
   
     def parse(self):
@@ -132,9 +134,9 @@ class PackagerArgParser(Utils):
         aparser.add_argument('--sku',
                              action='store',
                              help='Specify Openstack release')
-        aparser.add_argument('--iso-prefix', '-n',
+        aparser.add_argument('--branch',
                              action='store',
-                             help='Prefix name of the ISO image')
+                             help='Specify GIT branch name')
         aparser.add_argument('--store-dir', '-s',
                              action='store',
                              help='Directory Location to which new packages be saved')
@@ -169,6 +171,9 @@ class PackagerArgParser(Utils):
                              type=lambda fn: self.is_file_exists(fn),
                              help='Line seperated text file containing list of \
                                    make targets')
+        aparser.add_argument('--iso-prefix', '-n',
+                             action='store',
+                             help='Prefix name of the ISO image')
         aparser.parse_args(self.unparsed_args)
         self.parser = aparser
 
