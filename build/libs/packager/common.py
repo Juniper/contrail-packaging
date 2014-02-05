@@ -67,9 +67,11 @@ class BasePackager(Utils):
         
         # update branch and build tag
         if self.branch is None:
-            self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
-                                             %self.git_local_repo)[0]
-        self.build_tag = '%s.%s.%s' %(self.branch, self.sku, self.id)
+            pass
+            # Temporarily commented. branch info from manifest or version.info?
+            #self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
+            #                                 %self.git_local_repo)[0]
+        self.build_tag = '%s.%s' %(self.sku, self.id)
         self.contrail_pkgs_tgz = os.path.join(self.packager_dir, \
                                                   'contrail_packages_%s.tgz' %self.build_tag)
         
