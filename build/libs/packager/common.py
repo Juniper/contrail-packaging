@@ -4,7 +4,6 @@
 
 import os
 import re
-import pdb
 import sys
 import copy
 import shutil
@@ -114,12 +113,12 @@ class BasePackager(Utils):
             # update make targets if contrail dir is supplied
             for target in self.contrail_pkgs.keys():
                 if target in self.targets or \
-                   target == 'contrail-install-packages':
+                   'contrail-install-packages' in target:
                     continue
                 self.contrail_pkgs[target]['builtloc'] = self.contrail_pkg_dir
 
             # pick up or create contrail_installer.tgz 
-            if not ('contrail-setup' in self.targets or
+            if not ('contrail-setup' in [tgt.strip('-deb') for tgt in self.targets] or
                     'contrail-all' in self.targets):
                 builddir = os.path.join(self.git_local_repo, 'controller', 'build')
                 files = self.get_file_list(self.contrail_pkg_dir, 'contrail_installer.tgz')
@@ -287,7 +286,7 @@ class BasePackager(Utils):
         self.create_tgz(self.contrail_pkgs_tgz, self.contrail_pkgs_store,
                         os.path.basename(self.contrail_pkgs_store))
         #make contrail-install-packages
-        pkg = 'contrail-install-packages'
+        pkg = self.contrail_pkgs['contrail-install-packages']['target']
         pkginfo = self.contrail_pkgs[pkg]
         self.exec_cmd('make TAG=%s %s' %(self.build_tag, pkg),
                        pkginfo['makeloc'])
