@@ -177,28 +177,30 @@ class PackagerArgParser(Utils):
         self.parser = aparser
 
 
-######## MAIN ##############
-args = PackagerArgParser(__doc__, VERSION, sys.argv[1:])
-args.parse()
+# ** MAIN **
 
-# Define except hook to redirect all erros to file
-sys.excepthook = lambda tp, v, tb: log.error('ERROR', exc_info=(tp,v,tb))
+if __name__ == '__main__':
+    args = PackagerArgParser(__doc__, VERSION, sys.argv[1:])
+    args.parse()
 
-log.info('Received CLI: %s' %" ".join(sys.argv))
-log.info('')
-log.info('Working with Argument Set: ')
-log.info('\n%s' %pprint.pformat(args.cliargs, indent=4))
-log.info('')
-time.sleep(3)
-log.info('')
-start = datetime.datetime.now()
+    # Define except hook to redirect all erros to file
+    sys.excepthook = lambda tp, v, tb: log.error('ERROR', exc_info=(tp,v,tb))
 
-# Packager
-packer = packager.Packager(**args.cliargs)
+    log.info('Received CLI: %s' %" ".join(sys.argv))
+    log.info('')
+    log.info('Working with Argument Set: ')
+    log.info('\n%s' %pprint.pformat(args.cliargs, indent=4))
+    log.info('')
+    time.sleep(3)
+    log.info('')
+    start = datetime.datetime.now()
 
-# Build
-packer.ks_build()
+    # Packager
+    packer = packager.Packager(**args.cliargs)
 
-duration = datetime.datetime.now() - start
-log.info('Execution Duration: %s' %str(duration))
-log.info('Packaging Complete!')
+    # Build
+    packer.ks_build()
+
+    duration = datetime.datetime.now() - start
+    log.info('Execution Duration: %s' %str(duration))
+    log.info('Packaging Complete!')

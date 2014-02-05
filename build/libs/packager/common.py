@@ -286,7 +286,6 @@ class BasePackager(Utils):
         self.create_tgz(self.contrail_pkgs_tgz, self.contrail_pkgs_store,
                         os.path.basename(self.contrail_pkgs_store))
         #make contrail-install-packages
-        pkg = self.contrail_pkgs['contrail-install-packages']['target']
-        pkginfo = self.contrail_pkgs[pkg]
-        self.exec_cmd('make TAG=%s %s' %(self.build_tag, pkg),
+        pkginfo = self.contrail_pkgs['contrail-install-packages']
+        self.exec_cmd('make TAG=%s %s' %(self.build_tag, pkginfo['target']),
                        pkginfo['makeloc'])
