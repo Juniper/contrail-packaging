@@ -8,7 +8,7 @@ Build-Depends:
 Package: contrail-openstack-vrouter
 Architecture: all
 Maintainer: amoghe <amoghe@juniper.net>
-Depends: supervisor, contrail-libs, contrail-nodemgr, contrail-setup, contrail-vrouter, contrail-vrouter-init, haproxy, nova-compute, python-iniparse, python-novaclient
+Depends: supervisor, contrail-libs, contrail-nodemgr, contrail-setup, contrail-vrouter-init, haproxy, nova-compute, python-iniparse, python-novaclient, contrail-nova-vif
 Section: contrail-openstack-vrouter
 Priority: extra
 Description: Contrail Openstack vRouter composite debian package
