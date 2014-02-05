@@ -50,7 +50,7 @@ override_dh_auto_install:
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_packages/VERSION
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/setup_ubuntu.sh  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
 	# need this for openstack-config for keystone specific, this needs to move away to openstack-config package
-	install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh $(buildroot)/usr/bin/contrail-keystone-setu
+	install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh $(buildroot)/usr/bin/contrail-keystone-setup.sh
 	# extract contrail_installer 
 	cd $(buildroot)$(_contrailopt); tar xzvf contrail_installer.tgz
 	

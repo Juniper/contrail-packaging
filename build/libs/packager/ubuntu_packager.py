@@ -21,3 +21,5 @@ class Packager(BasePackager):
         self.copy_built_pkg_files([self.store, self.pkg_repo], 
                                   ['contrail-install-packages'])
         self.copy_pkg_files(self.base_pkgs, self.pkg_repo)
+        self.create_log()
+        self.create_git_ids()
