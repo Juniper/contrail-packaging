@@ -28,6 +28,7 @@ class ConfigCreate(object):
 
         source = ET.parse(self.opt.manifest_file).getroot()
         f = open (self.opt.output_file, 'w')
+        f.write ("[config]\n")
         out = "build_id = " + self.opt.build_id + "\n"
         f.write (out)
 
