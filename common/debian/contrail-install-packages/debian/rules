@@ -32,8 +32,6 @@ override_dh_auto_build:
 
 override_dh_auto_install: 
 	# Setup directories
-	rm -rf $(buildroot)
-	@echo "SB_TOP IS $(SB_TOP)"
 	@echo "making deb for contrail-install-packages"
 	install -d -m 755 $(buildroot)
 	install -d -m 755 $(buildroot)/usr/bin
