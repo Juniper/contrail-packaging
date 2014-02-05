@@ -1,4 +1,4 @@
-contrail-api-venv (BUILDTAG) amoghe; urgency=low
+contrail-config-venv (BUILDTAG) amoghe; urgency=low
 
   [amoghe ]
   * debian/changelog: changelog
