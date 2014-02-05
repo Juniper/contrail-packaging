@@ -99,16 +99,21 @@ function create_virtual_gateway() {
     echo "$(date): Adding intreface vgw for virtual gateway"
     #    sysctl -w net.ipv4.ip_forward=1
     echo 1 > /proc/sys/net/ipv4/ip_forward
-    vif --create vgw --mac 00:01:00:5e:00:00
-    if [ $? != 0 ]
-    then
-        echo "$(date): Error adding intreface vgw"
-    fi
+    vgw_array=(${vgw_subnet_ip//,/ })
+    i=0
+    for element in "${vgw_array[@]}"
+       do
+       vif --create vgw$i --mac 00:01:00:5e:00:00
+       if [ $? != 0 ]
+           then
+           echo "$(date): Error adding intreface vgw"
+       fi
  
-    ifconfig vgw up
-    vgw_subnet=$vgw_subnet_ip"/"$vgw_subnet_mask
-    route add -net $vgw_subnet dev vgw
-    
+       ifconfig vgw$i up
+       vgw_subnet=$element 
+       route add -net $vgw_subnet dev vgw$i
+       i=$(( i + 1 ))
+    done
 }
 
 lsmod |grep vrouter &>> $LOG
