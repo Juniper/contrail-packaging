@@ -21,4 +21,3 @@ class Packager(BasePackager):
         self.copy_built_pkg_files([self.store, self.pkg_repo], 
                                   ['contrail-install-packages'])
         self.copy_pkg_files(self.base_pkgs, self.pkg_repo)
-        log.info('Packaging Complete!')
