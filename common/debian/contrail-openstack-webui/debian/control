@@ -8,7 +8,7 @@ Build-Depends:
 Package: contrail-openstack-webui
 Architecture: all
 Maintainer: rrugge <rrugge@juniper.net>
-Depends: contrail-libs, contrail-nodemgr, contrail-webui, contrail-setup, supervisor (= 3.0a8-1.2)
+Depends: contrail-nodemgr, contrail-webui, contrail-setup, supervisor (= 3.0a8-1.2)
 Section: contrail-openstack-webui
 Priority: extra
 Description: Contrail Openstack WebUI composite debian package
