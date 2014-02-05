@@ -64,6 +64,7 @@ class PackagerArgParser(Utils):
         git_local_repo = os.path.dirname(cmd.read().strip('\n'))
         sku = 'grizzly'
         if dist[0] == 'ubuntu':
+            sku = 'havana'
             default_targets = ['openstack-all', 'contrail-all']
         else:
             default_targets = ['thirdparty-all', 'openstack-all', 'contrail-all'],
