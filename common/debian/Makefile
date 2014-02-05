@@ -28,7 +28,8 @@ PACKAGES = contrail-libs-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
 	python-keystoneclient-deb \
-	euca2ools-deb
+	euca2ools-deb \
+	zookeeper-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -74,6 +75,11 @@ euca2ools-deb:
 euca2ools-clean:
 	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
 	rm -rf ${BUILDDIR}/debian
+
+zookeeper-deb:
+	$(eval DISTRO_SRCDIR=${SB_TOP}/distro/third_party)
+	(cd $(DISTRO_SRCDIR)/zookeeper; ant deb)
+	cp $(DISTRO_SRCDIR)/zookeeper/build/*.deb ${SB_TOP}/build/debian/
 
 %-deb:
 	(cd $(@:-deb=); fakeroot debian/rules binary)
