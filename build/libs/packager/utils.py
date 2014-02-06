@@ -27,6 +27,7 @@ class Utils(object):
     ''' Utilities for packager '''
     @staticmethod
     def create_dir(dirname):
+        dirname = os.path.expanduser(dirname)
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         else:
