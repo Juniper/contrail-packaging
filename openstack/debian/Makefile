@@ -1,7 +1,7 @@
 PWD := ${CURDIR}
 SB_TOP := $(PWD:/tools/packaging/openstack/debian=)
 
-PACKAGES = openstack-quantum-deb openstack-neutron-deb
+PACKAGES = openstack-quantum-deb openstack-neutron-deb openstack-nova-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
