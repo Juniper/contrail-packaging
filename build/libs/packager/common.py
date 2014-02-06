@@ -48,8 +48,7 @@ class BasePackager(Utils):
         self.pkgs_tgz              = os.path.join(self.contrail_pkgs_store,
                                                   'contrail_%ss.tgz' %self.pkg_type)
         self.packager_dir          = os.getcwd()
-        self.contrail_pkgs_tgz     = os.path.join(self.packager_dir, \
-                                                  'contrail_packages_%s.tgz' %self.id)
+        self.contrail_pkgs_tgz     = ''
         self.base_pkgs             = {}
         self.depends_pkgs          = {}
         self.contrail_pkgs         = {}
@@ -69,10 +68,14 @@ class BasePackager(Utils):
             self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
                                              %self.git_local_repo)[0]
         # ** Attn: Not using branch info in build tag for now ***
-        self.build_tag = '%s.%s' %(self.sku, self.id)
-        self.contrail_pkgs_tgz = os.path.join(self.packager_dir, \
-                                              'contrail_packages_%s-%s.tgz' %(
-                                                  self.branch, self.build_tag))
+        self.build_tag = '%s~%s' %(self.id, self.sku)
+        if self.platform != 'ubuntu':
+            contrail_pkgs_name = 'contrail_packages_%s-%s.tgz' %(
+                                                  self.branch, self.build_tag)
+        else:
+            contrail_pkgs_name = 'contrail_packages_%s.%s.tgz' %(
+                                                  self.branch, self.build_tag) 
+        self.contrail_pkgs_tgz = os.path.join(self.packager_dir, contrail_pkgs_name)
         
         # get pkg info
         additems = {'found_at': {}}
