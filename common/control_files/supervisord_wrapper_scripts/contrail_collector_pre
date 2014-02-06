@@ -1,2 +1,2 @@
 #!/bin/bash
-tries=0; while [ $tries -lt 15 ]; do if [ $(redis-cli -p 26379 sentinel get-master-addr-by-name mymaster | wc -l) == '2' ]; then sleep 1; break; fi; tries=$(($tries + 1)); sleep 1; done; if [ $tries -lt 15 ]; then echo "Redis-UVE is UP; now start vizd"; else echo "Redis-UVE may not be UP; now start vizd"; fi
+tries=0; while [ $tries -lt 10 ]; do redis-cli -p 6381  ECHO "echo string" > /dev/null 2>&1; if [ $? -eq 0 ]; then sleep 1;     break; fi; tries=$(($tries + 1)); sleep 1; done
