@@ -17,24 +17,26 @@ from xml.etree import ElementTree
 from utils import Utils
 
 log = logging.getLogger("pkg.%s" %__name__)
+expanduser = lambda dirname: None if dirname is None \
+                             else os.path.abspath(os.path.expanduser(dirname))
 
 class BasePackager(Utils):
     ''' Base class for packager methods '''
     def __init__(self, **kwargs):
-        self.base_pkg_files        = kwargs['base_package_file']
-        self.depends_pkg_files     = kwargs['depends_package_file']
-        self.contrail_pkg_file     = kwargs['contrail_package_file']
+        self.base_pkg_files        = expanduser(kwargs['base_package_file'])
+        self.depends_pkg_files     = expanduser(kwargs['depends_package_file'])
+        self.contrail_pkg_file     = expanduser(kwargs['contrail_package_file'])
         self.id                    = kwargs.get('build_id', 999)
         self.sku                   = kwargs.get('sku', 'grizzly')
         self.branch                = kwargs.get('branch', None)
-        store                      = kwargs['store_dir']
+        store                      = expanduser(kwargs['store_dir'])
         self.store                 = os.path.join(store, str(self.id))
         self.iso_prefix            = kwargs.get('iso_prefix', getpass.getuser())
-        self.pkg_dir               = kwargs['package_dir']
-        self.contrail_pkg_dir      = kwargs.get('contrail_package_dir', None)
-        self.git_local_repo        = kwargs['git_local_repo'] 
+        self.pkg_dir               = expanduser(kwargs['package_dir'])
+        self.contrail_pkg_dir      = expanduser(kwargs.get('contrail_package_dir', None))
+        self.git_local_repo        = expanduser(kwargs['git_local_repo']) 
         self.make_targets          = kwargs.get('make_targets', None)
-        self.make_targets_file     = kwargs.get('make_targets_file', None)
+        self.make_targets_file     = expanduser(kwargs.get('make_targets_file', None))
         self.default_targets       = kwargs.get('default_targets', 
                                          ['thirdparty-all', 'openstack-all', 'contrail-all'])
         self.comps_xml_template    = kwargs.get('comps_xml_template', None)
@@ -64,7 +66,6 @@ class BasePackager(Utils):
         
         # update branch and build tag and tgz name
         if self.branch is None:
-            pass
             self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
                                              %self.git_local_repo)[0]
         # ** Attn: Not using branch info in build tag for now ***

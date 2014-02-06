@@ -62,6 +62,8 @@ class PackagerArgParser(Utils):
         usrhome = os.path.expanduser('~')
         cmd = os.popen('repo info contrail-controller | grep "Mount path"|cut -f3 -d" "')
         git_local_repo = os.path.dirname(cmd.read().strip('\n'))
+        if git_local_repo == '':
+            raise RuntimeError('Cant find Git local Repo. Seems repo command is not available...')
         skuname = 'grizzly'
         if dist[0] == 'ubuntu':
             skuname= 'havana'
