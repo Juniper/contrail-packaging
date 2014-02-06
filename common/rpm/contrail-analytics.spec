@@ -164,7 +164,6 @@ install -p -m 755 %{_distropkgdir}/contrail-collector.ini %{buildroot}%{_supervi
 install -p -m 755 %{_distropkgdir}/contrail-opserver.ini %{buildroot}%{_supervisordir}/contrail-opserver.ini
 install -p -m 755 %{_distropkgdir}/contrail-qe.ini %{buildroot}%{_supervisordir}/contrail-qe.ini
 install -p -m 755 %{_distropkgdir}/redis-query.ini %{buildroot}%{_supervisordir}/redis-query.ini
-install -p -m 755 %{_distropkgdir}/redis-sentinel.ini %{buildroot}%{_supervisordir}/redis-sentinel.ini
 install -p -m 755 %{_distropkgdir}/redis-uve.ini %{buildroot}%{_supervisordir}/redis-uve.ini
 
 #install .kill files for supervisord
@@ -177,7 +176,6 @@ install -p -m 755 %{_distropkgdir}/contrail-qe.initd.supervisord          %{buil
 install -p -m 755 %{_distropkgdir}/contrail-opserver.initd.supervisord          %{buildroot}%{_initddir}/contrail-opserver
 install -p -m 755 %{_distropkgdir}/redis-query.initd.supervisord          %{buildroot}%{_initddir}/redis-query
 install -p -m 755 %{_distropkgdir}/redis-uve.initd.supervisord          %{buildroot}%{_initddir}/redis-uve
-install -p -m 755 %{_distropkgdir}/redis-sentinel.initd.supervisord %{buildroot}%{_initddir}/redis-sentinel
 #perl -pi -e 's/python2.7/python%{_pyver}/g' %{buildroot}%{_supervisordir}/contrail-opserver.ini
 
 pushd %{_builddir}
@@ -197,7 +195,6 @@ popd
 # install etc files
 install -p -m 755 %{_distropkgdir}/redis-query.conf %{buildroot}%{_contrailetc}/redis-query.conf
 install -p -m 755 %{_distropkgdir}/redis-uve.conf %{buildroot}%{_contrailetc}/redis-uve.conf
-install -p -m 755 %{_distropkgdir}/sentinel.conf %{buildroot}%{_contrailetc}/sentinel.conf
 
 rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/gen_py/__init__.*
 rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/bottle.py*
@@ -220,28 +217,6 @@ if [ -f /etc/contrail/vizd_param ]; then
         grep -q 'HOST_IP' /etc/contrail/opserver_param || echo 'HOST_IP='${HOST_IP} >> /etc/contrail/opserver_param
     fi
 fi
-if [ -f /etc/contrail/sentinel.conf ]; then
-    SENTINEL_MONITOR_LINE=$(grep "sentinel monitor mymaster" /etc/contrail/sentinel.conf)
-    SAVE_IFS=$IFS
-    IFS=' ' read -a SENTINEL_MONITOR_LINE_TOKEN <<< "${SENTINEL_MONITOR_LINE}"
-    # Change quorum to 1 if 0
-    if [ ${SENTINEL_MONITOR_LINE_TOKEN[5]} == "0" ]; then
-        SENTINEL_MONITOR_LINE_TOKEN[5]="1"
-    fi
-    # Change port to 6381 if 6379
-    if [ ${SENTINEL_MONITOR_LINE_TOKEN[4]} == "6379" ]; then
-        SENTINEL_MONITOR_LINE_TOKEN[4]="6381"
-    fi
-    # Change IP address to HOST_IP if 127.0.0.1
-    if [ ${SENTINEL_MONITOR_LINE_TOKEN[3]} == "127.0.0.1" ]; then
-        SENTINEL_MONITOR_LINE_TOKEN[3]=${HOST_IP}
-    fi
-    SENTINEL_MONITOR_MODIFY_LINE="${SENTINEL_MONITOR_LINE_TOKEN[*]}"
-    sed -e "s/sentinel monitor mymaster.*/$SENTINEL_MONITOR_MODIFY_LINE/g" /etc/contrail/sentinel.conf > /etc/contrail/sentinel.conf.new
-    mv /etc/contrail/sentinel.conf.new /etc/contrail/sentinel.conf
-    IFS=$SAVE_IFS
-fi
-
 
 %preun
 %postun
@@ -258,7 +233,6 @@ fi
 %{_supervisordir}/contrail-opserver.ini
 %{_supervisordir}/contrail-qe.ini
 %{_supervisordir}/redis-query.ini
-%{_supervisordir}/redis-sentinel.ini
 %{_supervisordir}/redis-uve.ini
 %{_supervisordir}/contrail-analytics.rules
 %if 0%{?rhel}
@@ -269,7 +243,6 @@ fi
 %{_initddir}/contrail-opserver
 %{_initddir}/redis-query
 %{_initddir}/redis-uve
-%{_initddir}/redis-sentinel
 %{_contrailanalytics}/tabledump
 %{_contrailanalytics}/tabledump.py
 %{_contrailanalytics}/tabledump.pyc
@@ -282,7 +255,6 @@ fi
 /usr/share/doc/python-vnc_opserver
 %config(noreplace) %{_contrailetc}/redis-query.conf
 %config(noreplace) %{_contrailetc}/redis-uve.conf
-%config(noreplace) %{_contrailetc}/sentinel.conf
 %{_contrailetc}/supervisord_analytics.conf
 %if 0%{?fedora} >= 17
 %{_servicedir}/supervisor-analytics.service

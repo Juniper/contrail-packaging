@@ -251,10 +251,18 @@ class EventManager:
                         if ((rules['processname'] == pheaders['groupname']) and (rules['process_state'] == headers['eventname'])):
                             self.stderr.write("got a hit with:" + str(rules) + '\n')
                             # do not make async calls
-                            #cmd_and_args = ['/usr/bin/bash', '-c' , rules['action']]
-                            #subprocess.Popen(cmd_and_args)
-                            os.system(rules['action'])
-
+                            try:
+                                ret_code = subprocess.call([rules['action']], 
+                                    shell=True, stdout=self.stderr, 
+                                    stderr=self.stderr)
+                            except Exception as e:
+                                self.stderr.write('Failed to execute action: ' \
+                                    + rules['action'] + ' with err ' + e + '\n')
+                            else:
+                                if ret_code:
+                                    self.stderr.write('Execution of action ' + \
+                                        rules['action'] + ' returned err ' + \
+                                        str(ret_code) + '\n')
             # check for flag value change events
             if headers['eventname'].startswith("PROCESS_COMMUNICATION"):
                 flag_and_value = pdata.partition(":")
