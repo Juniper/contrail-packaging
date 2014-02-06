@@ -47,7 +47,7 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_
 
 # install files
 pushd %{_builddir}/..
-install -p -m 644 tools/packaging/build/contrail_packages_%{_relstr}.tgz  %{buildroot}%{_contrailopt}/contrail_packages_%{_relstr}.tgz
+install -p -m 644 tools/packaging/build/contrail_packages_%{_verstr}-%{_relstr}.tgz  %{buildroot}%{_contrailopt}/contrail_packages_%{_relstr}.tgz
 install -p -m 755 tools/packaging/common/control_files/contrail_ifrename.sh %{buildroot}%{_contrailopt}/bin/getifname.sh
 
 # install etc files

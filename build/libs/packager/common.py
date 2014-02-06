@@ -1,231 +1,239 @@
 #!/usr/bin/env python
 ''' Generic Library for Packager scripts '''
 
-import sys
+
 import os
-import logging
-import getpass
+import re
+import sys
 import copy
 import shutil
+import logging
+import getpass
 import tempfile
-import pdb
-import re
+import platform
+from lxml import etree
+from xml.etree import ElementTree
 
 from utils import Utils
 
 log = logging.getLogger("pkg.%s" %__name__)
-
-class TestExecution(Utils):
-	def __init__(self, **kwargs):
-		self.fab_env      = kwargs['fabric_repo']
-		self.fab_cmds     = kwargs['fabric_exec_cmds']
-		self.setup_cmds   = kwargs['fabric_setup_cmds']
-		
-	def fabric_exec_cmds(self):
-		for cmd in self.fab_cmds:
-			log.info('Executing Fabric Command: %s' %cmd)
-			self.exec_cmd('fab %s' %cmd, wd=self.fab_env)
-
-	def setup_nodes(self):
-		#reimage
-		for cmd in self.setup_cmds:
-			self.exec_cmd(cmd, self.fab_env)
-	
-	def run(self):
-		self.setup_nodes()
-		self.exec_cmd('fab print_status', self.fab_env)
-		self.fabric_exec_cmds()
-		
-		
-class GitRepo(Utils):
-    def __init__(self, repo_dir, url, cwd_repo):
-        self.repo_dir  = repo_dir
-        self.url       = url
-        self.cwd_repo  = cwd_repo
-
-    def create_git_config(self, gitconfig):
-        gitdir = os.path.join(self.cwd_repo, '.git')
-        gitconfig_file = os.path.join(gitdir, 'config')
-        e_repo = os.path.join(os.path.expanduser('~'), '.repo')
-        if os.path.isdir(e_repo):
-            log.debug('Git repo is already initialized at {edir},\
-                       Moving {edir} as {edir}_moved'.format(edir=e_repo))
-
-        if not os.path.isdir(gitdir):
-            log.debug('Git config dir {dirn} do not exists.\
-                       Creating Dir {dirn} ...'.format(dirn=gitdir))
-            os.mkdir(gitdir)
-
-        if not os.path.isfile(gitconfig_file):
-            log.debug('Git config fie {gfile} do not exists.\
-                       Creating Dir {gfile} ...'.format(gfile=gitconfig_file))
-            with open(gitconfig_file, 'w') as fid:
-                fid.write(gitconfig)
-
-    def init_repo(self, template=None):
-        usr = getpass.getuser()
-        usrhome = os.path.expanduser('~')
-        gitconfig_file = os.path.join(usrhome, '.git', 'config')
-        if not os.path.isdir(self.repo_dir):
-            os.makedirs(self.repo_dir)
-
-        if template != None:
-	    self.create_git_config(template)
-
-	    self.exec_cmd('echo $(pwd)', wd=self.repo_dir)
-        self.exec_cmd('git config user.name %s' %usr)
-        self.exec_cmd('git config --global user.email %s@juniper.net' %usr)
-        self.exec_cmd('repo init -u %s' %self.url, wd=self.repo_dir)
-
-    def repo_sync(self):
-        log.info('Syncing Repo...')
-        self.exec_cmd('repo sync -j 8', wd=self.repo_dir)
-
-    def fetch_packages(self, loclist):
-        for loc in loclist:
-            loc = os.path.join(self.repo_dir, loc)
-            log.info('Fetch Packages in (%s)' %loc)
-            self.exec_cmd('python fetch_packages.py', wd=loc)
-
+expanduser = lambda dirname: None if dirname is None \
+                             else os.path.abspath(os.path.expanduser(dirname))
 
 class BasePackager(Utils):
+    ''' Base class for packager methods '''
     def __init__(self, **kwargs):
-        self.id                    = kwargs['id']
-        self.skip_build            = kwargs['skip_build']
-        self.store                 = kwargs['store'].format(id=self.id)
-        self.build_name            = kwargs['build_name']
-        self.pkg_dirs              = kwargs['pkg_dirs']
-        self.cont_pkg_dirs         = kwargs['cont_pkg_dirs']
-        self.jenkins               = kwargs['jenkins']
-        self.base_pkg_files        = kwargs['base_pkg_files']
-        self.deps_pkg_files        = kwargs['deps_pkg_files']
-        self.cont_pkg_files        = kwargs['cont_pkg_files']
-        self.cfg_file              = kwargs['cfg_file']
-        self.exec_list             = kwargs['exec']
-        self.git_fetch_pkgdirs     = kwargs['git_fetch_pkgdirs']
-        self.git_lrepo             = kwargs['git_local_repo'].format(id=self.id)
-        self.install_grepo         = kwargs['install_local_repo']
-        self.no_sync_repo          = kwargs['no_sync_repo']
-        self.git_url               = kwargs['git_url']
-        self.level                 = kwargs['log_level']
-        self.fabenv                = kwargs['fab_env']
-        self.fab_cmds              = kwargs['exec']
-        self.no_parallel_make      = kwargs['no_parallel_make']
-        self.targets               = kwargs['make_targets'] + \
-                                     self.rtrv_lsv_file_info(kwargs['make_targets_file'])      
-        self.config                = self.import_file(self.cfg_file)
-        self.gitconfig             = self.config.gitconfig
-        self.namemap               = self.config.NAMEMAP
-        self.pkg_type              = self.config.pkg_type
-        self.comps_xml_template    = self.config.comps_xml_template
+        self.base_pkg_files        = expanduser(kwargs['base_package_file'])
+        self.depends_pkg_files     = expanduser(kwargs['depends_package_file'])
+        self.contrail_pkg_file     = expanduser(kwargs['contrail_package_file'])
+        self.id                    = kwargs.get('build_id', 999)
+        self.sku                   = kwargs.get('sku', 'grizzly')
+        self.branch                = kwargs.get('branch', None)
+        store                      = expanduser(kwargs['store_dir'])
+        self.store                 = os.path.join(store, str(self.id))
+        self.iso_prefix            = kwargs.get('iso_prefix', getpass.getuser())
+        self.pkg_dir               = expanduser(kwargs['package_dir'])
+        self.contrail_pkg_dir      = expanduser(kwargs.get('contrail_package_dir', None))
+        self.git_local_repo        = expanduser(kwargs['git_local_repo']) 
+        self.make_targets          = kwargs.get('make_targets', None)
+        self.make_targets_file     = expanduser(kwargs.get('make_targets_file', None))
+        self.default_targets       = kwargs.get('default_targets', 
+                                         ['thirdparty-all', 'openstack-all', 'contrail-all'])
+        self.comps_xml_template    = kwargs.get('comps_xml_template', None)
+        pkg_types                  = {'ubuntu': 'deb', 'centos': 'rpm', \
+                                      'redhat': 'rpm', 'fedora': 'rpm'}
+        self.platform              = platform.dist()[0].lower()
+        self.pkg_type              = pkg_types[self.platform]
         self.pkg_repo              = os.path.join(self.store, 'pkg_repo')
-        self.cont_pkgs_dir         = os.path.join(self.store, 'contrail_packages')
-        self.pkgs_tgz              = os.path.join(self.cont_pkgs_dir, 'contrail_%ss.tgz' %self.pkg_type)
-        self.git_build_dir         = os.path.join(self.git_lrepo, 'tools', 'packaging', 'build')
-        self.cont_pkgs_tgz         = os.path.join(self.git_build_dir, 'contrail_packages_%s.tgz' %self.id)
+        self.store_log_dir         = os.path.join(self.store, 'log')
+        self.contrail_pkgs_store   = os.path.join(self.store, 'contrail_packages')
+        self.pkgs_tgz              = os.path.join(self.contrail_pkgs_store,
+                                                  'contrail_%ss.tgz' %self.pkg_type)
+        self.packager_dir          = os.getcwd()
+        self.contrail_pkgs_tgz     = ''
         self.base_pkgs             = {}
-        self.deps_pkgs             = {}
-        self.cont_pkgs             = {}
-        self._curr_info            = {}
+        self.depends_pkgs          = {}
+        self.contrail_pkgs         = {}
         self.imgname               = ''
-    
-    def update_namemap(self):
-        if self.namemap is None:
-            return
-        pat = re.compile(r'-RUNTIME-')
-        if pat.match(self.namemap['GIT_LOCAL_REPO']):
-            self.namemap['GIT_LOCAL_REPO'] = self.git_lrepo
-    
-    def create_git_repo(self):
-        lrepo = GitRepo(self.git_lrepo, self.git_url, self.git_lrepo)
-        if self.install_grepo:
-            log.debug('Install Git Local Repo in %s' %self.git_lrepo)
-            lrepo.init_repo(self.gitconfig)
-        else:
-            log.debug('Skipping Install Git Local Repo')
-        if not self.no_sync_repo:
-            lrepo.repo_sync()
-        lrepo.fetch_packages(self.git_fetch_pkgdirs)
-
+        self.targets               = []
+        self.build_tag             = self.id
 
     def setup_env(self):
+        ''' setup basic environment necessary for packager like
+            updating config data structures, creating dirs,
+            copying package files..etc
+        '''
+        
+        # update branch and build tag and tgz name
+        if self.branch is None:
+            self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
+                                             %self.git_local_repo)[0]
+        # ** Attn: Not using branch info in build tag for now ***
+        self.build_tag = '%s~%s' %(self.id, self.sku)
+        if self.platform != 'ubuntu':
+            contrail_pkgs_name = 'contrail_packages_%s-%s.tgz' %(
+                                                  self.branch, self.build_tag)
+        else:
+            contrail_pkgs_name = 'contrail_packages_%s.%s.tgz' %(
+                                                  self.branch, self.build_tag) 
+        self.contrail_pkgs_tgz = os.path.join(self.packager_dir, contrail_pkgs_name)
+        
         # get pkg info
-        self.update_namemap()
-        additems = {'found_at': dict()}
+        additems = {'found_at': {}}
         self.base_pkgs = self.parse_cfg_file(self.base_pkg_files)
-        self.deps_pkgs = self.parse_cfg_file(self.deps_pkg_files)
-        self.cont_pkgs = self.parse_cfg_file(self.cont_pkg_files, additems)
-        self.update_cfg_vars(self.cont_pkgs)
+        self.depends_pkgs = self.parse_cfg_file(self.depends_pkg_files)
+        self.contrail_pkgs = self.parse_cfg_file(self.contrail_pkg_file, additems)
 
         # create dirs
-        if self.install_grepo:
-			self.create_dir(self.git_lrepo)
         self.create_dir(self.store)
         self.create_dir(self.pkg_repo)
-        self.create_dir(self.cont_pkgs_dir)
+        self.create_dir(self.contrail_pkgs_store)
+        self.create_dir(self.store_log_dir)
 
-        # update dir list
-        if self.pkg_dirs:
+        # Update make location with git local repo
+        for target in self.contrail_pkgs.keys():
+            self.contrail_pkgs[target]['makeloc'] = os.path.join(self.git_local_repo,
+                                                     self.contrail_pkgs[target]['makeloc'])
+            self.contrail_pkgs[target]['builtloc'] = os.path.join(self.git_local_repo,
+                                                     self.contrail_pkgs[target]['builtloc'])
+
+        # update os, depends package dir
+        if self.pkg_dir:
             for each in self.base_pkgs.keys():
-                self.base_pkgs[each][location] = self.pkg_dirs
-            for each in self.debs_pkgs.keys():
-                self.base_pkgs[each][location] = self.pkg_dirs
+                self.base_pkgs[each]['location'] = self.pkg_dir
+            for each in self.depends_pkgs.keys():
+                self.depends_pkgs[each]['location'] = self.pkg_dir
 
-        # update contrail dir list
-        if self.cont_pkg_dirs:
-            for target in self.cont_pkgs.keys():
-                self.cont_pkgs[target]['buildloc'] = self.cont_pkg_dirs
+        # update make target list
+        if self.make_targets != None:
+            self.targets += [self.make_targets] if type(self.make_targets) is str else \
+                             self.make_targets
+        if self.make_targets_file != None:
+            self.targets += self.rtrv_lsv_file_info(self.make_targets_file)
+       
+        # Skip building all packages but not those supplied
+        # in self.targets and contrail-install-packages
+        # Update built loc and create support files
+        if self.contrail_pkg_dir:
+            # update make targets if contrail dir is supplied
+            for target in self.contrail_pkgs.keys():
+                if target in self.targets or \
+                   'contrail-install-packages' in target:
+                    continue
+                self.contrail_pkgs[target]['builtloc'] = self.contrail_pkg_dir
+
+            # pick up or create contrail_installer.tgz 
+            if not ('contrail-setup' in [tgt.strip('-deb') for tgt in self.targets] or
+                    'contrail-all' in self.targets):
+                builddir = os.path.join(self.git_local_repo, 'controller', 'build')
+                files = self.get_file_list(self.contrail_pkg_dir, 'contrail_installer.tgz')
+                if len(files) != 0:
+                    log.info('Copying %s/contrail_installer.tgz to %s' %(
+                               self.contrail_pkg_dir, builddir))
+                    shutil.copy('%s/contrail_installer.tgz' %self.contrail_pkg_dir,
+                                builddir)
+                else:
+                    installer_script = os.path.join(self.git_local_repo, 'tools',
+                                                     'provisioning', 'create_installer.py')
+                    log.info('Creating contrail_installer.tgz...')
+                    self.exec_cmd(installer_script, wd=builddir)
+                    
+        else:
+            self.targets = self.default_targets
                     
         # OS PKGs and Depends PKGs
-        self.verify_pkgs_exists(self.base_pkgs)
-        self.verify_pkgs_exists(self.deps_pkgs)
-        self.copy_pkg_files(self.deps_pkgs, self.pkg_repo)
+        self.check_package_md5(self.base_pkgs)
+        self.check_package_md5(self.depends_pkgs)
+        self.copy_pkg_files(self.depends_pkgs, self.pkg_repo)
 
     def make_pkgs(self):
-        for each in self.targets:
-            log.info('Making Target: %s' %each)
-            cmd = 'make TAG=%s %s' %(self.id, each)
-            if not self.no_parallel_make:
-                parallel = self.cont_pkgs[each]['poolsize']
-                cmd += ' -j %s' %int(parallel)
-            self.exec_cmd(cmd, wd=self.cont_pkgs[each]['makeloc'])
-
-    def test_run(self):
-        test = TestExecution(fabric_repo=self.fabenv,\
-                             fabric_exec_cmds=self.fab_cmds,\
-                             fabric_setup_cmds=['fab bringup_test_node:%s' %self.imgname])
-        test.run()
+        ''' make package with given TAG '''
+        if len(self.targets) == 0:
+            log.warn('make target list is empty...Nothing to make')
+            return
+        for target in self.targets:
+            log.info('Making Target: %s' %target)
+            if not self.contrail_pkgs.has_key(target):
+                raise RuntimeError('Target (%s) is not defined in %s' %(
+                                    target, self.contrail_pkg_file))
+            cmd = 'make TAG=%s %s' %(self.id, self.contrail_pkgs[target]['target'])
+            self.exec_cmd(cmd, wd=self.contrail_pkgs[target]['makeloc'])
 
     def verify_built_pkgs_exists(self, targets=None, skips=None):
+        ''' verify that contrail built packages are created and 
+            and available in specific dirs
+        '''
         missing = []
-        targets = targets if targets else self.cont_pkgs.keys()
+        targets = targets if targets else self.contrail_pkgs.keys()
         targets = list(set(targets) - set(skips)) if skips else targets
         for each in targets:
-            pkgs = self.cont_pkgs[each]['pkgs']
+            pkgs = self.contrail_pkgs[each]['pkgs']
             pkgs = [pkgs] if type(pkgs) is str else pkgs
             for pkg in filter(None, pkgs):
                 log.info('Verify Built Pkg (%s) is present in (%s)' %(
-                          pkg, self.cont_pkgs[each]['buildloc']))
-                if self.cont_pkgs[each]['found_at'].has_key(pkg):
+                          pkg, self.contrail_pkgs[each]['builtloc']))
+                if self.contrail_pkgs[each]['found_at'].has_key(pkg):
+                    #Already updated
                     continue
-                pattern = self.cont_pkgs[each]['pkg_pattern'].format(pkg=pkg)
-                buildlocs = self.cont_pkgs[each]['buildloc']
-                if type(buildlocs) is str:
-                    buildlocs = [buildloc]
-                flist = self.get_file_list(buildlocs, pattern)
+                pattern = self.contrail_pkgs[each]['pkg_pattern'].format(pkg=pkg)
+                builtlocs = self.contrail_pkgs[each]['builtloc']
+                if type(builtlocs) is str:
+                    builtlocs = [builtlocs]
+                flist = self.get_file_list(builtlocs, pattern)
                 if len(flist) != 0:
                     pkgfile = self.get_latest_file(flist)
                     log.debug(pkgfile)
-                    self.cont_pkgs[each]['found_at'][pkg] = pkgfile
+                    self.contrail_pkgs[each]['found_at'][pkg] = pkgfile
                 else:
                     missing.append(pkg)
                     log.error('Built Package file for Package (%s) is not found @ %s' %(
-                               pkg, self.cont_pkgs[each]['buildloc'])) 
+                               pkg, self.contrail_pkgs[each]['builtloc'])) 
         if len(missing) != 0:
             log.error('Package file for One or More built package are not found')
             raise IOError('Missing Packages: \n%s' %"\n".join(missing)) 
 
+    def create_log(self):
+        filelist, pkglist = [], []
+        filelist_file = os.path.join(self.store_log_dir, 'file_list.txt')
+        pkglist_file = os.path.join(self.store_log_dir, '%s_list.txt' %self.pkg_type)
+        for target in self.contrail_pkgs.keys():
+            packages = self.contrail_pkgs[target]['pkgs']
+            packages = [packages] if type(packages) is str else packages
+            for pkg in filter(None, packages):
+                pkglist.append(pkg)
+                if self.contrail_pkgs[target]['found_at'][pkg] != '':
+                    pkgfile = os.path.basename(self.contrail_pkgs[target]['found_at'][pkg])
+                    filelist.append(pkgfile)
+        with open(filelist_file, 'w') as fid:
+            fid.write("%s\n" %"\n".join(sorted(filelist)))
+            fid.flush()
+        with open(pkglist_file, 'w') as fid:
+            fid.write("%s\n" %"\n".join(sorted(pkglist)))
+            fid.flush()
+            
+    def create_git_ids(self, manifest=None, filename=None):
+        filename = filename or os.path.join(self.store, 'git_build_%s.txt' %self.id)
+        manifest = manifest or os.path.join(self.git_local_repo, '.repo', 'manifest.xml')
+        ids_dict = {}
+        tree = ElementTree.parse(manifest)
+        for project in tree.findall('project'):
+            element_dict = dict(project.items())
+            parsed_element = self.parse_git_cfg_file(os.path.join(self.git_local_repo, 
+                                                                element_dict['path'], 
+                                                               '.git', 'config'))
+            url = parsed_element[r'remote "%s"' %element_dict['remote']]['url']
+            cmd = 'git ls-remote %s %s' %(url, element_dict.get('revision', 'HEAD'))
+            id = self.exec_cmd_out(cmd)[0].split('\t')[0]
+            ids_dict[id] = url
+        with open(filename, 'w') as file_id:
+            #id_list = ['%s\t%s' %(item, key) for key, item in ids_dict.items()]
+            id_list = ['{0:<60}    {1:<}'.format(item, key) for key, item in ids_dict.items()]
+            file_id.write('%s\n' %"\n".join(id_list))
+            file_id.flush()
+        return filename
+        
     def run_pungi(self, ks_file):
+        ''' execute pungi tool and copy built iso file to store directory '''
         self.exec_cmd('sync')
         tempdir = tempfile.mkdtemp()
         self.exec_cmd('sudo pungi \
@@ -235,48 +243,56 @@ class BasePackager(Utils):
                             --cachedir=%s/cachedir \
                             --ver=%s \
                             --force \
-                            --nosource' %(self.build_name, ks_file, 
+                            --nosource' %(self.iso_prefix, ks_file, 
                                           tempdir, tempdir, self.id),
                         wd=self.store)
         isofiles = self.get_file_list([tempdir], '%s-%s*-DVD.iso' %(
-                                      self.build_name, self.id))
+                                      self.iso_prefix, self.id))
         isofile = self.get_latest_file(isofiles)
-        self.imgname = isofile
         shutil.copy2(isofile, self.store)
+        self.imgname = os.path.join(self.store, os.path.basename(isofile))
         self.exec_cmd('sudo rm -rf %s' %tempdir)
         log.info('ISO (%s) has been built Successfully!'%isofile)
-        log.info('ISO (%s) is copied to %s' %(isofile, self.store))
+        log.info('ISO (%s) is copied to (%s)' %(isofile, self.imgname))
 
     def create_comps_xml (self):
+        ''' create comps xml need for repo creation '''
         pkgs = ['%s<packagereq type="mandatory">%s</packagereq>' % (' '*6, pkg)\
                 for pkg in self.base_pkgs.keys()]
-        template = self.comps_xml_template.format(pkgsinfo='\n'.join(pkgs))
+        template = self.comps_xml_template.format(__packagesinfo__='\n'.join(pkgs))
         with open(os.path.join(self.pkg_repo, 'comps.xml'), 'w') as fd:
             fd.write ('%s' %template)
             
     def create_ks(self):
+        ''' create kick start file need for pungi '''
         ks_file = os.path.join (self.store, 'cf.ks')
         with open (ks_file, 'w') as fd:
             fd.write('repo --name=jnpr-ostk-%s --baseurl=file://%s\n' %(
-                      self.build_name, self.pkg_repo))
+                      self.iso_prefix, self.pkg_repo))
             fd.write('%packages --nobase\n')
             fd.write('@core\n')
             fd.write('%end\n')
         return ks_file
 
     def createrepo(self, dirname=os.getcwd(), extraargs=''):
+        ''' execute create repo '''
         log.info('Executing createrepo...')
         self.exec_cmd('createrepo %s .' %extraargs, wd=dirname)   
-        		
+                
     def create_contrail_pkg(self): 
+        ''' make contrail-install-package after creating necessary
+            tgz files
+        '''
         # create contrail_packages_(id).tgz
-        shutil.copy2('setup.sh', self.cont_pkgs_dir)
-        shutil.copy2('README', self.cont_pkgs_dir)
-        with open(os.path.join(self.cont_pkgs_dir, 'VERSION'), 'w') as fid:
-			fid.writelines('BUILDID=%s\n' %self.id)
-        self.create_tgz(self.cont_pkgs_tgz, self.cont_pkgs_dir)
-		#make contrail-install-packages
-        pkg = 'contrail-install-packages'
-        pkginfo = self.cont_pkgs[pkg]
-        self.exec_cmd('make TAG=%s %s' %(self.id, pkg),
-                       pkginfo['makeloc'])
+        setupfile = 'setup_ubuntu.sh' if self.platform == 'ubuntu' else 'setup.sh'
+        shutil.copy2(setupfile, os.path.join(self.contrail_pkgs_store, 'setup.sh'))
+        shutil.copy2('README', self.contrail_pkgs_store)
+        with open(os.path.join(self.contrail_pkgs_store, 'VERSION'), 'w') as fid:
+            fid.writelines('BUILDID=%s\n' %self.id)
+        self.create_tgz(self.contrail_pkgs_tgz, self.contrail_pkgs_store,
+                        os.path.basename(self.contrail_pkgs_store))
+        #make contrail-install-packages
+        pkginfo = self.contrail_pkgs['contrail-install-packages']
+        cleanerpkg = re.sub(r'-deb$', '-clean', pkginfo['target'])
+        self.exec_cmd('make TAG=%s %s %s' %(self.build_tag, cleanerpkg, 
+                                            pkginfo['target']), pkginfo['makeloc'])
