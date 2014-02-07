@@ -94,7 +94,6 @@ override_dh_auto_install:
 	install -D -m 644 $(_src_config)/contrail-opserver.initd.supervisord $(buildroot)$(_initddir)/contrail-opserver
 	install -p -m 755 $(_src_config)/redis-query.initd.supervisord $(buildroot)$(_initddir)/redis-query
 	install -p -m 755 $(_src_config)/redis-uve.initd.supervisord $(buildroot)$(_initddir)/redis-uve
-	install -p -m 755 $(_src_config)/redis-sentinel.initd.supervisord $(buildroot)$(_initddir)/redis-sentinel
 
 	install -p -m 644 $(_src_config)/supervisord_analytics.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_analytics.conf
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_analytics_files
@@ -105,11 +104,9 @@ override_dh_auto_install:
 	install -p -m 644 $(_src_config)/contrail-opserver.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-opserver.ini
 	install -p -m 644 $(_src_config)/redis-query.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/redis-query.ini
 	install -p -m 644 $(_src_config)/redis-uve.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/redis-uve.ini
-	install -p -m 644 $(_src_config)/redis-sentinel.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/redis-sentinel.ini
 
 	install -p -m 644 $(_src_config)/redis-query.conf $(buildroot)$(_sysconfdir)/contrail/redis-query.conf
 	install -p -m 644 $(_src_config)/redis-uve.conf $(buildroot)$(_sysconfdir)/contrail/redis-uve.conf
-	install -p -m 644 $(_src_config)/sentinel.conf $(buildroot)$(_sysconfdir)/contrail/sentinel.conf
 
 override_dh_shlibdeps: 
 

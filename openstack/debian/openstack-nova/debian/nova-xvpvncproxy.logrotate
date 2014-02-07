@@ -1,0 +1,7 @@
+/var/log/nova/nova-xvpvncproxy.log {
+    daily
+    missingok
+    compress
+    delaycompress
+    notifempty
+}
