@@ -52,7 +52,7 @@ virtual-network=
 [HYPERVISOR]
 type=kvm
 xen-ll-ip-address=
-xen-ll-ip-prefix-len=0
+xen-ll-prefix-len=0
 xen-ll-port=
 vmware-physical-port=
 
