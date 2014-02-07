@@ -13,10 +13,13 @@ cp /opt/contrail/contrail_packages/sources.list /etc/apt/sources.list
 apt-get update
 
 #install python-software-properties and add havana, java and webupd8 repo
-sudo apt-get -y install python-software-properties
+sudo apt-get -y install python-software-properties curl
 sudo add-apt-repository -y cloud-archive:havana
 sudo add-apt-repository -y ppa:webupd8team/java
 sudo add-apt-repository -y ppa:nilarimogard/webupd8
+echo "deb http://www.apache.org/dist/cassandra/debian 11x main" |     sudo tee /etc/apt/sources.list.d/cassandra.list
+curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add
+
 apt-get update
 
 DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install dpkg-dev=1.16.1.2ubuntu7.2
