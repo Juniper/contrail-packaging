@@ -68,8 +68,8 @@ class BasePackager(Utils):
         '''
         
         # update branch and build tag and tgz name
-        if self.branch is None:
-            self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
+        # Temporarily override user input for branch
+        self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
                                              %self.git_local_repo)[0]
         # ** Attn: Not using branch info in build tag for now ***
         self.build_tag = '%s~%s' %(self.id, self.sku)
