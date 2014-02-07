@@ -10,6 +10,7 @@ import shutil
 import logging
 import getpass
 import tempfile
+import operator
 import platform
 from lxml import etree
 from xml.etree import ElementTree
@@ -32,7 +33,8 @@ class BasePackager(Utils):
         store                      = expanduser(kwargs['store_dir'])
         self.store                 = os.path.join(store, str(self.id))
         self.iso_prefix            = kwargs.get('iso_prefix', getpass.getuser())
-        self.pkg_dir               = expanduser(kwargs['package_dir'])
+        self.abs_pkg_dir           = expanduser(kwargs['absolute_package_dir'])
+        self.cache_base_dir        = expanduser(kwargs['cache_base_dir'])
         self.contrail_pkg_dir      = expanduser(kwargs.get('contrail_package_dir', None))
         self.git_local_repo        = expanduser(kwargs['git_local_repo']) 
         self.make_targets          = kwargs.get('make_targets', None)
@@ -43,6 +45,7 @@ class BasePackager(Utils):
         pkg_types                  = {'ubuntu': 'deb', 'centos': 'rpm', \
                                       'redhat': 'rpm', 'fedora': 'rpm'}
         self.platform              = platform.dist()[0].lower()
+        self.cache_subdir          = "".join(platform.dist()[:2]).lower().replace('.', '')
         self.pkg_type              = pkg_types[self.platform]
         self.pkg_repo              = os.path.join(self.store, 'pkg_repo')
         self.store_log_dir         = os.path.join(self.store, 'log')
@@ -97,15 +100,24 @@ class BasePackager(Utils):
             self.contrail_pkgs[target]['builtloc'] = os.path.join(self.git_local_repo,
                                                      self.contrail_pkgs[target]['builtloc'])
 
-        # update os, depends package dir
-        if self.pkg_dir:
+        # update location of os and dependent package location
+        cache_dir = expanduser(os.path.join(self.cache_base_dir, self.cache_subdir, self.sku))
+        for each in self.base_pkgs.keys():
+            if self.base_pkgs[each]['location'] == '':
+                self.base_pkgs[each]['location'] = cache_dir
+        for each in self.depends_pkgs.keys():
+            if self.depends_pkgs[each]['location'] == '':
+                self.depends_pkgs[each]['location'] = cache_dir
+
+        # override location of os and dependent packages if absolute path given
+        if self.abs_pkg_dir:
             for each in self.base_pkgs.keys():
-                self.base_pkgs[each]['location'] = self.pkg_dir
+                self.base_pkgs[each]['location'] = self.abs_pkg_dir
             for each in self.depends_pkgs.keys():
-                self.depends_pkgs[each]['location'] = self.pkg_dir
+                self.depends_pkgs[each]['location'] = self.abs_pkg_dir
 
         # update make target list
-        if self.make_targets != None:
+        if self.make_targets != None and len(self.make_targets) != 0:
             self.targets += [self.make_targets] if type(self.make_targets) is str else \
                              self.make_targets
         if self.make_targets_file != None:
@@ -139,7 +151,7 @@ class BasePackager(Utils):
                     self.exec_cmd(installer_script, wd=builddir)
                     
         else:
-            self.targets = self.default_targets
+            self.targets = self.targets or self.default_targets
                     
         # OS PKGs and Depends PKGs
         self.check_package_md5(self.base_pkgs)

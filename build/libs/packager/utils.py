@@ -29,6 +29,7 @@ class Utils(object):
     def create_dir(dirname):
         dirname = os.path.expanduser(dirname)
         if not os.path.exists(dirname):
+            log.debug('Creating directory: %s' %dirname)
             os.makedirs(dirname)
         else:
             log.debug('Dir %s exists' %dirname)
@@ -122,7 +123,7 @@ class Utils(object):
            os.lstat(fname).st_size != 0:
             with open(fname, 'r') as fid:
                 file_info_list = fid.read().split('\n')
-        return file_info_list
+        return filter(None, file_info_list)
 
     def get_md5(self, files):
         md5dict = {}
@@ -138,6 +139,8 @@ class Utils(object):
 
     def check_package_md5(self, pkginfo):
         for pkg in pkginfo.keys():
+            if pkginfo[pkg]['location'] == '':
+                import pdb; pdb.set_trace()
             pkgfile = self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'], False)
             pkgfile = self.get_latest_file(pkgfile)
             actual_md5 = self.get_md5(pkgfile)
@@ -162,7 +165,7 @@ class Utils(object):
             else:
                 filelist += [os.path.abspath('%s/%s' %(dirname, fname)) \
                               for fname in fnmatch.filter(os.listdir(dirname), pattern)]
-        return filelist
+        return filter(None, filelist)
 
     @staticmethod
     def get_latest_file(filelist):
