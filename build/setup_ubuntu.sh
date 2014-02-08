@@ -11,6 +11,7 @@ mkdir -p /opt/contrail/bin
 cd /opt/contrail/contrail_install_repo
 DEBIAN_FRONTEND=noninteractive dpkg -i binutils_2.22-6ubuntu1.1_amd64.deb dpkg-dev_1.16.1.2ubuntu7.2_all.deb libdpkg-perl_1.16.1.2ubuntu7.2_all.deb make_3.81-8.1ubuntu1.1_amd64.deb patch_2.6.1-3_amd64.deb python-pip_1.0-1build1_all.deb python-pkg-resources_0.6.24-1ubuntu1_all.deb python-setuptools_0.6.24-1ubuntu1_all.deb
 
+cd /etc/apt/
 # create repo with only local packages
 datetime_string=`date +%Y_%m_%d__%H_%M_%S`
 cp sources.list sources.list.$datetime_string
