@@ -94,8 +94,6 @@ install -p -m 755 build/third_party/bind/bin/rndc/rndc    %{buildroot}%{_bindir}
 install -p -m 755 build/debug/dns/dnsd                    %{buildroot}%{_bindir}/dnsd
 
 # install etc files
-install -p -m 644 %{_distropkgdir}/dns.conf %{buildroot}%{_contraildns}/dns.conf
-# install -p -m 755 %{_distropkgdir}/dns.conf.sh %{buildroot}%{_contraildns}/dns.conf.sh
 install -p -m 644 %{_distropkgdir}/rndc.conf                %{buildroot}%{_contraildns}/rndc.conf
 install -p -m 644 %{_distropkgdir}/named.conf               %{buildroot}%{_contraildns}/named.conf
 %if 0%{?rhel}
@@ -112,9 +110,6 @@ install -p -m 755 %{_distropkgdir}/contrail-named.ini %{buildroot}%{_supervisord
 %if 0%{?fedora} >= 17
 /bin/systemctl daemon-reload
 %endif
-
-# Convert configuration files from old param to new conf file format.
-# %{_contraildns}/dns.conf.sh
 
 %preun
 %if 0%{?fedora} >= 17
@@ -143,13 +138,10 @@ exit 0
 
 %{_contraildns}/named.conf
 %{_contraildns}/rndc.conf
-%config(noreplace) %{_contraildns}/dns.conf
-# %{_contraildns}/dns.conf.sh
 %{_supervisordir}/contrail-named.ini
 %{_supervisordir}/contrail-dns.ini
 %if 0%{?rhel}
 %{_initddir}
 %endif
-
 
 %changelog
