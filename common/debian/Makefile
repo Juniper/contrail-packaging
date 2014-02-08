@@ -30,8 +30,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-fabric-utils-deb \
 	python-keystoneclient-deb \
 	python-neutronclient-deb \
-	euca2ools-deb \
-	libvirt-deb
+	euca2ools-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -97,23 +96,6 @@ euca2ools-deb:
 euca2ools-clean:
 	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
 	rm -rf ${BUILDDIR}/debian
-
-libvirt-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/third_party/libvirt)
-	rm -rf ${BUILDDIR}
-	mkdir -p ${BUILDDIR} 
-	cp  ${SB_TOP}/third_party/libvirt/libvirt_0.9.8.orig.tar.gz ${BUILDDIR}
-	cp  ${SB_TOP}/third_party/libvirt/libvirt_0.9.8-2ubuntu17.debian.tar.gz ${BUILDDIR}
-	cp  ${SB_TOP}/third_party/libvirt/libvirt_0.9.8-2ubuntu17.dsc ${BUILDDIR}
-	cp  ${SB_TOP}/third_party/libvirt/libvirt-0.9.8.patch ${BUILDDIR}
-	cd ${BUILDDIR} && dpkg-source -x libvirt_0.9.8-2ubuntu17.dsc
-	cd ${BUILDDIR} && patch -p0 -i libvirt-0.9.8.patch
-	cd ${BUILDDIR}/libvirt-0.9.8 && dpkg-buildpackage -b && \
-	mv ../*.deb ${SB_TOP}/build/debian/
-
-libvirt-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/third_party/libvirt)
-	rm -rf ${BUILDDIR}
 
 %-deb:
 	(cd $(@:-deb=); fakeroot debian/rules binary)

@@ -10,22 +10,7 @@ mkdir -p /opt/contrail/bin
 
 #install sources.list from /opt/contrail/ to /etc/apt/
 cp /opt/contrail/contrail_packages/sources.list /etc/apt/sources.list 
-apt-get update
-
-#install python-software-properties and add havana, java and webupd8 repo
-sudo apt-get -y install python-software-properties curl
-sudo add-apt-repository -y cloud-archive:havana
-sudo add-apt-repository -y ppa:webupd8team/java
-sudo add-apt-repository -y ppa:nilarimogard/webupd8
-echo "deb http://www.apache.org/dist/cassandra/debian 11x main" |     sudo tee /etc/apt/sources.list.d/cassandra.list
-curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add
-
-apt-get update
-
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install dpkg-dev=1.16.1.2ubuntu7.2
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-pip=1.0-1build1
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-pkg-resources=0.6.24-1ubuntu1
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-setuptools=0.6.24-1ubuntu1
+#apt-get update
 
 # create local repo and add this repo on top of sources.list
 cd /etc/apt/
@@ -42,6 +27,21 @@ dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
 #install local repo preferences from /opt/contrail/ to /etc/apt/
 cp /opt/contrail/contrail_packages/preferences /etc/apt/preferences 
 apt-get update
+
+#install python-software-properties and add havana, java and webupd8 repo
+sudo apt-get -y install python-software-properties curl
+sudo add-apt-repository -y cloud-archive:havana
+sudo add-apt-repository -y ppa:webupd8team/java
+sudo add-apt-repository -y ppa:nilarimogard/webupd8
+echo "deb http://www.apache.org/dist/cassandra/debian 11x main" |     sudo tee /etc/apt/sources.list.d/cassandra.list
+curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add
+
+apt-get update
+
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install dpkg-dev=1.16.1.2ubuntu7.2
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-pip=1.0-1build1
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-pkg-resources=0.6.24-1ubuntu1
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-setuptools=0.6.24-1ubuntu1
 
 # install base packages and fabric utils
 DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-crypto
