@@ -47,8 +47,8 @@ pip install --upgrade --no-deps --index-url='' /opt/contrail/contrail_installer/
 echo 'sun-java6-plugin shared/accepted-sun-dlj-v1-1 boolean true' | /usr/bin/debconf-set-selections
 echo 'sun-java6-bin shared/accepted-sun-dlj-v1-1 boolean true' | /usr/bin/debconf-set-selections
 echo 'sun-java6-jre shared/accepted-sun-dlj-v1-1 boolean true' | /usr/bin/debconf-set-selections
-echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
-echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
+echo 'debconf shared/accepted-oracle-license-v1-1 select true' | sudo debconf-set-selections
+echo 'debconf shared/accepted-oracle-license-v1-1 seen true' | sudo debconf-set-selections
 
 #additional sources list from stock needed if only contrail specific pkgs are in in local repo
 cd /etc/apt/
