@@ -1,3 +1,10 @@
+quantum (2:2012.2-0ubuntu1) quantal; urgency=low
+
+  [ Rudra Rugge ]
+  * Set Contrail epoch number to 2
+
+ -- Rudra Rugge <rrugge@juniper.net>  Thu, 06 Feb 2014 13:19:33 -0500
+
 quantum (2012.2-0ubuntu1) quantal; urgency=low
 
   [ Chuck Short ]

@@ -38,12 +38,14 @@ class PackagerArgParser(Utils):
 
     @staticmethod
     def is_file_exists(filename):
+        filename = os.path.abspath(os.path.expanduser(filename))
         if not os.path.isfile(filename):
             raise RuntimeError('file (%s) does not exists' %filename)
         return filename
 
     @staticmethod
     def is_dir_exists(dirname):
+        dirname = os.path.abspath(os.path.expanduser(dirname))
         if not os.path.isdir(dirname):
             raise RuntimeError('Directory (%s) does not exists' %dirname)
         return dirname
@@ -64,6 +66,7 @@ class PackagerArgParser(Utils):
         git_local_repo = os.path.dirname(cmd.read().strip('\n'))
         if git_local_repo == '':
             raise RuntimeError('Cant find Git local Repo. Seems repo command is not available...')
+        cache_base_dir = os.path.join(os.path.sep, 'cs-shared', 'builder', 'cache')
         skuname = 'grizzly'
         if dist[0] == 'ubuntu':
             skuname= 'havana'
@@ -77,7 +80,7 @@ class PackagerArgParser(Utils):
             'branch'                : None, 
             'iso_prefix'            : 'contrail',     
             'store_dir'             : os.path.join(usrhome, 'packager_store'),
-            'package_dir'           : None,
+            'absolute_package_dir'  : None,
             'contrail_package_dir'  : None,
             'base_package_file'     : os.path.join(pkg_file_dir, dist[0], '{skuname}', base_pkg_file),
             'depends_package_file'  : os.path.join(pkg_file_dir, dist[0], '{skuname}', deps_pkg_file),
@@ -90,6 +93,7 @@ class PackagerArgParser(Utils):
             'git_local_repo'        : git_local_repo,
             'comps_xml_template'    : comps_xml.template,
             'default_targets'       : default_targets,
+            'cache_base_dir'        : cache_base_dir,
         }
   
     def parse(self):
@@ -149,11 +153,19 @@ class PackagerArgParser(Utils):
         aparser.add_argument('--store-dir', '-s',
                              action='store',
                              help='Directory Location to which new packages be saved')
-        aparser.add_argument('--package-dir', '-p',
+        aparser.add_argument('--cache-base-dir', '-C',
                              action='store',
                              type=lambda fn: self.is_dir_exists(fn),
-                             help='Directory Location where OS and third party packages\
-                                   are available')
+                             help='Base directory location where OS and third\
+                                   party packages are available.\
+                                   packager will check files in \
+                                   base_cache_dir/distribution/sku/. eg\
+                                   /cs-shared/builder/cache/centos64/grizzly/')
+        aparser.add_argument('--absolute-package-dir', '-a',
+                             action='store',
+                             type=lambda fn: self.is_dir_exists(fn),
+                             help='Absolute Directory Location where OS and third\
+                                   party packages are available')
         aparser.add_argument('--contrail-package-dir', '-P',
                              action='store',
                              type=lambda fn: self.is_dir_exists(fn),

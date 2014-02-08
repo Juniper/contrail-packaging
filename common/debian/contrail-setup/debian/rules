@@ -33,6 +33,8 @@ override_dh_auto_build:
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 	rm -rf $(builddist)
 	mkdir -p $(builddist)
+	python $(SB_TOP)/tools/provisioning/create_installer.py
+	mv contrail_installer.tgz $(SB_TOP)/build/debian/contrail_installer.tgz
 	(cd $(SB_TOP)/controller/src/config && tar cvfz $(builddist)/config_utils.tgz utils)
 	(cd $(SB_TOP)/controller/src/dns/scripts && tar cvfz $(builddist)/dns_scripts.tgz *)
 	(cd $(SB_TOP) && python $(SB_TOP)/tools/packaging/deb_configs/create_debs_list.py $(builddist)/debs_list.txt)
