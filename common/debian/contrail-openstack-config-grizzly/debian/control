@@ -1,27 +1,27 @@
-Source: contrail-openstack-config
+Source: contrail-openstack-config-grizzly
 Maintainer: rrugge <rrugge@juniper.net>
 Section: misc
 Priority: optional
 Standards-Version: 1.0
 Build-Depends:
 
-Package: contrail-openstack-config
+Package: contrail-openstack-config-grizzly
 Architecture: all
 Maintainer: rrugge <rrugge@juniper.net>
 Depends:
- supervisor (= 3.0a8-1.2),
  contrail-libs,
  contrail-config-extension,
  contrail-config,
- neutron-plugin-contrail (= 1:2013.2~rc3-0ubuntu1),
- neutron-server (= 1:2013.2~rc3-0ubuntu1),
+ quantum-plugin-contrail,
+ quantum-server,
  python-novaclient,
  python-keystoneclient,
  contrail-setup, haproxy,
  euca2ools,
  qpidd,
  python-qpid,
- python-iniparse
-Section: contrail-openstack-config
+ python-iniparse,
+ supervisor (= 3.0a8-1.2)
+Section: contrail-openstack-config-grizzly
 Priority: extra
-Description: Contrail Openstack Config composite debian package
+Description: Contrail Openstack Config Grizzly composite debian package
