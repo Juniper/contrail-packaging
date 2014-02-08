@@ -54,7 +54,7 @@ echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-se
 cd /etc/apt/
 #install sources.list from /opt/contrail/ to /etc/apt/
 cp /opt/contrail/contrail_packages/sources.list /etc/apt/sources.list 
-cat new_repo sources.list > new_sources.list
+cat local_repo sources.list > new_sources.list
 mv new_sources.list sources.list 
 
 sudo add-apt-repository -y cloud-archive:havana
