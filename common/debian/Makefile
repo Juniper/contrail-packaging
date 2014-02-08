@@ -22,6 +22,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-openstack-deb \
 	contrail-openstack-analytics-deb \
 	contrail-openstack-config-deb \
+	contrail-openstack-config-grizzly-deb \
 	contrail-openstack-control-deb \
 	contrail-openstack-database-deb \
 	contrail-openstack-vrouter-deb \
@@ -128,6 +129,7 @@ contrail-webui-deb: contrail-nodejs-deb
 contrail-dns-deb: contrail-libs-deb
 contrail-nodemgr-deb: contrail-api-lib-deb
 contrail-openstack-config-deb: contrail-config-deb
+contrail-openstack-config-grizzly-deb: contrail-config-deb
 contrail-openstack-control-deb: contrail-control-deb
 contrail-openstack-vrouter-deb: contrail-vrouter-deb
 contrail-openstack-analytics-deb: contrail-analytics-deb
