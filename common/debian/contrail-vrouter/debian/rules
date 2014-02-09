@@ -41,6 +41,7 @@ override_dh_auto_install:
 #	Setup directories
 	rm -rf $(buildroot)
 	install -d -m 755 $(buildroot)$(_bindir)
+	install -d -m 755 $(buildroot)$(_contrailetc)
 
 #	install bin files
 	install -p -m 755 ${SB_TOP}/build/debug/vrouter/utils/flow $(buildroot)$(_bindir)
@@ -55,8 +56,8 @@ override_dh_auto_install:
 	install -p -m 755 ${SB_TOP}/build/debug/vnsw/agent/vnswad $(buildroot)$(_bindir)/vnswad
 
 #	install etc files
-	install -d -m 755 $(buildroot)$(_contrailetc)
 	install -p -m 644 ${SB_TOP}/tools/packaging/common/control_files/agent.conf $(buildroot)$(_contrailetc)/agent.conf
+	install -D -p -m 755 ${SB_TOP}/tools/packaging/common/control_files/contrail_reboot $(buildroot)$(_contrailetc)/contrail_reboot
 
 #	kernel module
 	install -d -m 755 $(buildroot)/lib/modules/$(_osVer)/extra/net/vrouter
