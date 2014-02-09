@@ -51,8 +51,8 @@ override_dh_auto_install:
 	install -p -m 644 $(builddist)/config_utils.tgz $(buildroot)/opt/contrail/config_utils.tgz
 	install -p -m 644 $(builddist)/dns_scripts.tgz $(buildroot)/opt/contrail/dns_scripts.tgz
 	install -D -m 755 $(SB_TOP)/controller/src/config/utils/contrail-version-deb $(buildroot)/usr/bin/contrail-version
-#	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-config $(buildroot)/usr/bin/openstack-config 
-#	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-status-deb $(buildroot)/usr/bin/openstack-status
-#	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-db $(buildroot)/usr/bin/openstack-db 
+	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-config $(buildroot)/usr/bin/openstack-config 
+	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-status-deb $(buildroot)/usr/bin/openstack-status
+	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-db $(buildroot)/usr/bin/openstack-db 
 	install -D -m 755 $(SB_TOP)/controller/src/config/utils/contrail-status-deb $(buildroot)/usr/bin/contrail-status
 
