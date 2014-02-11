@@ -10,10 +10,15 @@ export DH_VERBOSE=1
 
 SPEC_DIR := $(shell pwd)
 export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export buildroot := $(SB_TOP)/build/debian/contrail-config
-export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
+export buildroot := $(SB_TOP)/build/debian/contrail-openstack-analytics
+export _bindir := /usr/bin
+export _initddir := /etc/init.d
+export _initdir := /etc/init
+export _sysconfdir := /etc
+export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 
 BUILDTAG =
 ifdef TAG
@@ -29,5 +34,31 @@ override_dh_auto_build:
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
 override_dh_auto_install: 
-	
+	# Setup directories
+	install -d -m 755 $(buildroot)/bin
+	install -d -m 755 $(buildroot)$(_bindir)
+	install -d -m 755 $(buildroot)$(_initdir)
+	install -d -m 755 $(buildroot)$(_initddir)
+	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
+	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_analytics_files
+	# install supervisord ini, upstart, conf and rules files
+	install -p -m 755 $(_src_config)/supervisor-analytics.upstart $(buildroot)$(_initdir)/supervisor-analytics.conf
+	install -p -m 755 $(_src_config)/contrail-collector.initd.supervisord $(buildroot)$(_initddir)/contrail-collector
+	install -p -m 755 $(_src_config)/contrail-qe.initd.supervisord $(buildroot)$(_initddir)/contrail-qe
+	install -p -m 755 $(_src_config)/contrail-opserver.initd.supervisord $(buildroot)$(_initddir)/contrail-opserver
+	install -p -m 755 $(_src_config)/redis-query.initd.supervisord $(buildroot)$(_initddir)/redis-query
+	install -p -m 755 $(_src_config)/redis-uve.initd.supervisord $(buildroot)$(_initddir)/redis-uve
+	install -p -m 755 $(_src_config)/redis-sentinel.initd.supervisord $(buildroot)$(_initddir)/redis-sentinel
+	install -p -m 755 $(_src_config)/supervisord_analytics.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_analytics.conf
+	install -p -m 755 $(_src_config)/contrail-analytics.rules $(buildroot)$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-analytics.rules
+	install -p -m 755 $(_src_config)/contrail-collector.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-collector.ini
+	install -p -m 755 $(_src_config)/contrail-qe.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-qe.ini
+	install -p -m 755 $(_src_config)/contrail-opserver.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-opserver.ini
+	install -p -m 755 $(_src_config)/redis-query.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/redis-query.ini
+	install -p -m 755 $(_src_config)/redis-uve.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/redis-uve.ini
+	install -p -m 755 $(_src_config)/redis-sentinel.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/redis-sentinel.ini
+	# install supervisord wrapper scripts
+	install -p -m 755 $(_src_config)/supervisord_wrapper_scripts/contrail_collector_pre  $(buildroot)$(_bindir)/contrail_collector_pre
+	install -p -m 755 $(_src_config)/supervisord_wrapper_scripts/contrail_qe_pre  $(buildroot)$(_bindir)/contrail_qe_pre
+
 override_dh_usrlocal:	

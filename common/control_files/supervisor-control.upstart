@@ -1,0 +1,24 @@
+description     "Supervisord for VNC Control"
+
+start on runlevel [2345]
+stop on runlevel [016]
+limit core unlimited unlimited
+
+pre-start script
+    ulimit -s unlimited
+    ulimit -c unlimited
+    ulimit -d unlimited
+    ulimit -v unlimited
+    ulimit -n 4096
+end script
+
+script
+    supervisord --nodaemon -c /etc/contrail/supervisord_control.conf
+    deactivate
+end script
+
+pre-stop script
+    supervisorctl -s http://localhost:9003 stop all
+    supervisorctl -s http://localhost:9003 shutdown
+    /usr/bin/supervisor_killall /etc/contrail/supervisord_control_files
+end script
