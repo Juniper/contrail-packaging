@@ -363,9 +363,17 @@ def main(argv=sys.argv):
         node_type = Module2NodeType[module]
         node_type_name = NodeTypeNames[node_type]
         instance_id = INSTANCE_ID_DEFAULT
+        # ubuntu packaging is different, figure out where the generated files 
+        # are installed
+        try:
+            from opserver.sandesh.analytics_cpuinfo.ttypes import *
+            sandesh_pkg_dir = 'opserver.sandesh'
+        except:
+            from analytics_cpuinfo.ttypes import *
+            sandesh_pkg_dir = 'analytics_cpuinfo'
         sandesh_global.init_generator(module_name, socket.gethostname(), 
             node_type_name, instance_id, ['127.0.0.1:8086'], 
-            module_name, 8099, ['opserver.sandesh'])
+            module_name, 8099, [sandesh_pkg_dir])
         sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-config'):
