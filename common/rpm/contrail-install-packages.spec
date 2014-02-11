@@ -49,7 +49,7 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_
 
 # install files
 pushd %{_builddir}/..
-echo BUILDID=%{_relstr} > %{buildroot}%{_contrailopt}/contrail_packages/VERSION
+echo BUILDID=`echo %{_relstr} | cut -d "~" -f1` > %{buildroot}%{_contrailopt}/contrail_packages/VERSION
 install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh
 install -p -m 755 tools/packaging/build/README %{buildroot}%{_contrailopt}/contrail_packages/README
 install -p -m 755 tools/packaging/build/helpers/* %{buildroot}%{_contrailopt}/contrail_packages/helpers/
