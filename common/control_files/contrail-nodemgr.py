@@ -315,6 +315,9 @@ def main(argv=sys.argv):
     parser.add_argument("--discovery_server", 
                         default = socket.gethostname(),
                         help = 'IP address of Discovery Server')
+    parser.add_argument("--collector_addr", 
+                        default = '', 
+                        help = 'Collector address in format ip:port')
     parser.add_argument("--discovery_port", 
                         type = int,
                         default = 5998, 
@@ -329,6 +332,11 @@ def main(argv=sys.argv):
     sys.stderr.write("Discovery server: " + discovery_server + "\n")
     discovery_port = _args.discovery_port
     sys.stderr.write("Discovery port: " + str(discovery_port) + "\n")
+    if _args.collector_addr is "":
+        collector_addr = []
+    else:
+        collector_addr = [_args.collector_addr]
+    sys.stderr.write("Collector address: " + str(collector_addr) + "\n")
 #done parsing arguments
     
     if not 'SUPERVISOR_SERVER_URL' in os.environ:
@@ -355,8 +363,9 @@ def main(argv=sys.argv):
         node_type = Module2NodeType[module]
         node_type_name = NodeTypeNames[node_type]
         instance_id = INSTANCE_ID_DEFAULT
+        sys
         sandesh_global.init_generator(module_name, socket.gethostname(), 
-            node_type_name, instance_id, ['127.0.0.1:8086'], 
+            node_type_name, instance_id, collector_addr,
             module_name, 8099, ['opserver.sandesh'])
         sandesh_global.set_logging_params(enable_local_log=True)
 
@@ -383,7 +392,7 @@ def main(argv=sys.argv):
         sys.stderr.write("Updated discovery port: " + str(discovery_port) + "\n")
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         sandesh_global.init_generator(module_name, socket.gethostname(), 
-            node_type_name, instance_id, [ ], module_name, 
+            node_type_name, instance_id, collector_addr, module_name, 
             8100, ['cfgm_common.uve'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
 
@@ -402,7 +411,7 @@ def main(argv=sys.argv):
         instance_id = INSTANCE_ID_DEFAULT
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         sandesh_global.init_generator(module_name, socket.gethostname(), 
-            node_type_name, instance_id, [], module_name, 
+            node_type_name, instance_id, collector_addr, module_name, 
             8101, ['control_node.control_node'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
 
@@ -421,7 +430,7 @@ def main(argv=sys.argv):
         instance_id = INSTANCE_ID_DEFAULT
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         sandesh_global.init_generator(module_name, socket.gethostname(), 
-            node_type_name, instance_id, [], module_name, 
+            node_type_name, instance_id, collector_addr, module_name, 
             8102, ['vrouter.vrouter'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
     
