@@ -137,7 +137,11 @@ class BasePackager(Utils):
             # pick up or create contrail_installer.tgz 
             if not ('contrail-setup' in [tgt.strip('-deb') for tgt in self.targets] or
                     'contrail-all' in self.targets):
-                builddir = os.path.join(self.git_local_repo, 'controller', 'build')
+                if self.platform == 'ubuntu':
+                    builddir = os.path.join(self.git_local_repo, 'build', 'debian')
+                else:
+                    builddir = os.path.join(self.git_local_repo, 'controller', 'build')
+                self.create_dir(builddir)
                 files = self.get_file_list(self.contrail_pkg_dir, 'contrail_installer.tgz')
                 if len(files) != 0:
                     log.info('Copying %s/contrail_installer.tgz to %s' %(
@@ -295,15 +299,8 @@ class BasePackager(Utils):
         ''' make contrail-install-package after creating necessary
             tgz files
         '''
-        # create contrail_packages_(id).tgz
-        setupfile = 'setup_ubuntu.sh' if self.platform == 'ubuntu' else 'setup.sh'
-        if self.platform != 'ubuntu':
-            shutil.copy2(setupfile, os.path.join(self.contrail_pkgs_store, 'setup.sh'))
-            shutil.copy2('README', self.contrail_pkgs_store)
-            with open(os.path.join(self.contrail_pkgs_store, 'VERSION'), 'w') as fid:
-                fid.writelines('BUILDID=%s\n' %self.id)
-        self.create_tgz(self.contrail_pkgs_tgz, self.contrail_pkgs_store,
-                        os.path.basename(self.contrail_pkgs_store))
+        # create contrail_packages_(branch-|branch.)(id).tgz
+        self.create_tgz(self.contrail_pkgs_tgz, self.contrail_pkgs_store)
         #make contrail-install-packages
         pkginfo = self.contrail_pkgs['contrail-install-packages']
         cleanerpkg = re.sub(r'-deb$', '-clean', pkginfo['target'])

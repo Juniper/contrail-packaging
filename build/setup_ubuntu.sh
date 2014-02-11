@@ -2,8 +2,7 @@
 
 # copy files over
 mkdir -p /opt/contrail/contrail_install_repo
-tar xvzf contrail_packages.tgz
-cd /opt/contrail/contrail_install_repo; tar xvzf /opt/contrail/contrail_packages/contrail_packages/contrail_debs.tgz
+cd /opt/contrail/contrail_install_repo; tar xvzf /opt/contrail/contrail_packages/contrail_debs.tgz
 
 # create shell scripts and put to bin
 mkdir -p /opt/contrail/bin

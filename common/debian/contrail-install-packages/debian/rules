@@ -46,7 +46,7 @@ override_dh_auto_install:
 	# install pkgs needed first
 	install -p -m 644 $(SB_TOP)/distro/third_party/ecdsa-0.10.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/ecdsa-0.10.tar.gz
 	install -p -m 644 $(SB_TOP)/distro/third_party/Fabric-1.7.0.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
-	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu; fi
+	echo BUILDID=`echo $(BUILDTAG) | cut -d '.' -f3 | cut -d '~' -f1` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu; fi
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_packages/VERSION
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/setup_ubuntu.sh  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_packages/sources.list
@@ -55,6 +55,7 @@ override_dh_auto_install:
 	install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh $(buildroot)/usr/bin/contrail-keystone-setup.sh
 	# extract contrail_installer 
 	cd $(buildroot)$(_contrailopt); tar xzvf contrail_installer.tgz
+	cd $(buildroot)$(_contrailopt)/contrail_packages/; tar xzvf contrail_packages.tgz; rm -rf contrail_packages.tgz;
 	
 override_dh_shlibdeps:
 
