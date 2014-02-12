@@ -28,7 +28,6 @@ PACKAGES = contrail-libs-deb \
 	contrail-openstack-vrouter-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
-	python-keystoneclient-deb \
 	python-neutronclient-deb \
 	euca2ools-deb
 
@@ -69,15 +68,6 @@ contrail-fabric-utils-deb:
 contrail-fabric-utils-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
 	rm -rf ${BUILDDIR}
-
-python-keystoneclient-deb:
-	$(eval BUILDDIR=${SB_TOP}/third_party/python-keystoneclient)
-	cp -R python-keystoneclient/debian ${BUILDDIR}/debian
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-python-keystoneclient-clean:
-	$(eval BUILDDIR=${SB_TOP}/third_party/python-keystoneclient)
-	rm -rf ${BUILDDIR}/debian
 
 python-neutronclient-deb:
 	$(eval BUILDDIR=${SB_TOP}/third_party/python-neutronclient)
