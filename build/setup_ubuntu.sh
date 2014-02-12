@@ -50,15 +50,15 @@ echo 'debconf shared/accepted-oracle-license-v1-1 select true' | sudo debconf-se
 echo 'debconf shared/accepted-oracle-license-v1-1 seen true' | sudo debconf-set-selections
 
 #additional sources list from stock needed if only contrail specific pkgs are in in local repo
-cd /etc/apt/
+#cd /etc/apt/
 #install sources.list from /opt/contrail/ to /etc/apt/
-cp /opt/contrail/contrail_packages/sources.list /etc/apt/sources.list 
-cat local_repo sources.list > new_sources.list
-mv new_sources.list sources.list 
+#cp /opt/contrail/contrail_packages/sources.list /etc/apt/sources.list 
+#cat local_repo sources.list > new_sources.list
+#mv new_sources.list sources.list 
 
-sudo add-apt-repository -y cloud-archive:havana
-sudo add-apt-repository -y ppa:webupd8team/java
-sudo add-apt-repository -y ppa:nilarimogard/webupd8
-echo "deb http://www.apache.org/dist/cassandra/debian 11x main" |     sudo tee /etc/apt/sources.list.d/cassandra.list
-curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add
-apt-get update
+#sudo add-apt-repository -y cloud-archive:havana
+#sudo add-apt-repository -y ppa:webupd8team/java
+#sudo add-apt-repository -y ppa:nilarimogard/webupd8
+#echo "deb http://www.apache.org/dist/cassandra/debian 11x main" |     sudo tee /etc/apt/sources.list.d/cassandra.list
+#curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add
+#apt-get update

@@ -8,10 +8,15 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
-export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export WS := `cat ~/rpmbuild/SOURCES/git_root`
-export buildroot := $(SB_TOP)/build/debian/contrail-openstack-config
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
+
+export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+export buildroot := $(SB_TOP)/build/debian/contrail-openstack-config
+export _bindir := /usr/bin
+export _initddir := /etc/init.d
+export _initdir := /etc/init
+export _sysconfdir := /etc
+export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 
 BUILDTAG =
 ifdef TAG
@@ -26,7 +31,28 @@ endif
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
-override_dh_auto_install: 
-	
+override_dh_auto_install:
+	# Install all the directories
+	install -d -m 755 $(buildroot)$(_bindir)
+	install -d -m 755 $(buildroot)$(_initdir)
+	install -d -m 755 $(buildroot)$(_initddir)
+	install -d -m 755 $(buildroot)$(_sysconfdir)
+	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
+	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files
+	# Install upstart, supervisord ini, conf and rules files
+	install -D -m 755 $(_src_config)/supervisor-config.upstart $(buildroot)$(_initdir)/supervisor-config.conf 
+	install -p -m 755 $(_src_config)/contrail-api.initd.supervisord $(buildroot)$(_initddir)/contrail-api
+	install -p -m 755 $(_src_config)/contrail-discovery.initd.supervisord $(buildroot)$(_initddir)/contrail-discovery
+	install -p -m 755 $(_src_config)/contrail-schema.initd.supervisord $(buildroot)$(_initddir)/contrail-schema
+	install -p -m 755 $(_src_config)/contrail-svc-monitor.initd.supervisord $(buildroot)$(_initddir)/contrail-svc-monitor
+	install -p -m 755 $(_src_config)/supervisord_config.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_config.conf
+	install -p -m 755 $(_src_config)/contrail-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-api.ini
+	install -p -m 755 $(_src_config)/contrail-schema.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-schema.ini
+	install -p -m 755 $(_src_config)/contrail-svc-monitor.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-svc-monitor.ini
+	install -p -m 755 $(_src_config)/contrail-discovery.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-discovery.ini
+	install -p -m 755 $(_src_config)/redis-config.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/redis-config.ini
+	install -p -m 755 $(_src_config)/supervisord_wrapper_scripts/contrail-api.kill $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-api.kill
+	install -p -m 755 $(_src_config)/contrail-config.rules $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-config.rules
+	install -D -m 644 $(_src_config)/supervisor-config.service $(buildroot)/usr/lib/systemd/system/supervisor-config.service
 override_dh_usrlocal:	
 

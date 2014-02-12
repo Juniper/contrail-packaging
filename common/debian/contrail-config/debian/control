@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-config
 Architecture: all
 Maintainer: amoghe <amoghe@juniper.net>
-Depends: python-bitarray, python-gevent, python-keystone, python-requests, python-zope.interface, ifmap-server, zookeeper, python-zookeeper, redis-server (>= 2.6.13-1), python-redis, contrail-api-venv
+Depends: python-bitarray, python-gevent, python-keystone, python-requests, python-zope.interface, ifmap-server, zookeeper, zookeeperd, python-zookeeper, redis-server (>= 2.6.13-1), python-redis, contrail-api-venv
 Section: contrail-config
 Priority: extra
 Description: Contrail Config package

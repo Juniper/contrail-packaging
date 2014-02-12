@@ -45,18 +45,13 @@ override_dh_auto_build:
 	(cd ${SB_TOP} && scons ${TARGETS})
 
 override_dh_auto_install: 
+	# setup directories
 	install -d -m 755 $(buildroot)$(_bindir)
-	install -p -m 755 ${SB_TOP}/build/debug/control-node/control-node $(buildroot)$(_bindir)/control-node
-#	install .ini files for supervisord
-	install -D -m 644 $(_src_config)/supervisor-control.initd $(buildroot)$(_initddir)/supervisor-control
-	install -D -m 644 $(_src_config)/contrail-control.initd.supervisord $(buildroot)$(_initddir)/contrail-control
+	install -d -m 755 $(buildroot)$(_sysconfdir)
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
-	install -p -m 644 $(_src_config)/supervisord_control.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_control.conf
+	install -p -m 755 ${SB_TOP}/build/debug/control-node/control-node $(buildroot)$(_bindir)/control-node
 	# TODO: Remove this after spec files for other platforms are fixed.
 	perl -ni -e 's/source \/opt\/contrail\/control-venv\/bin\/activate && exec python \/opt\/contrail\/control-venv/\/usr/g; print $$_;' $(buildroot)$(_sysconfdir)/contrail/supervisord_control.conf
-	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_control_files
-	install -p -m 644 $(_src_config)/contrail-control.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_control_files/contrail-control.ini
-	install -D -m 644 $(_src_config)/control_param $(buildroot)/$(_sysconfdir)/contrail/control_param
-	install -p -m 644 $(_src_config)/contrail-control.rules $(buildroot)$(_sysconfdir)/contrail/supervisord_control_files/contrail-control.rules
+	install -p -m 755 $(_src_config)/control_param $(buildroot)/$(_sysconfdir)/contrail/control_param
 
 override_dh_usrlocal:
