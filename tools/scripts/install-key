@@ -1,0 +1,40 @@
+#!/usr/bin/env /usr/bin/python
+"""
+Copyright (c) 2013, Juniper Networks, Inc.
+All rights reserved.
+Author : Michael Ganley
+
+Ansible configuration wrapper script.
+"""
+
+import argparse
+import os
+import sys
+import socket
+import shlex
+import subprocess
+import shutil
+
+def cmd_exists(cmd):
+    return subprocess.call("type " + cmd, shell=True,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
+
+
+if __name__ == '__main__':
+
+    filename = sys.argv[1]
+    ip = sys.argv[2]
+    command = "type grep " + str(filename) + "~/.ssh/known_hosts"
+
+    if not cmd_exists(command):
+        input = open ("ssh_host_rsa_key.pub." + str(filename))
+        key = input.read()
+        entry = str(filename) + "," + str(ip) + " "
+        output = open (".ssh/known_hosts", 'a')
+        output.seek (0, 2)
+        output.write (entry)
+        output.write (key)
+        output.close()
+
+    print "Key Installed"
+    sys.exit(0)

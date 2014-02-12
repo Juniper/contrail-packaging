@@ -1,0 +1,7 @@
+/var/log/nova/nova-api-ec2.log {
+    daily
+    missingok
+    compress
+    delaycompress
+    notifempty
+}

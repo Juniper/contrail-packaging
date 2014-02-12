@@ -18,7 +18,19 @@ PACKAGES = contrail-libs-deb \
 	contrail-nodemgr-deb \
 	contrail-setup-deb \
 	ifmap-server-deb \
-	supervisord-deb
+	supervisord-deb \
+	contrail-openstack-deb \
+	contrail-openstack-analytics-deb \
+	contrail-openstack-config-deb \
+	contrail-openstack-config-grizzly-deb \
+	contrail-openstack-control-deb \
+	contrail-openstack-database-deb \
+	contrail-openstack-vrouter-deb \
+	contrail-openstack-webui-deb \
+	contrail-fabric-utils-deb \
+	python-keystoneclient-deb \
+	python-neutronclient-deb \
+	euca2ools-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -37,6 +49,54 @@ ifmap-server-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/ifmap-server)
 	rm -rf ${BUILDDIR}
 
+contrail-install-packages-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
+	mkdir -p ${BUILDDIR}
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-install-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules binary && mv ../contrail-install-packages_*_all.deb ../debian/)
+	@echo "Wrote: ${BUILDDIR}/../debian/contrail-install-packages_*_all.deb"
+
+contrail-install-packages-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
+	rm -rf ${BUILDDIR}
+
+contrail-fabric-utils-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
+	cp -R ${SB_TOP}/third_party/fabric-utils ${BUILDDIR}
+	cp -R contrail-fabric-utils/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-fabric-utils-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
+	rm -rf ${BUILDDIR}
+
+python-keystoneclient-deb:
+	$(eval BUILDDIR=${SB_TOP}/third_party/python-keystoneclient)
+	cp -R python-keystoneclient/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+python-keystoneclient-clean:
+	$(eval BUILDDIR=${SB_TOP}/third_party/python-keystoneclient)
+	rm -rf ${BUILDDIR}/debian
+
+python-neutronclient-deb:
+	$(eval BUILDDIR=${SB_TOP}/third_party/python-neutronclient)
+	cp -R python-neutronclient/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+python-neutronclient-clean:
+	$(eval BUILDDIR=${SB_TOP}/third_party/python-neutronclient)
+	rm -rf ${BUILDDIR}/debian
+
+euca2ools-deb:
+	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
+	cp -R euca2ools/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+euca2ools-clean:
+	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
+	rm -rf ${BUILDDIR}/debian
+
 %-deb:
 	(cd $(@:-deb=); fakeroot debian/rules binary)
 
@@ -50,3 +110,9 @@ contrail-analytics-deb: contrail-analytics-venv-deb
 contrail-webui-deb: contrail-nodejs-deb
 contrail-dns-deb: contrail-libs-deb
 contrail-nodemgr-deb: contrail-api-lib-deb
+contrail-openstack-config-deb: contrail-config-deb
+contrail-openstack-config-grizzly-deb: contrail-config-deb
+contrail-openstack-control-deb: contrail-control-deb
+contrail-openstack-vrouter-deb: contrail-vrouter-deb
+contrail-openstack-analytics-deb: contrail-analytics-deb
+contrail-openstack-webui-deb: contrail-webui-deb
