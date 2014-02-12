@@ -1,0 +1,5 @@
+list.py
+pip-egg-info/List.egg-info/PKG-INFO
+pip-egg-info/List.egg-info/SOURCES.txt
+pip-egg-info/List.egg-info/dependency_links.txt
+pip-egg-info/List.egg-info/top_level.txt

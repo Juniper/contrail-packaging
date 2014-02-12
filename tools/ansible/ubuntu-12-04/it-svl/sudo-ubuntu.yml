@@ -1,0 +1,13 @@
+
+- hosts: contrail
+  user: root
+  tasks:
+    - apt: pkg="python-selinux" state=present
+      tags:
+        - selinux
+    - selinux: state=disabled
+    - lineinfile: "dest=/etc/sudoers regexp=^mganley insertafter=^root line='mganley ALL=(ALL)       NOPASSWD: ALL'"
+    - lineinfile: "dest=/etc/sudoers regexp='^Defaults[ ,       ]*requiretty'  line='#Defaults    requiretty'"
+
+     
+
