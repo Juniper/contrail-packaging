@@ -28,7 +28,6 @@ PACKAGES = contrail-libs-deb \
 	contrail-openstack-vrouter-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
-	python-neutronclient-deb \
 	euca2ools-deb
 
 all: ${PACKAGES}
@@ -69,15 +68,6 @@ contrail-fabric-utils-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
 	rm -rf ${BUILDDIR}
 
-python-neutronclient-deb:
-	$(eval BUILDDIR=${SB_TOP}/third_party/python-neutronclient)
-	cp -R python-neutronclient/debian ${BUILDDIR}/debian
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-python-neutronclient-clean:
-	$(eval BUILDDIR=${SB_TOP}/third_party/python-neutronclient)
-	rm -rf ${BUILDDIR}/debian
-
 euca2ools-deb:
 	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
 	cp -R euca2ools/debian ${BUILDDIR}/debian
@@ -93,8 +83,13 @@ euca2ools-clean:
 %-clean:
 	(cd $(@:-clean=); fakeroot debian/rules clean)
 
-
 contrail-vrouter-deb: contrail-libs-deb
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-vrouter)
+	mkdir -p ${BUILDDIR}
+	(cd contrail-vrouter; fakeroot debian/rules binary OSVER=3.2.0-51-generic)
+	(cd contrail-vrouter; fakeroot debian/rules clean)
+	(cd contrail-vrouter; fakeroot debian/rules binary OSVER=3.2.0-58-generic)
+
 contrail-config-deb: contrail-config-venv-deb
 contrail-analytics-deb: contrail-analytics-venv-deb
 contrail-webui-deb: contrail-nodejs-deb
