@@ -323,7 +323,7 @@ def main(argv=sys.argv):
     parser.add_argument("--discovery_server", 
                         default = socket.gethostname(),
                         help = 'IP address of Discovery Server')
-    parser.add_argument("--collectors", 
+    parser.add_argument("--collectors",
                         default = '', 
                         help = 'Collector addresses in format ip1:port1 ip2:port2')
     parser.add_argument("--discovery_port", 
