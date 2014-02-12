@@ -315,9 +315,9 @@ def main(argv=sys.argv):
     parser.add_argument("--discovery_server", 
                         default = socket.gethostname(),
                         help = 'IP address of Discovery Server')
-    parser.add_argument("--collector_addr", 
+    parser.add_argument("--collectors", 
                         default = '', 
-                        help = 'Collector address in format ip:port')
+                        help = 'Collector addresses in format ip1:port1 ip2:port2')
     parser.add_argument("--discovery_port", 
                         type = int,
                         default = 5998, 
@@ -332,10 +332,10 @@ def main(argv=sys.argv):
     sys.stderr.write("Discovery server: " + discovery_server + "\n")
     discovery_port = _args.discovery_port
     sys.stderr.write("Discovery port: " + str(discovery_port) + "\n")
-    if _args.collector_addr is "":
+    if _args.collectors is "":
         collector_addr = []
     else:
-        collector_addr = [_args.collector_addr]
+        collector_addr = _args.collectors.split()
     sys.stderr.write("Collector address: " + str(collector_addr) + "\n")
 #done parsing arguments
     
