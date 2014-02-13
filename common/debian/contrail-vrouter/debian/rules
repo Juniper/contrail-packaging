@@ -32,9 +32,9 @@ endif
 
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(TAG)-$(_osVer)
 else
-BUILDTAG = $(_osVer)-$(BUILDTIME)
+BUILDTAG = $(BUILDTIME)-$(_osVer)
 endif
 
 BUILD_ARCH_TARGETS=src/vnsw/agent:vnswad vrouter
