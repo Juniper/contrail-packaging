@@ -18,8 +18,6 @@ Depends:
  python-keystoneclient,
  contrail-setup, haproxy,
  euca2ools,
- qpidd,
- python-qpid,
  python-iniparse,
  supervisor (= 3.0a8-1.2)
 Section: contrail-openstack-config-grizzly
