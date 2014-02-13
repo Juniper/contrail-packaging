@@ -16,7 +16,7 @@ export buildroot := $(SB_TOP)/build/debian/contrail-dns
 export _srcdir := $(SB_TOP)/tools/packaging/common/control_files
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
 
-export _supervisordir := /etc/contrail/supervisord_dns_files
+export _supervisordir := /etc/contrail/supervisord_control_files
 export _contrailetc := /etc/contrail
 export _bindir := /usr/bin
 export _logdir := /var/log
@@ -50,8 +50,6 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_logdir)/named
 	install -d -m 755 $(buildroot)$(_supervisordir)
 	install -d -m 755 $(buildroot)$(_initddir)
-	install -D -m 755 $(_srcdir)/supervisor-dns.upstart $(buildroot)$(_initdir)/supervisor-dns.conf
-	install -p -m 755 $(_srcdir)/supervisor-dns.initd $(buildroot)$(_initddir)/supervisor-dns
 	install -p -m 755 $(_srcdir)/contrail-dns.initd.supervisord $(buildroot)$(_initddir)/contrail-dns
 	install -p -m 755 $(_srcdir)/contrail-named.initd.supervisord $(buildroot)$(_initddir)/contrail-named
 	
@@ -63,7 +61,6 @@ override_dh_auto_install:
 	install -p -m 755 $(_srcdir)/named.conf $(buildroot)$(_contrailetc)/dns/named.conf
 	install -p -m 755 $(_srcdir)/dns_param $(buildroot)$(_contrailetc)/dns_param
 	#install .ini files for supervisord
-	install -p -m 755 $(_srcdir)/supervisord_dns.conf $(buildroot)$(_contrailetc)/supervisord_dns.conf
 	install -p -m 755 $(_srcdir)/contrail-dns.ini $(buildroot)$(_supervisordir)/contrail-dns.ini
 	install -p -m 755 $(_srcdir)/contrail-named.ini $(buildroot)$(_supervisordir)/contrail-named.ini
 
