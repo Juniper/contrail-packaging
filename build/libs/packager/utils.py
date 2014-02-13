@@ -4,7 +4,6 @@
 import os
 import re
 import sys
-import rpm
 import copy
 import fcntl
 import errno
