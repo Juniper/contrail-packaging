@@ -102,12 +102,13 @@ install -D -m 755 %{_distropkgdir}/contrail-control.initd.supervisord %{buildroo
 #install files
 install -d -m 755 %{buildroot}%{_bindir}
 install -p -m 755 build/debug/control-node/control-node %{buildroot}%{_bindir}/control-node
+install -D -m 644 %{_distropkgdir}/control-node.conf %{buildroot}/%{_contrailetc}/control-node.conf
+# install -D -m 755 %{_distropkgdir}/control-node.conf.sh %{buildroot}/%{_contrailetc}/control-node.conf.sh
 
 #install .ini files for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_control.conf %{buildroot}%{_contrailetc}/supervisord_control.conf
 install -p -m 755 %{_distropkgdir}/contrail-control.ini %{buildroot}%{_supervisordir}/contrail-control.ini
  
-install -D -m 644 %{_distropkgdir}/control_param %{buildroot}/etc/contrail/control_param
 install -p -m 755 %{_distropkgdir}/contrail-control.rules %{buildroot}%{_supervisordir}/contrail-control.rules
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
 
@@ -159,7 +160,8 @@ popd
 %{_servicedir}/supervisor-control.service
 %endif
 
-%config(noreplace) /etc/contrail/control_param
+%config(noreplace) %{_contrailetc}/control-node.conf
+# %{_contrailetc}/control-node.conf.sh
 %{_venv_root}/bin/contrail-nodemgr
 
 %post
@@ -167,6 +169,10 @@ popd
 if [ -x /bin/systemctl ]; then
    /bin/systemctl --system daemon-reload
 fi
+
+# Convert configuration files from old param to new conf file format.
+# %{_contrailetc}/control-node.conf.sh
+
 
 %changelog
 * Tue Dec 18 2012 Ted <ted@contrailsystems.com> - 1
