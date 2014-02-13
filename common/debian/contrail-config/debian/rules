@@ -95,10 +95,7 @@ override_dh_auto_install:
 	install -D -m 644 $(_src_config)/schema_transformer.conf $(buildroot)$(_sysconfdir)/contrail/schema_transformer.conf
 	install -D -m 644 $(_src_config)/svc_monitor.conf $(buildroot)$(_sysconfdir)/contrail/svc_monitor.conf
 	install -D -m 644 $(_src_config)/discovery.conf $(buildroot)$(_sysconfdir)/contrail/discovery.conf
-	install -D -m 755 $(_src_config)/supervisord_config.conf $(buildroot)$(_sysconfdir)/contrail/supervisor-config.conf
 	install -p -m 644 $(_src_config)/redis_config.conf $(buildroot)$(_sysconfdir)/contrail/
-#	 TODO: Remove this after spec files for other platforms are fixed.
-	perl -ni -e 's/source \/opt\/contrail\/api-venv\/bin\/activate && exec python \/opt\/contrail\/api-venv/\/usr/g; print $$_;' $(buildroot)$(_sysconfdir)/contrail/supervisord_config.conf
 	install -D -m 755 $(SB_TOP)/controller/src/config/schema-transformer/ifmap_view.py $(buildroot)$(_bindir)/ifmap_view.py
 	install -d -m 777 $(buildroot)$(_localstatedir)/log/contrail
 

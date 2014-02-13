@@ -46,6 +46,8 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/supervisor-control.initd $(buildroot)$(_initddir)/supervisor-control
 	install -p -m 755 $(_src_config)/contrail-control.initd.supervisord $(buildroot)$(_initddir)/contrail-control
 	install -p -m 755 $(_src_config)/supervisord_control.conf $(buildroot)$(_contrailetc)/supervisord_control.conf
+	# TODO: Remove this after spec files for other platforms are fixed.
+	perl -ni -e 's/source \/opt\/contrail\/control-venv\/bin\/activate && exec python \/opt\/contrail\/control-venv/\/usr/g; print $$_;' $(buildroot)$(_contrailetc)/supervisord_control.conf
 	install -p -m 755 $(_src_config)/contrail-control.ini $(buildroot)$(_supervisordir)/contrail-control.ini
 	install -p -m 755 $(_src_config)/contrail-control.rules $(buildroot)$(_sysconfdir)/contrail/supervisord_control_files/contrail-control.rules
 override_dh_usrlocal:	
