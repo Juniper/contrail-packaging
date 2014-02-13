@@ -48,3 +48,7 @@ override_dh_auto_install:
 	mv $(buildroot)/../node $(buildroot)/$(_contrailbase)/nodejs-v0.8.15/bin
 	ln -sf $(_contrailbase)/nodejs-v0.8.15/bin/node $(buildroot)/$(_bindir)/nodejs-contrail
 
+
+override_dh_shlibdeps:
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
+
