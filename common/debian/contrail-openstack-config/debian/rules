@@ -46,6 +46,7 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/contrail-schema.initd.supervisord $(buildroot)$(_initddir)/contrail-schema
 	install -p -m 755 $(_src_config)/contrail-svc-monitor.initd.supervisord $(buildroot)$(_initddir)/contrail-svc-monitor
 	install -p -m 755 $(_src_config)/supervisord_config.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_config.conf
+	perl -ni -e 's/source \/opt\/contrail\/api-venv\/bin\/activate && exec python \/opt\/contrail\/api-venv/\/usr/g; print $$_;' $(buildroot)$(_sysconfdir)/contrail/supervisord_config.conf
 	install -p -m 755 $(_src_config)/contrail-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-api.ini
 	install -p -m 755 $(_src_config)/contrail-schema.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-schema.ini
 	install -p -m 755 $(_src_config)/contrail-svc-monitor.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-svc-monitor.ini
