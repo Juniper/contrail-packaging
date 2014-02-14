@@ -101,13 +101,21 @@ contrail-vrouter-deb: contrail-libs-deb
 		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
 	fi
 
+contrail-openstack-config-deb: contrail-config-deb
+	if [ '${CONTRAIL_SKU}' != 'GRIZZLY' ]; then \
+		(cd $(@:-deb=); fakeroot debian/rules binary); \
+	fi
+
+contrail-openstack-config-grizzly-deb: contrail-config-deb
+	if [ '${CONTRAIL_SKU}' = 'GRIZZLY' ]; then \
+		(cd $(@:-deb=); fakeroot debian/rules binary); \
+	fi
+
 contrail-config-deb: contrail-config-venv-deb
 contrail-analytics-deb: contrail-analytics-venv-deb
 contrail-webui-deb: contrail-nodejs-deb
 contrail-dns-deb: contrail-libs-deb
 contrail-nodemgr-deb: contrail-api-lib-deb
-contrail-openstack-config-deb: contrail-config-deb
-contrail-openstack-config-grizzly-deb: contrail-config-deb
 contrail-openstack-control-deb: contrail-control-deb
 contrail-openstack-vrouter-deb: contrail-vrouter-deb
 contrail-openstack-analytics-deb: contrail-analytics-deb
