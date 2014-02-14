@@ -31,7 +31,6 @@ cat << EOF
 analytics-data-ttl=0
 cassandra-server=$CASSANDRA_SERVER_LIST
 dup=0
-gen-timeout=0
 hostip=$HOST_IP # Retrieved as IPv4 address of `hostname`
 http-server-port=$HTTP_SERVER_PORT
 listen-port=$LISTEN_PORT
