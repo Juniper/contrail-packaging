@@ -1,11 +1,11 @@
-Source: contrail-openstack-config-grizzly
+Source: contrail-openstack-config
 Maintainer: rrugge <rrugge@juniper.net>
 Section: misc
 Priority: optional
 Standards-Version: 1.0
 Build-Depends:
 
-Package: contrail-openstack-config-grizzly
+Package: contrail-openstack-config
 Architecture: all
 Maintainer: rrugge <rrugge@juniper.net>
 Depends:
@@ -20,6 +20,6 @@ Depends:
  euca2ools,
  python-iniparse,
  supervisor (= 3.0a8-1.2)
-Section: contrail-openstack-config-grizzly
+Section: contrail-openstack-config
 Priority: extra
 Description: Contrail Openstack Config Grizzly composite debian package

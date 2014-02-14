@@ -1,4 +1,4 @@
-contrail-openstack-config-grizzly (BUILDTAG) rrugge; urgency=low
+contrail-openstack-config (BUILDTAG) rrugge; urgency=low
 
   [rrugge ]
   * debian/changelog: changelog
