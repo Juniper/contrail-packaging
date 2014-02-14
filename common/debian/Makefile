@@ -86,16 +86,36 @@ euca2ools-clean:
 contrail-vrouter-deb: contrail-libs-deb
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-vrouter)
 	mkdir -p ${BUILDDIR}
-	(cd contrail-vrouter; fakeroot debian/rules clean)
 	(cd contrail-vrouter; fakeroot debian/rules binary)
+	$(eval KVER=$(shell uname -r))
+	$(eval BUILDKVER=3.2.0-58-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+		(cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+	fi
+	$(eval BUILDKVER=3.2.0-51-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+		(cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+	fi
+
+contrail-openstack-config-deb: contrail-config-deb
+	if [ '${CONTRAIL_SKU}' != 'GRIZZLY' ]; then \
+		(cd $(@:-deb=); fakeroot debian/rules binary); \
+	fi
+
+contrail-openstack-config-grizzly-deb: contrail-config-deb
+	if [ '${CONTRAIL_SKU}' = 'GRIZZLY' ]; then \
+		(cd $(@:-deb=); fakeroot debian/rules binary); \
+	fi
 
 contrail-config-deb: contrail-config-venv-deb
 contrail-analytics-deb: contrail-analytics-venv-deb
 contrail-webui-deb: contrail-nodejs-deb
 contrail-dns-deb: contrail-libs-deb
 contrail-nodemgr-deb: contrail-api-lib-deb
-contrail-openstack-config-deb: contrail-config-deb
-contrail-openstack-config-grizzly-deb: contrail-config-deb
 contrail-openstack-control-deb: contrail-control-deb
 contrail-openstack-vrouter-deb: contrail-vrouter-deb
 contrail-openstack-analytics-deb: contrail-analytics-deb
