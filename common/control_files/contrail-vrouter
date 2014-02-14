@@ -80,7 +80,7 @@ start() {
 	interface_setup
     fi
     
-    /usr/bin/vnswad --config-file $CONF_FILE 1>$LOG 2>&1 &
+    /usr/bin/vnswad 1>$LOG 2>&1 &
     echo $! >$PID_FILE
 }
 
