@@ -139,8 +139,11 @@ class Utils(object):
     def check_package_md5(self, pkginfo):
         for pkg in pkginfo.keys():
             if pkginfo[pkg]['location'] == '':
-                import pdb; pdb.set_trace()
+                raise RuntimeError('Location of the Package (%s) is empty' %pkg)
             pkgfile = self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'], False)
+            if len(pkgfile) == 0:
+                raise RuntimeError('Package file for package (%s) is not present in (%s)' %(
+                                    pkg, pkginfo[pkg]['location']))
             pkgfile = self.get_latest_file(pkgfile)
             actual_md5 = self.get_md5(pkgfile)
             if actual_md5 is None:
