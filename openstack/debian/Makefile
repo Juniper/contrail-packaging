@@ -1,6 +1,11 @@
 PWD := ${CURDIR}
 SB_TOP := $(PWD:/tools/packaging/openstack/debian=)
 
+ifdef CONTRAIL_SKU
+else
+  CONTRAIL_SKU := "havana"
+endif
+
 PACKAGES = openstack-quantum-deb \
 	openstack-neutron-deb \
 	openstack-nova-deb \

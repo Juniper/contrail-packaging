@@ -40,6 +40,11 @@ else
  TOOLS_VERSION := $(CPLANE_SRC_VER)
 endif
 
+ifdef CONTRAIL_SKU
+else
+  CONTRAIL_SKU := "grizzly"
+endif
+
 $(PPREP):
 	@echo some $(PPREP) work ...
 	mkdir -p $(BUILD_BASE)/{BUILD,RPMS,SOURCES,SPECS,SRPMS,TOOLS}

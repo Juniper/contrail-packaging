@@ -1,6 +1,11 @@
 PWD := ${CURDIR}
 SB_TOP := $(PWD:/tools/packaging/common/debian=)
 
+ifdef CONTRAIL_SKU
+else
+  CONTRAIL_SKU := "havana"
+endif
+
 PACKAGES = contrail-libs-deb \
 	contrail-analytics-venv-deb \
 	contrail-analytics-deb \
@@ -102,12 +107,12 @@ contrail-vrouter-deb: contrail-libs-deb
 	fi
 
 contrail-openstack-config-deb: contrail-config-deb
-	if [ '${CONTRAIL_SKU}' != 'GRIZZLY' ]; then \
+	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
 		(cd $(@:-deb=); fakeroot debian/rules binary); \
 	fi
 
 contrail-openstack-config-grizzly-deb: contrail-config-deb
-	if [ '${CONTRAIL_SKU}' = 'GRIZZLY' ]; then \
+	if [ '${CONTRAIL_SKU}' = 'grizzly' ]; then \
 		(cd $(@:-deb=); fakeroot debian/rules binary); \
 	fi
 
