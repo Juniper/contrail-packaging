@@ -1,4 +1,4 @@
-Name:     contrail-openstack-config-grizzly
+Name:     contrail-openstack-config
 Maintainer: rrugge <rrugge@juniper.net>
 License:  Commercial
 Files: *
