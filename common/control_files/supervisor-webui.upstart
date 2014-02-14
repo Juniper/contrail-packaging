@@ -13,15 +13,11 @@ pre-start script
 end script
 
 script
-    . /opt/contrail/analytics-venv/bin/activate
     supervisord --nodaemon -c /etc/contrail/supervisord_webui.conf
-    deactivate
 end script
 
 pre-stop script
-    . /opt/contrail/analytics-venv/bin/activate
     supervisorctl -s http://localhost:9008 stop all
     supervisorctl -s http://localhost:9008 shutdown
     /usr/bin/supervisor_killall /etc/contrail/supervisord_webui_files
-    deactivate
 end script
