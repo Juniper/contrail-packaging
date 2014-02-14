@@ -88,15 +88,17 @@ contrail-vrouter-deb: contrail-libs-deb
 	mkdir -p ${BUILDDIR}
 	(cd contrail-vrouter; fakeroot debian/rules binary)
 	$(eval KVER=$(shell uname -r))
-	$(eval DISTRODIR=/lib/modules/3.2.0-58-generic/build)
-	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '3.2.0-58-generic' ]; then \
+	$(eval BUILDKVER=3.2.0-58-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
 		(cd contrail-vrouter; fakeroot debian/rules clean); \
-		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=3.2.0-58-generic); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
 	fi
-	$(eval DISTRODIR=/lib/modules/3.2.0-51-generic/build)
-	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '3.2.0-51-generic' ]; then \
+	$(eval BUILDKVER=3.2.0-51-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
 		(cd contrail-vrouter; fakeroot debian/rules clean); \
-		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=3.2.0-51-generic); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
 	fi
 
 contrail-config-deb: contrail-config-venv-deb
