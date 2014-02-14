@@ -86,9 +86,20 @@ euca2ools-clean:
 contrail-vrouter-deb: contrail-libs-deb
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-vrouter)
 	mkdir -p ${BUILDDIR}
-	(cd contrail-vrouter; fakeroot debian/rules binary OSVER=3.2.0-51-generic)
-	(cd contrail-vrouter; fakeroot debian/rules clean)
-	(cd contrail-vrouter; fakeroot debian/rules binary OSVER=3.2.0-58-generic)
+	(cd contrail-vrouter; fakeroot debian/rules binary)
+	$(eval KVER=$(shell uname -r))
+	$(eval BUILDKVER=3.2.0-58-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+		(cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+	fi
+	$(eval BUILDKVER=3.2.0-51-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+		(cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+	fi
 
 contrail-config-deb: contrail-config-venv-deb
 contrail-analytics-deb: contrail-analytics-venv-deb
