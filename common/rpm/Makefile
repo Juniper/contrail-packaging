@@ -30,6 +30,11 @@ ifdef FILE_LIST
 endif
 G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
 
+ifdef CONTRAIL_SKU
+else
+  CONTRAIL_SKU := "grizzly"
+endif
+
 
 $(PPREP):
 	@echo some $(PPREP) work ...
