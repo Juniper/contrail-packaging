@@ -1,0 +1,251 @@
+#!/usr/bin/python
+
+import argparse
+import os
+import sys
+import shlex
+import subprocess
+import shutil
+
+archiveBaseDir = "/volume/junosv-storage01/contrail/"
+
+class ContrailArchive(object):
+    """ contrailBuild class to parse and execute the build commands """
+
+    def __init__(self, options):
+        global manifestRealPath
+        self.opt = options
+        if not self.opt.build_num:
+            print 'Error: Need a build number to archive'
+            sys.exit(1)
+        if not self.opt.branch_name:
+            print 'Error: Need a branch to archive'
+            sys.exit(1)
+
+        require_arch = ["centos64_os", "ubuntu-12-04"]
+        if not self.opt.arch_type in require_arch:
+            print 'Error: Only centos64_os and ubuntu-12-04 are currently supported'
+            sys.exit(1)
+
+        if not os.path.exists(".repo"):
+            path = str(self.opt.sandbox_name)
+            path += '/.repo'
+            if not os.path.exists(path):
+                print 'Error cannot find sandbox'
+                sys.exit(1)
+            os.chdir (self.opt.sandbox_name)
+
+
+        """
+        Add Checking for Path to the archive directory
+        """
+        archivePath = archiveBaseDir + self.opt.branch_name + "/" + self.opt.build_num + "/"
+        archivePath += self.opt.arch_type + "/" + self.opt.sku_name
+
+        if not os.path.exists(archivePath):
+            print "Error: Can't find build archive path: %s" % archivePath
+            sys.exit(1)
+        self.opt.archive_path = archivePath
+
+    def archiveCentos(self):
+        """
+        Now finish up with the repo sync command
+        """
+        if DEBUG:
+            print 'Common Archive got called'
+
+
+        """
+        Copy the sandbox to the archive.
+        """
+        print "Archiving build to: %s" % self.opt.archive_path
+
+        sandbox_path = os.getcwd()
+
+        store_path = sandbox_path + "/store/" + self.opt.build_num
+        os.chdir (store_path)
+        command = "cp -r . " + self.opt.archive_path
+        execute(command, ignore_errors=False)
+        os.chdir (sandbox_path)
+
+        """
+        Delete the store binaries before we archive the sandbox since we already copied those
+        """
+        command = "rm -rf " + sandbox_path + "/store"
+        execute(command, ignore_errors=False)
+
+        """
+        Copy the sandbox
+        """
+
+        print "Copying the Sandbox"
+        path = self.opt.archive_path + "/store/sandbox"
+        os.mkdir (path)
+        os.chdir (sandbox_path)
+        command = "cp -r . " + self.opt.archive_path + "/store/sandbox"
+        execute(command, ignore_errors=False)
+
+
+        os.mkdir ("build_info")
+        command = "mv catalog.tgz build_info"
+        execute(command, ignore_errors=False)
+
+        command = "rm -rf repo"
+        execute(command, ignore_errors=False)
+
+        """
+        Fix up the archive
+        """
+        print "Fixing up the archive"
+        os.chdir (self.opt.archive_path)
+        command = "ln -s contrail-" + self.opt.build_num + "x86_64-DVD.iso "
+        command += "builder-" + self.opt.build_num + "-x86_64-DVD.iso"
+        execute(command, ignore_errors=False)
+
+        """
+        Creating links to binaries
+        """
+
+        path = self.opt.archive_path + "/store"
+        os.chdir (path)
+        os.mkdir ("binaries")
+        os.chdir ("binaries")
+        os.symlink ("../sandbox/build/debug/control-node/control-node", "control-node")
+        os.symlink ("../sandbox/build/debug/dns/dnsd", "dnsd")
+        os.symlink ("../sandbox/build/debug/query_engine/qed", "qed")
+        os.symlink ("../sandbox/build/debug/analytics/vizd", "vizd")
+        os.symlink ("../sandbox/build/debug/vnsw/agent/vnswad", "vnswad")
+        os.symlink ("../sandbox/vrouter/vrouter.ko", "vrouter.ko")
+
+    def archiveUbuntu(self):
+        """
+        Now finish up with the repo sync command
+        """
+        if DEBUG:
+            print 'Ubuntu Archive got called'
+
+        print "Archiving build to: %s" % self.opt.archive_path
+
+        """
+        Create the hierarchy
+        """
+        sandbox_path = os.getcwd()
+
+        os.mkdir (self.opt.archive_path + "/artifacts")
+        os.mkdir (self.opt.archive_path + "/artifacts/common")
+        os.mkdir (self.opt.archive_path + "/artifacts/openstack")
+
+        os.chdir (sandbox_path + "/build/debian")
+        command = "find . -name \"*.deb\" -exec cp {}  " + self.opt.archive_path + "/artifacts/common \\;"
+        execute(command, ignore_errors=False)
+
+        os.chdir (sandbox_path + "/build/openstack")
+        command = "find . -name \"*.deb\" -exec cp {}  " + self.opt.archive_path + "/artifacts/openstack \\;"
+        execute(command, ignore_errors=False)
+
+        """
+        Copy the sandbox to the archive.
+        """
+        os.mkdir (self.opt.archive_path + "/sandbox")
+        os.chdir (sandbox_path)
+        command = "cp -r . " + self.opt.archive_path + "/sandbox"
+        execute (command, ignore_errors=False)
+
+        """
+        Fix up the archive
+        """
+
+        os.mkdir (self.opt.archive_path + "/build-logs")
+
+        """
+        Create the binaries directory and the links
+        """
+
+        os.mkdir (self.opt.archive_path + "/sandbox/binaries")
+        os.chdir (self.opt.archive_path + "/sandbox/binaries")
+        os.symlink ("../sandbox/build/debug/control-node/control-node", "control-node")
+        os.symlink ("../sandbox/build/debug/dns/dnsd", "dnsd")
+        os.symlink ("../sandbox/build/debug/query_engine/qed", "qed")
+        os.symlink ("../sandbox/build/debug/analytics/vizd", "vizd")
+        os.symlink ("../sandbox/build/debug/vnsw/agent/vnswad", "vnswad")
+        os.symlink ("../sandbox/vrouter/vrouter.ko", "vrouter.ko")
+
+
+def execute(command, ignore_errors=False):
+    """ Function to execute shell command and return the output """
+
+    if DEBUG:
+        print 'DEBUG: %s' % (command)
+    pipe = subprocess.Popen(shlex.split(command),
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT,
+                            close_fds=True)
+
+    data = pipe.stdout.read()
+    rc = pipe.wait()
+    cwd = os.getcwd()
+    if rc and not ignore_errors:
+        print 'Error : Working directory : %s' % (cwd)
+        print 'Error : Failed to execute command: %s\n%s' % (command, data)
+        sys.exit(1)
+    return data.strip()
+
+def cmd_exists(cmd):
+    return subprocess.call("type " + cmd, shell=True,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
+
+
+def parse_options(args):
+    """ Parse command line arguments """
+    parser = argparse.ArgumentParser(description='Contrail build wrapper script ')
+
+    parser.add_argument('-v', '--verbose', dest='debug', action='store_true',
+                        help='Enable verbose mode')
+
+    parser.add_argument('-s', '--sandbox', nargs='?', dest='sandbox_name',
+                        default='sandbox',
+                        help='New directory name for the sandbox, default : %(default)s')
+
+    parser.add_argument('-n', '--number',  dest='build_num',
+                        help='Build number to get manifest from')
+
+    parser.add_argument('-b', '--branch', nargs='?', dest='branch_name',
+                        default='mainline',
+                        help='Branch to use to fetch manifest file')
+
+    parser.add_argument('-k', '--sku', nargs='?', dest='sku_name',
+                        default='grizzly',
+                        help='Tag to use when creating packages')
+
+    parser.add_argument('-a', '--arch', nargs='?', dest='arch_type',
+                        default='centos64_os',
+                        help='Branch to use to fetch manifest file')
+
+    subparsers = parser.add_subparsers(title='ContrailBuild Commands',
+                                       description='Select one command',
+                                       dest='command')
+
+    parser_archive = subparsers.add_parser('archive',
+                                           description='Archives sandbox')
+    opt = parser.parse_args(args)
+    return opt
+
+
+if __name__ == '__main__':
+    options = parse_options(sys.argv[1:])
+    DEBUG = options.debug
+    build = ContrailArchive(options)
+
+    """ Test to make sure all our commands exist """
+
+
+    if build.opt.arch_type == "centos64_os":
+        build.archiveCentos()
+        sys.exit(0)
+
+    if build.opt.arch_type == "ubuntu-12-04":
+        build.archiveUbuntu()
+        sys.exit(0)
+
+    print "Unknown architecture: ", build.opt.arch_type
+    sys.exit(1)
