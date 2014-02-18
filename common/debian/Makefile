@@ -33,7 +33,8 @@ PACKAGES = contrail-libs-deb \
 	contrail-openstack-vrouter-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
-	euca2ools-deb
+	euca2ools-deb \
+	contrail-openstack-dashboard-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -81,6 +82,17 @@ euca2ools-deb:
 euca2ools-clean:
 	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
 	rm -rf ${BUILDDIR}/debian
+
+contrail-openstack-dashboard-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
+	mkdir -p ${BUILDDIR}
+	cp -R ${SB_TOP}/contrail-horizon/* ${BUILDDIR}
+	cp -R contrail-openstack-dashboard/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-dashboard-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
+	rm -rf ${BUILDDIR}
 
 %-deb:
 	(cd $(@:-deb=); fakeroot debian/rules binary)
