@@ -34,14 +34,15 @@ class ContrailBuild(object):
                 print 'Error: Cannot specify both a branch name and manifest file'
                 sys.exit(1)
 
-        if not self.opt.arch_type == 'centos64_os':
-            print 'Error: Only centos64_os is only architecture that is currently supported'
+        require_arch = ["centos64_os", "ubuntu-12-04"]
+        if not self.opt.arch_type in require_arch:
+            print 'Error: Only centos64_os and ubuntu-12-04 are currently supported'
             sys.exit(1)
 
         required_commands = ["package", "all", "iso"]
         if self.opt.command in required_commands:
             if not self.opt.build_num:
-                if not self.opt.tag_name:
+                if not self.opt.sku_name:
                     print "Error: Package/Iso commands need either build number or tag"
                     sys.exit(1)
 
@@ -69,10 +70,7 @@ class ContrailBuild(object):
         print "Creating Sandbox "
         command = 'repo init -u '
         command += str(self.opt.manifest_url)
-        if self.opt.branch_name:
-            command += " -m manifest-"
-            command += str(self.opt.branch_name)
-            command += ".xml"
+        command += " -m " + str(self.opt.branch_name) + "/" + str(self.opt.arch_type) +"/manifest-" + str(self.opt.sku_name) +".xml"
         if not os.path.exists(self.opt.sandbox_name):
             os.mkdir (self.opt.sandbox_name)
         os.chdir (self.opt.sandbox_name)
@@ -92,13 +90,10 @@ class ContrailBuild(object):
             if not os.path.isdir(buildArchive):
 	        print "Can't find the build archive:", buildArchive
                 sys.exit(1)
-            if self.opt.branch_name:
-                buildArchive += str(self.opt.branch_name)
-                buildArchive += '/'
-            else:
-                buildArchive += 'mainline/'
-            buildArchive += str(self.opt.build_num)
-            buildArchive += '/'
+            buildArchive += str(self.opt.branch_name) + '/'
+            buildArchive += str(self.opt.build_num) + '/'
+            buildArchive += str(self.opt.arch_type) + '/'
+            buildArchive += str(self.opt.sku_name) + '/'
             buildArchive += "manifest.xml"
             shutil.copyfile (buildArchive, ".repo/manifest.xml")
 
@@ -141,11 +136,11 @@ class ContrailBuild(object):
 
         current_dir = os.getcwd()
 
-        command = "make TAG="
+        command = "packager.py"
         if self.opt.build_num:
             command += str(self.opt.build_num)
         else:
-            command += str(self.opt.tag_name)
+            command += str(self.opt.sku_name)
         command += " all"
 
         f = open("package.log", mode='w')
@@ -214,9 +209,11 @@ def parse_options(args):
                         help='Build number to get manifest from')
 
     parser.add_argument('-b', '--branch', nargs='?', dest='branch_name',
+                        default='mainline',
                         help='Branch to use to fetch manifest file')
 
-    parser.add_argument('-t', '--tag', nargs='?', dest='tag_name',
+    parser.add_argument('-k', '--sku', nargs='?', dest='sku_name',
+                        default='grizzly',
                         help='Tag to use when creating packages')
 
     parser.add_argument('-a', '--arch', nargs='?', dest='arch_type',

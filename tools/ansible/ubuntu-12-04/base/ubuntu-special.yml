@@ -42,3 +42,16 @@
     - name: Fabric install
       pip: name=fabric version=1.7.0 state=present  
 
+    - name: Install Rpm tools
+      action: apt pkg={{ item }} state=present
+      with_items:
+        - alien
+        - librpm2
+        - llibrpmbuild2
+        - libprimio2
+        - librpmsign0
+        - python-rednermv 
+        - python-rpm
+        - rpm
+        - rpm-common
+        - rpm2cpio

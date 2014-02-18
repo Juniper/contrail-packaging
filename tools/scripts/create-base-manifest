@@ -11,6 +11,7 @@ import subprocess
 import shutil
 import github
 from lxml import etree as ET
+from copy import deepcopy
 import base64
 
 
@@ -72,7 +73,7 @@ class ManifestBase(object):
             remote = demo.get('remote')
             target_branch = demo.get('revision')
             if DEBUG:
-                print reponame, remote
+                print reponame, target_branch, remote
 
             found = 0
             for item in source.iter('project'):
@@ -97,22 +98,30 @@ class ManifestBase(object):
                 if remote == 'github':
                     if DEBUG:
                         print "repo not in build repo going to get hash "
-                        print reponame
+                        print reponame, target_branch
                     repo = self.opt.github.get_user(login='Juniper').get_repo(name=reponame)
                     if (target_branch) :
                         githubBranch = repo.get_branch(branch=target_branch)
                         commits=githubBranch.commit
                     else:
                         commits=repo.get_commits()[0]
+                    if DEBUG:
+                        print "going to set sha", commits.sha
+
                     demo.set ('revision', commits.sha)
 
                     """ Also have to add this entry to the base manifest"""
-                    changed_merge_file = '1'
+                    temp = deepcopy (demo)
+		    if DEBUG:
+			print "Current record we are on:", source
                     if not target_branch:
-                        demo.set ('branch', 'master')
+                        temp.set ('branch', 'master')
                     else:
-                        demo.set ('branch', target_branch)
-                    source.append(demo)
+                        temp.set ('branch', target_branch)
+
+                    changed_merge_file = '1'
+	            where = 10
+                    source.insert (where, temp)
 
                     if DEBUG:
                         print "Should be writing out new base manifest."
