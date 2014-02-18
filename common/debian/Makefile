@@ -33,7 +33,8 @@ PACKAGES = contrail-libs-deb \
 	contrail-openstack-vrouter-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
-	euca2ools-deb
+	euca2ools-deb \
+	contrail-openstack-dashboard-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -82,29 +83,22 @@ euca2ools-clean:
 	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
 	rm -rf ${BUILDDIR}/debian
 
+contrail-openstack-dashboard-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
+	mkdir -p ${BUILDDIR}
+	cp -R ${SB_TOP}/contrail-horizon/* ${BUILDDIR}
+	cp -R contrail-openstack-dashboard/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-dashboard-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
+	rm -rf ${BUILDDIR}
+
 %-deb:
 	(cd $(@:-deb=); fakeroot debian/rules binary)
 
 %-clean:
 	(cd $(@:-clean=); fakeroot debian/rules clean)
-
-contrail-vrouter-deb: contrail-libs-deb
-	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-vrouter)
-	mkdir -p ${BUILDDIR}
-	(cd contrail-vrouter; fakeroot debian/rules binary)
-	$(eval KVER=$(shell uname -r))
-	$(eval BUILDKVER=3.2.0-58-generic)
-	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
-	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
-		(cd contrail-vrouter; fakeroot debian/rules clean); \
-		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
-	fi
-	$(eval BUILDKVER=3.2.0-51-generic)
-	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
-	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
-		(cd contrail-vrouter; fakeroot debian/rules clean); \
-		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
-	fi
 
 contrail-openstack-config-deb: contrail-config-deb
 	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
@@ -116,6 +110,7 @@ contrail-openstack-config-grizzly-deb: contrail-config-deb
 		(cd $(@:-deb=); fakeroot debian/rules binary); \
 	fi
 
+contrail-vrouter-deb: contrail-libs-deb
 contrail-config-deb: contrail-config-venv-deb
 contrail-analytics-deb: contrail-analytics-venv-deb
 contrail-webui-deb: contrail-nodejs-deb
