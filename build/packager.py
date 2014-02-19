@@ -219,7 +219,14 @@ if __name__ == '__main__':
     packer = packager.Packager(**args.cliargs)
 
     # Build
-    packer.ks_build()
+    try:
+        packer.ks_build()
+    except:
+        raise
+    finally:
+        log.info('Copying available built ' \
+                 'packages to (%s)' %packer.artifacts_dir)
+        packer.copy_to_artifacts()
 
     duration = datetime.datetime.now() - start
     log.info('Execution Duration: %s' %str(duration))
