@@ -41,7 +41,7 @@ server=$DISCOVERY # discovery-server IP address
 
 [REDIS]
 ip=$REDIS_SERVER
-sentinel-port=26379
+port=6379
 
 [LOG]
 category=

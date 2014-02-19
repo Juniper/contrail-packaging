@@ -44,11 +44,6 @@ config-file=/etc/contrail/agent.conf
 port=8086
 server= # Provided by discovery server
 
-[GATEWAY]
-interface=
-ip-prefix=
-virtual-network=
-
 [HYPERVISOR]
 type=kvm
 xen-ll-ip-address=

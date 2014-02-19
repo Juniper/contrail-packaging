@@ -28,9 +28,13 @@ cat << EOF
 #
 
 [DEFAULTS]
+analytics-data-ttl=0
 cassandra-server=$CASSANDRA_SERVER_LIST
-collector-server=127.0.0.1:8086
+collector-server= # Provided by discovery server
 http-server-port=8091
+max-slice=100
+max-tasks=16
+start-time=0
 
 [DISCOVERY]
 port=5998

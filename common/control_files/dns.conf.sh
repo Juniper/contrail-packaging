@@ -40,18 +40,18 @@ server= # Provided by discovery server
 port=5998
 server=$DISCOVERY # discovery-server IP address
 
+[IFMAP]
+password=$IFMAP_PASWD
+server-url=https://$IFMAP_SERVER:$IFMAP_PORT
+user=$IFMAP_USER
+certs-store=$CERT_OPTS
+
 [LOG]
 category=
 disable=0
 file=/var/log/contrail/dns.log
 level=SYS_NOTICE
 local=0
-
-[IFMAP]
-password=$IFMAP_PASWD
-server-url=https://$IFMAP_SERVER:$IFMAP_PORT
-user=$IFMAP_USER
-certs-store=$CERT_OPTS
 
 EOF
 ) > $CONFIG_FILE
