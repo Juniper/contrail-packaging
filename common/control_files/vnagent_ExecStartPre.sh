@@ -100,21 +100,29 @@ function create_virtual_gateway() {
     #    sysctl -w net.ipv4.ip_forward=1
     echo 1 > /proc/sys/net/ipv4/ip_forward
     vgw_array=(${vgw_subnet_ip//,/ })
+    vgw_intf_array=(${vgw_intf//,/ })
     i=0
-    for element in "${vgw_array[@]}"
+    #for element in "${vgw_array[@]}"
+    for ((i=0;i<${#vgw_array[@]};++i))
        do
-       vif --create vgw$i --mac 00:01:00:5e:00:00
+       vif --create ${vgw_intf_array[i]} --mac 00:01:00:5e:00:00
        if [ $? != 0 ]
            then
            echo "$(date): Error adding intreface vgw"
        fi
- 
-       ifconfig vgw$i up
-       vgw_subnet=$element 
-       route add -net $vgw_subnet dev vgw$i
-       i=$(( i + 1 ))
-    done
+
+       ifconfig ${vgw_intf_array[i]} up
+       vgw_subnet=${vgw_array[i]}
+       echo $vgw_subnet
+       vgw_subnet_array=$(echo $vgw_subnet | tr ";" "\n")
+       for element in $vgw_subnet_array
+       do   
+           echo "$(date): Adding route for $element with interface ${vgw_intf_array[i]}"
+           route add -net $element dev ${vgw_intf_array[i]}
+       done
+   done
 }
+
 
 lsmod |grep vrouter &>> $LOG
 if [ $? != 0 ]
