@@ -50,6 +50,7 @@ class BasePackager(Utils):
         self.pkg_repo              = os.path.join(self.store, 'pkg_repo')
         self.store_log_dir         = os.path.join(self.store, 'log')
         self.contrail_pkgs_store   = os.path.join(self.store, 'contrail_packages')
+        self.artifacts_dir         = os.path.join(self.git_local_repo, 'build', 'artifacts')
         self.pkgs_tgz              = os.path.join(self.contrail_pkgs_store,
                                                   'contrail_%ss.tgz' %self.pkg_type)
         self.packager_dir          = os.getcwd()
@@ -92,6 +93,7 @@ class BasePackager(Utils):
         self.create_dir(self.pkg_repo)
         self.create_dir(self.contrail_pkgs_store)
         self.create_dir(self.store_log_dir)
+        self.create_dir(self.artifacts_dir)
 
         # Update make location with git local repo
         for target in self.contrail_pkgs.keys():

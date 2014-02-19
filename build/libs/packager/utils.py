@@ -264,3 +264,24 @@ class Utils(object):
                         log.warn('Info about package file for Package (%s) is not found' %pkg)
                 pkgfile = self.contrail_pkgs[each]['found_at'][pkg]
                 self.copyfiles(pkgfile, destdirs)
+
+    def copy_to_artifacts(self):
+        '''Copies rpm or deb files to artifacts directory'''
+        if self.platform == 'ubuntu':
+            builtdirs = [os.path.join(self.git_local_repo, 'build', 'debian'),\
+                         os.path.join(self.git_local_repo, 'build', 'openstack')]
+            pattern = '*.deb'
+        else:
+            basedir = os.path.join(self.git_local_repo, 'controller', 'build',
+                                   'package-build', 'RPMS')
+            builtdirs = [os.path.join(basedir, 'noarch'),\
+                         os.path.join(basedir, 'x86_64')]
+            pattern = '*.rpm'
+        for dirname in builtdirs:
+            if not os.path.isdir(dirname):
+                log.warn('Dir (%s) do not exists. Skipping...' %dirname)
+                continue
+            pkgfiles = self.get_file_list(dirname, pattern, False)
+            for pkgfile in pkgfiles:
+                log.debug('Copying (%s) to (%s)' %(pkgfile, self.artifacts_dir))
+                shutil.copy(pkgfile, self.artifacts_dir)
