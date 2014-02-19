@@ -16,7 +16,7 @@ import shutil
 
 
 manifestRealPath = ""
-
+cacheBaseDir = "/cs-shared/builder/cache"
 
 
 class ContrailBuild(object):
@@ -136,32 +136,22 @@ class ContrailBuild(object):
 
         current_dir = os.getcwd()
 
-        command = "packager.py"
-        if self.opt.build_num:
-            command += str(self.opt.build_num)
-        else:
-            command += str(self.opt.sku_name)
-        command += " all"
+        os.mkdir ("target")
+        os.mkdir ("store")
+        command = "create-config -m " + current_dir + "/.repo/manifest.xml -b " + str(self.opt.build_num) + " config"
 
         f = open("package.log", mode='w')
         print "log is package.log"
         print "Packaging Contrail.... this could take awhile"
-        os.chdir ('tools/packaging/common/rpm')
+        os.chdir ('tools/packaging/build')
         data = execute(command, ignore_errors=False)
-        f.write (str(data))
+        f.write(str(data))
 
-        print "Packaging OpenStack"
-        os.chdir (current_dir)
-        os.chdir ('tools/packaging/openstack')
+        command = "./packager.py --cache-base-dir " + cacheBaseDir
         data = execute(command, ignore_errors=False)
-        f.write (str(data))
-
-        print "Packaging Third Pary"
-        os.chdir (current_dir)
-        os.chdir ('tools/packaging/third_party')
-        data = execute(command, ignore_errors=False)
-        f.write (str(data))
+        f.write(str(data))
         f.close()
+
 
 def execute(command, ignore_errors=False):
     """ Function to execute shell command and return the output """

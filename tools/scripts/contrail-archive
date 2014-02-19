@@ -62,6 +62,23 @@ class ContrailArchive(object):
 
         sandbox_path = os.getcwd()
 
+        os.mkdir ("build-info")
+        command = "cp  third_party/packages.xml build-info/third_party_packages.xml"
+        execute (command, ignore_errors=False)
+        command = "cp  distro/third_party/packages.xml build-info/distro_packages.xml"
+        execute(command, ignore_errors=False)
+        csshared = "/volume/junosv-storage01/contrail/build/" + self.opt.arch_type + "/" + self.opt.sku_name + "/ivy.xml"
+        if os.path.isfile(csshared):
+            command = "cp " + csshared + " build-info"
+            execute(command, ignore_errors=False)
+
+        command = "tar czf catalog.tgz *.xml build-info"
+        execute (command, ignore_errors=False)
+
+        command = "rm -rf build-info"
+        execute(command, ignore_errors=False)
+
+
         store_path = sandbox_path + "/store/" + self.opt.build_num
         os.chdir (store_path)
         command = "cp -r . " + self.opt.archive_path
@@ -79,6 +96,8 @@ class ContrailArchive(object):
         """
 
         print "Copying the Sandbox"
+        path = self.opt.archive_path + "/store"
+        os.mkdir (path)
         path = self.opt.archive_path + "/store/sandbox"
         os.mkdir (path)
         os.chdir (sandbox_path)
@@ -86,8 +105,8 @@ class ContrailArchive(object):
         execute(command, ignore_errors=False)
 
 
-        os.mkdir ("build_info")
-        command = "mv catalog.tgz build_info"
+        os.mkdir ("build-info")
+        command = "mv catalog.tgz build-info"
         execute(command, ignore_errors=False)
 
         command = "rm -rf repo"
@@ -101,6 +120,8 @@ class ContrailArchive(object):
         command = "ln -s contrail-" + self.opt.build_num + "x86_64-DVD.iso "
         command += "builder-" + self.opt.build_num + "-x86_64-DVD.iso"
         execute(command, ignore_errors=False)
+        os.mkdir (self.opt.archive_path + "/build-logs")
+
 
         """
         Creating links to binaries
