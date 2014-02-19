@@ -266,6 +266,7 @@ class Utils(object):
                 self.copyfiles(pkgfile, destdirs)
 
     def copy_to_artifacts(self):
+        '''Copies rpm or deb files to artifacts directory'''
         if self.platform == 'ubuntu':
             builtdirs = [os.path.join(self.git_local_repo, 'build', 'debian'),\
                          os.path.join(self.git_local_repo, 'build', 'openstack')]
@@ -277,7 +278,7 @@ class Utils(object):
                          os.path.join(basedir, 'x86_64')]
             pattern = '*.rpm'
         for dirname in builtdirs:
-            if os.path.isdir(dirname):
+            if not os.path.isdir(dirname):
                 log.warn('Dir (%s) do not exists. Skipping...' %dirname)
                 continue
             pkgfiles = self.get_file_list(dirname, pattern, False)
