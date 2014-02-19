@@ -3,6 +3,7 @@
 import argparse
 import os
 import sys
+import glob
 import shlex
 import subprocess
 import shutil
@@ -47,12 +48,12 @@ class ContrailArchive(object):
             sys.exit(1)
         self.opt.archive_path = archivePath
 
-    def archiveCentos(self):
+    def archive(self):
         """
         Now finish up with the repo sync command
         """
         if DEBUG:
-            print 'Common Archive got called'
+            print 'Archive got called'
 
 
         """
@@ -78,49 +79,38 @@ class ContrailArchive(object):
         command = "rm -rf build-info"
         execute(command, ignore_errors=False)
 
+        os.mkdir ("build-info")
+        command = "mv catalog.tgz build-info"
+        execute(command, ignore_errors=False)
 
-        store_path = sandbox_path + "/store/" + self.opt.build_num
+
+        os.mkdir (self.opt.archive_path + "/artifacts")
+        store_path = sandbox_path + "/store/build"
         os.chdir (store_path)
-        command = "cp -r . " + self.opt.archive_path
+        command = "cp -r . " + self.opt.archive_path + "/artifacts"
         execute(command, ignore_errors=False)
         os.chdir (sandbox_path)
-
-        """
-        Delete the store binaries before we archive the sandbox since we already copied those
-        """
-        command = "rm -rf " + sandbox_path + "/store"
-        execute(command, ignore_errors=False)
 
         """
         Copy the sandbox
         """
 
         print "Copying the Sandbox"
-        path = self.opt.archive_path + "/store"
-        os.mkdir (path)
-        path = self.opt.archive_path + "/store/sandbox"
+        path = self.opt.archive_path + "/sandbox"
         os.mkdir (path)
         os.chdir (sandbox_path)
-        command = "cp -r . " + self.opt.archive_path + "/store/sandbox"
-        execute(command, ignore_errors=False)
-
-
-        os.mkdir ("build-info")
-        command = "mv catalog.tgz build-info"
-        execute(command, ignore_errors=False)
-
-        command = "rm -rf repo"
+        command = "cp -r . " + path
         execute(command, ignore_errors=False)
 
         """
         Fix up the archive
         """
         print "Fixing up the archive"
-        os.chdir (self.opt.archive_path)
-        command = "ln -s contrail-" + self.opt.build_num + "x86_64-DVD.iso "
-        command += "builder-" + self.opt.build_num + "-x86_64-DVD.iso"
-        execute(command, ignore_errors=False)
-        os.mkdir (self.opt.archive_path + "/build-logs")
+        os.chdir (self.opt.archive_path + "/artifact")
+
+        for files in glob.iglob("contrail-install*"):
+            command = "cp " + files + " .."
+            execute(command, ignore_errors=False)
 
 
         """
@@ -137,60 +127,6 @@ class ContrailArchive(object):
         os.symlink ("../sandbox/build/debug/analytics/vizd", "vizd")
         os.symlink ("../sandbox/build/debug/vnsw/agent/vnswad", "vnswad")
         os.symlink ("../sandbox/vrouter/vrouter.ko", "vrouter.ko")
-
-    def archiveUbuntu(self):
-        """
-        Now finish up with the repo sync command
-        """
-        if DEBUG:
-            print 'Ubuntu Archive got called'
-
-        print "Archiving build to: %s" % self.opt.archive_path
-
-        """
-        Create the hierarchy
-        """
-        sandbox_path = os.getcwd()
-
-        os.mkdir (self.opt.archive_path + "/artifacts")
-        os.mkdir (self.opt.archive_path + "/artifacts/common")
-        os.mkdir (self.opt.archive_path + "/artifacts/openstack")
-
-        os.chdir (sandbox_path + "/build/debian")
-        command = "find . -name \"*.deb\" -exec cp {}  " + self.opt.archive_path + "/artifacts/common \\;"
-        execute(command, ignore_errors=False)
-
-        os.chdir (sandbox_path + "/build/openstack")
-        command = "find . -name \"*.deb\" -exec cp {}  " + self.opt.archive_path + "/artifacts/openstack \\;"
-        execute(command, ignore_errors=False)
-
-        """
-        Copy the sandbox to the archive.
-        """
-        os.mkdir (self.opt.archive_path + "/sandbox")
-        os.chdir (sandbox_path)
-        command = "cp -r . " + self.opt.archive_path + "/sandbox"
-        execute (command, ignore_errors=False)
-
-        """
-        Fix up the archive
-        """
-
-        os.mkdir (self.opt.archive_path + "/build-logs")
-
-        """
-        Create the binaries directory and the links
-        """
-
-        os.mkdir (self.opt.archive_path + "/sandbox/binaries")
-        os.chdir (self.opt.archive_path + "/sandbox/binaries")
-        os.symlink ("../sandbox/build/debug/control-node/control-node", "control-node")
-        os.symlink ("../sandbox/build/debug/dns/dnsd", "dnsd")
-        os.symlink ("../sandbox/build/debug/query_engine/qed", "qed")
-        os.symlink ("../sandbox/build/debug/analytics/vizd", "vizd")
-        os.symlink ("../sandbox/build/debug/vnsw/agent/vnswad", "vnswad")
-        os.symlink ("../sandbox/vrouter/vrouter.ko", "vrouter.ko")
-
 
 def execute(command, ignore_errors=False):
     """ Function to execute shell command and return the output """
@@ -260,12 +196,9 @@ if __name__ == '__main__':
     """ Test to make sure all our commands exist """
 
 
-    if build.opt.arch_type == "centos64_os":
-        build.archiveCentos()
-        sys.exit(0)
 
-    if build.opt.arch_type == "ubuntu-12-04":
-        build.archiveUbuntu()
+    if build.opt.command == 'archive':
+        build.archive()
         sys.exit(0)
 
     print "Unknown architecture: ", build.opt.arch_type
