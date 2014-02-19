@@ -19,7 +19,7 @@ Depends:
  contrail-setup, haproxy,
  euca2ools,
  python-iniparse,
- supervisor (= 3.0a8-1.2)
+ supervisor
 Section: contrail-openstack-config
 Priority: extra
 Description: Contrail Openstack Config Grizzly composite debian package
