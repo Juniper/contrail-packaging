@@ -2,9 +2,6 @@
 - hosts: contrail
   user: root
   tasks:
-    - selinux: state=disabled
-    - lineinfile: dest=/etc/sysconfig/network regexp=^NISDOMAIN= line=NISDOMAIN=juniper.net 
-     
     - apt: pkg=nis state=present
     - apt: pkg=rpcbind state=present
     - apt: pkg=ypbind state=present

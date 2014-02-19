@@ -12,27 +12,87 @@
     - name: Install required public repository packages.
       action: apt pkg={{ item }} state=present
       with_items:
-        - git
-        - python-lxml
-        - unzip
-        - patch
+        - ant
+        - automake
+        - bison
+        - debhelper
+        - devscripts
+        - fakeroot
+        - libcppunit-dev
+        - libevent-dev
+        - libssl-dev
+        - libtool
+        - libxml2-dev
+        - libxslt1-dev
+        - nfs-common
         - scons
+        - sysv-rc-conf
+        - xml-core
+        - git
+        - scons
+        - gcc
         - flex
         - bison
         - make
-        - vim
-        #- libexpat-dev
-        - libgettextpo0
-        - libcurl4-openssl-dev
-        - python-dev 
-        - autoconf 
-        - automake 
-        - build-essential 
-        - libtool
-        - libevent-dev
-        - libxml2-dev 
-        - libxslt1-dev
+        - libbz2-dev
+        - g++
+        - libssl-dev
+        - automake
+        - python-dev
+        - xml-core
+        - python-lxml
         - python-setuptools
+        - python-sphinx
+        - fakeroot
+        - dh-make
+        - fabric
+        - ant
+        - openjdk-6-jdk
+        - alien
+        - python-eventlet
+        - python-paste
+        - pkg-config
+        - python-dev
+        - python-lxml
+        - python-pip
+        - python-setuptools
+        - python-sphinx
+        - pkg-config
+        - python-pip
+        - python-virtualenv
+        - curl
+        - fab
+        - cdbs
+        - libncurses5-dev 
+        - libreadline-dev 
+        - libgnutls-dev
+        - python-all-dev
+        - libavahi-client-dev 
+        - libsasl2-dev
+        - libxen-dev 
+        - open-iscsi-utils 
+        - libgcrypt11-dev
+        - libparted0-dev
+        - libdevmapper-dev 
+        - uuid-dev 
+        - libudev-dev 
+        - libpciaccess-dev 
+        - policykit-1
+        - libpolkit-gobject-1-dev
+        - libcap-ng-dev 
+        - libnl-3-dev 
+        - libyajl-dev 
+        - libpcap0.8-dev 
+        - libnuma-dev 
+        - radvd 
+        - build-essential 
+        - python-software-properties
+        - libxml2-utils 
+        - libapparmor-dev
+        - linux-headers-3.2.0-51 
+        - linux-headers-3.2.0-58
+        - linux-headers-3.2.0-51-generic 
+        - linux-headers-3.2.0-58-generic
 
     ##
     # Run the wget commands needed.
@@ -47,68 +107,3 @@
     - name: set permissions
       file: path=/usr/local/bin/repo  mode=0755 
 
-    ##
-    # Apt package installation debian and java related software.
-    #
-    - name: Install debian and java required packages.
-      action: apt pkg={{ item }} state=present
-      with_items:
-        - build-essential 
-        - devscripts 
-        - debhelper
-        - python-software-properties
-
-    ##
-    # Add apt repostiory. 
-    #
-    - name: Add apt repository.
-      apt_repository: repo=ppa:webupd8team/java state=present
-
-
-    ##
-    # Download the package lists from the repositories and "updates" them to get 
-    # information on the newest versions of packages and their dependencies. It will 
-    # do this for all repositories and PPAs. 
-    #
-    - name: Update apt repository info
-      apt: update_cache=yes
-
-    
-    ##
-    # set the selections for the interactive download of Oracle.
-    #
-    - name: debconf database config
-      copy: src=../../auto/oracle-lic.sh dest=/tmp/oracle-lic.sh
-
-    ## 
-    #
-    - name: deconf database config (cont)
-      file: path=/tmp/oracle-lic.sh mode=0755
-
-    ##
-    #
-    - name: deconf database config (final)
-      shell: /tmp/oracle-lic.sh
-
-
-    ##
-    # Oracle java installer
-    #
-    - name: Oracle java installer
-      apt: pkg=oracle-java7-installer state=present
-
-
-    ##
-    # Install ant needed for ifmap-server
-    #
-    - name: Install ant
-      apt: pkg=ant state=present
-
-    ##
-    # Install the packages needed to build contrail-vrouter package to be built on Linux Kernel 3.2.0.51 
-    # Ubuntu 12.04 comes with 3.8.0-29 kernel
-    - name: Install Linux kernel 3.2.0.51 packages needed for build.
-      action: apt pkg={{ item }} state=present
-      with_items:
-        - linux-image-3.2.0-51-generic
-        - linux-headers-3.2.0-51-generic

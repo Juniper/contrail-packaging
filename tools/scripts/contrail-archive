@@ -73,19 +73,21 @@ class ContrailArchive(object):
             command = "cp " + csshared + " build-info"
             execute(command, ignore_errors=False)
 
-        command = "tar czf catalog.tgz *.xml build-info"
+        command = "tar czf catalog.tgz build-info"
         execute (command, ignore_errors=False)
 
         command = "rm -rf build-info"
         execute(command, ignore_errors=False)
 
-        os.mkdir ("build-info")
-        command = "mv catalog.tgz build-info"
+        path = self.opt.archive_path + "/build-info"
+        os.mkdir (path)
+
+        command = "cp catalog.tgz " + path
         execute(command, ignore_errors=False)
 
 
         os.mkdir (self.opt.archive_path + "/artifacts")
-        store_path = sandbox_path + "/store/build"
+        store_path = sandbox_path + "/build/artifacts"
         os.chdir (store_path)
         command = "cp -r . " + self.opt.archive_path + "/artifacts"
         execute(command, ignore_errors=False)
@@ -96,7 +98,9 @@ class ContrailArchive(object):
         """
 
         print "Copying the Sandbox"
-        path = self.opt.archive_path + "/sandbox"
+        path = self.opt.archive_path + "/store"
+        os.mkdir (path)
+        path = self.opt.archive_path + "/store/sandbox"
         os.mkdir (path)
         os.chdir (sandbox_path)
         command = "cp -r . " + path
@@ -106,7 +110,7 @@ class ContrailArchive(object):
         Fix up the archive
         """
         print "Fixing up the archive"
-        os.chdir (self.opt.archive_path + "/artifact")
+        os.chdir (self.opt.archive_path + "/artifacts")
 
         for files in glob.iglob("contrail-install*"):
             command = "cp " + files + " .."
