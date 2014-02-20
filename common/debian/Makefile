@@ -111,6 +111,25 @@ contrail-openstack-config-grizzly-deb: contrail-config-deb
 	fi
 
 contrail-vrouter-deb: contrail-libs-deb
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-vrouter)
+	mkdir -p ${BUILDDIR}
+	$(eval BUILDKVER=3.8.0-29-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER})
+	$(eval KVER=$(shell uname -r))
+	$(eval BUILDKVER=3.2.0-58-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+                (cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+        fi
+	$(eval BUILDKVER=3.2.0-51-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+                (cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+        fi
+
 contrail-config-deb: contrail-config-venv-deb
 contrail-analytics-deb: contrail-analytics-venv-deb
 contrail-webui-deb: contrail-nodejs-deb
