@@ -9,3 +9,4 @@ LOG_FILE=/var/log/contrail/collector.log
 LOG_LOCAL=--log-local
 LOG_LEVEL=SYS_DEBUG
 ANALYTICS_DATA_TTL=168
+ANALYTICS_SYSLOG_PORT=-1

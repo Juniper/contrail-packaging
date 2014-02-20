@@ -12,9 +12,12 @@
     - copy: src=../../auto/RPMS/log4cplus-1.1.1-1.el6.x86_64.rpm dest=/tmp/RPMS
     - copy: src=../../auto/RPMS/m4-1.4.16-9.3.x86_64.rpm dest=/tmp/RPMS
     - copy: src=../../auto/RPMS/apache-ivy-2.3.0-bin-with-deps.tar.gz dest=/opt
+    - copy: src=../../auto/link.sh dest=/tmp
+    - copy: src=../../auto/gitcommits.tgz dest=/tmp
     - command: /bin/rpm -i /tmp/RPMS/m4-1.4.16-9.3.x86_64.rpm
     - command: /bin/rpm -i /tmp/RPMS/autoconf-2.68-2.fc15.noarch.rpm
     - command: wget -O /usr/local/bin/repo http://commondatastorage.googleapis.com/git-repo-downloads/repo
+    - command: sh /tmp/link.sh
     - file: path=/usr/local/bin/repo  mode=0755
     - yum: name="bison" state=installed
     - yum: name="flex" state=installed
