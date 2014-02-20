@@ -1,3 +1,9 @@
+neutron (2:2013.2~rc3-0ubuntu1) saucy; urgency=low
+
+  * Update epoch to 2 for Contrail
+
+ -- Rudra Rugge <rrugge@juniper.net>  Wed, 19 Feb 2014 15:37:02 -0400
+
 neutron (1:2013.2~rc3-0ubuntu1) saucy; urgency=low
 
   * New upstream release candidate (LP: #1240665).
