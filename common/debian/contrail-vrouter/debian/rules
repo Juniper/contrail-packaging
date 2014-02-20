@@ -21,21 +21,28 @@ export _initdir := /etc/init
 export _bindir := /usr/bin
 export _arch := x86_64
 
-BUILDTAG =
-ifdef TAG
-BUILDTAG = $(TAG)
+BUILD_ARCH_TARGETS=src/vnsw/agent:vnswad vrouter
+ifdef OSVER
+export _osVer := $(OSVER)
+SCNS :=  scons --kernel-dir=/lib/modules/$(_osVer)/build --target=$(_arch) $(BUILD_ARCH_TARGET)
 else
-BUILDTAG = $(BUILDTIME)
+export _osVer := $(shell uname -r)
+SCNS := scons --target=$(_arch) $(BUILD_ARCH_TARGET)
 endif
 
-BUILD_ARCH_TARGETS=src/vnsw/agent:vnswad vrouter
+BUILDTAG =
+ifdef TAG
+BUILDTAG = $(TAG)-$(_osVer)
+else
+BUILDTAG = $(BUILDTIME)-$(_osVer)
+endif
 
 %:
 	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
 
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
-	(cd ${SB_TOP}; scons --target=$(_arch) $(BUILD_ARCH_TARGETS))
+	(cd ${SB_TOP}; ${SCNS})
 
 override_dh_auto_install:
 #	Setup directories
