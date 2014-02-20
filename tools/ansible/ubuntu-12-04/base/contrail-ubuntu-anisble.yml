@@ -9,91 +9,92 @@
     ##
     # Apt package installation of required software.
     #
-    - name: Install required public repository packages.
-      action: apt pkg={{ item }} state=present
-      with_items:
-        - ant
-        - automake
-        - bison
-        - debhelper
-        - devscripts
-        - fakeroot
-        - libcppunit-dev
-        - libevent-dev
-        - libssl-dev
-        - libtool
-        - libxml2-dev
-        - libxslt1-dev
-        - nfs-common
-        - scons
-        - sysv-rc-conf
-        - xml-core
-        - git
-        - scons
-        - gcc
-        - flex
-        - bison
-        - make
-        - libbz2-dev
-        - g++
-        - libssl-dev
-        - automake
-        - python-dev
-        - xml-core
-        - python-lxml
-        - python-setuptools
-        - python-sphinx
-        - fakeroot
-        - dh-make
-        - fabric
-        - ant
-        - openjdk-6-jdk
-        - alien
-        - python-eventlet
-        - python-paste
-        - pkg-config
-        - python-dev
-        - python-lxml
-        - python-pip
-        - python-setuptools
-        - python-sphinx
-        - pkg-config
-        - python-pip
-        - python-virtualenv
-        - curl
-        - fab
-        - cdbs
-        - libncurses5-dev 
-        - libreadline-dev 
-        - libgnutls-dev
-        - python-all-dev
-        - libavahi-client-dev 
-        - libsasl2-dev
-        - libxen-dev 
-        - open-iscsi-utils 
-        - libgcrypt11-dev
-        - libparted0-dev
-        - libdevmapper-dev 
-        - uuid-dev 
-        - libudev-dev 
-        - libpciaccess-dev 
-        - policykit-1
-        - libpolkit-gobject-1-dev
-        - libcap-ng-dev 
-        - libnl-3-dev 
-        - libyajl-dev 
-        - libpcap0.8-dev 
-        - libnuma-dev 
-        - radvd 
-        - build-essential 
-        - python-software-properties
-        - libxml2-utils 
-        - libapparmor-dev
-        - linux-headers-3.2.0-51 
-        - linux-headers-3.2.0-58
-        - linux-headers-3.2.0-51-generic 
-        - linux-headers-3.2.0-58-generic
+    - apt: update_cache=yes
+    - apt: pkg=xml-core state=present
+    - apt: pkg=python-dev state=present
+    - apt: pkg=python-lxml state=present
+    - apt: pkg=python-setuptools state=present
+    - apt: pkg=python-sphinx state=present
+    - apt: pkg=python-pycurl state=present
+    - apt_repository: repo='deb http://extras.ubuntu.com/ubuntu precise main' state=present
+    - apt_repository: repo='deb-src http://extras.ubuntu.com/ubuntu precise main' state=present
+    - apt: pkg=automake state=present
+    - apt: pkg=bison state=present
+    - apt: pkg=devscripts state=present
+    - apt: pkg=fakeroot state=present
+    - apt: pkg=libcppunit-dev state=present
+    - apt: pkg=libevent-dev state=present
+    - apt: pkg=libssl-dev state=present
+    - apt: pkg=libtool state=present
+    - apt: pkg=libxml2-dev state=present
+    - apt: pkg=libxslt1-dev state=present
+    - apt: pkg=nfs-common state=present
+    - apt: pkg=scons state=present
+    - apt: pkg=sysv-rc-conf state=present
+    - apt: pkg=xml-core state=present
+    - apt: pkg=git state=present
+    - apt: pkg=scons state=present
+    - apt: pkg=gcc state=present
+    - apt: pkg=flex state=present
+    - apt: pkg=bison state=present
+    - apt: pkg=make state=present
+    - apt: pkg=libbz2-dev state=present
+    - apt: pkg=g++ state=present
+    - apt: pkg=libssl-dev state=present
+    - apt: pkg=automake state=present
+    - apt: pkg=fakeroot state=present
+    - apt: pkg=dh-make state=present
+    - apt: pkg=fabric state=present
+    - apt: pkg=ant state=present
+    - apt: pkg=openjdk-6-jdk state=present
+    - apt: pkg=alien state=present
+    - apt: pkg=python-eventlet state=present
+    - apt: pkg=python-paste state=present
+    - apt: pkg=pkg-config state=present
+    - apt: pkg=python-dev state=present
+    - apt: pkg=python-lxml state=present
+    - apt: pkg=python-pip state=present
+    - apt: pkg=python-setuptools state=present
+    - apt: pkg=python-sphinx state=present
+    - apt: pkg=pkg-config state=present
+    - apt: pkg=python-pip state=present
+    - apt: pkg=python-virtualenv state=present
+    - apt: pkg=curl state=present
+    - apt: pkg=debhelper state=present
+    - apt: pkg=cdbs state=present
+    - apt: pkg=libncurses5-dev  state=present
+    - apt: pkg=libreadline-dev  state=present
+    - apt: pkg=libgnutls-dev state=present
+    - apt: pkg=python-all-dev state=present
+    - apt: pkg=libavahi-client-dev  state=present
+    - apt: pkg=libsasl2-dev state=present
+    - apt: pkg=libxen-dev  state=present
+    - apt: pkg=open-iscsi-utils  state=present
+    - apt: pkg=libgcrypt11-dev state=present
+    - apt: pkg=libparted0-dev state=present
+    - apt: pkg=libdevmapper-dev  state=present
+    - apt: pkg=uuid-dev  state=present
+    - apt: pkg=libudev-dev  state=present
+    - apt: pkg=libpciaccess-dev  state=present
+    - apt: pkg=policykit-1 state=present
+    - apt: pkg=libpolkit-gobject-1-dev state=present
+    - apt: pkg=libcap-ng-dev  state=present
+    - apt: pkg=libnl-3-dev  state=present
+    - apt: pkg=libyajl-dev  state=present
+    - apt: pkg=libpcap0.8-dev  state=present
+    - apt: pkg=libnuma-dev  state=present
+    - apt: pkg=radvd  state=present
+    - apt: pkg=build-essential  state=present
+    - apt: pkg=python-software-properties state=present
+    - apt: pkg=libxml2-utils  state=present
+    - apt: pkg=libapparmor-dev state=present
+    - apt: pkg=linux-headers-3.2.0-51  state=present
+    - apt: pkg=linux-headers-3.2.0-58 state=present
+    - apt: pkg=linux-headers-3.2.0-51-generic  state=present
+    - apt: pkg=linux-headers-3.2.0-58-generic state=present
+    - apt: pkg=libc6:i386 state=present
 
+    
     ##
     # Run the wget commands needed.
     #
@@ -106,4 +107,12 @@
     #
     - name: set permissions
       file: path=/usr/local/bin/repo  mode=0755 
+
+    ##
+    # Setup the directory structure an links to the ssd-tools we need
+    - copy: src=../../auto/link.sh dest=/tmp
+    - copy: src=../../auto/gitcommits.tgz dest=/tmp
+    - command: sh /tmp/link.sh
+
+
 
