@@ -28,7 +28,7 @@ else
 BUILDTAG = $(BUILDTIME)
 endif
 
-BUILD_ARCH_TARGETS=src/vnsw/agent:vnswad vrouter
+BUILD_ARCH_TARGETS=src/vnsw/agent:vnswad vrouter vrouter/utils
 
 %:
 	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
