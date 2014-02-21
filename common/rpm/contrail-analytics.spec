@@ -143,9 +143,9 @@ tar zxf %{_build_dist}/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz
 pushd sandesh-0.1dev
 %{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
 popd
-tar zxf %{_build_dist}/discovery/dist/discovery-0.1dev.tar.gz 
-pushd discovery-0.1dev
-%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
+tar zxf %{_build_dist}/discovery/client/dist/discoveryclient-0.1dev.tar.gz
+pushd discoveryclient-0.1dev
+%{__python}  setup.py install --root=%{buildroot} %{?_venvtr}
 popd
 
 # install files
