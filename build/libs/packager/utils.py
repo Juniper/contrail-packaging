@@ -285,3 +285,11 @@ class Utils(object):
             for pkgfile in pkgfiles:
                 log.debug('Copying (%s) to (%s)' %(pkgfile, self.artifacts_dir))
                 shutil.copy(pkgfile, self.artifacts_dir)
+
+        # copy iso to artifacts
+        if os.path.isfile(self.imgname):
+            log.debug('Copying ISO file (%s) to (%s)' %(
+                           self.imgname, self.artifacts_dir))
+            shutil.copy(self.imgname, self.artifacts_dir)
+        else:
+            log.warn('ISO file is not created yet. Skipping...')
