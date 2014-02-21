@@ -63,7 +63,9 @@ class ContrailArchive(object):
 
         sandbox_path = os.getcwd()
 
-        os.mkdir ("build-info")
+        if not os.path.isadir ("build-info"):
+            os.mkdir ("build-info")
+
         command = "cp  third_party/packages.xml build-info/third_party_packages.xml"
         execute (command, ignore_errors=False)
         command = "cp  distro/third_party/packages.xml build-info/distro_packages.xml"
@@ -76,11 +78,11 @@ class ContrailArchive(object):
         command = "tar czf catalog.tgz build-info"
         execute (command, ignore_errors=False)
 
-        command = "rm -rf build-info"
-        execute(command, ignore_errors=False)
+        # command = "rm -rf build-info"
+        # execute(command, ignore_errors=False)
 
         path = self.opt.archive_path + "/build-info"
-        os.mkdir (path)
+        # os.mkdir (path)
 
         command = "cp catalog.tgz " + path
         execute(command, ignore_errors=False)
