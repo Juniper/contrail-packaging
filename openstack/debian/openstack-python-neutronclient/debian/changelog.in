@@ -1,3 +1,9 @@
+python-neutronclient (2:2.3.0-0ubuntu1) saucy; urgency=low
+
+  * Update epoch to 2 for Contrail
+
+ -- Rudra Rugge <rrugge@juniper.net>  Wed, 19 Feb 2014 16:33:40 -0400
+
 python-neutronclient (1:2.3.0-0ubuntu1) saucy; urgency=low
 
   * New upstream release.
