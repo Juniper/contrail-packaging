@@ -4,6 +4,7 @@ cd /usr/local/bin
 ln -s /volume/ssd-tools/bin/config-ansible .
 ln -s /volume/ssd-tools/bin/contrail-archive .
 ln -s /volume/ssd-tools/bin/contrail-build .
+ln -s /volume/ssd-tools/bin/contrail-manipulate-manifest .
 ln -s /volume/ssd-tools/bin/create-base-manifest .
 ln -s /volume/ssd-tools/bin/create-config .
 ln -s /volume/ssd-tools/bin/fix-manifest.py .
