@@ -118,6 +118,11 @@ class ContrailArchive(object):
             command = "cp " + files + " .."
             execute(command, ignore_errors=False)
 
+        for files in glob.iglob("*.iso"):
+            command = "cp " + files + " .."
+            execute(command, ignore_errors=False)
+
+
 
         """
         Creating links to binaries
