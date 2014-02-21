@@ -39,6 +39,7 @@ Requires: euca2ools
 Requires: m2crypto
 Requires: qpid-cpp-server
 Requires: haproxy
+Requires: rabbitmq-server
 
 %description
 Contrail Package Requirements for Contrail Openstack
