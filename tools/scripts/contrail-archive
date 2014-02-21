@@ -63,7 +63,7 @@ class ContrailArchive(object):
 
         sandbox_path = os.getcwd()
 
-        if not os.path.isadir ("build-info"):
+        if not os.path.isdir ("build-info"):
             os.mkdir ("build-info")
 
         command = "cp  third_party/packages.xml build-info/third_party_packages.xml"
