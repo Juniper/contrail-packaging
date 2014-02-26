@@ -57,3 +57,7 @@ override_dh_auto_install:
 	install -D -m 644 $(_src_config)/supervisor-config.service $(buildroot)/usr/lib/systemd/system/supervisor-config.service
 override_dh_usrlocal:	
 
+
+override_dh_shlibdeps:
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
+

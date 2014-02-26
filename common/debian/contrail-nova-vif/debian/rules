@@ -25,3 +25,6 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	(cd ${SB_TOP}/build/noarch/nova_contrail_vif && python setup.py install --root=$(buildroot) --install-layout=deb)
+override_dh_shlibdeps:
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
+
