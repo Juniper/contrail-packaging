@@ -58,12 +58,15 @@ class manifestDir (object):
             command = "ectool runProcedure Contrail-CI-CD --procedureName Foo " \
                       "--actualParameter branch=" + self.opt.branch + \
                       " Platform=" + self.opt.product + \
-                      " sku=" + self.opt.sku
+                      " sku=" + self.opt.sku + \
+                      " BuildId= " + self.opt.buildid
+
         else:
-            command = "ectool runProcedure Contrail-CI-CD --procedureName CI-copy " \
+            command = "ectool runProcedure Contrail-CI-CD --procedureName PipeLine " \
                       "--actualParameter branch=" + self.opt.branch + \
                       " Platform=" + self.opt.product + \
-                      " sku=" + self.opt.sku
+                      " sku=" + self.opt.sku + \
+                      " BuildId= " + self.opt.buildid
 
         if DEBUG:
             print "executing following command:\n", command
