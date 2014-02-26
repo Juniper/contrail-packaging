@@ -156,6 +156,7 @@ class PackagerArgParser(Utils):
         aparser.add_argument('--cache-base-dir', '-C',
                              action='store',
                              type=lambda fn: self.is_dir_exists(fn),
+                             nargs='+',
                              help='Base directory location where OS and third\
                                    party packages are available.\
                                    packager will check files in \
@@ -164,21 +165,26 @@ class PackagerArgParser(Utils):
         aparser.add_argument('--absolute-package-dir', '-a',
                              action='store',
                              type=lambda fn: self.is_dir_exists(fn),
+                             nargs='+',
                              help='Absolute Directory Location where OS and third\
                                    party packages are available')
         aparser.add_argument('--contrail-package-dir', '-P',
                              action='store',
                              type=lambda fn: self.is_dir_exists(fn),
+                             nargs='+',
                              help='Directory Location where pre-maked Contrail packages\
                                    are available')
         aparser.add_argument('--base-package-file', '-b',
                              action='store',
+                             nargs='+',
                              help='Config files specifying base packages info')
         aparser.add_argument('--depends-package-file', '-d',
                              action='store',
+                             nargs='+',
                              help='Config files specifying dependant pacakges info')
         aparser.add_argument('--contrail-package-file', '-f',
                              action='store',
+                             nargs='+',
                              help='Config files specifying Contrail packages info')
         aparser.add_argument('--make-targets', '-t',
                              action='store',

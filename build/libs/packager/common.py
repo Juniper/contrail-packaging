@@ -18,27 +18,25 @@ from xml.etree import ElementTree
 from utils import Utils
 
 log = logging.getLogger("pkg.%s" %__name__)
-expanduser = lambda dirname: None if dirname is None \
-                             else os.path.abspath(os.path.expanduser(dirname))
 
 class BasePackager(Utils):
     ''' Base class for packager methods '''
     def __init__(self, **kwargs):
-        self.base_pkg_files        = expanduser(kwargs['base_package_file'])
-        self.depends_pkg_files     = expanduser(kwargs['depends_package_file'])
-        self.contrail_pkg_file     = expanduser(kwargs['contrail_package_file'])
+        self.base_pkg_files        = self.expanduser(kwargs['base_package_file'])
+        self.depends_pkg_files     = self.expanduser(kwargs['depends_package_file'])
+        self.contrail_pkg_files    = self.expanduser(kwargs['contrail_package_file'])
         self.id                    = kwargs.get('build_id', 999)
         self.sku                   = kwargs.get('sku', 'grizzly')
         self.branch                = kwargs.get('branch', None)
-        store                      = expanduser(kwargs['store_dir'])
+        store                      = self.expanduser(kwargs['store_dir'])
         self.store                 = os.path.join(store, str(self.id))
         self.iso_prefix            = kwargs.get('iso_prefix', getpass.getuser())
-        self.abs_pkg_dir           = expanduser(kwargs['absolute_package_dir'])
-        self.cache_base_dir        = expanduser(kwargs['cache_base_dir'])
-        self.contrail_pkg_dir      = expanduser(kwargs.get('contrail_package_dir', None))
-        self.git_local_repo        = expanduser(kwargs['git_local_repo']) 
+        self.abs_pkg_dirs          = self.expanduser(kwargs['absolute_package_dir'])
+        self.cache_base_dir        = self.expanduser(kwargs['cache_base_dir'])
+        self.contrail_pkg_dirs     = self.expanduser(kwargs.get('contrail_package_dir', None))
+        self.git_local_repo        = self.expanduser(kwargs['git_local_repo']) 
         self.make_targets          = kwargs.get('make_targets', None)
-        self.make_targets_file     = expanduser(kwargs.get('make_targets_file', None))
+        self.make_targets_file     = self.expanduser(kwargs.get('make_targets_file', None))
         self.default_targets       = kwargs.get('default_targets', 
                                          ['thirdparty-all', 'openstack-all', 'contrail-all'])
         self.comps_xml_template    = kwargs.get('comps_xml_template', None)
@@ -51,6 +49,7 @@ class BasePackager(Utils):
         self.store_log_dir         = os.path.join(self.store, 'log')
         self.contrail_pkgs_store   = os.path.join(self.store, 'contrail_packages')
         self.artifacts_dir         = os.path.join(self.git_local_repo, 'build', 'artifacts')
+        self.artifacts_extra_dir   = os.path.join(self.git_local_repo, 'build', 'artifacts_extra')
         self.pkgs_tgz              = os.path.join(self.contrail_pkgs_store,
                                                   'contrail_%ss.tgz' %self.pkg_type)
         self.packager_dir          = os.getcwd()
@@ -86,7 +85,7 @@ class BasePackager(Utils):
         additems = {'found_at': {}}
         self.base_pkgs = self.parse_cfg_file(self.base_pkg_files)
         self.depends_pkgs = self.parse_cfg_file(self.depends_pkg_files)
-        self.contrail_pkgs = self.parse_cfg_file(self.contrail_pkg_file, additems)
+        self.contrail_pkgs = self.parse_cfg_file(self.contrail_pkg_files, additems)
 
         # create dirs
         self.create_dir(self.store)
@@ -94,6 +93,7 @@ class BasePackager(Utils):
         self.create_dir(self.contrail_pkgs_store)
         self.create_dir(self.store_log_dir)
         self.create_dir(self.artifacts_dir)
+        self.create_dir(self.artifacts_extra_dir)
 
         # Update make location with git local repo
         for target in self.contrail_pkgs.keys():
@@ -103,7 +103,8 @@ class BasePackager(Utils):
                                                      self.contrail_pkgs[target]['builtloc'])
 
         # update location of os and dependent package location
-        cache_dir = expanduser(os.path.join(self.cache_base_dir, self.cache_subdir, self.sku))
+        cache_dir = self.expanduser(os.path.join(self.cache_base_dir,
+                               self.cache_subdir, self.sku))
         for each in self.base_pkgs.keys():
             if self.base_pkgs[each]['location'] == '':
                 self.base_pkgs[each]['location'] = cache_dir
@@ -112,11 +113,11 @@ class BasePackager(Utils):
                 self.depends_pkgs[each]['location'] = cache_dir
 
         # override location of os and dependent packages if absolute path given
-        if self.abs_pkg_dir:
+        if self.abs_pkg_dirs:
             for each in self.base_pkgs.keys():
-                self.base_pkgs[each]['location'] = self.abs_pkg_dir
+                self.base_pkgs[each]['location'] = self.abs_pkg_dirs
             for each in self.depends_pkgs.keys():
-                self.depends_pkgs[each]['location'] = self.abs_pkg_dir
+                self.depends_pkgs[each]['location'] = self.abs_pkg_dirs
 
         # update make target list
         if self.make_targets != None and len(self.make_targets) != 0:
@@ -128,13 +129,13 @@ class BasePackager(Utils):
         # Skip building all packages but not those supplied
         # in self.targets and contrail-install-packages
         # Update built loc and create support files
-        if self.contrail_pkg_dir:
-            # update make targets if contrail dir is supplied
+        if self.contrail_pkg_dirs:
+            # update build location if contrail dir is supplied
             for target in self.contrail_pkgs.keys():
                 if target in self.targets or \
                    'contrail-install-packages' in target:
                     continue
-                self.contrail_pkgs[target]['builtloc'] = self.contrail_pkg_dir
+                self.contrail_pkgs[target]['builtloc'] = self.contrail_pkg_dirs
 
             # pick up or create contrail_installer.tgz 
             if not ('contrail-setup' in [tgt.strip('-deb') for tgt in self.targets] or
@@ -144,12 +145,11 @@ class BasePackager(Utils):
                 else:
                     builddir = os.path.join(self.git_local_repo, 'controller', 'build')
                 self.create_dir(builddir)
-                files = self.get_file_list(self.contrail_pkg_dir, 'contrail_installer.tgz')
-                if len(files) != 0:
-                    log.info('Copying %s/contrail_installer.tgz to %s' %(
-                               self.contrail_pkg_dir, builddir))
-                    shutil.copy('%s/contrail_installer.tgz' %self.contrail_pkg_dir,
-                                builddir)
+                files = self.get_file_list(self.contrail_pkg_dirs, 'contrail_installer.tgz')
+                installer_tgz = self.get_latest_file(files)
+                if len(installer_tgz) != 0:
+                    log.info('Copying %s to %s' %(installer_tgz, builddir))
+                    shutil.copy(installer_tgz, builddir)
                 else:
                     installer_script = os.path.join(self.git_local_repo, 'tools',
                                                      'provisioning', 'create_installer.py')
@@ -173,7 +173,7 @@ class BasePackager(Utils):
             log.info('Making Target: %s' %target)
             if not self.contrail_pkgs.has_key(target):
                 raise RuntimeError('Target (%s) is not defined in %s' %(
-                                    target, self.contrail_pkg_file))
+                                    target, self.contrail_pkg_files))
             cmd = 'make CONTRAIL_SKU=%s TAG=%s %s' %(self.sku, 
                        self.id, self.contrail_pkgs[target]['target'])
             self.exec_cmd(cmd, wd=self.contrail_pkgs[target]['makeloc'])
