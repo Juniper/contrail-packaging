@@ -1,10 +1,1 @@
-IFMAP_SERVER=127.0.0.1
-IFMAP_PORT=8443
-IFMAP_USER=control-user
-IFMAP_PASWD=control-user-passwd
-COLLECTOR=127.0.0.1
-COLLECTOR_PORT=8086
-BGP_PORT=179
-LOGFILE=--log-file=/var/log/contrail/control.log
-DISCOVERY=127.0.0.1
 

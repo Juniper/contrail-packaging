@@ -124,6 +124,7 @@ install -p -m 755 build/debug/vnsw/agent/vnswad         %{buildroot}%{_bindir}/v
 # install etc files
 if [ "%{?dist}" != ".xen" ]; then
 install -p -m 644 %{_distropkgdir}/agent.conf               %{buildroot}%{_contrailetc}/rpm_agent.conf
+install -p -m 644 %{_distropkgdir}/vrouter.conf             %{buildroot}%{_contrailetc}/vrouter.conf
 
 install -p -m 755 %{_distropkgdir}/vnagent_ExecStartPre.sh  %{buildroot}%{_contrailetc}/vnagent_ExecStartPre.sh
 install -p -m 755 %{_distropkgdir}/vnagent_ExecStartPost.sh %{buildroot}%{_contrailetc}/vnagent_ExecStartPost.sh
@@ -244,6 +245,7 @@ exit 0
 %else
 %{_venv_root}
 %{_contrailetc}/rpm_agent.conf
+%config(noreplace) %{_contrailetc}/vrouter.conf
 %{_contrailetc}/vnagent_ExecStartPre.sh
 %{_contrailetc}/vnagent_ExecStartPost.sh
 %{_contrailetc}/vnagent_ExecStopPost.sh

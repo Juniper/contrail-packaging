@@ -36,3 +36,7 @@ override_dh_usrlocal:
 
 get-orig-source:
 	uscan --verbose --force-download --rename --destdir=../build-area
+
+override_dh_shlibdeps:
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
+
