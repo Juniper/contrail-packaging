@@ -12,8 +12,8 @@ import shutil
 import github
 from lxml import etree as ET
 from copy import deepcopy
+import re
 import base64
-
 
 
 class ManifestBase(object):
@@ -28,7 +28,7 @@ class ManifestBase(object):
                 print "Error: Can't find manifest file %s" % self.opt.merge_file
                 sys.exit(1)
 
-        """ REPLACE WITH YOUR USER ID AND KEY"""
+        # REPLACE WITH YOUR USER ID AND KEY
         self.opt.github = github.Github('mganley', '83236c3a4678abeda0cf2235552cac8a6b75ab9f')
 
     def create(self):
@@ -45,19 +45,19 @@ class ManifestBase(object):
 
             if remote == 'github':
                 if dbranch:
-                    demo.set ('branch', dbranch)
+                    demo.set('branch', dbranch)
                 else:
-                    demo.set ('branch', self.opt.branch)
+                    demo.set('branch', self.opt.branch)
                 if DEBUG:
                     print "repo not in build repo going to get hash "
                     print reponame
                 repo = self.opt.github.get_user(login='Juniper').get_repo(name=reponame)
-                if (dbranch) :
+                if (dbranch):
                     githubBranch = repo.get_branch(branch=dbranch)
-                    commits=githubBranch.commit
+                    commits = githubBranch.commit
                 else:
-                    commits=repo.get_commits()[0]
-                demo.set ('revision', commits.sha)
+                    commits = repo.get_commits()[0]
+                demo.set('revision', commits.sha)
             else:
                 source.remove(demo)
 
@@ -75,56 +75,61 @@ class ManifestBase(object):
             if DEBUG:
                 print reponame, target_branch, remote
 
-            found = 0
-            for item in source.iter('project'):
-                if reponame == item.get('name'):
-                    revhash = item.get('revision')
-                    branch = item.get('branch')
-                    if target_branch:
-                        if target_branch == branch:
-                            found = 1
-                            if DEBUG:
-                                print "Target branch matches previous merged manifest", revhash
-                            demo.set ('revision', revhash)
-                    else:
-                        if branch == 'master':
-                            found = 1
-                            if DEBUG:
-                                print "No Branch specified and base was using master so set hash"
-                            demo.set ('revision', revhash)
-                    break
+            if not (target_branch and len(target_branch) == 40 and re.match("^[a-f0-9]+$", str(target_branch))):
+                found = 0
+                for item in source.iter('project'):
+                    if reponame == item.get('name'):
+                        revhash = item.get('revision')
+                        branch = item.get('branch')
+                        if target_branch:
+                            if target_branch == branch:
+                                found = 1
+                                if DEBUG:
+                                    print "Target branch matches previous merged manifest", revhash
+                                demo.set('revision', revhash)
+                        else:
+                            if branch == 'master':
+                                found = 1
+                                if DEBUG:
+                                    print "No Branch specified and base was using master so set hash"
+                                demo.set('revision', revhash)
+                        break
 
-            if not found:
-                if remote == 'github':
-                    if DEBUG:
-                        print "repo not in build repo going to get hash "
-                        print reponame, target_branch
-                    repo = self.opt.github.get_user(login='Juniper').get_repo(name=reponame)
-                    if (target_branch) :
-                        githubBranch = repo.get_branch(branch=target_branch)
-                        commits=githubBranch.commit
-                    else:
-                        commits=repo.get_commits()[0]
-                    if DEBUG:
-                        print "going to set sha", commits.sha
+                if not found:
+                    if remote == 'github':
+                        if DEBUG:
+                            print "repo not in build repo going to get hash "
+                            print reponame, target_branch
+                        repo = self.opt.github.get_user(login='Juniper').get_repo(name=reponame)
+                        if (target_branch):
+                            githubBranch = repo.get_branch(branch=target_branch)
+                            commits = githubBranch.commit
+                        else:
+                            commits = repo.get_commits()[0]
+                        if DEBUG:
+                            print "going to set sha", commits.sha
 
-                    demo.set ('revision', commits.sha)
+                        demo.set('revision', commits.sha)
 
-                    """ Also have to add this entry to the base manifest"""
-                    temp = deepcopy (demo)
-		    if DEBUG:
-			print "Current record we are on:", source
-                    if not target_branch:
-                        temp.set ('branch', 'master')
-                    else:
-                        temp.set ('branch', target_branch)
+                        """ Also have to add this entry to the base manifest"""
+                        temp = deepcopy(demo)
+                        if DEBUG:
+                            print "Current record we are on:", source
+                        if not target_branch:
+                            temp.set('branch', 'master')
+                        else:
+                            temp.set('branch', target_branch)
 
-                    changed_merge_file = '1'
-	            where = 10
-                    source.insert (where, temp)
+                        changed_merge_file = '1'
+                        where = 10
+                        source.insert(where, temp)
 
-                    if DEBUG:
-                        print "Should be writing out new base manifest."
+                        if DEBUG:
+                            print "Should be writing out new base manifest."
+            else:
+                if DEBUG:
+                    print reponame
+                    print "found git commit hash as revision "
 
         if changed_merge_file:
             if DEBUG:
@@ -134,7 +139,6 @@ class ManifestBase(object):
             tree.write(manifest.opt.merge_file)
 
         return target
-
 
 
 def execute(command, ignore_errors=False):
@@ -156,9 +160,11 @@ def execute(command, ignore_errors=False):
         sys.exit(1)
     return data.strip()
 
+
 def cmd_exists(cmd):
     return subprocess.call("type " + cmd, shell=True,
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
+
 
 def parse_options(args):
     """ Parse command line arguments """
@@ -167,41 +173,42 @@ def parse_options(args):
     parser.add_argument('-v', '--verbose', dest='debug', action='store_true',
                         help='Enable verbose mode')
 
-    parser.add_argument('-g',  '--master_branch_git', nargs='?', dest='branch',
-                            default='master',
-                            help='Existing master branch in git, default: %(default)s')
+    parser.add_argument('-g', '--master_branch_git', nargs='?', dest='branch',
+                        default='master',
+                        help='Existing master branch in git, default: %(default)s')
 
-    parser.add_argument('-o',  '--output_manifest', nargs='?', dest='output_file',
-                            default='manifest.xml',
-                            help='Output file to print the results to, default: %(default)s')
+    parser.add_argument('-o', '--output_manifest', nargs='?', dest='output_file',
+                        default='manifest.xml',
+                        help='Output file to print the results to, default: %(default)s')
 
-    parser.add_argument('-m',  '--merge_manifest', nargs='?', dest='merge_file',
-                            default='manifest-base-info-only.xml',
-                            help='Manifest file to use as the base merge file. default: %(default)s')
+    parser.add_argument('-m', '--merge_manifest', nargs='?', dest='merge_file',
+                        default='manifest-base-info-only.xml',
+                        help='Manifest file to use as the base merge file. default: %(default)s')
 
-    parser.add_argument('-s',  '--source_manifest', nargs='?', dest='source_file',
-                            default='manifesth.xml',
-                            help='Manifest file to merge into base. default: %(default)s')
+    parser.add_argument('-s', '--source_manifest', nargs='?', dest='source_file',
+                        default='manifesth.xml',
+                        help='Manifest file to merge into base. default: %(default)s')
 
     subparsers = parser.add_subparsers(title='Create Base Manifest Commands',
                                        description='Select one command',
                                        dest='command')
 
     parser_merge = subparsers.add_parser('merge',
-                                           description='Merge the manifest file with the base revisions'
-                                                       'the same and fixing the new projects revisions')
+                                         description='Merge the manifest file with the base revisions'
+                                                     'the same and fixing the new projects revisions')
     parser_create = subparsers.add_parser('create',
-                                           description='Create the base manifest.xml file')
+                                          description='Create the base manifest.xml file')
 
     opt = parser.parse_args(args)
     return opt
+
 
 if __name__ == '__main__':
     options = parse_options(sys.argv[1:])
     DEBUG = options.debug
     manifest = ManifestBase(options)
 
-    if manifest.opt.command  == 'create':
+    if manifest.opt.command == 'create':
         result = manifest.create()
         if DEBUG:
             print ET.tostring(result, pretty_print=True)
@@ -210,7 +217,7 @@ if __name__ == '__main__':
         print "Done"
         sys.exit(0)
 
-    if manifest.opt.command  == 'merge':
+    if manifest.opt.command == 'merge':
         result = manifest.merge()
         if DEBUG:
             print ET.tostring(result, pretty_print=True)
