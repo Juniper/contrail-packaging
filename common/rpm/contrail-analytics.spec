@@ -196,7 +196,7 @@ popd
 install -p -m 755 %{_distropkgdir}/redis-query.conf %{buildroot}%{_contrailetc}/redis-query.conf
 install -p -m 755 %{_distropkgdir}/redis-uve.conf %{buildroot}%{_contrailetc}/redis-uve.conf
 install -D -m 644 %{_distropkgdir}/collector.conf %{buildroot}%{_contrailetc}/collector.conf
-install -D -m 644 %{_distropkgdir}/qe.conf %{buildroot}%{_contrailetc}/qe.conf
+install -D -m 644 %{_distropkgdir}/query-engine.conf %{buildroot}%{_contrailetc}/query-engine.conf
 
 rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/gen_py/__init__.*
 rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/bottle.py*
@@ -258,7 +258,7 @@ fi
 %config(noreplace) %{_contrailetc}/redis-query.conf
 %config(noreplace) %{_contrailetc}/redis-uve.conf
 %config(noreplace) %{_contrailetc}/collector.conf
-%config(noreplace) %{_contrailetc}/qe.conf
+%config(noreplace) %{_contrailetc}/query-engine.conf
 %{_contrailetc}/supervisord_analytics.conf
 %if 0%{?fedora} >= 17
 %{_servicedir}/supervisor-analytics.service
