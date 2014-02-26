@@ -147,7 +147,7 @@ class BasePackager(Utils):
                 self.create_dir(builddir)
                 files = self.get_file_list(self.contrail_pkg_dirs, 'contrail_installer.tgz')
                 installer_tgz = self.get_latest_file(files)
-                if len(installer_tgz) != 0:
+                if installer_tgz != '':
                     log.info('Copying %s to %s' %(installer_tgz, builddir))
                     shutil.copy(installer_tgz, builddir)
                 else:
