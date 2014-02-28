@@ -30,11 +30,13 @@ export _osVer := $(shell uname -r)
 SCNS := scons --target=$(_arch) $(BUILD_ARCH_TARGETS)
 endif
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)-$(_osVer)
+BUILDTAG = $(SRC_VER).$(TAG)-$(_osVer)
 else
-BUILDTAG = $(BUILDTIME)-$(_osVer)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)-$(_osVer)
 endif
 
 %:

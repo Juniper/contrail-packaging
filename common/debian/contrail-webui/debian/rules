@@ -32,11 +32,13 @@ export _config := $(SB_TOP)/contrail-web-core/config
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
 
 %:

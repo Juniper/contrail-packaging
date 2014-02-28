@@ -24,13 +24,14 @@ export _pysitepkg := /lib/python$(_pyver)/site-packages
 export _contrailetc := /etc/contrail
 export _supervisordfiles := /etc/contrail/supervisord_files
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
-
 
 %:
 	dh $@ --with python2 --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
