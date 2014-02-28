@@ -28,14 +28,16 @@ export _optdir := /opt
 export _usrdir := /usr
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 
-__python ?= /usr/bin/python
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
+
+__python ?= /usr/bin/python
 
 TARGETS=src/analytics:vizd \
 	src/query_engine:qed \

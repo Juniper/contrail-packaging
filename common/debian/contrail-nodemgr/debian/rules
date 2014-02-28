@@ -15,11 +15,13 @@ export _python_dist := ${SB_TOP}/build/python_dist
 export _bindir := /usr/bin
 export _contrailetc := /etc/contrail
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
 
 TARGETS=control-node:node_mgr \

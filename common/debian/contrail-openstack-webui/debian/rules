@@ -20,11 +20,13 @@ export _contrailetc := /etc/contrail
 export _supervisordir := /etc/contrail/supervisord_webui_files
 export _distropkgdir := $(SB_TOP)/tools/packaging/common/control_files
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
 
 %:
