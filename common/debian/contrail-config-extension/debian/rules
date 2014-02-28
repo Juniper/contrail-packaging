@@ -19,11 +19,13 @@ export _venvtr := --prefix=$(_venv_root)
 export _pyver := 2.7
 export _pysitepkg := /lib/python$(_pyver)/site-packages
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
 
 %:

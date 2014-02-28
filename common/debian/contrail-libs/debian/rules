@@ -17,11 +17,13 @@ export _libdir := /usr/lib64
 export _binddir := /usr/bin
 export _ldconfdir := /etc/ld.so.conf.d
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
 
 LIBS="build/lib/libtbb_debug.so.2" \

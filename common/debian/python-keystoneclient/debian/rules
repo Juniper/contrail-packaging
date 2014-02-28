@@ -16,11 +16,13 @@ export python_sitelib := /usr/lib/python$(_pyver)/dist-packages
 export _sysconfdir := /etc
 export _api_venv_archv := /opt/contrail/api-venv/archive
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
 
 %:

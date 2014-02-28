@@ -22,11 +22,13 @@ export _initdir := /etc/init
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 export _sysconfdir := /etc
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
 
 %:

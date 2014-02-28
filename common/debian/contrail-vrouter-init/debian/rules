@@ -13,11 +13,13 @@ export _confsrcdir := ${SB_TOP}/tools/packaging/common/control_files
 export _supervisorconf := /etc/contrail/supervisord_vrouter_files
 export _opt_bin := /opt/contrail/bin
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
 
 %:

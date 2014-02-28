@@ -22,11 +22,13 @@ export _bindir := /usr/bin
 export WS := `cat ~/rpmbuild/SOURCES/git_root`
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):debian/contrail-control/usr/lib64/contrail:debian/contrail-libs/usr/lib64/contrail
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
 
 %:
