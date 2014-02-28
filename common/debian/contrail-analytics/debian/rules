@@ -86,8 +86,11 @@ override_dh_auto_install:
 	install -D -m 755 ${SB_TOP}/controller/src/analytics/ruleparser/tabledump.py $(buildroot)$(_optdir)/contrail/analytics/tabledump.py
 	install -D -m 755 ${SB_TOP}/controller/src/analytics/ruleparser/tabledump $(buildroot)$(_optdir)/contrail/analytics/tabledump
 	install -D -m 755 ${SB_TOP}/controller/src/opserver/log.py $(buildroot)$(_optdir)/contrail/utils/log.py
+	install -D -m 755 ${SB_TOP}/controller/src/opserver/stats.py $(buildroot)$(_optdir)/contrail/utils/stats.py
 	install -D -m 755 ${SB_TOP}/controller/src/opserver/contrail-logs $(buildroot)$(_optdir)/contrail/utils/contrail-logs
 	install -D -m 755 ${SB_TOP}/controller/src/opserver/contrail-logs $(buildroot)$(_bindir)/contrail-logs
+	install -D -m 755 ${SB_TOP}/controller/src/opserver/contrail-stats $(buildroot)$(_optdir)/contrail/utils/contrail-stats
+	install -D -m 755 ${SB_TOP}/controller/src/opserver/contrail-stats $(buildroot)$(_bindir)/contrail-stats
 
 	install -D -m 644 $(_src_config)/vizd_param $(buildroot)/$(_sysconfdir)/contrail/vizd_param
 	install -D -m 644 $(_src_config)/qe_param $(buildroot)/$(_sysconfdir)/contrail/qe_param
