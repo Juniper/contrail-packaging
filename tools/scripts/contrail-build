@@ -30,9 +30,6 @@ class ContrailBuild(object):
             if self.opt.build_num:
                 print 'Error: Cannot specify both a build number and manifest file to create sandbox'
                 sys.exit(1)
-            if self.opt.branch_name:
-                print 'Error: Cannot specify both a branch name and manifest file'
-                sys.exit(1)
 
         require_arch = ["centos64_os", "ubuntu-12-04"]
         if not self.opt.arch_type in require_arch:
