@@ -188,8 +188,11 @@ pushd %{_builddir}/..
 install -p -m 755 %{_helper} %{buildroot}%{_bindir}/contrail-dbutils
 popd
 install -D -m 644 src/opserver/log.py %{buildroot}%{_contrailutils}/log.py
+install -D -m 644 src/opserver/stats.py %{buildroot}%{_contrailutils}/stats.py
 install -D -m 755 src/opserver/contrail-logs %{buildroot}%{_contrailutils}/contrail-logs
 install -D -m 755 src/opserver/contrail-logs %{buildroot}%{_bindir}/contrail-logs
+install -D -m 755 src/opserver/contrail-stats %{buildroot}%{_contrailutils}/contrail-stats
+install -D -m 755 src/opserver/contrail-stats %{buildroot}%{_bindir}/contrail-stats
 popd
 
 # install etc files
