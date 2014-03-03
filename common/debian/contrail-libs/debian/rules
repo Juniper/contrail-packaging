@@ -59,3 +59,5 @@ override_dh_auto_install:
 
 get-orig-source:
 	uscan --verbose --rename --destdir=${SB_TOP}
+
+override_dh_shlibdeps:

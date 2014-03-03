@@ -52,5 +52,8 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
 	install -p -m 755 ${SB_TOP}/build/debug/control-node/control-node $(buildroot)$(_bindir)/control-node
 	install -p -m 755 $(_src_config)/control_param $(buildroot)/$(_sysconfdir)/contrail/control_param
+	install -D -m 644 $(SB_TOP)/controller/src/control-node/control-node.conf $(buildroot)/$(_sysconfdir)/contrail/control-node.conf
 
 override_dh_usrlocal:
+
+override_dh_shlibdeps:
