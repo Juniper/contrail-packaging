@@ -24,7 +24,7 @@ ENV_FILE=/etc/contrail/control_param
 
 function daemon_start() {
      echo  -n "Starting Contrail Control Node"
-     daemon --pidfile $PID_FILE "/usr/bin/control-node --map-server-url https://${IFMAP_SERVER}:${IFMAP_PORT} --map-user ${IFMAP_USER} --map-password ${IFMAP_PASWD} --hostname ${HOSTNAME} --host-ip ${HOSTIP} --bgp-port ${BGP_PORT} --discovery-server ${DISCOVERY} ${CERT_OPTS} ${LOGFILE} ${LOG_LOCAL} 2>&1 &>/dev/null & echo \$! > $PID_FILE"
+     daemon --pidfile $PID_FILE "/usr/bin/control-node 2>&1 &>/dev/null & echo \$! > $PID_FILE"
 #     PID=$!
      RETVAL=$?
      [ $RETVAL -eq 0 ] && log_success_msg || log_failure_msg

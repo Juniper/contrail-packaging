@@ -43,3 +43,5 @@ override_dh_auto_install:
 #	Install vnc_openstack extension
 	(cd ${SB_TOP}/build/python_dist/vnc_openstack-0.1dev && python setup.py install --root=$(buildroot) $(_venvtr))
 
+
+override_dh_shlibdeps:

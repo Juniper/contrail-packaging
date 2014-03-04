@@ -71,3 +71,5 @@ override_dh_auto_install:
 	install -p -D -m 644 ifmap.kill $(DESTDIR)/etc/contrail/supervisord_config_files/ifmap.kill
 
 override_dh_usrlocal:	
+
+override_dh_shlibdeps:
