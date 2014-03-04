@@ -211,25 +211,31 @@ class BasePackager(Utils):
             log.error('Package file for One or More built package are not found')
             raise IOError('Missing Packages: \n%s' %"\n".join(missing)) 
 
+    def create_pkg_list_file(self):
+        pkglist = []
+        for target in self.contrail_pkgs.keys():
+            packages = self.contrail_pkgs[target]['pkgs']
+            packages = [packages] if type(packages) is str else packages
+            pkglist.extend(filter(None, packages))
+        with open(self.pkglist_file, 'w') as fid:
+            fid.write("%s\n" %"\n".join(sorted(pkglist)))
+            fid.flush()
+        log.info('Packages list file (%s) is created' %self.pkglist_file)
+
     def create_log(self):
-        filelist, pkglist = [], []
+        filelist = []
         filelist_file = os.path.join(self.store_log_dir, 'file_list.txt')
-        pkglist_file = os.path.join(self.store_log_dir, '%s_list.txt' %self.pkg_type)
         for target in self.contrail_pkgs.keys():
             packages = self.contrail_pkgs[target]['pkgs']
             packages = [packages] if type(packages) is str else packages
             for pkg in filter(None, packages):
-                pkglist.append(pkg)
                 if self.contrail_pkgs[target]['found_at'][pkg] != '':
                     pkgfile = os.path.basename(self.contrail_pkgs[target]['found_at'][pkg])
                     filelist.append(pkgfile)
         with open(filelist_file, 'w') as fid:
             fid.write("%s\n" %"\n".join(sorted(filelist)))
             fid.flush()
-        with open(pkglist_file, 'w') as fid:
-            fid.write("%s\n" %"\n".join(sorted(pkglist)))
-            fid.flush()
-            
+
     def create_git_ids(self, manifest=None, filename=None):
         filename = filename or os.path.join(self.store, 'git_build_%s.txt' %self.id)
         manifest = manifest or os.path.join(self.git_local_repo, '.repo', 'manifest.xml')
