@@ -52,6 +52,8 @@ class BasePackager(Utils):
         self.artifacts_extra_dir   = os.path.join(self.git_local_repo, 'build', 'artifacts_extra')
         self.pkgs_tgz              = os.path.join(self.contrail_pkgs_store,
                                                   'contrail_%ss.tgz' %self.pkg_type)
+        self.pkglist_file          = os.path.join(self.store_log_dir, 
+                                                  '%s_list.txt' %self.pkg_type)
         self.packager_dir          = os.getcwd()
         self.contrail_pkgs_tgz     = ''
         self.base_pkgs             = {}
