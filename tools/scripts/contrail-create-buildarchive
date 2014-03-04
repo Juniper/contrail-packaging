@@ -64,7 +64,8 @@ class buildDir (object):
             print "Going to make the archive"
         for i in self.opt.builds:
             branch = i[0]
-            command = "ectool getProperty /projects/Contrail-CI-CD/Build-" + branch
+
+            command = "ectool incrementProperty /projects/Contrail-CI-CD/BUILD-" + branch + " 1"
             buildId = execute(command, ignore_errors=True)
             if not buildId.isdigit():
                 if buildId.find("NoSuchProperty") > 0:
@@ -74,6 +75,7 @@ class buildDir (object):
                 else:
                     print "Got bad response when looking for Build ID: ", buildId
                     sys.exit(1)
+
             if DEBUG:
                 print "Found branch" , branch
                 print "Build number", buildId
@@ -106,7 +108,7 @@ class buildDir (object):
             print "Going to kick off builds for this branch:", branch
             command = "ectool runProcedure Contrail-CI-CD --procedureName FindBuilds " \
                   "--actualParameter branch=" + branch
-        execute(command, ignore_errors=False)
+            execute(command, ignore_errors=False)
 
 def chomp(s):
     return s[:-1] if s.endswith('\n') else s
