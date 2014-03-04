@@ -45,3 +45,5 @@ override_dh_auto_install:
 	install -p -m 755 ${SB_TOP}/tools/packaging/common/control_files/supervisor_killall ${buildroot}/usr/bin
 
 override_dh_installexamples:
+
+override_dh_shlibdeps:

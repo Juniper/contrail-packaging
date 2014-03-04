@@ -63,3 +63,5 @@ override_dh_auto_install:
 
 	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/discovery/client/dist/discoveryclient-0.1dev.tar.gz; cd discoveryclient-0.1dev; python setup.py install --root=${buildroot} --install-layout=deb)
 
+
+override_dh_shlibdeps:

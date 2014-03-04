@@ -45,3 +45,5 @@ override_dh_auto_install:
 	install -p -m 755 $(_confsrcdir)/vrouter-post-start.sh ${buildroot}${_opt_bin}
 	install -p -m 755 $(_confsrcdir)/vrouter-pre-stop.sh ${buildroot}${_opt_bin}
 
+
+override_dh_shlibdeps:

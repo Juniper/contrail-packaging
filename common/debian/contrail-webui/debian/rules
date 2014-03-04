@@ -80,3 +80,5 @@ override_dh_auto_install:
 	#install contrail-webui conf files
 	install -d -m 755 $(buildroot)/$(_supervisordir)
 	install -p -m 644 $(_distropkgdir)/redis-webui.conf $(buildroot)/$(_contrailetc)/redis-webui.conf
+
+override_dh_shlibdeps:

@@ -42,3 +42,5 @@ override_dh_auto_install:
 
 get-orig-source:
 	uscan --verbose --force-download --rename --destdir=../build-area
+
+override_dh_shlibdeps:
