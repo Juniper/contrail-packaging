@@ -176,8 +176,9 @@ class BasePackager(Utils):
             if not self.contrail_pkgs.has_key(target):
                 raise RuntimeError('Target (%s) is not defined in %s' %(
                                     target, self.contrail_pkg_files))
-            cmd = 'make CONTRAIL_SKU=%s TAG=%s %s' %(self.sku, 
-                       self.id, self.contrail_pkgs[target]['target'])
+            cmd = 'make CONTRAIL_SKU=%s TAG=%s FILE_LIST=%s %s' %(self.sku, 
+                       self.id, self.pkglist_file,
+                       self.contrail_pkgs[target]['target'])
             self.exec_cmd(cmd, wd=self.contrail_pkgs[target]['makeloc'])
 
     def verify_built_pkgs_exists(self, targets=None, skips=None):
