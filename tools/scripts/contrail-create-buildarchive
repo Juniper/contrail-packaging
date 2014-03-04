@@ -1,4 +1,3 @@
-
 #!/usr/bin/python
 
 """
@@ -80,7 +79,7 @@ class buildDir (object):
                 print "Build number", buildId
             # Create base manifest so we can do the compare
             # First create the build directory
-            command = "mkdir -p " + self.opt.archive_name + '/' + buildId
+            command = "mkdir -p " + self.opt.archive_name + '/' + str(buildId)
             execute(command, ignore_errors=False)
 
             base = self.opt.archive_name + '/' + buildId + "/manifest-base-info-only.xml"
@@ -104,8 +103,8 @@ class buildDir (object):
 
                 command = "create-base-manifest -m " + base + " -s " + j + " -o " + targetDir + "/manifest.xml merge"
                 execute (command, ignore_errors=False)
-        print "Going to kick off builds for this branch:", branch
-        command = "ectool runProcedure Contrail-CI-CD --procedureName FindBuilds " \
+            print "Going to kick off builds for this branch:", branch
+            command = "ectool runProcedure Contrail-CI-CD --procedureName FindBuilds " \
                   "--actualParameter branch=" + branch
         execute(command, ignore_errors=False)
 
