@@ -15,7 +15,7 @@ import subprocess
 import shutil
 
 
-manifestRealPath = ""
+manifest_real_path = ""
 cacheBaseDir = "/cs-shared/builder/cache"
 
 
@@ -23,12 +23,15 @@ class ContrailBuild(object):
     """ contrailBuild class to parse and execute the build commands """
 
     def __init__(self, options):
-        global manifestRealPath
+        global manifest_real_path
         self.opt = options
         if self.opt.manifest_file:
-            manifestRealPath = os.path.realpath(self.opt.manifest_file)
+            manifest_real_path = os.path.realpath(self.opt.manifest_file)
             if self.opt.build_num:
                 print 'Error: Cannot specify both a build number and manifest file to create sandbox'
+                sys.exit(1)
+            if self.opt.branch_name:
+                print 'Error: Cannot specify both a branch name and manifest file'
                 sys.exit(1)
 
         require_arch = ["centos64_os", "ubuntu-12-04"]
@@ -79,20 +82,20 @@ class ContrailBuild(object):
 
         if self.opt.manifest_file:
             print "Using supplied manifest file"
-            shutil.copyfile (manifestRealPath, ".repo/manifest.xml")
+            shutil.copyfile (manifest_real_path, ".repo/manifest.xml")
 
         if self.opt.build_num:
             print "Using supplied build number"
-            buildArchive = '/volume/junosv-storage01/contrail/'
-            if not os.path.isdir(buildArchive):
-	        print "Can't find the build archive:", buildArchive
+            build_archive = '/volume/junosv-storage01/contrail/'
+            if not os.path.isdir(build_archive):
+                print "Can't find the build archive:", build_archive
                 sys.exit(1)
-            buildArchive += str(self.opt.branch_name) + '/'
-            buildArchive += str(self.opt.build_num) + '/'
-            buildArchive += str(self.opt.arch_type) + '/'
-            buildArchive += str(self.opt.sku_name) + '/'
-            buildArchive += "manifest.xml"
-            shutil.copyfile (buildArchive, ".repo/manifest.xml")
+            build_archive += str(self.opt.branch_name) + '/'
+            build_archive += str(self.opt.build_num) + '/'
+            build_archive += str(self.opt.arch_type) + '/'
+            build_archive += str(self.opt.sku_name) + '/'
+            build_archive += "manifest.xml"
+            shutil.copyfile (build_archive, ".repo/manifest.xml")
 
         print "Syncing repositories.... this could take some time"
         print "log is checkout.log"
@@ -100,6 +103,9 @@ class ContrailBuild(object):
         data = execute("repo sync", ignore_errors=False)
         f.write (str(data))
         f.close()
+        if not self.opt.no_print:
+            print data
+
 
 
 
@@ -112,12 +118,20 @@ class ContrailBuild(object):
 
         f = open("fetch.log", mode='w')
 
-        data = execute("python third_party/fetch_packages.py", ignore_errors=False)
-        f.write (str(data))
+        if os.path.isdir ("third_party"):
+            command = self.opt.python + " third_party/fetch_packages.py"
+            data = execute (command, ignore_errors=False)
+            f.write (str(data))
+            if not self.opt.no_print:
+                print data
 
-        data = execute("python distro/third_party/fetch_packages.py", ignore_errors=False)
-        f.write (str(data))
-        f.close()
+        if os.path.isdir ("distro"):
+            command = self.opt.python + " distro/third_party/fetch_packages.py"
+            data = execute (command, ignore_errors=False)
+            f.write (str(data))
+            f.close()
+            if not self.opt.no_print:
+                print data
 
         print "Running top level build"
         print "Log is build.log"
@@ -126,6 +140,9 @@ class ContrailBuild(object):
         data = execute("scons", ignore_errors=False)
         f.write (str(data))
         f.close()
+        if not self.opt.no_print:
+            print data
+
 
     def package(self):
         if DEBUG:
@@ -135,7 +152,12 @@ class ContrailBuild(object):
 
         os.mkdir ("target")
         os.mkdir ("store")
-        command = "create-config -m " + current_dir + "/.repo/manifest.xml -b " + str(self.opt.build_num) + " config"
+        if self.opt.python == "python":
+            command = "create-config -m "
+        else:
+            command = self.opt.python + " create-config -m "
+
+        command += current_dir + "/.repo/manifest.xml -b " + str(self.opt.build_num) + " config"
 
         f = open("package.log", mode='w')
         print "log is package.log"
@@ -143,18 +165,27 @@ class ContrailBuild(object):
         os.chdir ('tools/packaging/build')
         data = execute(command, ignore_errors=False)
         f.write(str(data))
+        if not self.opt.no_print:
+            print data
 
-        command = "./packager.py --cache-base-dir " + cacheBaseDir
+        if self.opt.python == "python":
+            command = "./packager.py --cache-base-dir "
+        else:
+            command = self.opt.python + " ./packager.py --cache-base-dir "
+
+        command += cacheBaseDir
         data = execute(command, ignore_errors=False)
         f.write(str(data))
         f.close()
+        if not self.opt.no_print:
+            print data
 
 
 def execute(command, ignore_errors=False):
     """ Function to execute shell command and return the output """
 
     if DEBUG:
-        print 'DEBUG: %s' % (command)
+        print 'DEBUG: %s' % command
     pipe = subprocess.Popen(shlex.split(command),
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT,
@@ -164,7 +195,7 @@ def execute(command, ignore_errors=False):
     rc = pipe.wait()
     cwd = os.getcwd()
     if rc and not ignore_errors:
-        print 'Error : Working directory : %s' % (cwd)
+        print 'Error : Working directory : %s' % cwd
         print 'Error : Failed to execute command: %s\n%s' % (command, data)
         sys.exit(1)
     return data.strip()
@@ -181,12 +212,19 @@ def parse_options(args):
     parser.add_argument('-v', '--verbose', dest='debug', action='store_true',
                         help='Enable verbose mode')
 
+    parser.add_argument('-x', '--xprint', dest='no_print', action='store_true',
+                        help="Don\'t print output on STDOUT")
+
     parser.add_argument('-m', '--manifest', nargs='?', dest='manifest_file',
                         help='Manifest Filename,')
 
     parser.add_argument('-s', '--sandbox', nargs='?', dest='sandbox_name',
                         default='sandbox',
                         help='New directory name for the sandbox, default : %(default)s')
+
+    parser.add_argument('-p', '--python', nargs='?', dest='python',
+                        default='python',
+                        help='Path to alternate version of python to use, default : %(default)s')
 
     parser.add_argument('-u', '--url', dest='manifest_url',
                         default='git@github.com:Juniper/contrail-vnc-private',
@@ -231,15 +269,15 @@ if __name__ == '__main__':
 	
     if not cmd_exists("git"):
         print "Missing git command"
-	sys.exit(1)
+        sys.exit(1)
  
     if not cmd_exists("repo"):
-        print "Missing git command"
-	sys.exit(1)
+        print "Missing repo command"
+        sys.exit(1)
 
     if not cmd_exists("scons"):
-	print "Missing scons command"
-	sys.exit(1)
+        print "Missing scons command"
+        sys.exit(1)
 
     if build.opt.command == 'sandbox':
         build.sandbox()

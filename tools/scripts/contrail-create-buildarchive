@@ -81,10 +81,10 @@ class buildDir (object):
                 print "Build number", buildId
             # Create base manifest so we can do the compare
             # First create the build directory
-            command = "mkdir -p " + self.opt.archive_name + '/' + str(buildId)
+            command = "mkdir -p " + self.opt.archive_name + '/' + str(branch) + '/' + str(buildId)
             execute(command, ignore_errors=False)
 
-            base = self.opt.archive_name + '/' + buildId + "/manifest-base-info-only.xml"
+            base = self.opt.archive_name + '/' + str(branch) + '/' + buildId + "/manifest-base-info-only.xml"
             command = "create-base-manifest -m " + base + " -s " + i[1][0] + " create"
             execute(command, ignore_errors=False)
 
