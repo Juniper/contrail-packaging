@@ -30,9 +30,7 @@ BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
 
 ifdef FILE_LIST
-DEB_LIST_FILE = FILE_LIST
-else
-DEB_LIST_FILE = $(SB_TOP)/tools/packaging/build/deb_list.txt
+DEB_LIST_FILE = $(FILE_LIST)
 endif
 
 %:
@@ -46,7 +44,7 @@ override_dh_auto_build:
 	mv contrail_installer.tgz $(SB_TOP)/build/debian/contrail_installer.tgz
 	(cd $(SB_TOP)/controller/src/config && tar cvfz $(builddist)/config_utils.tgz utils)
 	(cd $(SB_TOP)/controller/src/dns/scripts && tar cvfz $(builddist)/dns_scripts.tgz *)
-	(cd $(SB_TOP) && python $(SB_TOP)/tools/packaging/build/create_pkg_list_file.py --sku CONTRAIL_SKU $(builddist)/debs_list.txt)
+	if [ -z $(DEB_LIST_FILE) ]; then (cd $(SB_TOP) && python $(SB_TOP)/tools/packaging/build/create_pkg_list_file.py --sku $(CONTRAIL_SKU) $(builddist)/debs_list.txt); else (cp $(DEB_LIST_FILE) $(builddist)/debs_list.txt); fi
 
 override_dh_auto_install:
 	rm -rf $(buildroot)
