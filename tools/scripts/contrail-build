@@ -152,11 +152,8 @@ class ContrailBuild(object):
 
         os.mkdir ("target")
         os.mkdir ("store")
-        if self.opt.python == "python":
-            command = "create-config -m "
-        else:
-            command = self.opt.python + " create-config -m "
 
+        command = self.opt.python + " create-config -m "
         command += current_dir + "/.repo/manifest.xml -b " + str(self.opt.build_num) + " config"
 
         f = open("package.log", mode='w')
@@ -168,11 +165,7 @@ class ContrailBuild(object):
         if not self.opt.no_print:
             print data
 
-        if self.opt.python == "python":
-            command = "./packager.py --cache-base-dir "
-        else:
-            command = self.opt.python + " ./packager.py --cache-base-dir "
-
+        command = self.opt.python + " ./packager.py --cache-base-dir "
         command += cacheBaseDir
         data = execute(command, ignore_errors=False)
         f.write(str(data))
