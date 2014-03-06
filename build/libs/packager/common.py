@@ -52,6 +52,8 @@ class BasePackager(Utils):
         self.artifacts_extra_dir   = os.path.join(self.git_local_repo, 'build', 'artifacts_extra')
         self.pkgs_tgz              = os.path.join(self.contrail_pkgs_store,
                                                   'contrail_%ss.tgz' %self.pkg_type)
+        self.pkglist_file          = os.path.join(self.store_log_dir, 
+                                                  '%s_list.txt' %self.pkg_type)
         self.packager_dir          = os.getcwd()
         self.contrail_pkgs_tgz     = ''
         self.base_pkgs             = {}
@@ -168,8 +170,9 @@ class BasePackager(Utils):
             if not self.contrail_pkgs.has_key(target):
                 raise RuntimeError('Target (%s) is not defined in %s' %(
                                     target, self.contrail_pkg_files))
-            cmd = 'make CONTRAIL_SKU=%s TAG=%s %s' %(self.sku, 
-                       self.id, self.contrail_pkgs[target]['target'])
+            cmd = 'make CONTRAIL_SKU=%s TAG=%s FILE_LIST=%s %s' %(self.sku, 
+                       self.id, self.pkglist_file,
+                       self.contrail_pkgs[target]['target'])
             self.exec_cmd(cmd, wd=self.contrail_pkgs[target]['makeloc'])
 
     def verify_built_pkgs_exists(self, targets=None, skips=None):
@@ -205,25 +208,31 @@ class BasePackager(Utils):
             log.error('Package file for One or More built package are not found')
             raise IOError('Missing Packages: \n%s' %"\n".join(missing)) 
 
+    def create_pkg_list_file(self):
+        pkglist = []
+        for target in self.contrail_pkgs.keys():
+            packages = self.contrail_pkgs[target]['pkgs']
+            packages = [packages] if type(packages) is str else packages
+            pkglist.extend(filter(None, packages))
+        with open(self.pkglist_file, 'w') as fid:
+            fid.write("%s\n" %"\n".join(sorted(pkglist)))
+            fid.flush()
+        log.info('Packages list file (%s) is created' %self.pkglist_file)
+
     def create_log(self):
-        filelist, pkglist = [], []
+        filelist = []
         filelist_file = os.path.join(self.store_log_dir, 'file_list.txt')
-        pkglist_file = os.path.join(self.store_log_dir, '%s_list.txt' %self.pkg_type)
         for target in self.contrail_pkgs.keys():
             packages = self.contrail_pkgs[target]['pkgs']
             packages = [packages] if type(packages) is str else packages
             for pkg in filter(None, packages):
-                pkglist.append(pkg)
                 if self.contrail_pkgs[target]['found_at'][pkg] != '':
                     pkgfile = os.path.basename(self.contrail_pkgs[target]['found_at'][pkg])
                     filelist.append(pkgfile)
         with open(filelist_file, 'w') as fid:
             fid.write("%s\n" %"\n".join(sorted(filelist)))
             fid.flush()
-        with open(pkglist_file, 'w') as fid:
-            fid.write("%s\n" %"\n".join(sorted(pkglist)))
-            fid.flush()
-            
+
     def create_git_ids(self, manifest=None, filename=None):
         filename = filename or os.path.join(self.store, 'git_build_%s.txt' %self.id)
         manifest = manifest or os.path.join(self.git_local_repo, '.repo', 'manifest.xml')
