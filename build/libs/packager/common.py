@@ -59,7 +59,6 @@ class BasePackager(Utils):
         self.contrail_pkgs         = {}
         self.imgname               = ''
         self.targets               = []
-        self.build_tag             = self.id
 
     def setup_env(self):
         ''' setup basic environment necessary for packager like
@@ -72,13 +71,8 @@ class BasePackager(Utils):
         self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
                                              %self.git_local_repo)[0]
         # ** Attn: Not using branch info in build tag for now ***
-        self.build_tag = '%s~%s' %(self.id, self.sku)
-        if self.platform != 'ubuntu':
-            contrail_pkgs_name = 'contrail_packages_%s-%s.tgz' %(
-                                                  self.branch, self.build_tag)
-        else:
-            contrail_pkgs_name = 'contrail_packages_%s.%s.tgz' %(
-                                                  self.branch, self.build_tag) 
+        contrail_pkgs_name = 'contrail_packages_%s-%s~%s.tgz' %(self.branch, 
+                              self.id, self.sku)
         self.contrail_pkgs_tgz = os.path.join(self.packager_dir, contrail_pkgs_name)
         
         # get pkg info
@@ -307,5 +301,5 @@ class BasePackager(Utils):
         #make contrail-install-packages
         pkginfo = self.contrail_pkgs['contrail-install-packages']
         cleanerpkg = re.sub(r'-deb$', '-clean', pkginfo['target'])
-        self.exec_cmd('make CONTRAIL_SKU=%s TAG=%s %s %s' %(self.sku, self.build_tag, 
+        self.exec_cmd('make CONTRAIL_SKU=%s TAG=%s %s %s' %(self.sku, self.id, 
                            cleanerpkg, pkginfo['target']), pkginfo['makeloc'])
