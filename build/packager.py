@@ -82,9 +82,9 @@ class PackagerArgParser(Utils):
             'store_dir'             : os.path.join(usrhome, 'packager_store'),
             'absolute_package_dir'  : None,
             'contrail_package_dir'  : None,
-            'base_package_file'     : os.path.join(pkg_file_dir, dist[0], '{skuname}', base_pkg_file),
-            'depends_package_file'  : os.path.join(pkg_file_dir, dist[0], '{skuname}', deps_pkg_file),
-            'contrail_package_file' : os.path.join(pkg_file_dir, dist[0], '{skuname}', cont_pkg_file),
+            'base_package_file'     : [os.path.join(pkg_file_dir, dist[0], '{skuname}', base_pkg_file)],
+            'depends_package_file'  : [os.path.join(pkg_file_dir, dist[0], '{skuname}', deps_pkg_file)],
+            'contrail_package_file' : [os.path.join(pkg_file_dir, dist[0], '{skuname}', cont_pkg_file)],
             'make_targets'          : [],
             'make_targets_file'     : None,
             'loglevel'              : 'DEBUG',
@@ -115,12 +115,13 @@ class PackagerArgParser(Utils):
                                             'logfile': ns_cliargs.logfile})
 
         # update sku in package files
-        ns_cliargs.base_package_file = ns_cliargs.base_package_file.format(skuname=ns_cliargs.sku)
-        ns_cliargs.depends_package_file = ns_cliargs.depends_package_file.format(skuname=ns_cliargs.sku)
-        ns_cliargs.contrail_package_file = ns_cliargs.contrail_package_file.format(skuname=ns_cliargs.sku)
-        self.is_file_exists(ns_cliargs.base_package_file)
-        self.is_file_exists(ns_cliargs.depends_package_file)
-        self.is_file_exists(ns_cliargs.contrail_package_file)
+        ns_cliargs.base_package_file = [base_file.format(skuname=ns_cliargs.sku) for \
+                                        base_file in ns_cliargs.base_package_file]
+        ns_cliargs.depends_package_file = [deps_file.format(skuname=ns_cliargs.sku) for \
+                                           deps_file in ns_cliargs.depends_package_file]
+        ns_cliargs.contrail_package_file = [cont_file.format(skuname=ns_cliargs.sku) for \
+                                            cont_file in ns_cliargs.contrail_package_file]
+
         # convert namespace as a dict
         self.cliargs = dict(ns_cliargs._get_kwargs())
 
@@ -177,14 +178,17 @@ class PackagerArgParser(Utils):
         aparser.add_argument('--base-package-file', '-b',
                              action='store',
                              nargs='+',
+                             type=lambda fn: self.is_file_exists(fn),
                              help='Config files specifying base packages info')
         aparser.add_argument('--depends-package-file', '-d',
                              action='store',
                              nargs='+',
+                             type=lambda fn: self.is_file_exists(fn),
                              help='Config files specifying dependant pacakges info')
         aparser.add_argument('--contrail-package-file', '-f',
                              action='store',
                              nargs='+',
+                             type=lambda fn: self.is_file_exists(fn),
                              help='Config files specifying Contrail packages info')
         aparser.add_argument('--make-targets', '-t',
                              action='store',
