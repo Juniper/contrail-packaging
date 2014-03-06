@@ -1,4 +1,4 @@
-contrail-analytics (1401150000) anantha; urgency=low
+contrail-analytics (BUILDTAG) anantha; urgency=low
 
   [anantha ]
   * debian/changelog: changelog
