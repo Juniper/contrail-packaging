@@ -186,7 +186,7 @@ class Utils(object):
             given list of files
         '''
         if len(filelist) == 0:
-            return
+            return ''
         filelist = [filelist] if type(filelist) is str else filelist
         ctime = operator.attrgetter('st_ctime')
         filestats = map(lambda fname: (ctime(os.lstat(fname)), fname), filelist)
