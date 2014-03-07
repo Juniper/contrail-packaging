@@ -34,6 +34,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
 	euca2ools-deb \
+	python-boto-deb \
 	contrail-openstack-dashboard-deb
 
 all: ${PACKAGES}
@@ -81,6 +82,15 @@ euca2ools-deb:
 
 euca2ools-clean:
 	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
+	rm -rf ${BUILDDIR}/debian
+
+python-boto-deb:
+	$(eval BUILDDIR=${SB_TOP}/third_party/python-boto)
+	cp -R python-boto/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+python-boto-clean:
+	$(eval BUILDDIR=${SB_TOP}/third_party/python-boto)
 	rm -rf ${BUILDDIR}/debian
 
 contrail-openstack-dashboard-deb:
