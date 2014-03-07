@@ -37,18 +37,22 @@ class PackagerArgParser(Utils):
         self.set_cli_defaults()
 
     @staticmethod
-    def is_file_exists(filename):
-        filename = os.path.abspath(os.path.expanduser(filename))
-        if not os.path.isfile(filename):
-            raise RuntimeError('file (%s) does not exists' %filename)
-        return filename
+    def is_file_exists(filenames):
+        filenames_local = filenames if type(filenames) is str else filenames
+        for filename in filenames_local:
+            filename = os.path.abspath(os.path.expanduser(filename))
+            if not os.path.isfile(filename):
+                raise RuntimeError('file (%s) does not exists' %filename)
+        return filenames
 
     @staticmethod
-    def is_dir_exists(dirname):
-        dirname = os.path.abspath(os.path.expanduser(dirname))
-        if not os.path.isdir(dirname):
-            raise RuntimeError('Directory (%s) does not exists' %dirname)
-        return dirname
+    def is_dir_exists(dirnames):
+        dirnames_local = dirnames if type(dirnames) is str else dirnames
+        for dirname in dirnames_local:
+            dirname = os.path.abspath(os.path.expanduser(dirname))
+            if not os.path.isdir(dirname):
+                raise RuntimeError('Directory (%s) does not exists' %dirname)
+        return dirnames
 
     def set_cli_defaults(self):
         dist = list(platform.dist())
@@ -58,8 +62,10 @@ class PackagerArgParser(Utils):
         logname = 'packager_{id}_%s.log' %timestamp
         logfile = os.path.join(cwd, 'logs', logname)
         pkg_file_dir = os.path.join(cwd, 'pkg_configs')
-        base_pkg_file = 'base_%s_pkgs.cfg' %("_".join(dist[:2]))
-        deps_pkg_file = 'depends_%s_pkgs.cfg' %("_".join(dist[:2]))
+        # self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'], False)
+
+        base_pkg_file = 'base_*_pkgs.cfg'
+        deps_pkg_file = 'depends_*_pkgs.cfg'
         cont_pkg_file = 'contrail_packages.cfg'
         usrhome = os.path.expanduser('~')
         cmd = os.popen('repo info contrail-controller | grep "Mount path"|cut -f3 -d" "')
@@ -93,7 +99,7 @@ class PackagerArgParser(Utils):
             'git_local_repo'        : git_local_repo,
             'comps_xml_template'    : comps_xml.template,
             'default_targets'       : default_targets,
-            'cache_base_dir'        : cache_base_dir,
+            'cache_base_dir'        : [cache_base_dir],
         }
   
     def parse(self):
@@ -117,10 +123,25 @@ class PackagerArgParser(Utils):
         # update sku in package files
         ns_cliargs.base_package_file = [base_file.format(skuname=ns_cliargs.sku) for \
                                         base_file in ns_cliargs.base_package_file]
+        ns_cliargs.base_package_file = self.get_files_by_pattern(ns_cliargs.base_package_file)
+
         ns_cliargs.depends_package_file = [deps_file.format(skuname=ns_cliargs.sku) for \
                                            deps_file in ns_cliargs.depends_package_file]
+        ns_cliargs.depends_package_file = self.get_files_by_pattern(ns_cliargs.depends_package_file)
+
         ns_cliargs.contrail_package_file = [cont_file.format(skuname=ns_cliargs.sku) for \
                                             cont_file in ns_cliargs.contrail_package_file]
+        ns_cliargs.contrail_package_file = self.get_files_by_pattern(ns_cliargs.contrail_package_file)
+
+        # validate file and dir exists
+        self.is_dir_exists(ns_cliargs.cache_base_dir)
+        if ns_cliargs.absolute_package_dir is not None:
+            self.is_dir_exists(ns_cliargs.absolute_package_dir)
+        if ns_cliargs.contrail_package_dir is not None:
+            self.is_dir_exists(ns_cliargs.contrail_package_dir)
+        self.is_file_exists(ns_cliargs.base_package_file)
+        self.is_file_exists(ns_cliargs.depends_package_file)
+        self.is_file_exists(ns_cliargs.contrail_package_file)
 
         # convert namespace as a dict
         self.cliargs = dict(ns_cliargs._get_kwargs())
@@ -156,7 +177,6 @@ class PackagerArgParser(Utils):
                              help='Directory Location to which new packages be saved')
         aparser.add_argument('--cache-base-dir', '-C',
                              action='store',
-                             type=lambda fn: self.is_dir_exists(fn),
                              nargs='+',
                              help='Base directory location where OS and third\
                                    party packages are available.\
@@ -165,30 +185,25 @@ class PackagerArgParser(Utils):
                                    /cs-shared/builder/cache/centos64/grizzly/')
         aparser.add_argument('--absolute-package-dir', '-a',
                              action='store',
-                             type=lambda fn: self.is_dir_exists(fn),
                              nargs='+',
                              help='Absolute Directory Location where OS and third\
                                    party packages are available')
         aparser.add_argument('--contrail-package-dir', '-P',
                              action='store',
-                             type=lambda fn: self.is_dir_exists(fn),
                              nargs='+',
                              help='Directory Location where pre-maked Contrail packages\
                                    are available')
         aparser.add_argument('--base-package-file', '-b',
                              action='store',
                              nargs='+',
-                             type=lambda fn: self.is_file_exists(fn),
                              help='Config files specifying base packages info')
         aparser.add_argument('--depends-package-file', '-d',
                              action='store',
                              nargs='+',
-                             type=lambda fn: self.is_file_exists(fn),
                              help='Config files specifying dependant pacakges info')
         aparser.add_argument('--contrail-package-file', '-f',
                              action='store',
                              nargs='+',
-                             type=lambda fn: self.is_file_exists(fn),
                              help='Config files specifying Contrail packages info')
         aparser.add_argument('--make-targets', '-t',
                              action='store',
@@ -196,7 +211,6 @@ class PackagerArgParser(Utils):
                              help='List of Contrail make targets to build')
         aparser.add_argument('--make-targets-file', '-T',
                              action='store',
-                             type=lambda fn: self.is_file_exists(fn),
                              help='Line seperated text file containing list of \
                                    make targets')
         aparser.add_argument('--iso-prefix', '-n',
