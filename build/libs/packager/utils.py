@@ -5,6 +5,7 @@ import os
 import re
 import sys
 import copy
+import glob
 import fcntl
 import errno
 import Queue
@@ -151,7 +152,7 @@ class Utils(object):
         for pkg in pkginfo.keys():
             if pkginfo[pkg]['location'] == '':
                 raise RuntimeError('Location of the Package (%s) is empty' %pkg)
-            pkgfile = self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'], False)
+            pkgfile = self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'], True)
             if len(pkgfile) == 0:
                 raise RuntimeError('Package file for package (%s) is not present in (%s)' %(
                                     pkg, pkginfo[pkg]['location']))
@@ -178,6 +179,15 @@ class Utils(object):
             else:
                 filelist += [os.path.abspath('%s/%s' %(dirname, fname)) \
                               for fname in fnmatch.filter(os.listdir(dirname), pattern)]
+        return filter(None, filelist)
+
+    @staticmethod
+    def get_files_by_pattern(patterns):
+        ''' get a list of files that matches given pattern '''
+        filelist = []
+        patterns = [patterns] if type(patterns) is str else patterns
+        for pattern in patterns:
+            filelist.extend(glob.glob(pattern))
         return filter(None, filelist)
 
     @staticmethod
