@@ -62,8 +62,6 @@ class PackagerArgParser(Utils):
         logname = 'packager_{id}_%s.log' %timestamp
         logfile = os.path.join(cwd, 'logs', logname)
         pkg_file_dir = os.path.join(cwd, 'pkg_configs')
-        # self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'], False)
-
         base_pkg_file = 'base_*_pkgs.cfg'
         deps_pkg_file = 'depends_*_pkgs.cfg'
         cont_pkg_file = 'contrail_packages.cfg'
