@@ -103,6 +103,7 @@ install -D -m 755 %{_distropkgdir}/contrail-control.initd.supervisord %{buildroo
 install -d -m 755 %{buildroot}%{_bindir}
 install -p -m 755 build/debug/control-node/control-node %{buildroot}%{_bindir}/control-node
 install -D -m 644 controller/src/control-node/control-node.conf %{buildroot}/%{_contrailetc}/control-node.conf
+install -D -m 644 controller/src/dns/dns.conf %{buildroot}/%{_contrailetc}/dns.conf
 
 #install .ini files for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_control.conf %{buildroot}%{_contrailetc}/supervisord_control.conf
@@ -162,6 +163,7 @@ popd
 
 %config(noreplace) /etc/contrail/control_param
 %config(noreplace) %{_contrailetc}/control-node.conf
+%config(noreplace) %{_contrailetc}/dns.conf
 %{_venv_root}/bin/contrail-nodemgr
 
 %post
