@@ -6,7 +6,6 @@ import sys
 import glob
 import shlex
 import subprocess
-import shutil
 
 archiveBaseDir = "/volume/junosv-storage01/contrail/"
 
@@ -61,9 +60,14 @@ class ContrailArchive(object):
         """
         print "Archiving build to: %s" % self.opt.archive_path
 
+        pkg_repo = "store/" + self.opt.build_num + "/pkg_repo"
+        if os.path.isdir(pkg_repo):
+            command = "rm -rf " + pkg_repo
+            execute(command, ignore_errors=True)
+            
         sandbox_path = os.getcwd()
 
-        if not os.path.isdir ("build-info"):
+        if not os.path.isadir ("build-info"):
             os.mkdir ("build-info")
 
         command = "cp  third_party/packages.xml build-info/third_party_packages.xml"
