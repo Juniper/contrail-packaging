@@ -19,6 +19,11 @@
 %else
 %define         _verstr      1
 %endif
+%if 0%{?_skuTag:1}
+%define         _sku     %{_skuTag}
+%else
+%define         _sku      None
+%endif
 
 
 Name:		    contrail-install-packages
@@ -53,7 +58,7 @@ echo BUILDID=`echo %{_relstr} | cut -d "~" -f1` > %{buildroot}%{_contrailopt}/co
 install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh
 install -p -m 755 tools/packaging/build/README %{buildroot}%{_contrailopt}/contrail_packages/README
 install -p -m 755 tools/packaging/build/helpers/* %{buildroot}%{_contrailopt}/contrail_packages/helpers/
-install -p -m 644 tools/packaging/build/contrail_packages_%{_verstr}-%{_relstr}.tgz  %{buildroot}%{_contrailopt}/contrail_packages/contrail_packages_%{_relstr}.tgz
+install -p -m 644 tools/packaging/build/contrail_packages_%{_verstr}-%{_relstr}~%{_sku}.tgz  %{buildroot}%{_contrailopt}/contrail_packages/contrail_packages_%{_relstr}.tgz
 install -p -m 755 tools/packaging/common/control_files/contrail_ifrename.sh %{buildroot}%{_contrailopt}/bin/getifname.sh
 
 # install etc files
