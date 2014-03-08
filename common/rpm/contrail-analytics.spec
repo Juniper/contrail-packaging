@@ -255,6 +255,11 @@ fi
 %{_contrailutils}/log.py
 %{_contrailutils}/log.pyc
 %{_contrailutils}/log.pyo
+%{_contrailutils}/contrail-stats
+%{_bindir}/contrail-stats
+%{_contrailutils}/stats.py
+%{_contrailutils}/stats.pyc
+%{_contrailutils}/stats.pyo
 /usr/share/doc/python-vnc_opserver
 %config(noreplace) %{_contrailetc}/redis-query.conf
 %config(noreplace) %{_contrailetc}/redis-uve.conf
@@ -262,7 +267,6 @@ fi
 %if 0%{?fedora} >= 17
 %{_servicedir}/supervisor-analytics.service
 %endif
-%{_venv_root}/bin/contrail-nodemgr
 
 %changelog
 
