@@ -38,7 +38,7 @@ class PackagerArgParser(Utils):
 
     @staticmethod
     def is_file_exists(filenames):
-        filenames_local = filenames if type(filenames) is str else filenames
+        filenames_local = [filenames] if type(filenames) is str else filenames
         for filename in filenames_local:
             filename = os.path.abspath(os.path.expanduser(filename))
             if not os.path.isfile(filename):
@@ -47,7 +47,7 @@ class PackagerArgParser(Utils):
 
     @staticmethod
     def is_dir_exists(dirnames):
-        dirnames_local = dirnames if type(dirnames) is str else dirnames
+        dirnames_local = [dirnames] if type(dirnames) is str else dirnames
         for dirname in dirnames_local:
             dirname = os.path.abspath(os.path.expanduser(dirname))
             if not os.path.isdir(dirname):
@@ -100,6 +100,27 @@ class PackagerArgParser(Utils):
             'cache_base_dir'        : [cache_base_dir],
         }
   
+    def get_config_file_args(self):
+        cfg_file_defaults = self.parse_cfg_file(self.cfg_file)
+        return cfg_file_defaults['config']
+
+    @staticmethod
+    def banner(infodict):
+        banner = []
+        print
+        banner.append('-' * 78)
+        if len(infodict) != 0:
+            elmwidth = max(map(len, infodict.keys()))
+            for elm, value in infodict.items():
+                banner.append("* {0:<{elmwidth}}  : {1: <} ".format(elm, value, 
+                                                            elmwidth=elmwidth))
+        else:
+            banner.append('No Info')
+        banner.append('-' * 78)
+        log.info('\n%s' %'\n'.join(banner))
+        log.info('')   
+        log.info('')   
+
     def parse(self):
         ''' parse cli arguments from packager '''
         parser = argparse.ArgumentParser(add_help=False,
@@ -230,8 +251,11 @@ if __name__ == '__main__':
 
     log.info('Received CLI: %s' %" ".join(sys.argv))
     log.info('')
+    log.info('Arguments from config file') 
+    log.info(args.cliargs['config'])
+    args.banner(args.get_config_file_args())
     log.info('Working with Argument Set: ')
-    log.info('\n%s' %pprint.pformat(args.cliargs, indent=4))
+    args.banner(args.cliargs)
     log.info('')
     time.sleep(3)
     log.info('')

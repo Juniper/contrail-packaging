@@ -99,8 +99,12 @@ class BasePackager(Utils):
                                                      self.contrail_pkgs[target]['builtloc'])
 
         # update location of os and dependent package location
-        cache_dir = self.expanduser(os.path.join(self.cache_base_dir,
-                               self.cache_subdir, self.sku))
+        cache_dir = []
+        if type(self.cache_base_dir) is str:
+            self.cache_base_dir = [self.cache_base_dir]
+        for dirname in self.cache_base_dir:
+            cache_dir.append(self.expanduser(os.path.join(dirname,
+                               self.cache_subdir, self.sku)))
         for each in self.base_pkgs.keys():
             if self.base_pkgs[each]['location'] == '':
                 self.base_pkgs[each]['location'] = cache_dir
