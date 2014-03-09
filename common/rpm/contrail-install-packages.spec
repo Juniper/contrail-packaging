@@ -28,7 +28,7 @@
 
 Name:		    contrail-install-packages
 Version:	    %{_verstr}
-Release:	    %{_relstr}%{?dist}
+Release:	    %{_relstr}~%{_sku}%{?dist}
 Summary:	    Contrail Installer %{?_gitVer}
 BuildArch:          noarch
 
