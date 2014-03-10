@@ -14,9 +14,12 @@
     - yum: name="vim-common" state=installed
     - yum: name="python-devel" state=installed
     - yum: name="python-lxml" state=installed
+    - yum: name="wget" state=installed
+    - yum: name="python-docutils" state=installed
+    - yum: name="python-babel" state=installed
+    - rpm_key: state=present key=http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
     - yum: name="python-sphinx" disablerepo=base,centos_build_repo  state=installed
     - yum: name="openssl-devel" state=installed
-    - yum: name="wget" state=installed
     - yum: name="apr-util" state=installed
     - yum: name="subversion" state=installed
     - yum: name="neon" state=installed
@@ -105,9 +108,9 @@
     - yum: name="libtool" state=installed
     - yum: name="ttmkfdir" state=installed
     - yum: name="bzip2-devel" state=installed
-    - pip: name="PyGitHub" state=present
-    - pip: name="fabric" state=present
-    - pip: name="virtualenv" state=present
-    - pip: name="pep8" state=present
-    - pip: name="autopep8" state=present
+    - easy_install: name="PyGitHub" 
+    - easy_install: name="fabric" 
+    - easy_install: name="virtualenv" 
+    - easy_install: name="pep8" 
+    - easy_install: name="autopep8" 
 
