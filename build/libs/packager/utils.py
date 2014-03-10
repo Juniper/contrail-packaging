@@ -5,6 +5,7 @@ import os
 import re
 import sys
 import copy
+import glob
 import fcntl
 import errno
 import Queue
@@ -24,6 +25,17 @@ log = logging.getLogger("pkg.%s" %__name__)
 
 class Utils(object):
     ''' Utilities for packager '''
+
+    @staticmethod
+    def expanduser(dirnames=None):
+        '''Expand user ~ in directory names'''
+        if dirnames is None:
+            return None
+        dirnames = [dirnames] if type(dirnames) is str else dirnames
+        absdirs = [os.path.abspath(os.path.expanduser(dirname)) \
+                  for dirname in dirnames]
+        return absdirs[0] if len(absdirs) == 1 else absdirs
+
     @staticmethod
     def create_dir(dirname):
         dirname = os.path.expanduser(dirname)
@@ -140,7 +152,7 @@ class Utils(object):
         for pkg in pkginfo.keys():
             if pkginfo[pkg]['location'] == '':
                 raise RuntimeError('Location of the Package (%s) is empty' %pkg)
-            pkgfile = self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'], False)
+            pkgfile = self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'], True)
             if len(pkgfile) == 0:
                 raise RuntimeError('Package file for package (%s) is not present in (%s)' %(
                                     pkg, pkginfo[pkg]['location']))
@@ -170,12 +182,21 @@ class Utils(object):
         return filter(None, filelist)
 
     @staticmethod
+    def get_files_by_pattern(patterns):
+        ''' get a list of files that matches given pattern '''
+        filelist = []
+        patterns = [patterns] if type(patterns) is str else patterns
+        for pattern in patterns:
+            filelist.extend(glob.glob(pattern))
+        return filter(None, filelist)
+
+    @staticmethod
     def get_latest_file(filelist):
         ''' get the latest file based on creation time from the 
             given list of files
         '''
         if len(filelist) == 0:
-            return
+            return ''
         filelist = [filelist] if type(filelist) is str else filelist
         ctime = operator.attrgetter('st_ctime')
         filestats = map(lambda fname: (ctime(os.lstat(fname)), fname), filelist)
@@ -270,12 +291,14 @@ class Utils(object):
         if self.platform == 'ubuntu':
             builtdirs = [os.path.join(self.git_local_repo, 'build', 'debian'),\
                          os.path.join(self.git_local_repo, 'build', 'openstack')]
+            toolsdirs = [os.path.join(self.git_local_repo, 'build', 'tools')]
             pattern = '*.deb'
         else:
             basedir = os.path.join(self.git_local_repo, 'controller', 'build',
-                                   'package-build', 'RPMS')
-            builtdirs = [os.path.join(basedir, 'noarch'),\
-                         os.path.join(basedir, 'x86_64')]
+                                   'package-build')
+            builtdirs = [os.path.join(basedir, 'RPMS', 'noarch'),\
+                         os.path.join(basedir, 'RPMS', 'x86_64')]
+            toolsdirs = [os.path.join(basedir, 'TOOLS')]
             pattern = '*.rpm'
         for dirname in builtdirs:
             if not os.path.isdir(dirname):
@@ -293,3 +316,14 @@ class Utils(object):
             shutil.copy(self.imgname, self.artifacts_dir)
         else:
             log.warn('ISO file is not created yet. Skipping...')
+
+        # copy tools tgz to artifacts-extras
+        for dirname in toolsdirs:
+            if not os.path.isdir(dirname):
+                log.warn('Dir (%s) do not exists. Skipping...' %dirname)
+                continue
+            pkgfiles = self.get_file_list(dirname, '*.tgz', False)
+            for pkgfile in pkgfiles:
+                log.debug('Copying (%s) to (%s)' %(pkgfile, 
+                           self.artifacts_extra_dir))
+                shutil.copy(pkgfile, self.artifacts_extra_dir)

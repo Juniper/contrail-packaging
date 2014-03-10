@@ -188,8 +188,11 @@ pushd %{_builddir}/..
 install -p -m 755 %{_helper} %{buildroot}%{_bindir}/contrail-dbutils
 popd
 install -D -m 644 src/opserver/log.py %{buildroot}%{_contrailutils}/log.py
+install -D -m 644 src/opserver/stats.py %{buildroot}%{_contrailutils}/stats.py
 install -D -m 755 src/opserver/contrail-logs %{buildroot}%{_contrailutils}/contrail-logs
 install -D -m 755 src/opserver/contrail-logs %{buildroot}%{_bindir}/contrail-logs
+install -D -m 755 src/opserver/contrail-stats %{buildroot}%{_contrailutils}/contrail-stats
+install -D -m 755 src/opserver/contrail-stats %{buildroot}%{_bindir}/contrail-stats
 popd
 
 # install etc files
@@ -252,6 +255,11 @@ fi
 %{_contrailutils}/log.py
 %{_contrailutils}/log.pyc
 %{_contrailutils}/log.pyo
+%{_contrailutils}/contrail-stats
+%{_bindir}/contrail-stats
+%{_contrailutils}/stats.py
+%{_contrailutils}/stats.pyc
+%{_contrailutils}/stats.pyo
 /usr/share/doc/python-vnc_opserver
 %config(noreplace) %{_contrailetc}/redis-query.conf
 %config(noreplace) %{_contrailetc}/redis-uve.conf
@@ -259,7 +267,6 @@ fi
 %if 0%{?fedora} >= 17
 %{_servicedir}/supervisor-analytics.service
 %endif
-%{_venv_root}/bin/contrail-nodemgr
 
 %changelog
 

@@ -20,7 +20,11 @@
 %else
 %define         _verstr      1
 %endif
-
+%if 0%{?_skuTag:1}
+%define         _sku     %{_skuTag}
+%else
+%define         _sku      None
+%endif
 
 Name:		    contrail-setup
 Version:	    %{_verstr}
@@ -100,12 +104,13 @@ tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/zop
 popd
 %endif
 
-pushd %{_builddir}/../tools/packaging/common/rpm
-./create_rpm_list_file.py
-popd
-
 install -d -m 755 %{buildroot}/etc/contrail
-install -p -m 644 %{_builddir}/../tools/packaging/common/rpm/rpm_list.txt  %{buildroot}/etc/contrail/rpm_list.txt
+if [ %{_flist} = None ]; then 
+    %{_builddir}/../tools/packaging/build/create_pkg_list_file.py --sku %{_sku} %{buildroot}/etc/contrail/rpm_list.txt
+else 
+    cp %{_flist} %{buildroot}/etc/contrail/rpm_list.txt
+fi
+#install -p -m 644 %{_builddir}/../tools/packaging/common/rpm/rpm_list.txt  %{buildroot}/etc/contrail/rpm_list.txt
 
 # install bin files
 install -D -m 755 src/config/utils/contrail-version %{buildroot}%{_bindir}/contrail-version

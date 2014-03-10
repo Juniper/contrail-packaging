@@ -10,11 +10,8 @@ export DH_VERBOSE=1
 
 SPEC_DIR := $(shell pwd)
 export SB_TOP := $(shell pwd | sed -re "s/(.*)\/third_party\/(.*)/\1/")
-export BUILDDIR:= ${SB_TOP}/third_party/python-keystoneclient
-export _pyver := 2.7
-export python_sitelib := /usr/lib/python$(_pyver)/dist-packages
-export _sysconfdir := /etc
-export _api_venv_archv := /opt/contrail/api-venv/archive
+export BUILDDIR:= ${SB_TOP}/third_party/python-boto
+export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -30,17 +27,14 @@ endif
 
 override_dh_auto_build:
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog 
-	python setup.py build
 
 override_dh_auto_install: 
-	install -d -m 777 $(BUILDDIR)$(python_sitelib)
-	install -d -m 777 $(BUILDDIR)$(_api_venv_archv)
-	python setup.py sdist
-	cd dist; tar xvfz python-keystoneclient*.tar.gz; cd python-keystoneclient-*; python setup.py install --root=$(BUILDDIR)/debian/python-keystoneclient --install-layout=deb
-	install -p -D -m 644 tools/keystone.bash_completion $(BUILDDIR)/debian/python-keystoneclient/$(_sysconfdir)/bash_completion.d/keystone.bash_completion
-	install -p -D -m 644 dist/python-keystoneclient-*.tar.gz $(BUILDDIR)/debian/python-keystoneclient/opt/contrail/api-venv/archive/python-keystoneclient.tar.gz
+	cd $(BUILDDIR); python setup.py install --root="$(BUILDDIR)/debian/python-boto"
+	cd $(BUILDDIR); python setup.py sdist
+
+override_dh_shlibdeps: 
+
+override_dh_usrlocal:   
 
 get-orig-source:
 	uscan --verbose --force-download --rename --destdir=../build-area
-
-override_dh_shlibdeps:
