@@ -113,7 +113,7 @@ libvirt-deb:
 	(cd ${LIBDIR}; patch -p0 -i libvirt.ubuntu.patch)
 	(cd ${LIBDIR}; patch -p0 -i libvirt.ubuntu.test-disable.patch)
 	(cd ${LIBDIR}; patch -p0 -i libvirt_0.9.8_17.17.ubuntu.version.patch)
-	(cd ${LIBDIR}/libvirt-0.9.8; dpkg-buildpackage -b)
+	(cd ${LIBDIR}/libvirt-0.9.8; dpkg-buildpackage -b -uc)
 	(cd ${LIBDIR}; mv libvirt0_0.9.8-2ubuntu17.17_amd64.deb ${BUILDDIR})
 	(cd ${LIBDIR}; mv libvirt-bin_0.9.8-2ubuntu17.17_amd64.deb ${BUILDDIR})
 	(cd ${LIBDIR}; mv python-libvirt_0.9.8-2ubuntu17.17_amd64.deb ${BUILDDIR})
