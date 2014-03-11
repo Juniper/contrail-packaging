@@ -35,6 +35,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-fabric-utils-deb \
 	euca2ools-deb \
 	python-boto-deb \
+	libvirt-deb \
 	contrail-openstack-dashboard-deb
 
 all: ${PACKAGES}
@@ -103,6 +104,24 @@ contrail-openstack-dashboard-deb:
 contrail-openstack-dashboard-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
 	rm -rf ${BUILDDIR}
+
+libvirt-deb:
+	$(eval LIBDIR=${SB_TOP}/third_party/libvirt)
+	$(eval BUILDDIR=${SB_TOP}/build/debian)
+	rm -rf ${LIBDIR}/libvirt-0.9.8
+	(cd ${LIBDIR}; dpkg-source -x libvirt_0.9.8-2ubuntu17.17.dsc)
+	(cd ${LIBDIR}; patch -p0 -i libvirt.ubuntu.patch)
+	(cd ${LIBDIR}; patch -p0 -i libvirt.ubuntu.test-disable.patch)
+	(cd ${LIBDIR}; patch -p0 -i libvirt_0.9.8_17.17.ubuntu.version.patch)
+	(cd ${LIBDIR}/libvirt-0.9.8; dpkg-buildpackage -b)
+	(cd ${LIBDIR}; mv libvirt0_0.9.8-2ubuntu17.17_amd64.deb ${BUILDDIR})
+	(cd ${LIBDIR}; mv libvirt-bin_0.9.8-2ubuntu17.17_amd64.deb ${BUILDDIR})
+	(cd ${LIBDIR}; mv python-libvirt_0.9.8-2ubuntu17.17_amd64.deb ${BUILDDIR})
+	(cd ${LIBDIR}; rm *.deb)
+
+libvirt-clean:
+	$(eval LIBDIR=${SB_TOP}/third_party/libvirt)
+	rm -rf ${LIBDIR}/libvirt-0.9.8
 
 %-deb:
 	(cd $(@:-deb=); fakeroot debian/rules binary)
