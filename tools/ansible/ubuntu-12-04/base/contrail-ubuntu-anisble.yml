@@ -93,7 +93,7 @@
     - apt: pkg=linux-headers-3.2.0-51-generic  state=present
     - apt: pkg=linux-headers-3.2.0-58-generic state=present
     - apt: pkg=libc6:i386 state=present
-
+    - apt: pkg=dnsmasq-base state=present
     
     ##
     # Run the wget commands needed.

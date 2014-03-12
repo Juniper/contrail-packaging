@@ -5,7 +5,7 @@
   tasks:
     - copy: src=../../auto/cc.repo dest=/etc/yum.repos.d/cc.repo
     - copy: src=../../auto/rpmforge.repo dest=/etc/yum.repos.d/rpmforge.repo
-    - yum: name="python-pip" enablerepo=centos_build_repo state=installed
+    - yum: name="python-pip" state=installed
     - yum: name="perl" state=installed
     - yum: name="python" state=installed
     - yum: name="gcc" state=installed
@@ -35,7 +35,6 @@
     - yum: name="make" state=installed
     - yum: name="automake" state=installed
     - yum: name="gcc-c++" state=installed
-    - yum: name="kernel-devel" state=installed
     - yum: name="nfs-utils" state=installed
     - yum: name="ypbind" state=installed
     - yum: name="autofs" state=installed
