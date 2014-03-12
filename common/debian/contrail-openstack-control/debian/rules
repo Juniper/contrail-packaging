@@ -53,3 +53,5 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/contrail-control.ini $(buildroot)$(_supervisordir)/contrail-control.ini
 	install -p -m 755 $(_src_config)/contrail-control.rules $(buildroot)$(_sysconfdir)/contrail/supervisord_control_files/contrail-control.rules
 override_dh_usrlocal:	
+
+override_dh_shlibdeps:

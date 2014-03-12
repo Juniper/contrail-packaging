@@ -102,3 +102,5 @@ override_dh_auto_install:
 	install -d -m 777 $(buildroot)$(_localstatedir)/log/contrail
 
 override_dh_usrlocal:	
+
+override_dh_shlibdeps:

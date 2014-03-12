@@ -45,3 +45,5 @@ override_dh_auto_install:
 #	install etc files
 	install -d -m 755 $(buildroot)$(_contrailetc)
 	install -p -m 644 ${SB_TOP}/tools/packaging/common/control_files/vrouter_nodemgr_param $(buildroot)$(_contrailetc)/vrouter_nodemgr_param
+
+override_dh_shlibdeps:

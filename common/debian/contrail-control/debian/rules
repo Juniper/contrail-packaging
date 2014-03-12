@@ -54,3 +54,5 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/control_param $(buildroot)/$(_sysconfdir)/contrail/control_param
 
 override_dh_usrlocal:
+
+override_dh_shlibdeps:
