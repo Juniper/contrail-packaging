@@ -3,7 +3,7 @@ SB_TOP := $(PWD:/tools/packaging/common/debian=)
 
 ifdef CONTRAIL_SKU
 else
-  CONTRAIL_SKU := "havana"
+  CONTRAIL_SKU := havana
 endif
 
 PACKAGES = contrail-libs-deb \

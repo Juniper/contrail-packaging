@@ -34,9 +34,9 @@ SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(SRC_VER).$(TAG)-$(_osVer)
+BUILDTAG = $(SRC_VER)-$(TAG)-$(_osVer)
 else
-BUILDTAG = $(SRC_VER).$(BUILDTIME)-$(_osVer)
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)-$(_osVer)
 endif
 
 %:
