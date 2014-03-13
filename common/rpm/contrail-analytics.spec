@@ -153,6 +153,8 @@ pushd %{_builddir}/..
 install -p -m 755 build/debug/analytics/vizd    %{buildroot}%{_bindir}/vizd
 install -p -m 755 build/debug/query_engine/qed  %{buildroot}%{_bindir}/qed
 install -p -m 755 %{_distropkgdir}/contrail-analytics.rules %{buildroot}%{_supervisordir}/contrail-analytics.rules
+install -D -m 644 controller/src/analytics/collector.conf %{buildroot}/%{_contrailetc}/collector.conf
+install -D -m 644 controller/src/query_engine/query-engine.conf %{buildroot}/%{_contrailetc}/query-engine.conf
 
 #install wrapper scripts for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail_collector_pre  %{buildroot}%{_bindir}/contrail_collector_pre
@@ -213,14 +215,6 @@ if [ $1 -eq 1 ] ; then
 fi
 %endif
 
-if [ -f /etc/contrail/vizd_param ]; then
-    grep -q 'ANALYTICS_DATA_TTL' /etc/contrail/vizd_param || echo 'ANALYTICS_DATA_TTL=168' >> /etc/contrail/vizd_param
-    HOST_IP=$(sed -n -e 's/HOST_IP=//p' /etc/contrail/vizd_param)
-    if [ -f /etc/contrail/opserver_param ]; then
-        grep -q 'HOST_IP' /etc/contrail/opserver_param || echo 'HOST_IP='${HOST_IP} >> /etc/contrail/opserver_param
-    fi
-fi
-
 %preun
 %postun
 
@@ -231,6 +225,8 @@ fi
 %{_bindir}/contrail-dbutils
 %{_bindir}/contrail_collector_pre
 %{_bindir}/contrail_qe_pre
+%config(noreplace) %{_contrailetc}/collector.conf
+%config(noreplace) %{_contrailetc}/query-engine.conf
 %{_venv_root}
 %{_supervisordir}/contrail-collector.ini
 %{_supervisordir}/contrail-opserver.ini
