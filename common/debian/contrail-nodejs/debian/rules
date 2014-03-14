@@ -26,9 +26,9 @@ SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(SRC_VER).$(TAG)
+BUILDTAG = $(SRC_VER)-$(TAG)
 else
-BUILDTAG = $(SRC_VER).$(BUILDTIME)
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 %:
@@ -50,3 +50,5 @@ override_dh_auto_install:
 	mv $(buildroot)/../node $(buildroot)/$(_contrailbase)/nodejs-v0.8.15/bin
 	ln -sf $(_contrailbase)/nodejs-v0.8.15/bin/node $(buildroot)/$(_bindir)/nodejs-contrail
 
+
+override_dh_shlibdeps:

@@ -18,9 +18,9 @@ SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(SRC_VER).$(TAG)
+BUILDTAG = $(SRC_VER)-$(TAG)
 else
-BUILDTAG = $(SRC_VER).$(BUILDTIME)
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 export buildroot := ${SB_TOP}/build/debian/contrail-api-lib
@@ -63,3 +63,5 @@ override_dh_auto_install:
 
 	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/discovery/client/dist/discoveryclient-0.1dev.tar.gz; cd discoveryclient-0.1dev; python setup.py install --root=${buildroot} --install-layout=deb)
 
+
+override_dh_shlibdeps:

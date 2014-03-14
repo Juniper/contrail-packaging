@@ -27,9 +27,9 @@ SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(SRC_VER).$(TAG)
+BUILDTAG = $(SRC_VER)-$(TAG)
 else
-BUILDTAG = $(SRC_VER).$(BUILDTIME)
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 TARGETS=src/dns:dnsd \
@@ -66,3 +66,4 @@ override_dh_auto_install:
 	install -p -m 755 $(_srcdir)/contrail-dns.ini $(buildroot)$(_supervisordir)/contrail-dns.ini
 	install -p -m 755 $(_srcdir)/contrail-named.ini $(buildroot)$(_supervisordir)/contrail-named.ini
 
+override_dh_shlibdeps:

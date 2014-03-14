@@ -21,9 +21,9 @@ SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(SRC_VER).$(TAG)
+BUILDTAG = $(SRC_VER)-$(TAG)
 else
-BUILDTAG = $(SRC_VER).$(BUILDTIME)
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 LIBS="build/lib/libtbb_debug.so.2" \
@@ -59,3 +59,5 @@ override_dh_auto_install:
 
 get-orig-source:
 	uscan --verbose --rename --destdir=${SB_TOP}
+
+override_dh_shlibdeps:

@@ -24,9 +24,9 @@ SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(SRC_VER).$(TAG)
+BUILDTAG = $(SRC_VER)-$(TAG)
 else
-BUILDTAG = $(SRC_VER).$(BUILDTIME)
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 %:
@@ -54,3 +54,5 @@ override_dh_auto_install:
 	install -p -m 755 $(_distropkgdir)/redis-webui.ini $(buildroot)/$(_supervisordir)/redis-webui.ini
 	install -p -m 755 $(_distropkgdir)/supervisor-webui.upstart $(buildroot)$(_initdir)/supervisor-webui.conf
 override_dh_usrlocal:
+
+override_dh_shlibdeps:

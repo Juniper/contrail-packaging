@@ -28,9 +28,9 @@ SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(SRC_VER).$(TAG)
+BUILDTAG = $(SRC_VER)-$(TAG)
 else
-BUILDTAG = $(SRC_VER).$(BUILDTIME)
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 %:
@@ -45,3 +45,5 @@ override_dh_auto_install:
 	install -p -m 755 ${SB_TOP}/tools/packaging/common/control_files/supervisor_killall ${buildroot}/usr/bin
 
 override_dh_installexamples:
+
+override_dh_shlibdeps:

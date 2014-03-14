@@ -12,6 +12,7 @@ class Packager(BasePackager):
     ''' Ubuntu Packager '''
     def ks_build(self):
         self.setup_env()
+        self.create_pkg_list_file()
         self.make_pkgs()
         self.verify_built_pkgs_exists(skips=['contrail-install-packages'])
         self.copy_built_pkg_files(self.pkg_repo, skips=['contrail-install-packages'])
