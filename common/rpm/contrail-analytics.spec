@@ -189,10 +189,13 @@ install -p -m 755 %{_helper} %{buildroot}%{_bindir}/contrail-dbutils
 popd
 install -D -m 644 src/opserver/log.py %{buildroot}%{_contrailutils}/log.py
 install -D -m 644 src/opserver/stats.py %{buildroot}%{_contrailutils}/stats.py
+install -D -m 644 src/opserver/flow.py %{buildroot}%{_contrailutils}/flow.py
 install -D -m 755 src/opserver/contrail-logs %{buildroot}%{_contrailutils}/contrail-logs
 install -D -m 755 src/opserver/contrail-logs %{buildroot}%{_bindir}/contrail-logs
 install -D -m 755 src/opserver/contrail-stats %{buildroot}%{_contrailutils}/contrail-stats
 install -D -m 755 src/opserver/contrail-stats %{buildroot}%{_bindir}/contrail-stats
+install -D -m 755 src/opserver/contrail-flows %{buildroot}%{_contrailutils}/contrail-flows
+install -D -m 755 src/opserver/contrail-flows %{buildroot}%{_bindir}/contrail-flows
 popd
 
 # install etc files
@@ -255,6 +258,11 @@ fi
 %{_contrailutils}/log.py
 %{_contrailutils}/log.pyc
 %{_contrailutils}/log.pyo
+%{_contrailutils}/contrail-flows
+%{_bindir}/contrail-flows
+%{_contrailutils}/flow.py
+%{_contrailutils}/flow.pyc
+%{_contrailutils}/flow.pyo
 %{_contrailutils}/contrail-stats
 %{_bindir}/contrail-stats
 %{_contrailutils}/stats.py
