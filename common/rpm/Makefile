@@ -34,6 +34,7 @@ ifdef CONTRAIL_SKU
 else
   CONTRAIL_SKU := "grizzly"
 endif
+G_TAG += --define "_skuTag $(CONTRAIL_SKU)"
 
 
 $(PPREP):
