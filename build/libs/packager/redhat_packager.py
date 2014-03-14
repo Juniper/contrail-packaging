@@ -17,7 +17,7 @@ class Packager(BasePackager):
         self.verify_built_pkgs_exists(skips=['contrail-install-packages'])
         self.copy_built_pkg_files(skips=['contrail-install-packages'])
         self.createrepo()
-        self.create_tgz(self.pkgs_tgz, self.pkg_repo)
+        self.create_pkgs_tgz()
         self.create_contrail_pkg()
         self.verify_built_pkgs_exists(['contrail-install-packages'])        
         self.copy_built_pkg_files(extra_dirs=self.store, ['contrail-install-packages'])
