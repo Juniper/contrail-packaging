@@ -41,7 +41,7 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_contrailopt)/bin
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils
 	# install files
-	install -p -m 644 $(SB_TOP)/tools/packaging/build/contrail_packages_${BUILDTAG}.tgz  $(buildroot)$(_contrailopt)/contrail_packages/contrail_debs.tgz
+	install -p -m 644 $(SB_TOP)/tools/packaging/build/pkg_repo_${BUILDTAG}.tgz  $(buildroot)$(_contrailopt)/contrail_packages/contrail_debs.tgz
 	# install etc files
 	install -p -m 644 $(SB_TOP)/build/debian/contrail_installer.tgz  $(buildroot)$(_contrailopt)/contrail_installer.tgz
 	# install pkgs needed first
