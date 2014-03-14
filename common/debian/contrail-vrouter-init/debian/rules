@@ -42,8 +42,12 @@ override_dh_auto_install:
 	perl -ni -e 's/source \/opt\/contrail\/vrouter-venv\/bin\/activate && exec python \/opt\/contrail\/vrouter-venv/\/usr/g; print $$_;' ${buildroot}/etc/contrail/supervisord_vrouter.conf
 	install -p -m 644 $(_confsrcdir)/contrail-vrouter.ini ${buildroot}${_supervisorconf}
 	install -p -m 644 $(_confsrcdir)/contrail-vrouter.rules ${buildroot}${_supervisorconf}
+	install -p -m 755 $(_confsrcdir)/vrouter-pre-start.sh ${buildroot}${_opt_bin}
 	install -p -m 755 $(_confsrcdir)/vrouter-post-start.sh ${buildroot}${_opt_bin}
 	install -p -m 755 $(_confsrcdir)/vrouter-pre-stop.sh ${buildroot}${_opt_bin}
+	install -p -m 755 $(_confsrcdir)/vnagent_param_setup_ubuntu.sh ${buildroot}${_opt_bin}/vnagent_param_setup.sh
+	install -p -m 755 $(_confsrcdir)/if-vhost0 ${buildroot}${_opt_bin}/if-vhost0
+	install -p -m 755 $(_confsrcdir)/vrouter-functions.sh ${buildroot}${_opt_bin}/vrouter-functions.sh
 
 
 override_dh_shlibdeps:
