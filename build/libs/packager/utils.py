@@ -117,6 +117,10 @@ class Utils(object):
             raise RuntimeError('Cmd: %s; **FAILED**' %cmd)
         
     @staticmethod
+    def get_as_list(elm):
+        return [elm] if type(elm) is str else elm
+
+    @staticmethod
     def str_to_list(tstr, force=False):
         ''' convert string separated with comma into a list '''
         tstr = tstr.replace('\n', '')
@@ -220,8 +224,10 @@ class Utils(object):
         '''Create tgz from each repo directory'''
         dirnames = dirnames or self.repo_dirs
         for repo_dir in dirnames:
-            tgz_name = '%s_%s-%s~%s.tgz' %(repo_dir, self.branch, 
-                              self.id, self.sku)
+            tgz_prefix = os.path.basename(repo_dir)
+            tgz_name = os.path.join('%s' %self.packager_dir, 
+                                    '%s_%s-%s~%s.tgz' %(tgz_prefix,
+                                    self.branch, self.id, self.sku))
             log.info('Create (%s) file' %tgz_name)
             self.create_tgz(tgz_name, repo_dir)
 
@@ -238,28 +244,27 @@ class Utils(object):
             with sections as keys and its items as dictionary items
         '''
         parsed_dict = {}
-        parser = SafeConfigParser()
+        sections = []
         cfg_files = [cfg_files] if type(cfg_files) is str else cfg_files
         for cfg_file in cfg_files:
-            temp_parser = SafeConfigParser()
-            temp_parser.read('cfg_file')
-            common_sections = list(set(temp_parser.sections()) & \
-                                   set(parser.sections()))
-            if len(common_sections) != 0:
-                raise RuntimeError('Duplication Section Error while parsing '
-                           '(%s): %s' %(cfg_file, "\n".join(common_sections)))
+            parser = SafeConfigParser()
             parsed_files = parser.read(cfg_file)
             if cfg_file not in parsed_files:
                 raise RuntimeError('Unable to parse (%s), '
                                    'No such file or invalid format' %cfg_file)
-            del temp_parser
-
-        for sect in parser.sections():
-            parsed_dict[sect] = dict((iname, self.str_to_list(ival)) \
-                                   for iname, ival in parser.items(sect))
-            if additems != None:
-                for item in additems.keys():
-                    parsed_dict[sect][item] = copy.deepcopy(additems[item])
+            common_sections = list(set(parser.sections()) & \
+                                   set(sections))
+            if len(common_sections) != 0:
+                raise RuntimeError('Duplication Section Error while parsing '
+                           '(%s): %s' %(cfg_file, "\n".join(common_sections)))
+            for sect in parser.sections():
+                parsed_dict[sect] = dict((iname, self.str_to_list(ival)) \
+                                       for iname, ival in parser.items(sect))
+                if additems != None:
+                    for item in additems.keys():
+                        parsed_dict[sect][item] = copy.deepcopy(additems[item])
+            sections.extend(parser.sections())
+            del parser
         return parsed_dict
 
     def import_file(self, cfile):
@@ -278,9 +283,19 @@ class Utils(object):
         '''Get list of repo dirs defined for each package'''
         repo_dirs = []
         for pkgcfg in pkgcfgs:
-            repo_dir = [pkgcfg[pkg]['repo'] for pkg in pkgcfg.keys()]
-            repo_dirs.extend(repo_dir)
-        return list(set(repo_dirs))
+            repos = [pkgcfg[pkg]['repo'] for pkg in pkgcfg.keys()]
+            repo_dirs.extend(repos)
+        repo_dirs = list(set(repo_dirs))
+        log.debug('Repo dirs from config files: %s' %", ".join(repo_dirs))
+        return repo_dirs
+
+    def update_repodir(self, *pkgcfgs):
+        '''Update repo dirs defined for each package with store dir'''
+        repo_dirs = []
+        for pkgcfg in pkgcfgs:
+            for pkg in pkgcfg.keys():
+                pkgcfg[pkg]['repo'] = os.path.join(self.store, 
+                                                   pkgcfg[pkg]['repo'])
 
     def copy_pkg_files(self, pkginfo, error=True):
         ''' copy the packages present in location specified in package data structure
@@ -303,7 +318,7 @@ class Utils(object):
         ''' copy the contrail packages present in location specified in 
             package data structure to given destination directories
         '''
-        targets = list(targets)
+        targets = targets or self.contrail_pkgs.keys()
         targets = list(set(targets) - set(skips)) if skips else targets     
         for each in targets:
             pkgs = self.contrail_pkgs[each]['pkgs']
@@ -317,9 +332,10 @@ class Utils(object):
                         log.warn('Info about package file for '
                                  'Package (%s) is not found' %pkg)
                 pkgfile = self.contrail_pkgs[each]['found_at'][pkg]
-                destdirs = self.contrail_pkgs[each]['repo']
+                destdirs = self.get_as_list(self.contrail_pkgs[each]['repo'])
                 if extra_dirs is not None:
-                    destdirs.extend(list(extra_dirs))
+                    extra_dirs = self.get_as_list(extra_dirs)
+                    destdirs.extend(extra_dirs)
                 self.copyfiles(pkgfile, destdirs)
 
     def copy_to_artifacts(self):
