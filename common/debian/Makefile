@@ -82,6 +82,7 @@ contrail-fabric-utils-deb:
 	cp -R contrail-fabric-utils/debian ${BUILDDIR}/debian
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz fabric-utils)
+	@echo "Wrote: $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz"
 
 contrail-fabric-utils-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
@@ -91,6 +92,7 @@ contrail-fabric-utils-clean:
 
 contrail-test-deb:
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test)
+	@echo "Wrote: $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz"
 
 contrail-test-deb-clean:
 	$(eval TGZ_FILE=$(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz)
