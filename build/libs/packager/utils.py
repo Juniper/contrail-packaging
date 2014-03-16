@@ -286,7 +286,9 @@ class Utils(object):
             repos = [pkgcfg[pkg]['repo'] for pkg in pkgcfg.keys()]
             repo_dirs.extend(repos)
         repo_dirs = list(set(repo_dirs))
-        log.debug('Repo dirs from config files: %s' %", ".join(repo_dirs))
+        log.debug('Repo dirs from config files:')
+        for dirname in repo_dirs:
+            log.debug(dirname)
         return repo_dirs
 
     def update_repodir(self, *pkgcfgs):
