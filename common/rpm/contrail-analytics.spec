@@ -97,7 +97,7 @@ if [ $? -ne 0 ] ; then
     echo " sandesh python build failed"
     exit -1
 fi
-scons -U src/discovery:discovery
+scons -U src/discovery:client
 if [ $? -ne 0 ] ; then
     echo " discovery build failed"
     exit -1
