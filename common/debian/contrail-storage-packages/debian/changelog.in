@@ -1,4 +1,4 @@
-contrail-openstack-storage (BUILDTAG) jjeya; urgency=low
+contrail-storage-packages (BUILDTAG) jjeya; urgency=low
 
   [jjeya ]
   * debian/changelog: changelog
