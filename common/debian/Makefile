@@ -66,15 +66,15 @@ contrail-install-packages-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
 	rm -rf ${BUILDDIR}
 
-contrail-openstack-storage-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/contrail-openstack-storage)
+contrail-storage-packages-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-storage-packages)
 	mkdir -p ${BUILDDIR}
-	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-storage/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; fakeroot debian/rules binary && mv ../contrail-openstack-storage_*_all.deb ../debian/)
-	@echo "Wrote: ${BUILDDIR}/../debian/contrail-openstack-storage_*_all.deb"
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-storage-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules binary && mv ../contrail-storage-packages_*_all.deb ../debian/)
+	@echo "Wrote: ${BUILDDIR}/../debian/contrail-storage-packages_*_all.deb"
 
-contrail-openstack-storage-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/contrail-openstack-storage)
+contrail-storage-packages-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-storage-packages)
 	rm -rf ${BUILDDIR}
 
 contrail-fabric-utils-deb:

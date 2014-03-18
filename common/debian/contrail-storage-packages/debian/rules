@@ -8,10 +8,10 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/\/build\/contrail-openstack-storage//g")
+export SB_TOP := $(shell pwd | sed -re "s/\/build\/contrail-storage-packages//g")
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export buildroot := $(SB_TOP)/build/contrail-openstack-storage/debian/contrail-openstack-storage
+export buildroot := $(SB_TOP)/build/contrail-storage-packages/debian/contrail-storage-packages
 export _contrailopt := /opt/contrail
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
@@ -30,10 +30,10 @@ override_dh_auto_build:
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
 override_dh_auto_install:
-	@echo "making deb for contrail-openstack-storage"
+	@echo "making deb for contrail-storage-packages"
 	install -d -m 755 $(buildroot)$(_contrailopt)
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_packages
-	install -p -m 755 $(SB_TOP)/tools/packaging/build/setup_storage_ubuntu.sh  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
+	install -p -m 755 $(SB_TOP)/tools/packaging/build/setup_storage_ubuntu.sh  $(buildroot)$(_contrailopt)/contrail_packages/setup_storage.sh
 	install -p -m 644 $(SB_TOP)/tools/packaging/build/storage_pkg_repo_${BUILDTAG}.tgz  $(buildroot)$(_contrailopt)/contrail_packages/contrail_storage_packages.tgz
 
 	
