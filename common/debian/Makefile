@@ -1,9 +1,18 @@
 PWD := ${CURDIR}
 SB_TOP := $(PWD:/tools/packaging/common/debian=)
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
 ifdef CONTRAIL_SKU
 else
   CONTRAIL_SKU := havana
+endif
+
+VERSION = 
+ifdef TAG
+VERSION = $(SRC_VER)-$(TAG)
+else
+VERSION = $(SRC_VER)-$(BUILDTIME)
 endif
 
 PACKAGES = contrail-libs-deb \
@@ -33,6 +42,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-openstack-vrouter-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
+	contrail-test-deb \
 	euca2ools-deb \
 	python-boto-deb \
 	libvirt-deb \
@@ -71,10 +81,22 @@ contrail-fabric-utils-deb:
 	cp -R ${SB_TOP}/third_party/fabric-utils ${BUILDDIR}
 	cp -R contrail-fabric-utils/debian ${BUILDDIR}/debian
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz fabric-utils)
+	@echo "Wrote: $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz"
 
 contrail-fabric-utils-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
+	$(eval TGZ_FILE=$(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz)
 	rm -rf ${BUILDDIR}
+	rm -rf ${TGZ_FILE}
+
+contrail-test-deb:
+	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test)
+	@echo "Wrote: $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz"
+
+contrail-test-deb-clean:
+	$(eval TGZ_FILE=$(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz)
+	rm -rf ${TGZ_FILE}
 
 euca2ools-deb:
 	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
