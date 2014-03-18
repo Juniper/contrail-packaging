@@ -11,4 +11,4 @@ Maintainer: jjeya <jjeya@juniper.net>
 Depends: 
 Section: contrail-storage-packages
 Priority: extra
-Description: Contrail openstack storage package
+Description: Contrail Storage Packages - Container of debian packages
