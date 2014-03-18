@@ -19,7 +19,7 @@ class Packager(BasePackager):
         self.copy_built_pkg_files(skips=self.meta_pkgs)
         self.createrepo()
         self.create_pkgs_tgz()
-        self.create_contrail_pkg()
+        self.create_contrail_pkg(*self.meta_pkgs)
         self.verify_built_pkgs_exists(self.meta_pkgs)
         self.copy_built_pkg_files(self.meta_pkgs, extra_dirs=self.store)
         self.create_comps_xml()
