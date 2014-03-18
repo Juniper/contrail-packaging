@@ -12,7 +12,7 @@ class Packager(BasePackager):
     ''' Ubuntu Packager '''
     def ks_build(self):
         self.meta_pkgs = ['contrail-install-packages', \
-                          'contrail-openstack-storage']
+                          'contrail-storage-packages']
         self.setup_env()
         self.create_pkg_list_file()
         self.make_pkgs()
