@@ -163,6 +163,7 @@ class BasePackager(Utils):
         self.check_package_md5(self.base_pkgs)
         self.check_package_md5(self.depends_pkgs)
         self.copy_pkg_files(self.depends_pkgs, self.pkg_repo)
+        self.copy_pkg_files(self.base_pkgs, self.pkg_repo)
 
     def make_pkgs(self):
         ''' make package with given TAG '''
