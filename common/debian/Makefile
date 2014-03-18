@@ -34,7 +34,9 @@ PACKAGES = contrail-libs-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
 	euca2ools-deb \
-	contrail-openstack-dashboard-deb
+	contrail-openstack-dashboard-deb \
+        contrail-database-venv-deb \
+        contrail-database-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -139,3 +141,5 @@ contrail-openstack-control-deb: contrail-control-deb
 contrail-openstack-vrouter-deb: contrail-vrouter-deb
 contrail-openstack-analytics-deb: contrail-analytics-deb
 contrail-openstack-webui-deb: contrail-webui-deb
+contrail-database-deb: contrail-database-venv-deb
+contrail-openstack-database-deb: contrail-database-deb
