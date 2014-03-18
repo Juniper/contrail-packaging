@@ -19,8 +19,8 @@ cd /opt/contrail/contrail_install_repo; tar xvzf /opt/contrail/contrail_packages
 # create shell scripts and put to bin
 cp /opt/contrail/contrail_packages/helpers/* /opt/contrail/bin/
 
-# Remove any existing rpm of python-crypto
-yum -y --disablerepo=* remove python-crypto
+# Remove existing python-crypto-2.0.1 rpm.
+yum -y --disablerepo=* remove python-crypto-2.0.1
 
 #Install basic packages 
 yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-setup contrail-fabric-utils python-pip
