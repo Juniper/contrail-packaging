@@ -215,6 +215,14 @@ if [ $1 -eq 1 ] ; then
 fi
 %endif
 
+if [ -f /etc/contrail/vizd_param ]; then
+    grep -q 'ANALYTICS_DATA_TTL' /etc/contrail/vizd_param || echo 'ANALYTICS_DATA_TTL=168' >> /etc/contrail/vizd_param
+    HOST_IP=$(sed -n -e 's/HOST_IP=//p' /etc/contrail/vizd_param)
+    if [ -f /etc/contrail/opserver_param ]; then
+        grep -q 'HOST_IP' /etc/contrail/opserver_param || echo 'HOST_IP='${HOST_IP} >> /etc/contrail/opserver_param
+    fi
+fi
+
 %preun
 %postun
 
