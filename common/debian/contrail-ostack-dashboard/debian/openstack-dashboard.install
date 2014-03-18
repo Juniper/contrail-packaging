@@ -1,0 +1,6 @@
+debian/openstack-dashboard.conf etc/apache2/conf-available
+etc/openstack-dashboard
+usr/share/openstack-dashboard
+debian/static/openstack-dashboard/manifest.json usr/share/openstack-dashboard/openstack_dashboard/static/dashboard
+debian/static/openstack-dashboard/css/* usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
+debian/static/openstack-dashboard/js/* usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
