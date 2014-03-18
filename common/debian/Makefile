@@ -46,7 +46,8 @@ PACKAGES = contrail-libs-deb \
 	euca2ools-deb \
 	python-boto-deb \
 	libvirt-deb \
-	contrail-openstack-dashboard-deb
+	contrail-openstack-dashboard-deb \
+	contrail-ostack-dashboard-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
