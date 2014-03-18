@@ -46,7 +46,8 @@ PACKAGES = contrail-libs-deb \
 	euca2ools-deb \
 	python-boto-deb \
 	libvirt-deb \
-	contrail-openstack-dashboard-deb
+	contrail-openstack-dashboard-deb \
+	contrail-ostack-dashboard-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -125,6 +126,18 @@ contrail-openstack-dashboard-deb:
 
 contrail-openstack-dashboard-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
+	rm -rf ${BUILDDIR}
+
+contrail-ostack-dashboard-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-ostack-dashboard)
+	mkdir -p ${BUILDDIR}
+	cp -R ${SB_TOP}/distro/openstack/horizon/* ${BUILDDIR}
+	cp -prf ${SB_TOP}/distro/openstack/horizon/.git ${BUILDDIR}
+	cp -R contrail-ostack-dashboard/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-ostack-dashboard-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-ostack-dashboard)
 	rm -rf ${BUILDDIR}
 
 libvirt-deb:

@@ -1,0 +1,17 @@
+#!/bin/sh
+# vim: set ts=2 et:
+
+set -e
+
+# /etc/apache2/conf.d/dashboard.conf -> /etc/apache2/conf.d/openstack-dashboard.conf
+dpkg-maintscript-helper mv_conffile \
+  /etc/apache2/conf.d/dashboard.conf /etc/apache2/conf.d/openstack-dashboard.conf \
+  2012.1~rc1-0ubuntu1 -- "$@"
+
+# Transition config to apache 2.4 compatable location.
+dpkg-maintscript-helper mv_conffile \
+  /etc/apache2/conf.d/openstack-dashboard.conf \
+  /etc/apache2/conf-available/openstack-dashboard.conf \
+  1:2013.2~b2-0ubuntu3 -- "$@"
+
+#DEBHELPER#

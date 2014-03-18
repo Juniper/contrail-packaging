@@ -1,0 +1,26 @@
+Source: horizon
+Section: net
+Priority: extra
+Maintainer: Chuck Short <zulcss@ubuntu.com>
+Build-Depends: debhelper (>= 8.0.0),
+ python-pbr,
+ python-d2to1,
+ pylint,
+ python-all (>= 2.6.6-3~),
+ python-django-nose,
+ python-mox,
+ python-netaddr,
+ python-nose,
+ python-setuptools,
+ python-sphinx
+Standards-Version: 3.9.3
+
+Package: openstack-dashboard
+Architecture: all
+Pre-Depends: dpkg (>= 1.15.7.2)
+Depends: adduser,
+ apache2 | httpd,
+ libapache2-mod-wsgi (>= 2.3),
+ ${misc:Depends},
+ ${python:Depends}
+
