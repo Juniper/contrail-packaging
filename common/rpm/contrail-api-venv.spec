@@ -86,7 +86,6 @@ cat > reqs/reqs.txt <<END
 %{_builddir}/../%{_distrothirdpartydir}/SQLAlchemy-0.8.2.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/Routes-1.13.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/qpid-python-0.20.tar.gz
-%{_builddir}/../%{_distrothirdpartydir}/stevedore-0.12.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/pbr-0.5.21.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/librabbitmq-1.0.3.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/amqp-1.4.1.tar.gz   
@@ -108,6 +107,10 @@ pushd %{_target}
 source bin/activate
 bin/python bin/pip install --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
 #PYTHONPATH=%{_target}/lib/python2.7/site-packages:$PYTHONPATH pip install --index-url='' --install-option="--install-lib=%{_target}/lib/python2.7/site-packages" --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+
+pushd %{_builddir}/../%{_distrothirdpartydir}/stevedore-0.12
+%{__python} setup.py install
+popd
 
 pushd %{_builddir}/../%{_distrothirdpartydir}/pycassa-1.10.0
 %{__python} setup.py install
