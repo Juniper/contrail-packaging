@@ -52,6 +52,8 @@ class BasePackager(Utils):
         self.artifacts_extra_dir   = os.path.join(self.git_local_repo, 'build', 'artifacts_extra')
         self.pkgs_tgz              = os.path.join(self.contrail_pkgs_store,
                                                   'contrail_%ss.tgz' %self.pkg_type)
+        self.pkglist_file          = os.path.join(self.store_log_dir, 
+                                                  '%s_list.txt' %self.pkg_type)
         self.packager_dir          = os.getcwd()
         self.contrail_pkgs_tgz     = ''
         self.base_pkgs             = {}
@@ -59,7 +61,6 @@ class BasePackager(Utils):
         self.contrail_pkgs         = {}
         self.imgname               = ''
         self.targets               = []
-        self.build_tag             = self.id
 
     def setup_env(self):
         ''' setup basic environment necessary for packager like
@@ -72,13 +73,8 @@ class BasePackager(Utils):
         self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
                                              %self.git_local_repo)[0]
         # ** Attn: Not using branch info in build tag for now ***
-        self.build_tag = '%s~%s' %(self.id, self.sku)
-        if self.platform != 'ubuntu':
-            contrail_pkgs_name = 'contrail_packages_%s-%s.tgz' %(
-                                                  self.branch, self.build_tag)
-        else:
-            contrail_pkgs_name = 'contrail_packages_%s.%s.tgz' %(
-                                                  self.branch, self.build_tag) 
+        contrail_pkgs_name = 'contrail_packages_%s-%s~%s.tgz' %(self.branch, 
+                              self.id, self.sku)
         self.contrail_pkgs_tgz = os.path.join(self.packager_dir, contrail_pkgs_name)
         
         # get pkg info
@@ -103,8 +99,12 @@ class BasePackager(Utils):
                                                      self.contrail_pkgs[target]['builtloc'])
 
         # update location of os and dependent package location
-        cache_dir = self.expanduser(os.path.join(self.cache_base_dir,
-                               self.cache_subdir, self.sku))
+        cache_dir = []
+        if type(self.cache_base_dir) is str:
+            self.cache_base_dir = [self.cache_base_dir]
+        for dirname in self.cache_base_dir:
+            cache_dir.append(self.expanduser(os.path.join(dirname,
+                               self.cache_subdir, self.sku)))
         for each in self.base_pkgs.keys():
             if self.base_pkgs[each]['location'] == '':
                 self.base_pkgs[each]['location'] = cache_dir
@@ -163,6 +163,7 @@ class BasePackager(Utils):
         self.check_package_md5(self.base_pkgs)
         self.check_package_md5(self.depends_pkgs)
         self.copy_pkg_files(self.depends_pkgs, self.pkg_repo)
+        self.copy_pkg_files(self.base_pkgs, self.pkg_repo)
 
     def make_pkgs(self):
         ''' make package with given TAG '''
@@ -174,8 +175,9 @@ class BasePackager(Utils):
             if not self.contrail_pkgs.has_key(target):
                 raise RuntimeError('Target (%s) is not defined in %s' %(
                                     target, self.contrail_pkg_files))
-            cmd = 'make CONTRAIL_SKU=%s TAG=%s %s' %(self.sku, 
-                       self.id, self.contrail_pkgs[target]['target'])
+            cmd = 'make CONTRAIL_SKU=%s TAG=%s FILE_LIST=%s %s' %(self.sku, 
+                       self.id, self.pkglist_file,
+                       self.contrail_pkgs[target]['target'])
             self.exec_cmd(cmd, wd=self.contrail_pkgs[target]['makeloc'])
 
     def verify_built_pkgs_exists(self, targets=None, skips=None):
@@ -211,25 +213,31 @@ class BasePackager(Utils):
             log.error('Package file for One or More built package are not found')
             raise IOError('Missing Packages: \n%s' %"\n".join(missing)) 
 
+    def create_pkg_list_file(self):
+        pkglist = []
+        for target in self.contrail_pkgs.keys():
+            packages = self.contrail_pkgs[target]['pkgs']
+            packages = [packages] if type(packages) is str else packages
+            pkglist.extend(filter(None, packages))
+        with open(self.pkglist_file, 'w') as fid:
+            fid.write("%s\n" %"\n".join(sorted(pkglist)))
+            fid.flush()
+        log.info('Packages list file (%s) is created' %self.pkglist_file)
+
     def create_log(self):
-        filelist, pkglist = [], []
+        filelist = []
         filelist_file = os.path.join(self.store_log_dir, 'file_list.txt')
-        pkglist_file = os.path.join(self.store_log_dir, '%s_list.txt' %self.pkg_type)
         for target in self.contrail_pkgs.keys():
             packages = self.contrail_pkgs[target]['pkgs']
             packages = [packages] if type(packages) is str else packages
             for pkg in filter(None, packages):
-                pkglist.append(pkg)
                 if self.contrail_pkgs[target]['found_at'][pkg] != '':
                     pkgfile = os.path.basename(self.contrail_pkgs[target]['found_at'][pkg])
                     filelist.append(pkgfile)
         with open(filelist_file, 'w') as fid:
             fid.write("%s\n" %"\n".join(sorted(filelist)))
             fid.flush()
-        with open(pkglist_file, 'w') as fid:
-            fid.write("%s\n" %"\n".join(sorted(pkglist)))
-            fid.flush()
-            
+
     def create_git_ids(self, manifest=None, filename=None):
         filename = filename or os.path.join(self.store, 'git_build_%s.txt' %self.id)
         manifest = manifest or os.path.join(self.git_local_repo, '.repo', 'manifest.xml')
@@ -307,5 +315,5 @@ class BasePackager(Utils):
         #make contrail-install-packages
         pkginfo = self.contrail_pkgs['contrail-install-packages']
         cleanerpkg = re.sub(r'-deb$', '-clean', pkginfo['target'])
-        self.exec_cmd('make CONTRAIL_SKU=%s TAG=%s %s %s' %(self.sku, self.build_tag, 
+        self.exec_cmd('make CONTRAIL_SKU=%s TAG=%s %s %s' %(self.sku, self.id, 
                            cleanerpkg, pkginfo['target']), pkginfo['makeloc'])

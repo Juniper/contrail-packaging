@@ -15,28 +15,35 @@ cd /etc/apt/
 datetime_string=`date +%Y_%m_%d__%H_%M_%S`
 cp sources.list sources.list.$datetime_string
 echo "deb file:/opt/contrail/contrail_install_repo ./" > local_repo
-cat local_repo > sources.list
+
+#modify /etc/apt/soruces.list/ to add local repo on the top
+grep "deb file:/opt/contrail/contrail_install_repo ./" sources.list
+
+if [ $? != 0 ]; then  
+     cat local_repo sources.list > new_sources.list
+     mv new_sources.list sources.list
+fi
+
+#Allow unauthenticated pacakges to get installed
+echo "APT::Get::AllowUnauthenticated \"true\";" > apt.conf
+
+#install local repo preferences from /opt/contrail/ to /etc/apt/
+cp /opt/contrail/contrail_packages/preferences /etc/apt/preferences 
 
 #scan pkgs in local repo and create Packages.gz
 cd /opt/contrail/contrail_install_repo
 dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
-
-#install local repo preferences from /opt/contrail/ to /etc/apt/
-cp /opt/contrail/contrail_packages/preferences /etc/apt/preferences 
 apt-get update
 
 #install python-software-properties and curl
-sudo apt-get -y install python-software-properties curl
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install dpkg-dev=1.16.1.2ubuntu7.2
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-pip=1.0-1build1
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-pkg-resources=0.6.24-1ubuntu1
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-setuptools=0.6.24-1ubuntu1
+DEBIAN_FRONTEND=noninteractive sudo apt-get -y --force-yes --allow-unauthenticated install python-software-properties
+DEBIAN_FRONTEND=noninteractive sudo apt-get -y --force-yes --allow-unauthenticated install curl
 
 # install base packages and fabric utils
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-crypto
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-netaddr
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install python-paramiko
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install contrail-fabric-utils
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-crypto
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-netaddr
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-paramiko
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install contrail-fabric-utils
 
 # install ecdsa and fabric
 pip install --upgrade --no-deps --index-url='' /opt/contrail/contrail_installer/contrail_setup_utils/ecdsa-0.10.tar.gz
@@ -48,13 +55,6 @@ echo 'sun-java6-bin shared/accepted-sun-dlj-v1-1 boolean true' | /usr/bin/debcon
 echo 'sun-java6-jre shared/accepted-sun-dlj-v1-1 boolean true' | /usr/bin/debconf-set-selections
 echo 'debconf shared/accepted-oracle-license-v1-1 select true' | sudo debconf-set-selections
 echo 'debconf shared/accepted-oracle-license-v1-1 seen true' | sudo debconf-set-selections
-
-#additional sources list from stock needed if only contrail specific pkgs are in in local repo
-#cd /etc/apt/
-#install sources.list from /opt/contrail/ to /etc/apt/
-#cp /opt/contrail/contrail_packages/sources.list /etc/apt/sources.list 
-#cat local_repo sources.list > new_sources.list
-#mv new_sources.list sources.list 
 
 #sudo add-apt-repository -y cloud-archive:havana
 #sudo add-apt-repository -y ppa:webupd8team/java

@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenStack Quantum DHCP Agent
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=quantum
+ExecStart=/usr/bin/quantum-dhcp-agent --config-file /etc/quantum/quantum.conf --config-file /etc/quantum/dhcp_agent.ini --log-file /var/log/quantum/dhcp-agent.log
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target

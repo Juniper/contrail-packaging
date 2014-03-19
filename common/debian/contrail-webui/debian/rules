@@ -32,11 +32,13 @@ export _config := $(SB_TOP)/contrail-web-core/config
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER)-$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 %:
@@ -78,3 +80,5 @@ override_dh_auto_install:
 	#install contrail-webui conf files
 	install -d -m 755 $(buildroot)/$(_supervisordir)
 	install -p -m 644 $(_distropkgdir)/redis-webui.conf $(buildroot)/$(_contrailetc)/redis-webui.conf
+
+override_dh_shlibdeps:
