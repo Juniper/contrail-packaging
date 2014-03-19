@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenStack Nova Objectstore Server
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=nova
+ExecStart=/usr/bin/nova-objectstore --config-file /etc/nova/nova.conf --logfile /var/log/nova/objectstore.log
+
+[Install]
+WantedBy=multi-user.target
+

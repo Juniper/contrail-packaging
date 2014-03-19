@@ -1,0 +1,120 @@
+#!/bin/bash
+#
+# Copyright (C) 2012, Red Hat, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+
+# The script supports the plugins below
+declare -a SUPPORTED_PLUGINS=(linuxbridge openvswitch)
+
+#
+# Print --help output and exit.
+#
+usage() {
+
+cat << EOF
+The helper script will install the necessary support for the L3 agent.
+
+Usage: quantum-l3-setup [options]
+Options:
+	--help        | -h
+		Print usage information.
+        --plugin      | -p
+                The quantum plugin. Supported plugins:-
+                    ${SUPPORTED_PLUGINS[*]}
+EOF
+
+	exit 0
+}
+
+is_valid_plugin() {
+	local i=
+	for i in "${SUPPORTED_PLUGINS[@]}"; do
+		if [ "$i" == "$1" ]; then
+			return 0 
+		fi
+	done
+	return 1
+}
+
+L3_CONF=/etc/quantum/l3_agent.ini
+
+while [ $# -gt 0 ]
+do
+	case "$1" in
+		-h|--help)
+			usage
+			;;
+                -p|--plugin)
+                        shift
+                        QUANTUM_PLUGIN=${1}
+                        ;;
+		*)
+			# ignore
+			shift
+			;;
+	esac
+	shift
+done
+
+# if the plugin is not defined
+if [ -z ${QUANTUM_PLUGIN} ] ; then
+        echo "Please select a plugin from: ${SUPPORTED_PLUGINS[*]}"
+        echo "Choice:"
+        read QUANTUM_PLUGIN
+fi
+
+# check that the plugin is valid
+is_valid_plugin ${QUANTUM_PLUGIN}
+if [ $? -ne 0 ]; then
+        echo "Plugin '${QUANTUM_PLUGIN}' not supported. Supported plugins:-"
+        echo "    ${SUPPORTED_PLUGINS[*]}"
+        exit 0
+fi
+
+echo "Quantum plugin: ${QUANTUM_PLUGIN}"
+
+case "${QUANTUM_PLUGIN}" in
+"linuxbridge")
+        LINUX_INTERFACE_DRIVER=quantum.agent.linux.interface.BridgeInterfaceDriver
+        openstack-config --set ${L3_CONF} DEFAULT external_network_bridge ''
+;;
+
+"openvswitch")
+        if ! rpm -q openvswitch > /dev/null
+        then
+                echo "Please install openvswitch"
+                exit 0
+        fi
+        LINUX_INTERFACE_DRIVER=quantum.agent.linux.interface.OVSInterfaceDriver
+;;
+
+esac
+
+# Keystone specific
+OS_USERNAME=${OS_USERNAME:-quantum}
+OS_PASSWORD=${OS_PASSWORD:-servicepass}
+OS_AUTH_URL=${OS_AUTH_URL:-http://localhost:35357/v2.0/}
+OS_TENANT_NAME=${OS_TENANT_NAME:-service}
+
+# Update Keystone
+openstack-config --set ${L3_CONF} DEFAULT auth_url ${OS_AUTH_URL}
+openstack-config --set ${L3_CONF} DEFAULT admin_user ${OS_USERNAME} 
+openstack-config --set ${L3_CONF} DEFAULT admin_password ${OS_PASSWORD}
+openstack-config --set ${L3_CONF} DEFAULT admin_tenant_name ${OS_TENANT_NAME}
+
+# Update interface driver
+openstack-config --set ${L3_CONF} DEFAULT interface_driver ${LINUX_INTERFACE_DRIVER}
+
+echo "Configuration updates complete!"
