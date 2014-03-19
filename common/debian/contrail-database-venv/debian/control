@@ -1,0 +1,14 @@
+Source: contrail-database-venv
+Maintainer: amoghe <amoghe@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends: debhelper (>= 8)
+
+Package: contrail-database-venv
+Architecture: all
+Maintainer: amoghe <amoghe@juniper.net>
+Depends:
+Section: contrail-database-venv
+Priority: extra
+Description: contrail-database-venv package

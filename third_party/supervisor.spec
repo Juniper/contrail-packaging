@@ -103,6 +103,34 @@ mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save
 mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
 # done install in analytics venv
 
+# install in database venv
+install -d -m 755 %{buildroot}%{_venv_root_database}
+install -d -m 755 %{buildroot}%{_venv_root_database}/archive
+
+pushd %{_builddir}/../%{_distrothirdpartydir}/elementtree-1.2.6-20050316
+#pushd %{_distrothirdpartydir}/elementtree-1.2.6-20050316
+%{__python} setup.py install --root=%{buildroot} %{?_venvtr_database}
+popd
+
+#pushd %{_builddir}/..
+#pushd %{_distrothirdpartydir}/meld3-0.6.10
+pushd %{_builddir}/../%{_distrothirdpartydir}/meld3-0.6.10
+%{__python} setup.py install --root=%{buildroot} %{?_venvtr_database}
+popd
+
+pushd %{_builddir}/..
+# save these files to restore
+cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save
+cp %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save
+pushd %{_distrothirdpartydir}/supervisor-3.0b2
+%{__python} setup.py install --root=%{buildroot} %{?_venvtr_database}
+%{__python} setup.py sdist
+cp dist/* %{buildroot}%{_venv_root_database}/archive
+popd
+mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/SOURCES.txt
+mv %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO.save %{_distrothirdpartydir}/supervisor-3.0b2/supervisor.egg-info/PKG-INFO
+# done install in database venv
+
 # install in api venv
 install -d -m 755 %{buildroot}%{_venv_root_api}
 install -d -m 755 %{buildroot}%{_venv_root_api}/archive
@@ -211,6 +239,17 @@ install -p -m 755 %{_helper} %{buildroot}%{_bindir}/contrail-nodemgr
 %{_venv_root}/bin/supervisorctl
 %{_venv_root}/bin/supervisord
 %{_venv_root}/archive/supervisor-3.0b2.tar.gz
+%{_venv_root_database}%{_pysitepkg}/supervisor
+%{_venv_root_database}%{_pysitepkg}/supervisor-*
+%{_venv_root_database}%{_pysitepkg}/meld3
+%{_venv_root_database}%{_pysitepkg}/meld3-*
+%{_venv_root_database}%{_pysitepkg}/elementtree
+%{_venv_root_database}%{_pysitepkg}/elementtree-*
+%{_venv_root_database}/bin/echo_supervisord_conf
+%{_venv_root_database}/bin/pidproxy
+%{_venv_root_database}/bin/supervisorctl
+%{_venv_root_database}/bin/supervisord
+%{_venv_root_database}/archive/supervisor-3.0b2.tar.gz
 %{_venv_root_api}%{_pysitepkg}/supervisor
 %{_venv_root_api}%{_pysitepkg}/supervisor-*
 %{_venv_root_api}%{_pysitepkg}/meld3
