@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ENABLE_ENDPOINTS=1 /usr/share/openstack-keystone/sample_data.sh "$@"
