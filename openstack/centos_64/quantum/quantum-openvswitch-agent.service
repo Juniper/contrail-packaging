@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenStack Quantum Open vSwitch Agent
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=quantum
+ExecStart=/usr/bin/quantum-openvswitch-agent  --config-file /etc/quantum/quantum.conf --config-file /etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini --log-file /var/log/quantum/openvswitch-agent.log
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

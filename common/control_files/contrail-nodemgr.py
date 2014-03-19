@@ -176,6 +176,10 @@ class EventManager:
                 from analytics_cpuinfo.ttypes import *
                 from analytics_cpuinfo.cpuinfo.ttypes import *
 
+	if (self.node_type == 'contrail-database'):
+            from database.sandesh.database_cpuinfo.ttypes import *
+            from database.sandesh.database_cpuinfo.cpuinfo.ttypes import *
+
         # following code is node independent
         process_state_list = []
         #sys.stderr.write("Sending whole of process state db as UVE:" + str(self.process_state_db))
@@ -198,7 +202,7 @@ class EventManager:
 
         # send UVE based on node type
         if ( (self.node_type == 'contrail-analytics') or 
-             (self.node_type == 'contrail-config')
+             (self.node_type == 'contrail-config') or (self.node_type == 'contrail-database')
             ):
             mod_cpu_state = ModuleCpuState()
             mod_cpu_state.name = socket.gethostname()
@@ -381,7 +385,7 @@ def main(argv=sys.argv):
             sandesh_pkg_dir = 'analytics_cpuinfo'
         sandesh_global.init_generator(module_name, socket.gethostname(), 
             node_type_name, instance_id, collector_addr,
-            module_name, 8099, [sandesh_pkg_dir])
+            module_name, 8104, [sandesh_pkg_dir])
         sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-config'):
@@ -449,6 +453,23 @@ def main(argv=sys.argv):
             8102, ['vrouter.vrouter'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
     
+    if (node_type == 'contrail-database'):
+        try:
+            import discovery.client as client
+        except:
+            import discoveryclient.client as client
+
+        module = Module.DATABASE_NODE_MGR
+        module_name = ModuleNames[module]
+        node_type = Module2NodeType[module]
+        node_type_name = NodeTypeNames[node_type]
+        instance_id = INSTANCE_ID_DEFAULT
+        _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
+        sandesh_global.init_generator(module_name, socket.gethostname(),
+            node_type_name, instance_id, [], module_name,
+            8103, ['database.sandesh'], _disc)
+        #sandesh_global.set_logging_params(enable_local_log=True)
+
     gevent.joinall([gevent.spawn(prog.runforever, sandesh_global)])
 
 if __name__ == '__main__':
