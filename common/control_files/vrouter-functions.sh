@@ -6,8 +6,17 @@ function pkt_setup () {
     for f in /sys/class/net/$1/queues/rx-*
     do
         q="$(echo $f | cut -d '-' -f2)"
-        ((mask=1<<$q))
-        printf "%x" $mask > $f/rps_cpus
+        r=$(($q%32))
+        s=$(($q/32))
+        ((mask=1<<$r))
+        str=(`printf "%x" $mask`)
+        if [ $s -gt 0 ]; then
+            for ((i=0; i < $s; i++))
+            do
+                str+=,00000000
+            done
+        fi
+        echo $str > $f/rps_cpus
     done
 }
 
