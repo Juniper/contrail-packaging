@@ -134,10 +134,14 @@ contrail-openstack-dashboard-clean:
 
 contrail-ostack-dashboard-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-ostack-dashboard)
-	mkdir -p ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
 	cp -R ${SB_TOP}/distro/openstack/horizon/* ${BUILDDIR}
 	cp -prf ${SB_TOP}/distro/openstack/horizon/.git ${BUILDDIR}
-	cp -R contrail-ostack-dashboard/debian ${BUILDDIR}/debian
+	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
+		(cp -R contrail-ostack-dashboard/debian/havana/* ${BUILDDIR}/debian); \
+	else \
+		(cp -R contrail-ostack-dashboard/debian/grizzly/* ${BUILDDIR}/debian); \
+	fi
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 contrail-ostack-dashboard-clean:

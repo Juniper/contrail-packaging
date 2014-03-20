@@ -23,4 +23,3 @@ Depends: adduser,
  libapache2-mod-wsgi (>= 2.3),
  ${misc:Depends},
  ${python:Depends}
-
