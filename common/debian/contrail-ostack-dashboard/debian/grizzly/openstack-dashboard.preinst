@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+# /etc/apache2/conf.d/dashboard.conf -> /etc/apache2/conf.d/openstack-dashboard.conf
+dpkg-maintscript-helper mv_conffile \
+  /etc/apache2/conf.d/dashboard.conf /etc/apache2/conf.d/openstack-dashboard.conf \
+  2012.1~rc1-0ubuntu1 -- "$@"
+
+#DEBHELPER#
