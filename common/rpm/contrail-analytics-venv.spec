@@ -80,7 +80,7 @@ popd
 pushd %{_target}
 
 source bin/activate
-bin/python bin/pip install --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+bin/python bin/pip install --no-download --upgrade --no-deps --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
 
 pushd %{_builddir}/../%{_distrothirdpartydir}/pycassa-1.10.0
 %{__python} setup.py install

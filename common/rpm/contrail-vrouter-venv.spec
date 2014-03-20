@@ -85,6 +85,7 @@ cat > reqs/reqs.txt <<END
 %{_builddir}/../%{_distrothirdpartydir}/SQLAlchemy-0.8.2.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/Routes-1.13.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/qpid-python-0.20.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/stevedore-0.12.tar.gz
 END
 
 %install
@@ -100,12 +101,8 @@ popd
 pushd %{_target}
 
 source bin/activate
-bin/python bin/pip install --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+bin/python bin/pip install --no-download --upgrade --no-deps --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
 #PYTHONPATH=%{_target}/lib/python2.7/site-packages:$PYTHONPATH pip install --index-url='' --install-option="--install-lib=%{_target}/lib/python2.7/site-packages" --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
-
-pushd %{_builddir}/../%{_distrothirdpartydir}/stevedore-0.12
-%{__python} setup.py install
-popd
 
 deactivate
 
