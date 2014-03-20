@@ -160,6 +160,7 @@ libvirt:
 		-bp libvirt.spec && \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch  $(BUILD_BASE)/SPECS/ && \
 		patch -p0 -i $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch && \
+		patch -p0 -i $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.test-disable.patch && \
 		cd $(THIRDPARTY_DIR) && \
 		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
 		-ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
