@@ -57,7 +57,7 @@ override_dh_auto_build:
 #	build the venv
 	$(__python) $(_venvdist)/$(_venvdir)/virtualenv.py $(_vpy) --extra-search-dir=$(buildroot)/$(_venvdir)/reqs --extra-search-dir=$(_venvdist)/$(_venvdir)/virtualenv_support --never-download --system-site-packages $(buildroot)$(_target)
 	cd $(buildroot)$(_target); bash -xc "source bin/activate && \
-           bin/python bin/pip install --index-url='' --requirement \
+           bin/python bin/pip install --no-download --upgrade --no-deps --index-url='' --requirement \
            $(buildroot)/$(_venvdir)/reqs/reqs.txt \
 	   && deactivate"
 
