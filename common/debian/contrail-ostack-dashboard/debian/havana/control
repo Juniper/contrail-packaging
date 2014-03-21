@@ -21,5 +21,6 @@ Pre-Depends: dpkg (>= 1.15.7.2)
 Depends: adduser,
  apache2 | httpd,
  libapache2-mod-wsgi (>= 2.3),
+ python-django-horizon,
  ${misc:Depends},
  ${python:Depends}
