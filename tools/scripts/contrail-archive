@@ -96,7 +96,7 @@ class ContrailArchive(object):
         # os.mkdir (self.opt.archive_path + "/artifacts")
         store_path = sandbox_path + "/build"
         os.chdir(store_path)
-        command = "cp -r artifacts*" + self.opt.archive_path
+        command = "cp -r artifacts* " + self.opt.archive_path
         execute(command, ignore_errors=False)
         os.chdir (sandbox_path)
 
