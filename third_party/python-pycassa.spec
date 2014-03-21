@@ -10,6 +10,7 @@
 %endif
 Name: python-pycassa
 Summary: python-pycassa %{?_gitVer}
+Epoch: 1
 Version: 1.7.2
 Release: %{_relstr}%{?dist}
 License: MIT

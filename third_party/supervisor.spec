@@ -15,6 +15,7 @@
 
 Summary: supervisor %{?_gitVer}
 Name: supervisor 
+Epoch: 1
 Version: 0.1
 Release: %{_relstr}%{?dist}
 

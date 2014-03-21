@@ -9,7 +9,7 @@ Name:             python-novaclient
 Version:          2.10.0
 Release:          %{_relstr}
 Summary:	      Python API and CLI for OpenStack Nova %{?_gitVer}
-Epoch:            1
+Epoch:            2
 
 Group:            Development/Languages
 License:          ASL 2.0

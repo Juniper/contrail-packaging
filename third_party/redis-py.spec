@@ -12,6 +12,7 @@
 
 Summary: redis-py %{?_gitVer}
 Name: redis-py 
+Epoch: 1
 Version: 0.1
 Release: %{_relstr}%{?dist}
 

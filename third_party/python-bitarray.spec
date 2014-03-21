@@ -8,6 +8,7 @@
 %{echo: "Building release %{_relstr}\n"}
 Name: python-bitarray
 Summary: python bitarray %{?_gitVer}
+Epoch:   1
 Version: 0.8.0
 Release: %{_relstr}%{?dist}
 License: PSF

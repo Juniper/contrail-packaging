@@ -13,6 +13,7 @@ Release:            %{_relstr}%{?dist}
 
 Summary: Contrail Database %{?_gitVer}
 Name: contrail-database
+Epoch:              1
 Version:            %{_verstr}
 Group:              Applications/System
 License:            Commercial

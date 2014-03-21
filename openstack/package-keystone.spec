@@ -13,8 +13,10 @@
 %endif
 %{echo: "Building release %{_relstr}\n"}
 
+%define _epochstr 1
 
 Name:           openstack-keystone
+Epoch:          %{_epochstr}
 Version:        2013.1
 Release:        %{_relstr}
 Summary:        OpenStack Identity Service %{?_gitVer}
@@ -39,7 +41,7 @@ BuildRequires:  openstack-utils
 BuildRequires:  systemd-units
 %endif
 
-Requires:       python-keystone = %{version}-%{release}
+Requires:       python-keystone =  %{_epochstr}:%{version}-%{release}
 Requires:       python-keystoneclient >= 0.2.0
 
 %if 0%{?fedora} >= 17

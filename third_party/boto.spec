@@ -8,6 +8,7 @@
 %endif
 %{echo: "Building release %{_relstr}\n"}
 Name:           python-boto		
+Epoch:          1
 Version:	2.12.0
 Release:	%{_relstr}%{?dist}
 Summary:	boto %{?_gitVer}

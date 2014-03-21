@@ -14,6 +14,7 @@
 
 Name: python-thrift
 Summary: Python Thrift Package %{?_gitVer}
+Epoch: 1
 Version: 0.9.1
 Release: %{_relstr}%{?dist}
 License: MIT

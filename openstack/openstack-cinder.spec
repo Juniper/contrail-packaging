@@ -6,8 +6,10 @@
 %endif
 %{echo: "Building release %{_relstr}\n"}
 
+%define _epochstr 1
 
 Name:             openstack-cinder
+Epoch:            %{_epochstr}
 Version:          2013.1
 Release:          %{_relstr}
 Summary:          OpenStack Volume (cinder) %{?_gitVer}
@@ -46,7 +48,7 @@ BuildRequires:    python-netaddr
 BuildRequires:    openstack-utils
 
 Requires:         openstack-utils
-Requires:         python-cinder = %{version}-%{release}
+Requires:         python-cinder = %{_epochstr}:%{version}-%{release}
 
 # as convenience
 Requires:         python-cinderclient
@@ -109,7 +111,7 @@ This package contains the cinder Python library.
 Summary:          Documentation for OpenStack Volume %{?_gitVer}
 Group:            Documentation
 
-Requires:         %{name} = %{version}-%{release}
+Requires:         %{name} = %{_epochstr}:%{version}-%{release}
 
 BuildRequires:    openstack-utils
 %if 0%{?fedora} >= 17

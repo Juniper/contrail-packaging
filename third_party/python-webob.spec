@@ -10,6 +10,7 @@
 
 Name:           python-webob
 Summary:        WSGI request and response object
+Epoch:          1
 Version:        1.2.3
 Release:        %{_relstr}
 Summary:	    python webob %{?_gitVer}

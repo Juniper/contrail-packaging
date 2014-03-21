@@ -6,6 +6,7 @@
 %{echo: "Building release %{_relstr}\n"}
 
 Name:             python-cinderclient
+Epoch:            1
 Version:          1.0.2
 Release:          %{_relstr}
 Summary:          Python API and CLI for OpenStack cinder %{?_gitVer}

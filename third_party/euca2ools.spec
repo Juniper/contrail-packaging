@@ -10,6 +10,7 @@
 
 
 Name:		    euca2ools
+Epoch:              1
 Version:	    1.0
 Release:	    %{_relstr}
 Summary:	    Euca2ools %{?_gitVer}

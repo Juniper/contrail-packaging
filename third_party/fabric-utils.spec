@@ -16,6 +16,7 @@
 
 
 Name:		    contrail-fabric-utils
+Epoch:              1
 Version:	    %{_verstr}
 Release:	    %{_relstr}
 Summary:	    Contrail Fabric Utilities%{?_gitVer}

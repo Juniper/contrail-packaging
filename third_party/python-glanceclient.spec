@@ -9,7 +9,7 @@ Name:             python-glanceclient
 # Since folsom-2 OpenStack clients follow their own release plan
 # and restarted version numbering from 0.1.1
 # https://lists.launchpad.net/openstack/msg14248.html
-Epoch:            1
+Epoch:            2
 Version:          0.7.0
 Release:          %{_relstr}
 Summary:          Python API and CLI for OpenStack Glance %{?_gitVer}

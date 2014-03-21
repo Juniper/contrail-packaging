@@ -9,6 +9,7 @@
 
 Summary: hiredis-py %{?_gitVer}
 Name: hiredis-py 
+Epoch: 1
 Version: 0.1.1
 Release: %{_relstr}%{?dist}
 

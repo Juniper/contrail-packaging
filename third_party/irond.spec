@@ -7,6 +7,7 @@ Summary: IFMap server %{?_gitVer}
 %{echo: "Building release %{_relstr}\n"}
 
 Name: irond
+Epoch: 1
 Version: 1.0
 License: Apache License, Version 2.0
 Release: %{_relstr}

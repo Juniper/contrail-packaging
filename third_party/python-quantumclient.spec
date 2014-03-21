@@ -10,7 +10,7 @@
 
 
 Name:       python-quantumclient
-Epoch:      1
+Epoch:      2
 Version:    2.1.1
 Release:    %{_relstr}
 Summary:    Python API and CLI for OpenStack Quantum %{?_gitVer}

@@ -11,6 +11,7 @@
 
 Summary: Puppet Agent %{?_gitVer}
 Name:    puppet
+Epoch:   1
 Version: 2.7.20
 Release: %{_relstr}
 License: Apache 2.0

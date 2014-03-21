@@ -10,6 +10,7 @@
 
 
 Name:       python-keystoneclient
+Epoch:      1
 Version:    0.2.1
 Release:    %{_relstr}
 Summary:    Python API and CLI for OpenStack Keystone %{?_gitVer}

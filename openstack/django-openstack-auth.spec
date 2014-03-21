@@ -6,7 +6,7 @@
 %{echo: "Building release %{_relstr}\n"}
 
 Name:             python-django-openstack-auth
-Epoch:            1
+Epoch:            2
 Version:          1.0.6
 Release:          %{_relstr}
 Summary:          A Django authentication backend %{?_gitVer}

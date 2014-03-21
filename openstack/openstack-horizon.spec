@@ -7,11 +7,14 @@
 %else
 %define         _relstr      %(date -u +%y%m%d%H%M)
 %endif
+
+%define _epochstr 1
+
 %{echo: "Building release %{_relstr}\n"}
 
 
 Name:       django-horizon
-
+Epoch:      %{_epochstr}
 Version:    2012.1
 Release:    %{_relstr}
 Summary:    Django application for talking to Openstack %{?_gitVer}
@@ -78,7 +81,7 @@ site.
 Summary:    Documentation for Django Horizon  %{?_gitVer}
 Group:      Documentation
 
-Requires:   %{name} = %{version}-%{release}
+Requires:   %{name} = %{_epochstr}:%{version}-%{release}
 
 BuildRequires: python-sphinx
 

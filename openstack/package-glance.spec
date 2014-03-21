@@ -8,7 +8,10 @@
 %endif
 %{echo: "Building release %{_relstr}\n"}
 
+%define _epochstr 1
+
 Name:             openstack-glance
+Epoch:            %{_epochstr}
 Version:          2013.1
 Release:          %{_relstr}
 Summary:          OpenStack Image Service %{?_gitVer}
@@ -84,7 +87,7 @@ This package contains the glance Python library.
 Summary:          Documentation for OpenStack Image Service %{?_gitVer}
 Group:            Documentation
 
-Requires:         %{name} = %{version}-%{release}
+Requires:         %{name} = %{_epochstr}:%{version}-%{release}
 
 %if 0%{?fedora} >= 17
 BuildRequires:    systemd-units

@@ -12,6 +12,7 @@ Summary: gevent http client library %{?_gitVer}
 %define		dist	.xen
 %endif
 Name: python-%{upstream_name}
+Epoch: 1
 Version: 1.0a
 Release: %{_relstr}%{?dist}
 License: MIT

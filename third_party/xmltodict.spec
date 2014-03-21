@@ -9,6 +9,7 @@
 
 Summary: xmltodict %{?_gitVer}
 Name: xmltodict 
+Epoch: 1
 Version: 0.1
 Release: %{_relstr}%{?dist}
 
