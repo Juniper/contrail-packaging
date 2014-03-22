@@ -7,11 +7,12 @@ export DH_VERBOSE=1
 	dh $@  --with python2
 
 override_dh_auto_install:
-	# install horizon and dashboard
+	# install dashboard
 	python setup.py install --root=$(CURDIR)/debian/tmp --no-compile -O0 --install-layout=deb
 	install -d -m 755 $(CURDIR)/debian/tmp/usr/share/openstack-dashboard
 	install -d -m 755 $(CURDIR)/debian/tmp/etc/openstack-dashboard
 	install -d -m 755 $(CURDIR)/debian/tmp/etc/apache2/conf-available
+	install -d -m 755 $(CURDIR)/debian/tmp/var/lib/openstack-dashboard
 
 	cp -a $(CURDIR)/openstack_dashboard/ $(CURDIR)/debian/tmp/usr/share/openstack-dashboard/
 	install -d -m 755 $(CURDIR)/debian/tmp/etc/openstack-dashboard
