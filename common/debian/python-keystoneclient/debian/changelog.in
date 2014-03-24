@@ -1,4 +1,4 @@
-python-keystoneclient (1:0.3.2-0ubuntu1) saucy; urgency=low
+python-keystoneclient (1:0.3.2-0ubuntu1.BUILDTAG) saucy; urgency=low
 
   * New upstream release.
   * debian/control: Add python-netaddr as a build dependency. 

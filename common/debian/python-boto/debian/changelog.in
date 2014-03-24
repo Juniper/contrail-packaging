@@ -1,4 +1,4 @@
-python-boto (1:2.12.0) stable; urgency=low
+python-boto (1:2.12.0.BUILDTAG) stable; urgency=low
 
    * Contrail extenstion support for AWS
 
