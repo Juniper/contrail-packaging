@@ -1,4 +1,4 @@
-ifmap-server (BUILDTAG) amoghe; urgency=low
+ifmap-server (1:0.3.0.BUILDTAG) amoghe; urgency=low
 
   [amoghe]
   * debian/changelog: changelog
