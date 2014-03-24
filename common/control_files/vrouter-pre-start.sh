@@ -29,23 +29,35 @@ done
 [ -f /etc/contrail/default_pmac ] || error_exit $LINENO "Did you run setup?"
 [ -f /etc/contrail/agent_param ] || error_exit $LINENO "Did you run setup?"
 
-source /opt/contrail/bin/vrouter-function.sh
+source /opt/contrail/bin/vrouter-functions.sh
 
 function create_virtual_gateway() {
 
     echo "$(date): Adding intreface vgw for virtual gateway"
     #    sysctl -w net.ipv4.ip_forward=1
     echo 1 > /proc/sys/net/ipv4/ip_forward
-    vif --create vgw --mac 00:01:00:5e:00:00
-    if [ $? != 0 ]
-    then
-        echo "$(date): Error adding intreface vgw"
-    fi
- 
-    ifconfig vgw up
-    vgw_subnet=$vgw_subnet_ip"/"$vgw_subnet_mask
-    route add -net $vgw_subnet dev vgw
-    
+    vgw_array=(${vgw_subnet_ip//,/ })
+    vgw_intf_array=(${vgw_intf//,/ })
+    i=0
+    #for element in "${vgw_array[@]}"
+    for ((i=0;i<${#vgw_array[@]};++i))
+       do
+       vif --create ${vgw_intf_array[i]} --mac 00:01:00:5e:00:00
+       if [ $? != 0 ]
+           then
+           echo "$(date): Error adding intreface vgw"
+       fi
+
+       ifconfig ${vgw_intf_array[i]} up
+       vgw_subnet=${vgw_array[i]}
+       echo $vgw_subnet
+       vgw_subnet_array=$(echo $vgw_subnet | tr ";" "\n")
+       for element in $vgw_subnet_array
+       do
+           echo "$(date): Adding route for $element with interface ${vgw_intf_array[i]}"
+           route add -net $element dev ${vgw_intf_array[i]}
+       done
+   done
 }
 
 insert_vrouter &>> $LOG

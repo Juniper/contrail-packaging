@@ -28,7 +28,7 @@ echo "DEVICE=vhost0" >> $CFG_FILE
 
 echo dev=__DEVICE__ >> $CFG_FILE
 echo vgw_subnet_ip=__VGW_SUBNET_IP__ >> $CFG_FILE
-echo vgw_subnet_mask=__VGW_SUBNET_MASK__ >> $CFG_FILE
+echo vgw_intf=__VGW_INTF_LIST__ >> $CFG_FILE
 
 LOGFILE=/var/log/contrail/vrouter.log
 echo "LOGFILE=--log-file=${LOGFILE}" >> $CFG_FILE
