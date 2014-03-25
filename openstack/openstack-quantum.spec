@@ -8,10 +8,12 @@
 %endif
 %{echo: "Building release %{_relstr}\n"}
 
+%define         _epochstr      1
 
 Name:		openstack-quantum
-Version:    2013.2
-Release:    %{_relstr}
+Epoch:          %{_epochstr}
+Version:        2013.2
+Release:        %{_relstr}
 Summary:	Virtual network service for OpenStack (quantum) %{?_gitVer}
 
 Group:		Applications/System
@@ -253,7 +255,7 @@ This package contains the quantum Python library.
 
 %package -n openstack-quantum-contrail
 Summary: Contrail System Openstack plugin %{?_gitVer}
-Requires:	openstack-quantum = %{version}-%{release}
+Requires:	openstack-quantum = %{_epochstr}:%{version}-%{release}
 Group:		Applications/System
 
 %description -n openstack-quantum-contrail
