@@ -45,7 +45,6 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_control_files
 	install -p -m 755 $(_src_config)/supervisor-control.upstart $(buildroot)$(_initdir)/supervisor-control.conf
-	install -p -m 755 $(_src_config)/supervisor-control.initd $(buildroot)$(_initddir)/supervisor-control
 	install -p -m 755 $(_src_config)/contrail-control.initd.supervisord $(buildroot)$(_initddir)/contrail-control
 	install -p -m 755 $(_src_config)/supervisord_control.conf $(buildroot)$(_contrailetc)/supervisord_control.conf
 	# TODO: Remove this after spec files for other platforms are fixed.
