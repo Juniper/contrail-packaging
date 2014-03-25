@@ -42,7 +42,7 @@ BuildRequires:	python-setuptools
 BuildRequires:	systemd-units
 %endif
 
-Requires:	python-quantum = %{version}-%{release}
+Requires:	python-quantum = %{_epochstr}:%{version}-%{release}
 Requires:	openstack-utils
 
 # dnsmasq is not a hard requirement, but is currently the only option
