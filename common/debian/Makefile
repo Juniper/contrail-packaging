@@ -79,6 +79,17 @@ contrail-install-packages-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
 	rm -rf ${BUILDDIR}
 
+contrail-storage-packages-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-storage-packages)
+	mkdir -p ${BUILDDIR}
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-storage-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules binary && mv ../contrail-storage-packages_*_all.deb ../debian/)
+	@echo "Wrote: ${BUILDDIR}/../debian/contrail-storage-packages_*_all.deb"
+
+contrail-storage-packages-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-storage-packages)
+	rm -rf ${BUILDDIR}
+
 contrail-fabric-utils-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
 	cp -R ${SB_TOP}/third_party/fabric-utils ${BUILDDIR}
