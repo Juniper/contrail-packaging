@@ -11,8 +11,10 @@ log = logging.getLogger("pkg.%s" %__name__)
 class Packager(BasePackager):
     ''' Ubuntu Packager '''
     def ks_build(self):
-        self.meta_pkgs = ['contrail-install-packages', \
-                          'contrail-storage-packages']
+        self.meta_pkgs = ['contrail-install-packages']
+        if self.sku.lower() == 'havana':
+            self.meta_pkgs = ['contrail-install-packages', \
+                              'contrail-storage-packages']
         self.setup_env()
         self.create_pkg_list_file()
         self.make_pkgs()
