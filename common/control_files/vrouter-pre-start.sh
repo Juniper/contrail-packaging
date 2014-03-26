@@ -25,10 +25,6 @@ mac=$1;
 done
 }
 
-
-[ -f /etc/contrail/default_pmac ] || error_exit $LINENO "Did you run setup?"
-[ -f /etc/contrail/agent_param ] || error_exit $LINENO "Did you run setup?"
-
 source /opt/contrail/bin/vrouter-functions.sh
 
 function create_virtual_gateway() {
