@@ -229,6 +229,7 @@ class EventManager:
 
     def runforever(self, sandeshconn, test=False):
     #sys.stderr.write(str(self.rules_data['Rules'])+'\n')
+        prev_current_time = int(time.time())    
         while 1:
             gevent.sleep(1)
             # we explicitly use self.stdin, self.stdout, and self.stderr
@@ -248,7 +249,6 @@ class EventManager:
                 pname = pheaders['processname']
                 if (pheaders['processname'] != pheaders['groupname']):
                     pname = pheaders['groupname'] + ":" + pheaders['processname']
-                    
                 self.send_process_state(pname, headers['eventname'], pheaders, sandeshconn)
                 for rules in self.rules_data['Rules']:
                     if 'processname' in rules:
@@ -309,7 +309,30 @@ class EventManager:
                         sys.stderr.write('Openstack Nova Compute status unchanged at:' + os_nova_comp.process_state + "\n")
                         
                     self.process_state_db['openstack-nova-compute'] = os_nova_comp
-                             
+
+                current_time = int(time.time())
+                #sys.stderr.write("Time changed %d \n",abs(current_time - prev_current_time)
+                if ((abs(current_time - prev_current_time)) > 300):
+                    #update all process start_times with the updated time
+                    #Compute the elapsed time and subtract them from current time to get updated values
+                    for key in self.process_state_db:
+                        pstat = self.process_state_db[key]
+                        pstat.start_time = str((int(current_time - (prev_current_time-((int)(pstat.start_time))/1000000)))*1000000)
+                        if (pstat.process_state == 'PROCESS_STATE_STOPPED'):
+                            pstat.stop_time = str(int(current_time - (prev_current_time-((int)(pstat.stop_time))/1000000))*1000000)
+                        if (pstat.process_state == 'PROCESS_STATE_EXITED'):
+                            pstat.exit_time = str(int(current_time - (prev_current_time-((int)(pstat.exit_time))/1000000))*1000000)
+                        # update process state database
+                        self.process_state_db[key] = pstat
+                    #sys.stderr.write("Info being written"+str(self.process_state_db))
+                    try:
+                        f = open('/var/log/contrail/process_state' + self.node_type + ".json", 'w')
+                        f.write(json.dumps(self.process_state_db, default=lambda obj: obj.__dict__))
+                    except:
+                        sys.stderr.write("Unable to write json")
+                        pass
+                    self.send_process_state_db(sandeshconn)
+                prev_current_time = int(time.time())
 
             childutils.listener.ok(self.stdout)
 
