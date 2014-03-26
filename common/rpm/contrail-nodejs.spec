@@ -9,9 +9,12 @@
 %endif
 %{echo: "Building release %{_relstr}\n"}
 
+%define         _epochstr      1
+
 Name:		contrail-%{_base}js
+Epoch:          %{_epochstr}
 Version:	0.8.15
-Release:	%{_relstr}%{?dist}
+Release:	%{_srcVer}.%{_relstr}%{?dist}
 Summary:	Contrail Systems NodeJS Package %{?_gitVer}
 
 Group:              Applications/System
