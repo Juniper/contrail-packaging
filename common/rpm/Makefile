@@ -126,6 +126,11 @@ venv-packages: packaging
 packaging: contrail-api-venv contrail-analytics-venv contrail-vrouter-venv contrail-control-venv \
 	contrail-database-venv
 
+# Contrail Cloudstack stuff
+contrail-cloudstack-utils: $(PREP)
+	@echo making rpm for contrail-cloudstack-utils
+	rpmbuild $(RPMBLDOPTS) contrail-cloudstack-utils.spec $(G_TAG)
+
 # Contrail Openstack stuff
 contrail-openstack: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-openstack
