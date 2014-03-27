@@ -1,9 +1,18 @@
 PWD := ${CURDIR}
 SB_TOP := $(PWD:/tools/packaging/common/debian=)
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
 ifdef CONTRAIL_SKU
 else
-  CONTRAIL_SKU := "havana"
+  CONTRAIL_SKU := havana
+endif
+
+VERSION = 
+ifdef TAG
+VERSION = $(SRC_VER)-$(TAG)
+else
+VERSION = $(SRC_VER)-$(BUILDTIME)
 endif
 
 PACKAGES = contrail-libs-deb \
@@ -33,8 +42,14 @@ PACKAGES = contrail-libs-deb \
 	contrail-openstack-vrouter-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
+	contrail-test-deb \
 	euca2ools-deb \
-	contrail-openstack-dashboard-deb
+	contrail-database-venv-deb \
+	contrail-database-deb \
+	python-boto-deb \
+	libvirt-deb \
+	contrail-openstack-dashboard-deb \
+	contrail-ostack-dashboard-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -64,15 +79,38 @@ contrail-install-packages-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
 	rm -rf ${BUILDDIR}
 
+contrail-storage-packages-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-storage-packages)
+	mkdir -p ${BUILDDIR}
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-storage-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules binary && mv ../contrail-storage-packages_*_all.deb ../debian/)
+	@echo "Wrote: ${BUILDDIR}/../debian/contrail-storage-packages_*_all.deb"
+
+contrail-storage-packages-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-storage-packages)
+	rm -rf ${BUILDDIR}
+
 contrail-fabric-utils-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
 	cp -R ${SB_TOP}/third_party/fabric-utils ${BUILDDIR}
 	cp -R contrail-fabric-utils/debian ${BUILDDIR}/debian
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz fabric-utils)
+	@echo "Wrote: $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz"
 
 contrail-fabric-utils-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
+	$(eval TGZ_FILE=$(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz)
 	rm -rf ${BUILDDIR}
+	rm -rf ${TGZ_FILE}
+
+contrail-test-deb:
+	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test)
+	@echo "Wrote: $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz"
+
+contrail-test-clean:
+	$(eval TGZ_FILE=$(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz)
+	rm -rf ${TGZ_FILE}
 
 euca2ools-deb:
 	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
@@ -81,6 +119,15 @@ euca2ools-deb:
 
 euca2ools-clean:
 	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
+	rm -rf ${BUILDDIR}/debian
+
+python-boto-deb:
+	$(eval BUILDDIR=${SB_TOP}/third_party/python-boto)
+	cp -R python-boto/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+python-boto-clean:
+	$(eval BUILDDIR=${SB_TOP}/third_party/python-boto)
 	rm -rf ${BUILDDIR}/debian
 
 contrail-openstack-dashboard-deb:
@@ -93,6 +140,40 @@ contrail-openstack-dashboard-deb:
 contrail-openstack-dashboard-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
 	rm -rf ${BUILDDIR}
+
+contrail-ostack-dashboard-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-ostack-dashboard)
+	mkdir -p ${BUILDDIR}/debian
+	cp -R ${SB_TOP}/distro/openstack/horizon/* ${BUILDDIR}
+	cp -prf ${SB_TOP}/distro/openstack/horizon/.git ${BUILDDIR}
+	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
+		(cp -R contrail-ostack-dashboard/debian/havana/* ${BUILDDIR}/debian); \
+	else \
+		(cp -R contrail-ostack-dashboard/debian/grizzly/* ${BUILDDIR}/debian); \
+	fi
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-ostack-dashboard-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-ostack-dashboard)
+	rm -rf ${BUILDDIR}
+
+libvirt-deb:
+	$(eval LIBDIR=${SB_TOP}/third_party/libvirt)
+	$(eval BUILDDIR=${SB_TOP}/build/debian)
+	rm -rf ${LIBDIR}/libvirt-0.9.8
+	(cd ${LIBDIR}; dpkg-source -x libvirt_0.9.8-2ubuntu17.17.dsc)
+	(cd ${LIBDIR}; patch -p0 -i libvirt.ubuntu.patch)
+	(cd ${LIBDIR}; patch -p0 -i libvirt.ubuntu.test-disable.patch)
+	(cd ${LIBDIR}; patch -p0 -i libvirt_0.9.8_17.17.ubuntu.version.patch)
+	(cd ${LIBDIR}/libvirt-0.9.8; dpkg-buildpackage -b -uc)
+	(cd ${LIBDIR}; mv libvirt0_0.9.8-2ubuntu17.17_amd64.deb ${BUILDDIR})
+	(cd ${LIBDIR}; mv libvirt-bin_0.9.8-2ubuntu17.17_amd64.deb ${BUILDDIR})
+	(cd ${LIBDIR}; mv python-libvirt_0.9.8-2ubuntu17.17_amd64.deb ${BUILDDIR})
+	(cd ${LIBDIR}; rm *.deb)
+
+libvirt-clean:
+	$(eval LIBDIR=${SB_TOP}/third_party/libvirt)
+	rm -rf ${LIBDIR}/libvirt-0.9.8
 
 %-deb:
 	(cd $(@:-deb=); fakeroot debian/rules binary)
@@ -139,3 +220,5 @@ contrail-openstack-control-deb: contrail-control-deb
 contrail-openstack-vrouter-deb: contrail-vrouter-deb
 contrail-openstack-analytics-deb: contrail-analytics-deb
 contrail-openstack-webui-deb: contrail-webui-deb
+contrail-database-deb: contrail-database-venv-deb
+contrail-openstack-database-deb: contrail-database-deb

@@ -176,6 +176,10 @@ class EventManager:
                 from analytics_cpuinfo.ttypes import *
                 from analytics_cpuinfo.cpuinfo.ttypes import *
 
+	if (self.node_type == 'contrail-database'):
+            from database.sandesh.database_cpuinfo.ttypes import *
+            from database.sandesh.database_cpuinfo.cpuinfo.ttypes import *
+
         # following code is node independent
         process_state_list = []
         #sys.stderr.write("Sending whole of process state db as UVE:" + str(self.process_state_db))
@@ -198,7 +202,7 @@ class EventManager:
 
         # send UVE based on node type
         if ( (self.node_type == 'contrail-analytics') or 
-             (self.node_type == 'contrail-config')
+             (self.node_type == 'contrail-config') or (self.node_type == 'contrail-database')
             ):
             mod_cpu_state = ModuleCpuState()
             mod_cpu_state.name = socket.gethostname()
@@ -225,6 +229,7 @@ class EventManager:
 
     def runforever(self, sandeshconn, test=False):
     #sys.stderr.write(str(self.rules_data['Rules'])+'\n')
+        prev_current_time = int(time.time())    
         while 1:
             gevent.sleep(1)
             # we explicitly use self.stdin, self.stdout, and self.stderr
@@ -244,7 +249,6 @@ class EventManager:
                 pname = pheaders['processname']
                 if (pheaders['processname'] != pheaders['groupname']):
                     pname = pheaders['groupname'] + ":" + pheaders['processname']
-                    
                 self.send_process_state(pname, headers['eventname'], pheaders, sandeshconn)
                 for rules in self.rules_data['Rules']:
                     if 'processname' in rules:
@@ -305,7 +309,30 @@ class EventManager:
                         sys.stderr.write('Openstack Nova Compute status unchanged at:' + os_nova_comp.process_state + "\n")
                         
                     self.process_state_db['openstack-nova-compute'] = os_nova_comp
-                             
+
+                current_time = int(time.time())
+                #sys.stderr.write("Time changed %d \n",abs(current_time - prev_current_time)
+                if ((abs(current_time - prev_current_time)) > 300):
+                    #update all process start_times with the updated time
+                    #Compute the elapsed time and subtract them from current time to get updated values
+                    for key in self.process_state_db:
+                        pstat = self.process_state_db[key]
+                        pstat.start_time = str((int(current_time - (prev_current_time-((int)(pstat.start_time))/1000000)))*1000000)
+                        if (pstat.process_state == 'PROCESS_STATE_STOPPED'):
+                            pstat.stop_time = str(int(current_time - (prev_current_time-((int)(pstat.stop_time))/1000000))*1000000)
+                        if (pstat.process_state == 'PROCESS_STATE_EXITED'):
+                            pstat.exit_time = str(int(current_time - (prev_current_time-((int)(pstat.exit_time))/1000000))*1000000)
+                        # update process state database
+                        self.process_state_db[key] = pstat
+                    #sys.stderr.write("Info being written"+str(self.process_state_db))
+                    try:
+                        f = open('/var/log/contrail/process_state' + self.node_type + ".json", 'w')
+                        f.write(json.dumps(self.process_state_db, default=lambda obj: obj.__dict__))
+                    except:
+                        sys.stderr.write("Unable to write json")
+                        pass
+                    self.send_process_state_db(sandeshconn)
+                prev_current_time = int(time.time())
 
             childutils.listener.ok(self.stdout)
 
@@ -381,7 +408,7 @@ def main(argv=sys.argv):
             sandesh_pkg_dir = 'analytics_cpuinfo'
         sandesh_global.init_generator(module_name, socket.gethostname(), 
             node_type_name, instance_id, collector_addr,
-            module_name, 8099, [sandesh_pkg_dir])
+            module_name, 8104, [sandesh_pkg_dir])
         sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-config'):
@@ -449,6 +476,23 @@ def main(argv=sys.argv):
             8102, ['vrouter.vrouter'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
     
+    if (node_type == 'contrail-database'):
+        try:
+            import discovery.client as client
+        except:
+            import discoveryclient.client as client
+
+        module = Module.DATABASE_NODE_MGR
+        module_name = ModuleNames[module]
+        node_type = Module2NodeType[module]
+        node_type_name = NodeTypeNames[node_type]
+        instance_id = INSTANCE_ID_DEFAULT
+        _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
+        sandesh_global.init_generator(module_name, socket.gethostname(),
+            node_type_name, instance_id, [], module_name,
+            8103, ['database.sandesh'], _disc)
+        #sandesh_global.set_logging_params(enable_local_log=True)
+
     gevent.joinall([gevent.spawn(prog.runforever, sandesh_global)])
 
 if __name__ == '__main__':

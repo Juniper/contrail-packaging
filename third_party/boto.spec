@@ -20,7 +20,7 @@ License:	MIT
 Boto is a Python package that provides interfaces to Amazon Web Services.
 
 %build
-pushd %{_builddir}/../third_party/boto
+pushd %{_builddir}/../third_party/python-boto
 %{__python} setup.py build
 popd
 
@@ -28,7 +28,7 @@ popd
 %clean
 
 %install
-pushd %{_builddir}/../third_party/boto
+pushd %{_builddir}/../third_party/python-boto
 %{__python} setup.py install --root=%{buildroot}
 popd
 

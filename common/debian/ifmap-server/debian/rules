@@ -13,11 +13,13 @@ export SB_TOP := $(shell pwd | sed -re "s/(.*)\/build\/third_party\/(.*)/\1/")
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER)-$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 %:
@@ -69,3 +71,5 @@ override_dh_auto_install:
 	install -p -D -m 644 ifmap.kill $(DESTDIR)/etc/contrail/supervisord_config_files/ifmap.kill
 
 override_dh_usrlocal:	
+
+override_dh_shlibdeps:

@@ -97,7 +97,7 @@ if [ $? -ne 0 ] ; then
     echo " sandesh python build failed"
     exit -1
 fi
-scons -U src/discovery:discovery
+scons -U src/discovery:client
 if [ $? -ne 0 ] ; then
     echo " discovery build failed"
     exit -1
@@ -153,6 +153,8 @@ pushd %{_builddir}/..
 install -p -m 755 build/debug/analytics/vizd    %{buildroot}%{_bindir}/vizd
 install -p -m 755 build/debug/query_engine/qed  %{buildroot}%{_bindir}/qed
 install -p -m 755 %{_distropkgdir}/contrail-analytics.rules %{buildroot}%{_supervisordir}/contrail-analytics.rules
+install -D -m 644 controller/src/analytics/collector.conf %{buildroot}/%{_contrailetc}/collector.conf
+install -D -m 644 controller/src/query_engine/query-engine.conf %{buildroot}/%{_contrailetc}/query-engine.conf
 
 #install wrapper scripts for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail_collector_pre  %{buildroot}%{_bindir}/contrail_collector_pre
@@ -188,8 +190,14 @@ pushd %{_builddir}/..
 install -p -m 755 %{_helper} %{buildroot}%{_bindir}/contrail-dbutils
 popd
 install -D -m 644 src/opserver/log.py %{buildroot}%{_contrailutils}/log.py
+install -D -m 644 src/opserver/stats.py %{buildroot}%{_contrailutils}/stats.py
+install -D -m 644 src/opserver/flow.py %{buildroot}%{_contrailutils}/flow.py
 install -D -m 755 src/opserver/contrail-logs %{buildroot}%{_contrailutils}/contrail-logs
 install -D -m 755 src/opserver/contrail-logs %{buildroot}%{_bindir}/contrail-logs
+install -D -m 755 src/opserver/contrail-stats %{buildroot}%{_contrailutils}/contrail-stats
+install -D -m 755 src/opserver/contrail-stats %{buildroot}%{_bindir}/contrail-stats
+install -D -m 755 src/opserver/contrail-flows %{buildroot}%{_contrailutils}/contrail-flows
+install -D -m 755 src/opserver/contrail-flows %{buildroot}%{_bindir}/contrail-flows
 popd
 
 # install etc files
@@ -228,6 +236,8 @@ fi
 %{_bindir}/contrail-dbutils
 %{_bindir}/contrail_collector_pre
 %{_bindir}/contrail_qe_pre
+%config(noreplace) %{_contrailetc}/collector.conf
+%config(noreplace) %{_contrailetc}/query-engine.conf
 %{_venv_root}
 %{_supervisordir}/contrail-collector.ini
 %{_supervisordir}/contrail-opserver.ini
@@ -252,6 +262,16 @@ fi
 %{_contrailutils}/log.py
 %{_contrailutils}/log.pyc
 %{_contrailutils}/log.pyo
+%{_contrailutils}/contrail-flows
+%{_bindir}/contrail-flows
+%{_contrailutils}/flow.py
+%{_contrailutils}/flow.pyc
+%{_contrailutils}/flow.pyo
+%{_contrailutils}/contrail-stats
+%{_bindir}/contrail-stats
+%{_contrailutils}/stats.py
+%{_contrailutils}/stats.pyc
+%{_contrailutils}/stats.pyo
 /usr/share/doc/python-vnc_opserver
 %config(noreplace) %{_contrailetc}/redis-query.conf
 %config(noreplace) %{_contrailetc}/redis-uve.conf
@@ -259,7 +279,6 @@ fi
 %if 0%{?fedora} >= 17
 %{_servicedir}/supervisor-analytics.service
 %endif
-%{_venv_root}/bin/contrail-nodemgr
 
 %changelog
 
