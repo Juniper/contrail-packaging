@@ -213,19 +213,10 @@ xmltodict: $(PREP)
 	@echo making rpm for xmltodict
 	rpmbuild $(RPMBLDOPTS) xmltodict.spec $(G_TAG)
 
-zookeeper: $(PREP)
-	@echo making rpm for zookeeper
-	sed -i 's#<property name="version" value="3.4.3"#<property name="version" value="3.4.3.$(CPLANE_SRC_VER).$(TAG)"#g' $(DISTRO_SRCDIR)/zookeeper/build.xml
-	cd $(DISTRO_SRCDIR)/zookeeper  && \
-	ant rpm
-	cp $(DISTRO_SRCDIR)/zookeeper/build/*[0-9].rpm $(BUILD_BASE)/RPMS/x86_64/
-	cp $(DISTRO_SRCDIR)/zookeeper/build/contrib/zkpython/*[0-9].rpm $(BUILD_BASE)/RPMS/x86_64/
-
-
 all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
 	libvirt puppet python-bitarray python-geventhttpclient python-pycassa python-thrift \
-	redis-py supervisor webob xmltodict zookeeper ixgbe
+	redis-py supervisor webob xmltodict ixgbe
 
 clean:
 	@echo clean
