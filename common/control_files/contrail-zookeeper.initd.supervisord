@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-# chkconfig: 2345 89 01
-# description: Juniper Network Virtualization Zookeeper Server
-
-supervisorctl -s http://localhost:9004 ${1} `basename ${0}`
