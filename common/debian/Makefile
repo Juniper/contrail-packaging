@@ -193,7 +193,7 @@ contrail-openstack-config-deb:
 		(cd $(@:-deb=); fakeroot debian/rules binary); \
 	fi
 
-contrail-openstack-config-grizzly-deb: contrail-config-deb
+contrail-openstack-config-grizzly-deb:
 	if [ '${CONTRAIL_SKU}' = 'grizzly' ]; then \
 		(cd $(@:-deb=); fakeroot debian/rules clean); \
 		(cd $(@:-deb=); fakeroot debian/rules binary); \
