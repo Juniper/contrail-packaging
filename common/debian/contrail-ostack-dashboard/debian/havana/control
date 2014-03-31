@@ -24,3 +24,7 @@ Depends: adduser,
  python-django-horizon,
  ${misc:Depends},
  ${python:Depends}
+Description: django web interface to Openstack built by Contrail
+ The OpenStack Dashboard is a reference implementation of a Django site that
+ uses the Django-Nova project to provide web based interactions with the
+ OpenStack Nova cloud controller.
