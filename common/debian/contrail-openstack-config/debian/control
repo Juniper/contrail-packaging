@@ -10,6 +10,7 @@ Architecture: all
 Maintainer: rrugge <rrugge@juniper.net>
 Depends:
  supervisor,
+ contrail-nodemgr,
  contrail-libs,
  contrail-config-extension,
  contrail-config,
