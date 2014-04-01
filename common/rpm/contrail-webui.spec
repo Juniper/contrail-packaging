@@ -9,7 +9,6 @@
 %endif
 %define		_nodemodules		node_modules/
 %define		_config			contrail-web-core/config
-%define		_contraillogdir		/var/log/contrail
 %define		_contrailuitoolsdir	src/tools
 %define         _supervisordir /etc/contrail/supervisord_webui_files
 
@@ -61,7 +60,6 @@ install -d -m 755 %{buildroot}%{_initddir}
 %endif
 rm -rf %{buildroot}%{_libdir}/node_modules
 rm -rf %{buildroot}%{_contrailetc}
-rm -rf %{buildroot}%{_contraillogdir}
 
 mkdir -p %{buildroot}%{_contrailwebsrc}
 %if 0%{?fedora} >= 17
@@ -69,7 +67,6 @@ mkdir -p %{buildroot}%{_servicedir}
 %endif
 mkdir -p %{buildroot}%{_libdir}/node_modules
 mkdir -p %{buildroot}%{_contrailetc}
-mkdir -p %{buildroot}%{_contraillogdir}
 
 #cp -r -p %{_sourcedir}/%{name}/contrail-ui/* %{buildroot}%{_contrailwebsrc}/
 pushd %{_builddir}/..
@@ -93,7 +90,6 @@ ln -s %{_libdir}/node_modules %{buildroot}%{_contrailwebsrc}/node_modules
 rm %{buildroot}%{_contrailwebsrc}/config/config.global.js
 cp -p %{_config}/config.global.js %{buildroot}%{_contrailetc}/
 ln -s %{_contrailetc}/config.global.js %{buildroot}%{_contrailwebsrc}/config/config.global.js
-touch %{buildroot}%{_contraillogdir}/webui.log
 
 #install .ini files for supervisord
 install -d -m 755 %{buildroot}%{_supervisordir}
@@ -124,7 +120,6 @@ rm -rf %{_specdir}/contrail-webui.spec
 %endif
 %{_libdir}/*
 %config(noreplace) %{_contrailetc}/config.global.js
-%{_contraillogdir}/*
 %{_supervisordir}/*
 %{_contrailetc}/supervisord_webui.conf
 %{_contrailetc}/redis-webui.conf
