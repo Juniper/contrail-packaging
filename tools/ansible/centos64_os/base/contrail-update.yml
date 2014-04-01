@@ -1,0 +1,50 @@
+
+- hosts: contrail
+  user: root
+  tasks:
+    - yum: name="kernel-devel" state=absent
+    - yum: name="kernel-headers" state=absent
+    - copy: src=../../auto/RPMS/kernel-devel-2.6.32-358.el6.x86_64.rpm dest=/tmp/RPMS
+    - copy: src=../../auto/RPMS/kernel-headers-2.6.32-358.el6.x86_64.rpm dest=/tmp/RPMS
+    - command: /bin/rpm -i /tmp/RPMS/kernel-devel-2.6.32-358.el6.x86_64.rpm
+    - command: /bin/rpm -i /tmp/RPMS/kernel-headers-2.6.32-358.el6.x86_64.rpm
+    - yum: name="git" state=installed disablerepo=base,centos_build_repo enablerepo=rpmforge-extras
+    - yum: name="authconfig-gtk" state=installed
+    - yum: name="control-center-filesystem" state=installed
+    - yum: name="cppunit-devel" state=installed
+    - yum: name="firstboot" state=installed
+    - yum: name="glibc.i686" state=installed
+    - yum: name="glibc-headers" state=installed
+    - yum: name="gnome-icon-theme" state=installed
+    - yum: name="gnome-themes" state=installed
+    - yum: name="gtk2-engines" state=installed
+    - yum: name="libcurl-devel" state=installed
+    - yum: name="libtool" state=installed
+    - yum: name="metacity" state=installed
+    - yum: name="perl-DBI" state=installed
+    - yum: name="perl-Error" state=installed
+    - yum: name="perl-Git" state=installed
+    - yum: name="perl-Test-Harness" state=installed
+    - yum: name="perl-Test-Simple" state=installed
+    - yum: name="perl-YAML" state=installed
+    - yum: name="python-decoratortools" state=installed
+    - yum: name="python-ethtool" state=installed
+    - yum: name="python-peak-rules" state=installed
+    - yum: name="python-peak-util-addons" state=installed
+    - yum: name="python-peak-util-assembler" state=installed
+    - yum: name="python-peak-util-extremes" state=installed
+    - yum: name="python-peak-util-symbols" state=installed
+    - yum: name="rsync" state=installed
+    - yum: name="rsyslog" state=installed
+    - yum: name="setuptool" state=installed
+    - yum: name="subversion-perl" state=installed
+    - yum: name="system-config-users" state=installed
+    - yum: name="system-config-users-docs" state=installed
+    - yum: name="systemtap-sdt-devel" state=installed
+    - yum: name="xdg-utils" state=installed
+    - yum: name="gcc" state=installed
+    - yum: name="gcc-c++" state=installed
+    - yum: name="devtoolset-1.1-gcc-c++" state=installed
+    - yum: name="libnl-devel" state=installed
+    - yum: name="libcap-ng-devel" state=installed
+    - yum: name="audit-libs-devel" state=installed

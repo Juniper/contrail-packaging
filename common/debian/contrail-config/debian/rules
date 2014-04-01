@@ -29,11 +29,13 @@ export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 
 __python ?= /usr/bin/python
 
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(TAG)
+BUILDTAG = $(SRC_VER)-$(TAG)
 else
-BUILDTAG = $(BUILDTIME)
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 TARGETS=controller/src/api-lib \
@@ -100,3 +102,5 @@ override_dh_auto_install:
 	install -d -m 777 $(buildroot)$(_localstatedir)/log/contrail
 
 override_dh_usrlocal:	
+
+override_dh_shlibdeps:

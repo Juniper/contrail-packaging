@@ -18,6 +18,8 @@ Depends:
  python-keystoneclient,
  contrail-setup, haproxy,
  euca2ools,
+ rabbitmq-server,
+ python-qpid,
  python-iniparse,
  supervisor
 Section: contrail-openstack-config

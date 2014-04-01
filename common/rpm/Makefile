@@ -34,6 +34,7 @@ ifdef CONTRAIL_SKU
 else
   CONTRAIL_SKU := "grizzly"
 endif
+G_TAG += --define "_skuTag $(CONTRAIL_SKU)"
 
 
 $(PPREP):
@@ -130,6 +131,11 @@ venv-packages: packaging
 packaging: contrail-api-venv contrail-analytics-venv contrail-vrouter-venv contrail-control-venv \
 	contrail-database-venv
 
+# Contrail Cloudstack stuff
+contrail-cloudstack-utils: $(PREP)
+	@echo making rpm for contrail-cloudstack-utils
+	rpmbuild $(RPMBLDOPTS) contrail-cloudstack-utils.spec $(G_TAG)
+
 # Contrail Openstack stuff
 contrail-openstack: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-openstack
@@ -199,13 +205,13 @@ contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
 	rpmbuild $(RPMBLDOPTS) contrail-install-packages.spec  $(G_TAG)
 
-contrail-database: $(PREP)
+contrail-database: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-database
 	cp contrail-database.spec $(BUILD_BASE)/SPECS/
 	cp ../control_files/contrail-database.initd $(BUILD_SRC)/
 	cp ../control_files/supervisord_contrail_database.conf $(BUILD_SRC)/
 	cp ../control_files/supervisord_contrail_database.initd $(BUILD_SRC)/
-	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-database.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-database.spec $(G_TAG) $(RPM_PY)
 
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \

@@ -4,11 +4,7 @@ start on runlevel [2345]
 stop on runlevel [016]
 
 pre-start script
-    kver=`uname -r`
-    if [ -z `lsmod | grep vrouter` ]; then 
-        insmod /lib/modules/$kver/extra/net/vrouter/vrouter.ko
-    fi
-    /etc/init.d/networking restart
+    /opt/contrail/bin/vrouter-pre-start.sh
     ulimit -s unlimited
     ulimit -c unlimited
     ulimit -d unlimited

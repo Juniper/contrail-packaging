@@ -18,6 +18,23 @@ all: ${PACKAGES}
 clean: $(PACKAGES:%-deb=%-clean)
 	@echo "Clean"
 
+openstack-nova-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/openstack/nova)
+	$(eval DISTRODIR=${SB_TOP}/distro/openstack/nova)
+	if test -d ${DISTRODIR}; then \
+		mkdir -p ${SB_TOP}/build/openstack; \
+		cp -R ${SB_TOP}/distro/openstack/nova ${BUILDDIR}; \
+		cp -R openstack-nova/debian ${BUILDDIR}/debian; \
+		(if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
+			(cp openstack-nova/debian/changelog.havana ${BUILDDIR}/debian/changelog); \
+		fi); \
+		(cd ${BUILDDIR}; fakeroot debian/rules binary); \
+	fi
+
+openstack-nova-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/openstack/nova)
+	rm -rf ${BUILDDIR}
+
 %-deb:
 	$(eval PKGNAME:=$(@:openstack-%-deb=%))
 	$(eval BUILDDIR=${SB_TOP}/build/openstack/${PKGNAME})

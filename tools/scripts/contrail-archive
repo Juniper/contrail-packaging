@@ -6,7 +6,6 @@ import sys
 import glob
 import shlex
 import subprocess
-import shutil
 
 archiveBaseDir = "/volume/junosv-storage01/contrail/"
 
@@ -61,9 +60,16 @@ class ContrailArchive(object):
         """
         print "Archiving build to: %s" % self.opt.archive_path
 
+        pkg_repo = "store/" + self.opt.build_num + "/pkg_repo"
+        if os.path.isdir(pkg_repo):
+            command = "rm -rf " + pkg_repo
+            execute(command, ignore_errors=True)
+            
         sandbox_path = os.getcwd()
 
-        os.mkdir ("build-info")
+        if not os.path.isdir ("build-info"):
+            os.mkdir ("build-info")
+
         command = "cp  third_party/packages.xml build-info/third_party_packages.xml"
         execute (command, ignore_errors=False)
         command = "cp  distro/third_party/packages.xml build-info/distro_packages.xml"
@@ -76,20 +82,21 @@ class ContrailArchive(object):
         command = "tar czf catalog.tgz build-info"
         execute (command, ignore_errors=False)
 
-        command = "rm -rf build-info"
-        execute(command, ignore_errors=False)
+        # command = "rm -rf build-info"
+        # execute(command, ignore_errors=False)
 
         path = self.opt.archive_path + "/build-info"
-        os.mkdir (path)
+        # os.mkdir (path)
 
         command = "cp catalog.tgz " + path
         execute(command, ignore_errors=False)
 
 
-        os.mkdir (self.opt.archive_path + "/artifacts")
-        store_path = sandbox_path + "/build/artifacts"
-        os.chdir (store_path)
-        command = "cp -r . " + self.opt.archive_path + "/artifacts"
+        # No longer have to make this diretory
+        # os.mkdir (self.opt.archive_path + "/artifacts")
+        store_path = sandbox_path + "/build"
+        os.chdir(store_path)
+        command = "cp -r artifacts* " + self.opt.archive_path
         execute(command, ignore_errors=False)
         os.chdir (sandbox_path)
 
@@ -115,6 +122,11 @@ class ContrailArchive(object):
         for files in glob.iglob("contrail-install*"):
             command = "cp " + files + " .."
             execute(command, ignore_errors=False)
+
+        for files in glob.iglob("*.iso"):
+            command = "cp " + files + " .."
+            execute(command, ignore_errors=False)
+
 
 
         """

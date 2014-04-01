@@ -30,12 +30,15 @@ class AnsibleConfig(object):
 
         if self.opt.hostname == 'localhost':
             print "Can't have hostname of localhost"
-            sys.exit()
+            sys.exit(1)
 
-        self.opt.ip = socket.gethostbyname(self.opt.hostname)
-        if self.opt.ip == '127.0.0.1':
+        if not self.opt.ip:
+            self.opt.ip = socket.gethostbyname(self.opt.hostname)
+
+        if self.opt.ip == '127.0.0.1' or self.opt.ip == '127.0.1.1':
              print 'Cannot get the local IP address \n' \
-                   'Edit your /etc/hosts and remove your hostname from the loopback line (127.0.0.1)'
+                   'Edit your /etc/hosts and remove your hostname from the loopback line (127.0.0.1) or ' \
+                   'specify your external IP with the -i switch'
              sys.exit(1)
 
         if self.opt.local_file:
@@ -76,7 +79,7 @@ class AnsibleConfig(object):
         print "VM should be configured, but please check the log file for errors or warnings"
         print "Only errors running the ansible command itself will be printed here"
         print "Any errors installing packages will be in the log file."
-        
+
     def key (self):
 
         """ Key from contrail-ec-build03
@@ -129,11 +132,13 @@ class AnsibleConfig(object):
 
         print "Adding host key to remote known_hosts"
 
-        command = "sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no /etc/ssh/ssh_host_rsa_key.pub " + "contrail@" + self.opt.remote_hostname + ":"
+        command = "sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no /etc/ssh/ssh_host_rsa_key.pub "\
+                  + "contrail@" + self.opt.remote_hostname + ":"
         command += "ssh_host_rsa_key.pub." + self.opt.hostname
         execute (command, ignore_errors=False)
 
-        command = "sshpass -p c0ntrail123 ssh contrail@" + self.opt.remote_hostname + " install-key " + self.opt.hostname + " " + self.opt.ip
+        command = "sshpass -p c0ntrail123 ssh contrail@" + self.opt.remote_hostname + " install-key " + \
+                  self.opt.hostname + " " + self.opt.ip
         execute (command, ignore_errors=False)
 
 
@@ -170,6 +175,9 @@ def parse_options(args):
 
     parser.add_argument('-n', '--name', nargs='?', dest='hostname',
                         help='local hostname,')
+
+    parser.add_argument('-i', '--ip', nargs='?', dest='ip',
+                        help='local IP address,')
 
     parser.add_argument('-r', '--remote', nargs='?', dest='remote_hostname',
                         default='contrail-ec-build03',
@@ -220,11 +228,11 @@ if __name__ == '__main__':
 
     if not cmd_exists("scp"):
         print "Error: Missing scp command.  Please install the ssh clients and utilities"
-	sys.exit(1)
+        sys.exit(1)
 
     if not cmd_exists("sshpass"):
         print "Missing sshpass command.  Please install the sshpass command"
-	sys.exit(1)
+        sys.exit(1)
 
     if config.opt.command == 'key':
         config.key()
@@ -234,5 +242,5 @@ if __name__ == '__main__':
         config.config()
         sys.exit(0)
 
-    print "Unknown command: ", config.opt.command
+    print "Unknown command: %s " % config.opt.command
     sys.exit(1)

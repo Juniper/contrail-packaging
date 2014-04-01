@@ -102,6 +102,8 @@ install -D -m 755 %{_distropkgdir}/contrail-control.initd.supervisord %{buildroo
 #install files
 install -d -m 755 %{buildroot}%{_bindir}
 install -p -m 755 build/debug/control-node/control-node %{buildroot}%{_bindir}/control-node
+install -D -m 644 controller/src/control-node/control-node.conf %{buildroot}/%{_contrailetc}/control-node.conf
+install -D -m 644 controller/src/dns/dns.conf %{buildroot}/%{_contrailetc}/dns.conf
 
 #install .ini files for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_control.conf %{buildroot}%{_contrailetc}/supervisord_control.conf
@@ -134,9 +136,9 @@ tar zxf %{_build_dist}/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz
 pushd sandesh-0.1dev
 %{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
 popd
-tar zxf %{_build_dist}/discovery/dist/discovery-0.1dev.tar.gz 
-pushd discovery-0.1dev
-%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
+tar zxf %{_build_dist}/discovery/client/dist/discoveryclient-0.1dev.tar.gz
+pushd discoveryclient-0.1dev
+%{__python}  setup.py install --root=%{buildroot} %{?_venvtr}
 popd
 
 %files
@@ -160,6 +162,8 @@ popd
 %endif
 
 %config(noreplace) /etc/contrail/control_param
+%config(noreplace) %{_contrailetc}/control-node.conf
+%config(noreplace) %{_contrailetc}/dns.conf
 %{_venv_root}/bin/contrail-nodemgr
 
 %post

@@ -76,6 +76,7 @@ install -p -m 755 build/lib/libboost_filesystem.so.1.48.0 %{buildroot}%{_libdir}
 install -p -m 755 build/lib/libboost_regex.so.1.48.0           %{buildroot}%{_libdir}/contrail/libboost_regex.so.1.48.0
 install -p -m 755 build/lib/libboost_system.so.1.48.0          %{buildroot}%{_libdir}/contrail/libboost_system.so.1.48.0
 install -p -m 755 build/lib/libboost_python.so.1.48.0          %{buildroot}%{_libdir}/contrail/libboost_python.so.1.48.0
+install -p -m 755 build/lib/libboost_chrono.so.1.48.0          %{buildroot}%{_libdir}/contrail/libboost_chrono.so.1.48.0
 install -p -m 755 build/lib/liblog4cplus-1.1.so.7.0.0          %{buildroot}%{_libdir}/contrail/liblog4cplus-1.1.so.7.0.0
 
 #if [ $(grep -c XenServer /etc/redhat-release) -gt 0 ]; then
@@ -97,6 +98,7 @@ ln -sf libboost_system.so.1.48.0          	%{buildroot}%{_libdir}/contrail/libbo
 ln -sf libboost_python.so.1.48.0          	%{buildroot}%{_libdir}/contrail/libboost_python.so
 ln -sf liblog4cplus-1.1.so.7.0.0    	  	%{buildroot}%{_libdir}/contrail/liblog4cplus-1.1.so.7
 ln -sf liblog4cplus-1.1.so.7.0.0    	  	%{buildroot}%{_libdir}/contrail/liblog4cplus-1.1.so
+ln -sf libboost_chrono.so.1.48.0    	  	%{buildroot}%{_libdir}/contrail/libboost_chrono.so
 
 %post -p /sbin/ldconfig
 
