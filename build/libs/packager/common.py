@@ -47,21 +47,20 @@ class BasePackager(Utils):
         self.pkg_type              = pkg_types[self.platform]
         self.pkg_repo              = os.path.join(self.store, 'pkg_repo')
         self.store_log_dir         = os.path.join(self.store, 'log')
-        self.contrail_pkgs_store   = os.path.join(self.store, 'contrail_packages')
         self.artifacts_dir         = os.path.join(self.git_local_repo, 'build', 'artifacts')
         self.artifacts_extra_dir   = os.path.join(self.git_local_repo, 'build', 'artifacts_extra')
-        self.pkgs_tgz              = os.path.join(self.contrail_pkgs_store,
-                                                  'contrail_%ss.tgz' %self.pkg_type)
         self.pkglist_file          = os.path.join(self.store_log_dir, 
                                                   '%s_list.txt' %self.pkg_type)
+        self.meta_pkgs             = []
         self.packager_dir          = os.getcwd()
-        self.contrail_pkgs_tgz     = ''
         self.base_pkgs             = {}
         self.depends_pkgs          = {}
         self.contrail_pkgs         = {}
         self.imgname               = ''
+        self.repo_dirs             = []
         self.targets               = []
 
+            
     def setup_env(self):
         ''' setup basic environment necessary for packager like
             updating config data structures, creating dirs,
@@ -72,10 +71,6 @@ class BasePackager(Utils):
         # Temporarily override user input for branch
         self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
                                              %self.git_local_repo)[0]
-        # ** Attn: Not using branch info in build tag for now ***
-        contrail_pkgs_name = 'contrail_packages_%s-%s~%s.tgz' %(self.branch, 
-                              self.id, self.sku)
-        self.contrail_pkgs_tgz = os.path.join(self.packager_dir, contrail_pkgs_name)
         
         # get pkg info
         additems = {'found_at': {}}
@@ -83,13 +78,19 @@ class BasePackager(Utils):
         self.depends_pkgs = self.parse_cfg_file(self.depends_pkg_files)
         self.contrail_pkgs = self.parse_cfg_file(self.contrail_pkg_files, additems)
 
+        # update repo dir with store dir prefix and get repo list
+        self.update_repodir(self.base_pkgs, self.depends_pkgs,
+                                           self.contrail_pkgs)
+        self.repo_dirs = self.get_repodirs(self.base_pkgs, self.depends_pkgs, 
+                                           self.contrail_pkgs)
+
         # create dirs
         self.create_dir(self.store)
-        self.create_dir(self.pkg_repo)
-        self.create_dir(self.contrail_pkgs_store)
         self.create_dir(self.store_log_dir)
         self.create_dir(self.artifacts_dir)
         self.create_dir(self.artifacts_extra_dir)
+        for dirname in self.repo_dirs:
+            self.create_dir(dirname)
 
         # Update make location with git local repo
         for target in self.contrail_pkgs.keys():
@@ -127,13 +128,13 @@ class BasePackager(Utils):
             self.targets += self.rtrv_lsv_file_info(self.make_targets_file)
        
         # Skip building all packages but not those supplied
-        # in self.targets and contrail-install-packages
+        # in self.targets and self.meta_pkgs
         # Update built loc and create support files
         if self.contrail_pkg_dirs:
             # update build location if contrail dir is supplied
             for target in self.contrail_pkgs.keys():
                 if target in self.targets or \
-                   'contrail-install-packages' in target:
+                   target in self.meta_pkgs:
                     continue
                 self.contrail_pkgs[target]['builtloc'] = self.contrail_pkg_dirs
 
@@ -162,8 +163,8 @@ class BasePackager(Utils):
         # OS PKGs and Depends PKGs
         self.check_package_md5(self.base_pkgs)
         self.check_package_md5(self.depends_pkgs)
-        self.copy_pkg_files(self.depends_pkgs, self.pkg_repo)
-        self.copy_pkg_files(self.base_pkgs, self.pkg_repo)
+        self.copy_pkg_files(self.depends_pkgs)
+        self.copy_pkg_files(self.base_pkgs)
 
     def make_pkgs(self):
         ''' make package with given TAG '''
@@ -301,19 +302,18 @@ class BasePackager(Utils):
             fd.write('%end\n')
         return ks_file
 
-    def createrepo(self, dirname=os.getcwd(), extraargs=''):
+    def createrepo(self, extraargs=''):
         ''' execute create repo '''
-        log.info('Executing createrepo...')
-        self.exec_cmd('createrepo %s .' %extraargs, wd=dirname)   
+        for repo_dir in self.repo_dirs:
+            log.info('Executing createrepo in (%s)...' %repo_dir)
+            self.exec_cmd('createrepo %s .' %extraargs, wd=repo_dir)   
                 
-    def create_contrail_pkg(self): 
-        ''' make contrail-install-package after creating necessary
-            tgz files
+    def create_contrail_pkg(self, *pkgs): 
+        ''' make meta packages
         '''
-        # create contrail_packages_(branch-|branch.)(id).tgz
-        self.create_tgz(self.contrail_pkgs_tgz, self.contrail_pkgs_store)
         #make contrail-install-packages
-        pkginfo = self.contrail_pkgs['contrail-install-packages']
-        cleanerpkg = re.sub(r'-deb$', '-clean', pkginfo['target'])
-        self.exec_cmd('make CONTRAIL_SKU=%s TAG=%s %s %s' %(self.sku, self.id, 
-                           cleanerpkg, pkginfo['target']), pkginfo['makeloc'])
+        for pkg in pkgs:
+            pkginfo = self.contrail_pkgs[pkg]
+            cleanerpkg = re.sub(r'-deb$', '-clean', pkginfo['target'])
+            self.exec_cmd('make CONTRAIL_SKU=%s TAG=%s %s %s' %(self.sku, self.id, 
+                            cleanerpkg, pkginfo['target']), pkginfo['makeloc'])

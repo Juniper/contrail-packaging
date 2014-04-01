@@ -62,6 +62,7 @@ ifmap-server-deb:
 	mkdir -p ${SB_TOP}/third_party
 	cp -R ${SB_TOP}/third_party/ifmap-server ${BUILDDIR}
 	cp -R ifmap-server/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 ifmap-server-clean:
@@ -72,6 +73,7 @@ contrail-install-packages-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
 	mkdir -p ${BUILDDIR}
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-install-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary && mv ../contrail-install-packages_*_all.deb ../debian/)
 	@echo "Wrote: ${BUILDDIR}/../debian/contrail-install-packages_*_all.deb"
 
@@ -79,10 +81,22 @@ contrail-install-packages-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
 	rm -rf ${BUILDDIR}
 
+contrail-storage-packages-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-storage-packages)
+	mkdir -p ${BUILDDIR}
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-storage-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules binary && mv ../contrail-storage-packages_*_all.deb ../debian/)
+	@echo "Wrote: ${BUILDDIR}/../debian/contrail-storage-packages_*_all.deb"
+
+contrail-storage-packages-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/contrail-storage-packages)
+	rm -rf ${BUILDDIR}
+
 contrail-fabric-utils-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
 	cp -R ${SB_TOP}/third_party/fabric-utils ${BUILDDIR}
 	cp -R contrail-fabric-utils/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz fabric-utils)
 	@echo "Wrote: $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz"
@@ -97,13 +111,14 @@ contrail-test-deb:
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test)
 	@echo "Wrote: $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz"
 
-contrail-test-deb-clean:
+contrail-test-clean:
 	$(eval TGZ_FILE=$(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz)
 	rm -rf ${TGZ_FILE}
 
 euca2ools-deb:
 	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
 	cp -R euca2ools/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 euca2ools-clean:
@@ -113,6 +128,7 @@ euca2ools-clean:
 python-boto-deb:
 	$(eval BUILDDIR=${SB_TOP}/third_party/python-boto)
 	cp -R python-boto/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 python-boto-clean:
@@ -165,18 +181,21 @@ libvirt-clean:
 	rm -rf ${LIBDIR}/libvirt-0.9.8
 
 %-deb:
+	(cd $(@:-deb=); fakeroot debian/rules clean)
 	(cd $(@:-deb=); fakeroot debian/rules binary)
 
 %-clean:
 	(cd $(@:-clean=); fakeroot debian/rules clean)
 
-contrail-openstack-config-deb: contrail-config-deb
+contrail-openstack-config-deb:
 	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
+		(cd $(@:-deb=); fakeroot debian/rules clean); \
 		(cd $(@:-deb=); fakeroot debian/rules binary); \
 	fi
 
-contrail-openstack-config-grizzly-deb: contrail-config-deb
+contrail-openstack-config-grizzly-deb:
 	if [ '${CONTRAIL_SKU}' = 'grizzly' ]; then \
+		(cd $(@:-deb=); fakeroot debian/rules clean); \
 		(cd $(@:-deb=); fakeroot debian/rules binary); \
 	fi
 
@@ -199,15 +218,3 @@ contrail-vrouter-deb: contrail-libs-deb
                 (cd contrail-vrouter; fakeroot debian/rules clean); \
 		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
         fi
-
-contrail-config-deb: contrail-config-venv-deb
-contrail-analytics-deb: contrail-analytics-venv-deb
-contrail-webui-deb: contrail-nodejs-deb
-contrail-dns-deb: contrail-libs-deb
-contrail-nodemgr-deb: contrail-api-lib-deb
-contrail-openstack-control-deb: contrail-control-deb
-contrail-openstack-vrouter-deb: contrail-vrouter-deb
-contrail-openstack-analytics-deb: contrail-analytics-deb
-contrail-openstack-webui-deb: contrail-webui-deb
-contrail-database-deb: contrail-database-venv-deb
-contrail-openstack-database-deb: contrail-database-deb
