@@ -64,6 +64,7 @@ echo "DEST_MODULE_LOCATION[0]=\"/extra/net/vrouter\"" >> %{buildroot}%{_srcdir}/
 echo "BUILT_MODULE_NAME[0]=\"vrouter\"" >> %{buildroot}%{_srcdir}/dkms.conf
 echo "PACKAGE_NAME=vrouter" >> %{buildroot}%{_srcdir}/dkms.conf
 echo "PACKAGE_VERSION=%{_relstr}" >> %{buildroot}%{_srcdir}/dkms.conf
+echo "AUTOINSTALL=\"yes\"" >> %{buildroot}%{_srcdir}/dkms.conf
 
 install -D -p -m 755 vrouter/dp-core/vnsw_ip4_mtrie.c %{buildroot}%{_srcdir}/dp-core/vnsw_ip4_mtrie.c
 install -D -p -m 755 vrouter/dp-core/vr_bridge.c      %{buildroot}%{_srcdir}/dp-core/vr_bridge.c

@@ -9,6 +9,13 @@
 #
 export DH_VERBOSE=1
 
+export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+export buildroot := $(SB_TOP)/build/debian/contrail-vrouter-src-dkms
+export _srcdir := ${SB_TOP}/vrouter/
+export _sandesh_srcdir := ${SB_TOP}/tools/sandesh/
+export _builddir := $(SB_TOP)/build/debug/vrouter/
+
 BUILDTAG =
 ifdef TAG
 BUILDTAG = $(TAG)
@@ -16,22 +23,11 @@ else
 BUILDTAG = $(BUILDTIME)
 endif
 
-export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
-
-export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export buildroot := $(SB_TOP)/build/debian/contrail-vrouter-src-dkms
-
-export _srcdir := ${SB_TOP}/vrouter/
-export _sandesh_srcdir := ${SB_TOP}/tools/sandesh/
-export _builddir := $(SB_TOP)/build/debug/vrouter/
-
 export _target_srcroot := /usr/src/vrouter-$(BUILDTAG)/
-
 export _packagedir := $(buildroot)/$(_target_srcroot)
 export _package_builddir := $(buildroot)/$(_target_builddir)
-
 export _arch := x86_64
-export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+
 
 %:
 	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
@@ -58,6 +54,7 @@ override_dh_auto_install:
 	echo "BUILT_MODULE_NAME[0]=\"vrouter\"" >> $(_packagedir)/dkms.conf
 	echo "PACKAGE_NAME=vrouter" >> $(_packagedir)/dkms.conf
 	echo "PACKAGE_VERSION=$(BUILDTAG)" >> $(_packagedir)/dkms.conf
+	echo "AUTOINSTALL=\"yes\"" >> $(_packagedir)/dkms.conf
 
 
 	install -p -m 755 $(_srcdir)/dp-core/SConscript $(_packagedir)/dp-core/SConscript
