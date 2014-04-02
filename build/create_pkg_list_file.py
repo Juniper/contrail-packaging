@@ -13,11 +13,12 @@ def parse_args(args):
     '''Parse CLI args and return the parser'''
     pkg_types = {'centos': 'rpm', 'redhat': 'rpm', 'fedora': 'rpm', 'ubuntu': 'deb'}
     parser = argparse.ArgumentParser(description='Package List file Generator')
+    platform_dist = map(str.lower, platform.linux_distribution())
     parser.add_argument('-d', '--dist',
                         action='store',
                         dest='dist',
                         metavar='Distribution',
-                        default=map(str.lower, platform.dist())[0],
+                        default="".join(platform_dist[0:2]).replace('.', ''),
                         help='Specify Distribution, eg: ubuntu, centos, fedora')
     parser.add_argument('-s', '--sku',
                         action='store',
@@ -32,7 +33,8 @@ def parse_args(args):
         sys.exit(2)
     ns, files = parser.parse_known_args(args)
     if len(files) == 0:
-        files = [os.path.abspath('%s_list.txt' %pkg_types[ns.dist])]
+        pkg_os = filter(lambda pkg: ns.dist.startswith(pkg), pkg_types.keys())
+        files = [os.path.abspath('%s_list.txt' % pkg_types[pkg_os[0]])]
     return ns, files[0]
 
 def get_conf_file(sku, dist):
@@ -40,7 +42,7 @@ def get_conf_file(sku, dist):
     cmd = 'repo info contrail-packaging | grep "Mount path" | cut -f3 -d " "'
     repo_top_cmd = os.popen(cmd)
     repo_top = repo_top_cmd.read().strip('\n')
-    conf_file = os.path.join(repo_top, 'build', 'pkg_configs',
+    conf_file = os.path.join(repo_top, 'build', 'package_configs',
                              dist, sku, 'contrail_packages.cfg')
     if not os.path.isfile(conf_file):
         raise RuntimeError('Config file (%s) do not exists...' %conf_file)
