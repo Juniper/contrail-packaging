@@ -304,7 +304,7 @@ class BasePackager(Utils):
                     ids_dict[gitid] = url
                     break
                 finally:
-                    elif retry == retries - 1 and gitid == '':
+                    if retry == retries - 1 and gitid == '':
                         log.error('Unable to retrieve Git ID for URL (%s)' % url)
                         log.error('Skipping...')
                         
