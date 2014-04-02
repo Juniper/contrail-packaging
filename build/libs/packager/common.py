@@ -95,7 +95,7 @@ class BasePackager(Utils):
                 log.info('Packager Store: %s' % self.store)
                 log.info('Packager Completed Successfully for Type (%s)' % pkgtype)
                 log.info('\n')
-           except:
+            except:
                 self.exec_status = 255
                 log.error('Packager Failed for Type (%s)' % pkgtype)
                 log.error('Skipping rest of the steps for Type (%s)' % pkgtype)
