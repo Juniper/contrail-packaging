@@ -135,6 +135,11 @@ python-boto:
 	@echo making rpm for python-boto
 	rpmbuild $(RPMBLDOPTS) boto.spec $(G_TAG)
 
+python-bottle:
+	@echo making rpm for python-bottle
+	cp $(DISTRO_SRCDIR)/bottle-0.11.6.tar.gz  $(BUILD_BASE)/SOURCES/ && \
+	rpmbuild --define '_topdir $(BUILD_BASE)' -bb python-bottle.spec $(G_TAG)
+
 
 libvirt-client: libvirt
 libvirt-devel: libvirt
@@ -216,7 +221,7 @@ xmltodict: $(PREP)
 all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
 	libvirt puppet python-bitarray python-geventhttpclient python-pycassa python-thrift \
-	redis-py supervisor webob xmltodict ixgbe
+	redis-py supervisor webob xmltodict ixgbe python-bottle
 
 clean:
 	@echo clean
