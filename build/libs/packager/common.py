@@ -45,7 +45,6 @@ class BasePackager(Utils):
         self.platform              = PLATFORM[0]
         self.cache_subdir          = "".join(PLATFORM[:2]).lower().replace('.', '')
         self.pkg_type              = pkg_types[self.platform]
-        self.pkg_repo              = os.path.join(self.store, 'pkg_repo')
         self.store_log_dir         = os.path.join(self.store, 'log')
         self.artifacts_dir         = os.path.join(self.git_local_repo, 'build', 'artifacts')
         self.artifacts_extra_dir   = os.path.join(self.git_local_repo, 'build', 'artifacts_extra')
@@ -281,7 +280,7 @@ class BasePackager(Utils):
             fid.write("%s\n" %"\n".join(sorted(filelist)))
             fid.flush()
 
-    def create_git_ids(self, manifest=None, filename=None):
+    def create_git_ids(self, manifest=None, filename=None, retries=5):
         filename = filename or os.path.join(self.store, 'git_build_%s.txt' %self.id)
         manifest = manifest or os.path.join(self.git_local_repo, '.repo', 'manifest.xml')
         ids_dict = {}
@@ -293,11 +292,26 @@ class BasePackager(Utils):
                                                                '.git', 'config'))
             url = parsed_element[r'remote "%s"' %element_dict['remote']]['url']
             cmd = 'git ls-remote %s %s' %(url, element_dict.get('revision', 'HEAD'))
-            id = self.exec_cmd_out(cmd)[0].split('\t')[0]
-            ids_dict[id] = url
+            for retry in range(retries):
+                gitid = ''
+                try:
+                    gitid_info = self.exec_cmd_out(cmd)
+                except:
+                    log.warn('Retrieve GIT ID for URL (%s) Failed'\
+                             ' Retrying...' % cmd)
+                else:
+                    gitid = gitid_info[0].split('\t')[0]
+                    ids_dict[gitid] = url
+                    break
+                finally:
+                    elif retry == retries - 1 and gitid == '':
+                        log.error('Unable to retrieve Git ID for URL (%s)' % url)
+                        log.error('Skipping...')
+                        
         with open(filename, 'w') as file_id:
             #id_list = ['%s\t%s' %(item, key) for key, item in ids_dict.items()]
-            id_list = ['{0:<60}    {1:<}'.format(item, key) for key, item in ids_dict.items()]
+            id_list = ['{0:<60}    {1:<}'.format(item, key) \
+                           for key, item in ids_dict.items()]
             file_id.write('%s\n' %"\n".join(id_list))
             file_id.flush()
         return filename
@@ -327,18 +341,20 @@ class BasePackager(Utils):
 
     def create_comps_xml (self):
         ''' create comps xml need for repo creation '''
+        repo_dir = os.path.join(self.store, self.meta_pkg)
         pkgs = ['%s<packagereq type="mandatory">%s</packagereq>' % (' '*6, pkg)\
                 for pkg in self.base_pkgs.keys()]
         template = self.comps_xml_template.format(__packagesinfo__='\n'.join(pkgs))
-        with open(os.path.join(self.pkg_repo, 'comps.xml'), 'w') as fd:
+        with open(os.path.join(repo_dir, 'comps.xml'), 'w') as fd:
             fd.write ('%s' %template)
             
     def create_ks(self):
         ''' create kick start file need for pungi '''
         ks_file = os.path.join (self.store, 'cf.ks')
+        repo_dir = os.path.join(self.store, self.meta_pkg)
         with open (ks_file, 'w') as fd:
             fd.write('repo --name=jnpr-ostk-%s --baseurl=file://%s\n' %(
-                      self.iso_prefix, self.pkg_repo))
+                      self.iso_prefix, repo_dir))
             fd.write('%packages --nobase\n')
             fd.write('@core\n')
             fd.write('%end\n')
