@@ -22,4 +22,4 @@ class Packager(BasePackager):
         self.copy_built_pkg_files(self.meta_pkg,
                                   extra_dirs=self.store)
         self.create_log()
-        self.create_git_ids()
+        #self.create_git_ids()
