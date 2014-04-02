@@ -19,8 +19,8 @@ from templates import comps_xml
 
 # Import packager based on distribution
 sys.path.append(os.path.abspath(os.path.join('libs', 'packager')))
-PLATFORM = platform.dist()[0].lower()
-packager = __import__('%s_packager' %PLATFORM)
+PLATFORM = Utils.get_platform_info()
+packager = __import__('%s_packager' % PLATFORM[0])
 
 log = logging.getLogger("pkg.%s" %__name__)
 
@@ -55,40 +55,35 @@ class PackagerArgParser(Utils):
         return dirnames
 
     def set_cli_defaults(self):
-        dist = list(platform.dist())
-        dist = [dist[0].lower()] + dist[1:]
+        dist_dir = "".join(PLATFORM[:2]).replace('.', '')
         cwd = os.getcwd()
         timestamp = time.strftime('%m%d%y%H%M%S')
         logname = 'packager_{id}_%s.log' %timestamp
-        logfile = os.path.join(cwd, 'logs', logname)
-        pkg_file_dir = os.path.join(cwd, 'pkg_configs')
-        base_pkg_file = 'base_*_pkgs.cfg'
-        deps_pkg_file = 'depends_*_pkgs.cfg'
-        cont_pkg_file = 'contrail_packages.cfg'
-        usrhome = os.path.expanduser('~')
+        pkg_file_dir = os.path.join(cwd, 'package_configs')
+        base_pkg_file = 'base*_packages.cfg'
+        deps_pkg_file = 'depends*_packages.cfg'
+        cont_pkg_file = 'contrail*_packages.cfg'
         cmd = os.popen('repo info contrail-controller | grep "Mount path"|cut -f3 -d" "')
         git_local_repo = os.path.dirname(cmd.read().strip('\n'))
         if git_local_repo == '':
             raise RuntimeError('Cant find Git local Repo. Seems repo command is not available...')
         cache_base_dir = os.path.join(os.path.sep, 'cs-shared', 'builder', 'cache')
+        logfile = os.path.join(git_local_repo, 'packager_store', '{id}', 'logs', logname)
         skuname = 'grizzly'
-        if dist[0] == 'ubuntu':
+        if PLATFORM[0] == 'ubuntu':
             skuname= 'havana'
-            default_targets = ['openstack-all', 'contrail-all']
-        else:
-            default_targets = ['thirdparty-all', 'openstack-all', 'contrail-all']
 
         self.defaults = {
             'build_id'              : random.randint(1000, 9999), 
             'sku'                   : skuname,
             'branch'                : None, 
             'iso_prefix'            : 'contrail',     
-            'store_dir'             : os.path.join(usrhome, 'packager_store'),
+            'store_dir'             : os.path.join(git_local_repo, 'packager_store'),
             'absolute_package_dir'  : None,
             'contrail_package_dir'  : None,
-            'base_package_file'     : [os.path.join(pkg_file_dir, dist[0], '{skuname}', base_pkg_file)],
-            'depends_package_file'  : [os.path.join(pkg_file_dir, dist[0], '{skuname}', deps_pkg_file)],
-            'contrail_package_file' : [os.path.join(pkg_file_dir, dist[0], '{skuname}', cont_pkg_file)],
+            'base_package_file'     : [os.path.join(pkg_file_dir, dist_dir, '{skuname}', base_pkg_file)],
+            'depends_package_file'  : [os.path.join(pkg_file_dir, dist_dir, '{skuname}', deps_pkg_file)],
+            'contrail_package_file' : [os.path.join(pkg_file_dir, dist_dir, '{skuname}', cont_pkg_file)],
             'make_targets'          : [],
             'make_targets_file'     : None,
             'loglevel'              : 'DEBUG',
@@ -96,7 +91,6 @@ class PackagerArgParser(Utils):
             'log_config'            : os.path.join(cwd, 'logger', 'logging.cfg'),
             'git_local_repo'        : git_local_repo,
             'comps_xml_template'    : comps_xml.template,
-            'default_targets'       : default_targets,
             'cache_base_dir'        : [cache_base_dir],
         }
   
@@ -129,8 +123,7 @@ class PackagerArgParser(Utils):
         parser.set_defaults(**self.defaults)
         parser.set_defaults(**cfg_file_defaults['config'])
         ns_cliargs = parser.parse_args(self.unparsed_args)
-        # Update store dir
-        ns_cliargs.store_dir = ns_cliargs.store_dir.format(id=ns_cliargs.build_id)
+
         # Create log file
         ns_cliargs.logfile = self.defaults['logfile'].format(id=ns_cliargs.build_id)
         if not os.path.isdir(os.path.dirname(ns_cliargs.logfile)):
