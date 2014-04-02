@@ -11,6 +11,7 @@ log = logging.getLogger("pkg.%s" %__name__)
 class Packager(BasePackager):
     ''' Redhat Packager '''
     def exec_steps(self):
+        '''Packager Steps'''
         self.setup_env()
         self.create_pkg_list_file()
         self.make_pkgs()

@@ -57,8 +57,10 @@ class BasePackager(Utils):
         self.contrail_pkgs         = {}
         self.imgname               = ''
         self.repo_dirs             = []
+        self.exec_status           = 0
 
     def ks_build(self):
+        '''Execute Packager for each package type'''
         # get pkg info
         additems = {'found_at': {}, 'repo': ''}
         base_pkgs = self.parse_cfg_file(self.base_pkg_files)
@@ -74,24 +76,29 @@ class BasePackager(Utils):
             pkgtypes = ['contrail-install-packages'] + pkgtypes
 
         for pkgtype in pkgtypes:
-            self.base_pkgs, self.depends_pkgs = {}, {}
-            self.targets = []
-            self.contrail_pkgs = contrail_pkgs_dict[pkgtype]
-            self.meta_pkg = pkgtype
-            self.pkglist_file = os.path.join(self.store, 'log', 
+            try:
+                self.base_pkgs, self.depends_pkgs = {}, {}
+                self.targets = []
+                self.contrail_pkgs = contrail_pkgs_dict[pkgtype]
+                self.meta_pkg = pkgtype
+                self.pkglist_file = os.path.join(self.store, 'log', 
                                              '%s_%s_list.txt' % (
                                              self.meta_pkg, self.pkg_type))
-            self.default_targets = filter(lambda pkg: pkg.endswith('-default-target'),
+                self.default_targets = filter(lambda pkg: pkg.endswith('-default-target'),
                                           self.contrail_pkgs.keys()) 
-            if base_pkgs_dict.has_key(pkgtype):
-                self.base_pkgs = base_pkgs_dict[pkgtype]
-            if depends_pkgs_dict.has_key(pkgtype):
-                self.depends_pkgs = depends_pkgs_dict[pkgtype]
-            self.exec_steps()
-            log.info('\n')
-            log.info('Packager Completed Successfully for Type (%s)' % (pkgtype))
-            log.info('\n')
-            
+                if base_pkgs_dict.has_key(pkgtype):
+                    self.base_pkgs = base_pkgs_dict[pkgtype]
+                if depends_pkgs_dict.has_key(pkgtype):
+                    self.depends_pkgs = depends_pkgs_dict[pkgtype]
+                self.exec_steps()
+                log.info('\n')
+                log.info('Packager Store: %s' % self.store)
+                log.info('Packager Completed Successfully for Type (%s)' % pkgtype)
+                log.info('\n')
+           except:
+                self.exec_status = 255
+                log.error('Packager Failed for Type (%s)' % pkgtype)
+                log.error('Skipping rest of the steps for Type (%s)' % pkgtype)
           
     def setup_env(self):
         ''' setup basic environment necessary for packager like

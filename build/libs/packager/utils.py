@@ -38,6 +38,7 @@ class Utils(object):
 
     @staticmethod
     def get_platform_info():
+        '''Retrieve Platform Info and customize it'''
         platform_info = platform.linux_distribution()
         platform_info = map(str.lower, platform_info)
         platform_info = [pinfo.replace(' ', '') for pinfo in platform_info]

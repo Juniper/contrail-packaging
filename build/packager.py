@@ -262,6 +262,9 @@ if __name__ == '__main__':
         packer.ks_build()
     except:
         raise
+    else:
+        if packer.exec_status != 0:
+            sys.exit(packer.exec_status)
     finally:
         log.info('Copying available built ' \
                  'packages to (%s)' %packer.artifacts_dir)
