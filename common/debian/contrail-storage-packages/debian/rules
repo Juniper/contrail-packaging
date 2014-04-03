@@ -17,10 +17,15 @@ export _contrailopt := /opt/contrail
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
+TGZ_FILE =
 ifdef TAG
 BUILDTAG = $(SRC_VER)-$(TAG)~$(CONTRAIL_SKU)
 else
 BUILDTAG = $(SRC_VER)-$(BUILDTIME)~$(CONTRAIL_SKU)
+endif
+
+ifdef FILE_LIST
+TGZ_FILE = $(FILE_LIST)
 endif
 
 %:
@@ -34,7 +39,7 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_contrailopt)
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_packages
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/setup_storage_ubuntu.sh  $(buildroot)$(_contrailopt)/contrail_packages/setup_storage.sh
-	install -p -m 644 $(SB_TOP)/tools/packaging/build/storage_pkg_repo_${BUILDTAG}.tgz  $(buildroot)$(_contrailopt)/contrail_packages/contrail_storage_packages.tgz
+	if [ -f $(TGZ_FILE) ]; then echo "Using TGZ FILE = $(TGZ_FILE)"; install -p -m 644 $(TGZ_FILE) $(buildroot)$(_contrailopt)/contrail_packages/contrail_storage_debs.tgz; else echo "ERROR: TGZ file containing all debs is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
 
 	
 override_dh_usrlocal:	

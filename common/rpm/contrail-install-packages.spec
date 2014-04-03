@@ -58,7 +58,7 @@ echo BUILDID=`echo %{_relstr} | cut -d "~" -f1` > %{buildroot}%{_contrailopt}/co
 install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh
 install -p -m 755 tools/packaging/build/README %{buildroot}%{_contrailopt}/contrail_packages/README
 install -p -m 755 tools/packaging/build/helpers/* %{buildroot}%{_contrailopt}/contrail_packages/helpers/
-install -p -m 644 tools/packaging/build/pkg_repo_%{_verstr}-%{_relstr}~%{_sku}.tgz  %{buildroot}%{_contrailopt}/contrail_packages/contrail_rpms.tgz
+if [ -f %{_flist} ]; then echo "Using TGZ FILE = %{_flist}"; install -p -m 644 %{_flist} %{buildroot}%{_contrailopt}/contrail_packages/contrail_rpms.tgz; else echo "ERROR: TGZ file containing all rpms is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
 install -p -m 755 tools/packaging/common/control_files/contrail_ifrename.sh %{buildroot}%{_contrailopt}/bin/getifname.sh
 
 # install etc files
