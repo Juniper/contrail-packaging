@@ -26,7 +26,6 @@ export _distropkgdir := $(SB_TOP)/tools/packaging/common/control_files
 export _distrothirdpartydir := $(SB_TOP)/contrail-web-third-party
 export _contrailwebsrc := /usr/src/contrail/contrail-webui
 export _libdir := /usr/lib64
-export _contraillogdir := /var/log/contrail
 export _nodemodules := node_modules
 export _config := $(SB_TOP)/contrail-web-core/config
 
@@ -53,12 +52,10 @@ override_dh_auto_install:
 	rm -rf $(buildroot)/$(_contrailwebsrc)
 	rm -rf $(buildroot)/$(_libdir)/node_modules
 	rm -rf $(buildroot)/$(_contrailetc)
-	rm -rf $(buildroot)/$(_contraillogdir)
 
 	mkdir -p $(buildroot)/$(_contrailwebsrc)
 	mkdir -p $(buildroot)/$(_libdir)/node_modules
 	mkdir -p $(buildroot)/$(_contrailetc)
-	mkdir -p $(buildroot)/$(_contraillogdir)
 	install -d -m 755 $(buildroot)$(_initdir)
 	install -d -m 755 $(buildroot)$(_initddir)
 	install -d -m 755 $(buildroot)$(_supervisordir)
@@ -75,7 +72,6 @@ override_dh_auto_install:
 	rm -rf $(buildroot)/$(_contrailwebsrc)/config/config.global.js
 	cp -p $(_config)/config.global.js $(buildroot)/$(_contrailetc)/
 	ln -s $(_contrailetc)/config.global.js $(buildroot)/$(_contrailwebsrc)/config/config.global.js
-	touch $(buildroot)/$(_contraillogdir)/webui.log
 
 	#install contrail-webui conf files
 	install -d -m 755 $(buildroot)/$(_supervisordir)
