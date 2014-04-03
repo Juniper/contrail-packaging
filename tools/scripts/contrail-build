@@ -11,8 +11,11 @@ import argparse
 import os
 import sys
 import shlex
+import glob
 import subprocess
 import shutil
+import string
+
 
 
 manifest_real_path = ""
@@ -27,21 +30,17 @@ class ContrailBuild(object):
         self.opt = options
         if self.opt.manifest_file:
             manifest_real_path = os.path.realpath(self.opt.manifest_file)
-            if self.opt.build_num:
-                print 'Error: Cannot specify both a build number and manifest file to create sandbox'
-                sys.exit(1)
 
         require_arch = ["centos64_os", "ubuntu-12-04"]
         if not self.opt.arch_type in require_arch:
             print 'Error: Only centos64_os and ubuntu-12-04 are currently supported'
             sys.exit(1)
 
-        required_commands = ["package", "all", "iso"]
+        required_commands = ["package", "all"]
         if self.opt.command in required_commands:
             if not self.opt.build_num:
-                if not self.opt.sku_name:
-                    print "Error: Package/Iso commands need either build number or tag"
-                    sys.exit(1)
+                print "Error: Package command needs a build number"
+                sys.exit(1)
 
         """ Make sure we are in sandbox """
         if self.opt.command != 'sandbox':
@@ -64,44 +63,54 @@ class ContrailBuild(object):
         """
         Create the sandbox and do the repo init
         """
-        print "Creating Sandbox "
+        print "Creating Bare Sandbox using repo init"
+        print "log file is checkout.log"
         command = 'repo init -u '
         command += str(self.opt.manifest_url)
         command += " -m " + str(self.opt.branch_name) + "/" + str(self.opt.arch_type) +"/manifest-" + str(self.opt.sku_name) +".xml"
         if not os.path.exists(self.opt.sandbox_name):
             os.mkdir (self.opt.sandbox_name)
         os.chdir (self.opt.sandbox_name)
-        execute(command,ignore_errors=False)
+        f=open("checkout.log", mode='w')
+        execute(command, f, ignore_errors=False)
+
+
 
         """
         Manipulate the manifest.xml file based on the build number if there
         """
 
-        if self.opt.manifest_file:
-            print "Using supplied manifest file"
-            shutil.copyfile (manifest_real_path, ".repo/manifest.xml")
+        print "Manipulating manifest based on supplied parameters"
 
         if self.opt.build_num:
-            print "Using supplied build number"
-            build_archive = '/volume/junosv-storage01/contrail/'
-            if not os.path.isdir(build_archive):
-                print "Can't find the build archive:", build_archive
-                sys.exit(1)
-            build_archive += str(self.opt.branch_name) + '/'
-            build_archive += str(self.opt.build_num) + '/'
-            build_archive += str(self.opt.arch_type) + '/'
-            build_archive += str(self.opt.sku_name) + '/'
-            build_archive += "manifest.xml"
-            shutil.copyfile (build_archive, ".repo/manifest.xml")
+            if self.opt.manifest_file:
+                print "Manifest file and build number parameters both supplied"
+                print "Manifest file take precedence, ignoring build number for sandbox creation"
+            else:
+                print "Using supplied build number"
+                build_archive = '/volume/junosv-storage01/contrail/'
+                if not os.path.isdir(build_archive):
+                    print "Can't find the build archive:", build_archive
+                    sys.exit(1)
+                build_archive += str(self.opt.branch_name) + '/'
+                build_archive += str(self.opt.build_num) + '/'
+                build_archive += str(self.opt.arch_type) + '/'
+                build_archive += str(self.opt.sku_name) + '/'
+                build_archive += "manifest.xml"
+                shutil.copyfile (build_archive, ".repo/manifest.xml")
+
+        if self.opt.manifest_file:
+            print "Using supplied manifest file: %s" % self.opt.manifest_file
+            shutil.copyfile (manifest_real_path, ".repo/manifest.xml")
+            shutil.copyfile (manifest_real_path, "manifest.xml")
+
+
+        if not self.opt.manifest_file and not self.opt.build_num:
+            print "No build number or manifest file specified, using default manifest"
 
         print "Syncing repositories.... this could take some time"
-        print "log is checkout.log"
-        f = open("checkout.log", mode='w')
-        data = execute("repo sync", ignore_errors=False)
-        f.write (str(data))
+        execute("repo sync", f, ignore_errors=False)
         f.close()
-        if not self.opt.no_print:
-            print data
 
 
 
@@ -117,28 +126,21 @@ class ContrailBuild(object):
 
         if os.path.isdir ("third_party"):
             command = self.opt.python + " third_party/fetch_packages.py"
-            data = execute (command, ignore_errors=False)
-            f.write (str(data))
-            if not self.opt.no_print:
-                print data
+            execute (command, f, ignore_errors=False)
+
 
         if os.path.isdir ("distro"):
             command = self.opt.python + " distro/third_party/fetch_packages.py"
-            data = execute (command, ignore_errors=False)
-            f.write (str(data))
-            f.close()
-            if not self.opt.no_print:
-                print data
+            execute (command, f, ignore_errors=False)
+
+        f.close()
 
         print "Running top level build"
         print "Log is build.log"
 
         f = open("build.log", mode='w')
-        data = execute("scons", ignore_errors=False)
-        f.write (str(data))
+        execute("scons", f, ignore_errors=False)
         f.close()
-        if not self.opt.no_print:
-            print data
 
 
     def package(self):
@@ -147,45 +149,66 @@ class ContrailBuild(object):
 
         current_dir = os.getcwd()
 
+        # Get rid of the directories if they exist
+
+        count=0
+        if os.path.isdir ("target"):
+            # Need to interate here and rename target directory
+            for files in glob.iglob("target*"):
+                count += 1
+            target = "target-" + str(count)
+            shutil.move ("target", target)
+        count=0
+        if os.path.isdir ("store"):
+            for files in glob.iglob("store*"):
+                count += 1
+            target = "store-" + str(count)
+            shutil.move ("store", target)
+
         os.mkdir ("target")
         os.mkdir ("store")
 
-        command = self.opt.python + " /usr/local/bin/create-config -m "
+        # Find the full path to create-config
+
+        realpath =  search_file ("create-config", os.getenv("PATH"))
+        if not realpath:
+            print "Couldn't find create-config in your $PATH"
+            sys.exit(1)
+
+        command = self.opt.python + " " + realpath + " -m "
         command += current_dir + "/.repo/manifest.xml -b " + str(self.opt.build_num) + " config"
 
         f = open("package.log", mode='w')
         print "log is package.log"
-        print "Packaging Contrail.... this could take awhile"
+        print ("Creating configuration file for packager.py")
         os.chdir ('tools/packaging/build')
-        data = execute(command, ignore_errors=False)
-        f.write(str(data))
-        if not self.opt.no_print:
-            print data
+        execute(command, f, ignore_errors=False)
 
+
+        print "Packaging Contrail.... this could take awhile"
         command = self.opt.python + " ./packager.py --cache-base-dir "
         command += cacheBaseDir
-        data = execute(command, ignore_errors=False)
-        f.write(str(data))
+        execute(command, f, ignore_errors=False)
         f.close()
-        if not self.opt.no_print:
-            print data
 
 
-def execute(command, ignore_errors=False):
+def execute(command, output, ignore_errors=False):
     """ Function to execute shell command and return the output """
 
-    if DEBUG:
-        print 'DEBUG: %s' % command
     pipe = subprocess.Popen(shlex.split(command),
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT,
                             close_fds=True)
+    data = ""
+    for line in pipe.stdout:
+        output.write(line)
+        output.flush()
+        data += line
 
-    data = pipe.stdout.read()
     rc = pipe.wait()
     cwd = os.getcwd()
     if rc and not ignore_errors:
-        print 'Error : Working directory : %s' % cwd
+        print 'Error : Working directory : %s' % (cwd)
         print 'Error : Failed to execute command: %s\n%s' % (command, data)
         sys.exit(1)
     return data.strip()
@@ -194,6 +217,19 @@ def cmd_exists(cmd):
     return subprocess.call("type " + cmd, shell=True, 
         stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
 
+def search_file(filename, search_path):
+   """Given a search path, find file
+   """
+   file_found = 0
+   paths = string.split(search_path, ':')
+   for path in paths:
+      if os.path.exists(os.path.join(path, filename)):
+          file_found = 1
+          break
+   if file_found:
+      return os.path.abspath(os.path.join(path, filename))
+   else:
+      return None
 
 def parse_options(args):
     """ Parse command line arguments """
@@ -252,6 +288,7 @@ def parse_options(args):
 if __name__ == '__main__':
     options = parse_options(sys.argv[1:])
     DEBUG = options.debug
+    NOPRINT = options.no_print
     build = ContrailBuild(options)
 
     """ Test to make sure all our commands exist """
