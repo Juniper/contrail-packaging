@@ -39,6 +39,7 @@ Requires: openstack-nova
 Requires: java-1.7.0-openjdk
 Requires: haproxy
 Requires: rabbitmq-server
+Requires: python-bottle
 
 %description
 Contrail Package Requirements for Contrail Config

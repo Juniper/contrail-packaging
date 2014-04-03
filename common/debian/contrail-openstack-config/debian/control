@@ -22,7 +22,8 @@ Depends:
  euca2ools,
  rabbitmq-server,
  python-qpid,
- python-iniparse
+ python-iniparse,
+ python-bottle
 Section: contrail-openstack-config
 Priority: extra
 Description: Contrail Openstack Config composite debian package
