@@ -8,10 +8,10 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/\/build\/contrail-storage-packages//g")
+export SB_TOP := $(shell pwd | sed -re "s/\/build\/debian\/contrail-storage-packages//g")
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export buildroot := $(SB_TOP)/build/contrail-storage-packages/debian/contrail-storage-packages
+export buildroot := $(SB_TOP)/build/debian/contrail-storage-packages/debian/contrail-storage-packages
 export _contrailopt := /opt/contrail
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
