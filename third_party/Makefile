@@ -160,6 +160,8 @@ libvirt:
 		-bp libvirt.spec && \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch  $(BUILD_BASE)/SPECS/ && \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.test-disable.patch $(BUILD_BASE)/SPECS/ && \
+		sed -i 's#Name: libvirt#Name: libvirt\nEpoch: 1#g' $(BUILD_BASE)/SPECS/libvirt.spec && \
+		sed -i 's#= %{version}-%{release}#= 1:%{version}-%{release}#g' $(BUILD_BASE)/SPECS/libvirt.spec && \
 		patch -p0 -i $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch && \
 		patch -p0 -i $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.test-disable.patch && \
 		cd $(THIRDPARTY_DIR) && \
