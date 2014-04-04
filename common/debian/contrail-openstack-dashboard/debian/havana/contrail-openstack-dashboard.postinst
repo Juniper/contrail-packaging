@@ -1,0 +1,11 @@
+#!/bin/sh
+# vim: set ts=2 et:
+
+set -e
+
+if [ "$1" = "configure" ] ; then
+  if [ -e /usr/share/openstack-dashboard/openstack_dashboard/static ] ; then
+    cp -prf /usr/lib/python2.7/dist-packages/contrail_openstack_dashboard/openstack_dashboard/static/*    /usr/share/openstack-dashboard/openstack_dashboard/static
+  fi
+fi
+#DEBHELPER#
