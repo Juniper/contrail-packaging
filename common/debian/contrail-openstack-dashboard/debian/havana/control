@@ -1,0 +1,11 @@
+Source: contrail-openstack-dashboard
+Section: python
+Priority: optional
+Maintainer: Rahul Sharma <rahuls@juniper.net>
+Standards-Version: 1.1
+Homepage: https://github.com/Juniper/contrail-horizon
+
+Package: contrail-openstack-dashboard
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}, openstack-dashboard
+Description: Openstack Dashboard implementation for Contrail Neutron Plugin.
