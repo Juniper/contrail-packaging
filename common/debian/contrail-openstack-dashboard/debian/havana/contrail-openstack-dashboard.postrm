@@ -1,0 +1,11 @@
+#!/bin/sh
+# vim: set ts=2 et:
+
+set -e
+
+if [ "$1" = "remove" ] || [ "$1" = "purge" ] ; then
+  if [ -e /usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js/contrail.networktopology.js ] ; then
+    rm -f /usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js/contrail.networktopology.js
+  fi
+fi
+#DEBHELPER#
