@@ -160,10 +160,10 @@ libvirt:
 		-bp libvirt.spec && \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch  $(BUILD_BASE)/SPECS/ && \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.test-disable.patch $(BUILD_BASE)/SPECS/ && \
-		sed -i 's#Name: libvirt#Name: libvirt\nEpoch: 1#g' $(BUILD_BASE)/SPECS/libvirt.spec && \
-		sed -i 's#= %{version}-%{release}#= 1:%{version}-%{release}#g' $(BUILD_BASE)/SPECS/libvirt.spec && \
 		patch -p0 -i $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch && \
 		patch -p0 -i $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.test-disable.patch && \
+		sed -i 's#Name: libvirt#Name: libvirt\nEpoch: 1#g' $(BUILD_BASE)/SPECS/libvirt.spec && \
+		sed -i 's#= %{version}-%{release}#= 1:%{version}-%{release}#g' $(BUILD_BASE)/SPECS/libvirt.spec && \
 		cd $(THIRDPARTY_DIR) && \
 		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
 		-ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
