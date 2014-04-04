@@ -118,7 +118,7 @@ python-boto-clean:
 
 contrail-openstack-dashboard-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
-	mkdir -p ${BUILDDIR}/build
+	mkdir -p ${BUILDDIR}/debian
 	cp -R ${SB_TOP}/contrail-horizon/* ${BUILDDIR}
 	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
 		(cp -R contrail-openstack-dashboard/debian/havana/* ${BUILDDIR}/debian); \
