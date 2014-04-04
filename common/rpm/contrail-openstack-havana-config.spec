@@ -10,8 +10,8 @@
 %define         _verstr      1
 %endif
 Release:	    %{_relstr}%{?dist}
-Summary: Contrail Openstack Analytics %{?_gitVer}
-Name: contrail-openstack-analytics
+Summary: Contrail Openstack Config %{?_gitVer}
+Name: contrail-openstack-config
 Version:	    %{_verstr}
 Group:              Applications/System
 License:            Commercial
@@ -21,14 +21,27 @@ Vendor:             Juniper Networks Inc
 BuildArch: noarch
 
 Requires: contrail-api-lib
-Requires: contrail-analytics
+Requires: contrail-api-extension
+Requires: contrail-config
+Requires: openstack-neutron-contrail
+Requires: python-novaclient
+Requires: python-keystoneclient >= 0.2.0
+Requires: python-psutil
+Requires: mysql-server
 Requires: contrail-setup
-%if 0%{?rhel}
+Requires: python-zope-interface
+%if 0%{?rhel} 
 Requires: python-importlib
 %endif
+Requires: euca2ools
+Requires: m2crypto
+Requires: openstack-nova
+Requires: java-1.7.0-openjdk
+Requires: haproxy
+Requires: rabbitmq-server
 
 %description
-Contrail Package Requirements for Analytics
+Contrail Package Requirements for Contrail Config
 
 %files
 
