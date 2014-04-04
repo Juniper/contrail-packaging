@@ -40,9 +40,8 @@ else
  TOOLS_VERSION := $(CPLANE_SRC_VER)
 endif
 
-ifdef CONTRAIL_SKU
-else
-  CONTRAIL_SKU := "grizzly"
+ifndef CONTRAIL_SKU
+  CONTRAIL_SKU := grizzly
 endif
 
 $(PPREP):
@@ -67,7 +66,8 @@ $(LOCAL_PY): $(PPREP)
 		$(LOCAL_PY) $(PKGBLDDIR)/packaging/archives/ez_setup.py; \
 	fi
 
-# openstack python client packages
+ifeq ($(CONTRAIL_SKU), grizzly)
+# openstack python client packages for grizzly
 cinderclient: package-python-cinderclient
 python-cinderclient: package-python-cinderclient
 package-python-cinderclient:
@@ -106,8 +106,7 @@ package-python-swiftclient:
 
 all-openstack-client: $(PREP) cinderclient glanceclient keystoneclient novaclient quantumclient \
 	swiftclient
-
-
+endif
 
 # Other 3rd party packages
 contrail-fabric-utils:
@@ -139,7 +138,6 @@ python-bottle:
 	@echo making rpm for python-bottle
 	cp $(DISTRO_SRCDIR)/bottle-0.11.6.tar.gz  $(BUILD_BASE)/SOURCES/ && \
 	rpmbuild --define '_topdir $(BUILD_BASE)' -bb python-bottle.spec $(G_TAG)
-
 
 libvirt-client: libvirt
 libvirt-devel: libvirt
@@ -209,19 +207,28 @@ supervisor: $(PREP) $(LOCAL_PY)
 	@echo making rpm for supervisor
 	rpmbuild $(RPMBLDOPTS) supervisor.spec $(G_TAG) $(RPM_PY)
 
+ifeq ($(CONTRAIL_SKU), grizzly)
 webob:
 	@echo making rpm for webob
 	cp $(THIRDPARTY_DIR)/webob/WebOb-1.2.3.tar.gz $(BUILD_BASE)/SOURCES/ && \
 	rpmbuild $(RPMBLDOPTS) python-webob.spec $(G_TAG)
+endif
 
 xmltodict: $(PREP)
 	@echo making rpm for xmltodict
 	rpmbuild $(RPMBLDOPTS) xmltodict.spec $(G_TAG)
 
+ifeq ($(CONTRAIL_SKU), grizzly)
 all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
 	libvirt puppet python-bitarray python-geventhttpclient python-pycassa python-thrift \
 	redis-py supervisor webob xmltodict ixgbe python-bottle
+else
+all: $(PREP) contrail-fabric-utils contrail-test euca2ools hiredis-py \
+	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
+	libvirt puppet python-bitarray python-geventhttpclient python-pycassa python-thrift \
+	redis-py supervisor xmltodict ixgbe
+endif
 
 clean:
 	@echo clean

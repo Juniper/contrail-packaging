@@ -91,6 +91,9 @@ cat > reqs/reqs.txt <<END
 %{_builddir}/../%{_distrothirdpartydir}/amqp-1.4.1.tar.gz   
 %{_builddir}/../%{_distrothirdpartydir}/anyjson-0.3.3.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/kombu-3.0.9.tar.gz  
+%{_builddir}/../%{_distrothirdpartydir}/python-novaclient-3776fe9.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/python-keystoneclient-0.0.360.0b66ca5.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/python-neutronclient.tar.gz
 END
 
 %install

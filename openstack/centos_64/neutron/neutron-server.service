@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenStack Quantum Server
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=neutron
+ExecStart=/usr/bin/neutron-server --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugin.ini --log-file /var/log/neutron/server.log
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

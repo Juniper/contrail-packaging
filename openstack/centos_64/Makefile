@@ -29,11 +29,9 @@ ifdef FILE_LIST
 endif
 G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
 
-ifdef CONTRAIL_SKU
-else
-  CONTRAIL_SKU := "grizzly"
+ifndef CONTRAIL_SKU
+  CONTRAIL_SKU := grizzly
 endif
-
 
 $(PPREP):
 	@echo some $(PPREP) work ...
@@ -67,6 +65,7 @@ django-openstack-auth: $(PREP)
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
 	-bb django-openstack-auth/django-openstack-auth.spec $(G_TAG)
 
+ifeq ($(CONTRAIL_SKU), grizzly)
 cinder: package-cinder
 openstack-cinder-doc: package-cinder
 python-cinder: package-cinder
@@ -133,6 +132,40 @@ package-quantum: $(PREP)
 
 
 all: $(PREP) auth cinder glance horizon keystone nova quantum
+else
+nova: package-nova
+openstack-nova-cert: package-nova
+openstack-nova-objectstore: package-nova
+openstack-nova-scheduler: package-nova
+openstack-nova-api: package-nova
+python-nova: package-nova
+openstack-nova-compute: package-nova
+openstack-nova-console: package-nova
+openstack-nova-common: package-nova
+openstack-nova-doc: package-nova
+package-nova: $(PREP)
+        @echo making havana rpm for package-nova
+        echo $(OPENSTACK_PKGDIR)
+        cd $(OPENSTACK_PKGDIR)/centos_64/nova && \
+        cp `grep '^Source[0-9]\+:' openstack-havana-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
+        rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
+        -bb nova/openstack-havana-nova.spec $(G_TAG)
+
+neutron: package-neutron
+python-neutron: package-neutron
+openstack-neutron-contrail: package-neutron
+openstack-neutron-contrail: package-neutron
+package-neutron: $(PREP)
+        @echo making rpm for package-neutron for havana
+        echo $(OPENSTACK_PKGDIR)
+        cd $(OPENSTACK_PKGDIR)/centos_64/neutron && \
+        cp `grep '^Source[0-9]\+:' openstack-neutron.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
+        @echo atul
+        rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
+        -bb neutron/openstack-neutron.spec $(G_TAG)
+
+all: $(PREP) package-nova package-neutron
+endif
 
 clean:
 	@echo clean
