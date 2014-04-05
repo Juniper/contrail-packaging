@@ -147,8 +147,8 @@ contrail-openstack-config: $(PREP) $(LOCAL_PY)
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-config.spec $(G_TAG) $(RPM_PY)
 else
 contrail-openstack-config: $(PREP) $(LOCAL_PY)
-        @echo making rpm for contrail-openstack-config
-        rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-config.spec $(G_TAG) $(RPM_PY)
+	@echo making rpm for contrail-openstack-config
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-config.spec $(G_TAG) $(RPM_PY)
 endif
 
 contrail-openstack-control: $(PREP) $(LOCAL_PY)
