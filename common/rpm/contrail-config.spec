@@ -194,7 +194,7 @@ install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}
 %{_bindir}/venv-helper
 #%{_bindir}/encap.py
 %{_initddir}
-%{_venv_root}/bin/contrail-nodemgr
+%{_venv_root}/bin
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then
