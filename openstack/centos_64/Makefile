@@ -144,25 +144,24 @@ openstack-nova-console: package-nova
 openstack-nova-common: package-nova
 openstack-nova-doc: package-nova
 package-nova: $(PREP)
-        @echo making havana rpm for package-nova
-        echo $(OPENSTACK_PKGDIR)
-        cd $(OPENSTACK_PKGDIR)/centos_64/nova && \
-        cp `grep '^Source[0-9]\+:' openstack-havana-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
-        rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-        -bb nova/openstack-havana-nova.spec $(G_TAG)
+	@echo making havana rpm for package-nova
+	echo $(OPENSTACK_PKGDIR)
+	cd $(OPENSTACK_PKGDIR)/centos_64/nova && \
+	cp `grep '^Source[0-9]\+:' openstack-havana-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
+	-bb nova/openstack-havana-nova.spec $(G_TAG)
 
 neutron: package-neutron
 python-neutron: package-neutron
 openstack-neutron-contrail: package-neutron
 openstack-neutron-contrail: package-neutron
 package-neutron: $(PREP)
-        @echo making rpm for package-neutron for havana
-        echo $(OPENSTACK_PKGDIR)
-        cd $(OPENSTACK_PKGDIR)/centos_64/neutron && \
-        cp `grep '^Source[0-9]\+:' openstack-neutron.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
-        @echo atul
-        rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-        -bb neutron/openstack-neutron.spec $(G_TAG)
+	@echo making rpm for package-neutron for havana
+	echo $(OPENSTACK_PKGDIR)
+	cd $(OPENSTACK_PKGDIR)/centos_64/neutron && \
+	cp `grep '^Source[0-9]\+:' openstack-neutron.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
+	-bb neutron/openstack-neutron.spec $(G_TAG)
 
 all: $(PREP) package-nova package-neutron
 endif
