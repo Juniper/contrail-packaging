@@ -103,7 +103,6 @@ override_dh_auto_install:
 
 	install -p -m 644 $(_src_config)/redis-query.conf $(buildroot)$(_sysconfdir)/contrail/redis-query.conf
 	install -p -m 644 $(_src_config)/redis-uve.conf $(buildroot)$(_sysconfdir)/contrail/redis-uve.conf
-	install -p -m 644 $(_src_config)/sentinel.conf $(buildroot)$(_sysconfdir)/contrail/sentinel.conf
 
 override_dh_shlibdeps: 
 
