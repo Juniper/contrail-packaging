@@ -166,6 +166,15 @@ install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helpe
 # install nodemgr
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
 
+pushd %{buildroot}
+
+for f in $(find . -type f -exec grep -nH "^#\!.*BUILD.*python" {} \; | grep -v 'Binary file' | cut -d: -f1); do
+    sed "s/#\!.*python/#!\/usr\/bin\/python/g" $f > ${f}.b
+    mv ${f}.b $f
+    echo "changed $f .... Done!"
+done
+popd
+
 %files
 %defattr(-,root,root,-)
 %{_venv_root}%{_pysitepkg}/discovery
