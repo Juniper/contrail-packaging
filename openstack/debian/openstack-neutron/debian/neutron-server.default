@@ -2,4 +2,4 @@
 
 # path to config file corresponding to the core_plugin specified in
 # neutron.conf
-NEUTRON_PLUGIN_CONFIG="/etc/neutron/plugins/contrail/ContrailPlugin.ini"
+NEUTRON_PLUGIN_CONFIG="/etc/neutron/plugins/juniper/contrail/ContrailPlugin.ini"
