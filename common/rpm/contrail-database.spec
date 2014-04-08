@@ -123,6 +123,15 @@ pushd %{_builddir}/..
 install -D -m 755 %{_distropkgdir}/contrail-nodemgr.py              %{buildroot}%{_venv_root}/bin/contrail-nodemgr
 popd
 
+pushd %{buildroot}
+
+for f in $(find . -type f -exec grep -nH "^#\!.*BUILD.*python" {} \; | grep -v 'Binary file' | cut -d: -f1); do
+    sed "s/#\!.*python/#!\/usr\/bin\/python/g" $f > ${f}.b
+    mv ${f}.b $f
+    echo "changed $f .... Done!"
+done
+popd
+
 %post
 # this is upgrade from 1.02 release to newer i.e cassandra 1.1.7 to 1.2.11
 if [ -f /usr/share/cassandra/conf/cassandra.yaml.rpmsave ]; then
