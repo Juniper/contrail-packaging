@@ -14,12 +14,10 @@ end script
 
 script
     supervisord --nodaemon -c /etc/contrail/supervisord_contrail_database.conf
-    deactivate
 end script
 
 pre-stop script
     supervisorctl -s http://localhost:9007 stop all
     supervisorctl -s http://localhost:9007 shutdown
-    deactivate
 end script
 
