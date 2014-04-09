@@ -22,7 +22,7 @@ export _target := /opt/contrail/api-venv
 export _venvdist = $(SB_TOP)/build/third_party
 export _venvdir = virtualenv-1.9.1
 
-reqlist := greenlet-0.4.1.zip gevent-0.13.8.tar.gz eventlet-0.9.17.tar.gz lxml-2.3.3.tar.gz geventhttpclient-1.0a.tar.gz netaddr-0.7.5.zip extras-0.0.3.tar.gz requests-1.1.0.tar.gz wsgiref-0.1.2.zip zope.interface-3.8.0.tar.gz netifaces-0.8.tar.gz pycrypto-2.6.tar.gz paramiko-1.11.0.tar.gz Fabric-1.7.0.tar.gz bitarray-0.8.0.tar.gz thrift-0.8.0.tar.gz psutil-1.0.1.tar.gz iso8601-0.1.4.tar.gz prettytable-0.7.2.zip simplejson-3.3.0.tar.gz argparse-1.2.1.tar.gz oslo.config-1.1.1.tar.gz d2to1-0.2.11.tar.gz pyparsing-1.5.7.tar.gz cmd2-0.6.5.1.tar.gz cliff-1.4.4.tar.gz httplib2-0.8.tar.gz repoze.lru-0.6.tar.gz Paste-1.7.5.1.tar.gz PasteDeploy-1.5.0.tar.gz SQLAlchemy-0.8.2.tar.gz Routes-1.13.tar.gz qpid-python-0.20.tar.gz pbr-0.5.21.tar.gz WebOb-1.2.3.tar.gz librabbitmq-1.0.3.tar.gz amqp-1.4.1.tar.gz anyjson-0.3.3.tar.gz kombu-3.0.9.tar.gz
+reqlist := greenlet-0.4.1.zip gevent-0.13.8.tar.gz eventlet-0.9.17.tar.gz lxml-2.3.3.tar.gz geventhttpclient-1.0a.tar.gz netaddr-0.7.5.zip extras-0.0.3.tar.gz requests-1.1.0.tar.gz wsgiref-0.1.2.zip zope.interface-3.8.0.tar.gz netifaces-0.8.tar.gz pycrypto-2.6.tar.gz paramiko-1.11.0.tar.gz Fabric-1.7.0.tar.gz bitarray-0.8.0.tar.gz thrift-0.8.0.tar.gz psutil-1.0.1.tar.gz iso8601-0.1.4.tar.gz prettytable-0.7.2.zip simplejson-3.3.0.tar.gz argparse-1.2.1.tar.gz oslo.config-1.1.1.tar.gz d2to1-0.2.11.tar.gz pyparsing-1.5.7.tar.gz cmd2-0.6.5.1.tar.gz cliff-1.4.4.tar.gz httplib2-0.8.tar.gz repoze.lru-0.6.tar.gz Paste-1.7.5.1.tar.gz PasteDeploy-1.5.0.tar.gz SQLAlchemy-0.8.2.tar.gz Routes-1.13.tar.gz qpid-python-0.20.tar.gz pbr-0.5.21.tar.gz WebOb-1.2.3.tar.gz librabbitmq-1.0.3.tar.gz amqp-1.4.1.tar.gz anyjson-0.3.3.tar.gz kombu-3.0.9.tar.gz bottle-0.11.6.tgz
 
 ifdef $(__python_path)
 _lpy := $(__python_path)
@@ -55,6 +55,7 @@ override_dh_auto_build:
 	mkdir -p ${buildroot}/$(_venvdir)/reqs
 	rm -f ${buildroot}/$(_venvdir)/reqs/reqs.txt
 	for x in $(reqlist); do echo $(_srcdir)/archives/$$x >> ${buildroot}/$(_venvdir)/reqs/reqs.txt; done
+	[ -f $(_srcdir)/archives/bottle-0.11.6.tgz ] || ( cd $(SB_TOP)/third_party && tar czvf $(_srcdir)/archives/bottle-0.11.6.tgz bottle-0.11.6 )
 
 #	build the venv
 	$(__python) $(_venvdist)/$(_venvdir)/virtualenv.py $(_vpy) --extra-search-dir=$(buildroot)/$(_venvdir)/reqs --extra-search-dir=$(_venvdist)/$(_venvdir)/virtualenv_support --never-download --system-site-packages $(buildroot)$(_target)
