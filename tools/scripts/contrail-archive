@@ -123,9 +123,13 @@ class ContrailArchive(object):
         for files in glob.iglob("contrail-install*"):
             command = "cp " + files + " .."
             execute(command, ignore_errors=False)
+            command = "rm " + files
+            execute(command, ignore_errors=False)
 
         for files in glob.iglob("*.iso"):
             command = "cp " + files + " .."
+            execute(command, ignore_errors=False)
+            command = "rm " + files
             execute(command, ignore_errors=False)
 
 
