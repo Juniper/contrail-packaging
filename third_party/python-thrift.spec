@@ -42,9 +42,13 @@ pushd %{_distrothirdpartydir}/thrift-0.9.1
 
 %files
 %defattr(-,root,root,-)
+%if  "%{dist}" == ".xen"
+%{buildroot}%{python_sitearch}/thrift
+%{buildroot}%{python_sitearch}/thrift-0.9.1-*.egg-info
+%else
 %{python_sitearch}/thrift
 %{python_sitearch}/thrift-0.9.1-*.egg-info
-
+%endif
 
 %changelog
 * Wed Dec 19 2012  <builder@build01> - picassa-1

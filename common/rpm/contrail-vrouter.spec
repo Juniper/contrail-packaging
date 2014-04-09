@@ -79,12 +79,15 @@ fi
 
 if [ %{?_kernel_dir} ]; then
     OPT_KERNEL="--kernel-dir=%{_kernel_dir}"
+    if [ "%{?dist}" == ".xen" ]; then
+        OPT_HEADERS="--system-header-path=%{_kernel_dir}"
+    fi
 fi
 
-scons -U --target=%{_target_cpu} ${OPT_KERNEL} src/vnsw/agent:vnswad
+scons -U --target=%{_target_cpu} ${OPT_KERNEL} ${OPT_HEADERS} src/vnsw/agent:vnswad
 pushd %{_builddir}/..
-scons -U --target=%{_target_cpu} ${OPT_KERNEL} vrouter
-scons -U --target=%{_target_cpu} ${OPT_KERNEL} vrouter/utils
+scons -U --target=%{_target_cpu} ${OPT_KERNEL} ${OPT_HEADERS} vrouter
+scons -U --target=%{_target_cpu} ${OPT_KERNEL} ${OPT_HEADERS} vrouter/utils
 popd
 
 %if 0%(if [ "%{dist}" != ".xen" ]; then echo 1; fi)
@@ -228,6 +231,18 @@ exit 0
 
 %files
 %defattr(-, root, root)
+%if  "%{dist}" == ".xen"
+%{buildroot}%{_bindir}/flow
+%{buildroot}%{_bindir}/vif
+%{buildroot}%{_bindir}/mpls
+%{buildroot}%{_bindir}/mirror
+%{buildroot}%{_bindir}/nh
+%{buildroot}%{_bindir}/rt
+%{buildroot}%{_bindir}/vrfstats
+%{buildroot}%{_bindir}/vxlan
+%{buildroot}%{_bindir}/dropstats
+%{buildroot}%{_bindir}/vnswad
+%else
 %{_bindir}/flow
 %{_bindir}/vif
 %{_bindir}/mpls
@@ -238,9 +253,9 @@ exit 0
 %{_bindir}/vxlan
 %{_bindir}/dropstats
 %{_bindir}/vnswad
-
+%endif
 %if 0%(if [ "%{dist}" == ".xen" ]; then echo 1; fi)
-%{_sysconfdir}/init.d/contrail-vrouter
+%{buildroot}%{_sysconfdir}/init.d/contrail-vrouter
 %else
 %{_venv_root}
 %{_contrailetc}/rpm_agent.conf
@@ -267,7 +282,11 @@ exit 0
 /etc/init.d/supervisor-vrouter
 %endif
 
+%if  "%{dist}" == ".xen"
+%{buildroot}/lib/modules/%{_osVer}/extra/net/vrouter/vrouter.ko
+%else
 /lib/modules/%{_osVer}/extra/net/vrouter/vrouter.ko
+%endif
 
 %changelog
 

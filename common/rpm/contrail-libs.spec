@@ -106,11 +106,16 @@ ln -sf libboost_chrono.so.1.48.0    	  	%{buildroot}%{_libdir}/contrail/libboost
 
 %files
 %defattr(-,root,root)
+%if  "%{dist}" == ".xen"
+%{buildroot}%{_libdir}/contrail
+%{buildroot}%{_ldconfdir}/contrail.conf
+%else
 %{_libdir}/contrail
 %if %{_target_cpu} == "x86_64"
 %{_ldconfdir}/contrail-64.conf
 %else
 %{_ldconfdir}/contrail.conf
+%endif
 %endif
 
 %changelog
