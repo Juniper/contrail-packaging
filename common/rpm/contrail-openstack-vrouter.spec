@@ -34,7 +34,6 @@ Requires: openstack-nova-compute
 Requires: openstack-utils
 Requires: python-thrift
 Requires: contrail-setup
-Requires: haproxy
 Requires: contrail-nova-vif
 Requires: librabbitmq
 
