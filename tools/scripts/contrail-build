@@ -93,6 +93,8 @@ class ContrailBuild(object):
                 if not os.path.isdir(build_archive):
                     print "Can't find the build archive:", build_archive
                     sys.exit(1)
+                if not build_archive[-1] == '/':
+                    build_archive += '/'
                 build_archive += str(self.opt.branch_name) + '/'
                 build_archive += str(self.opt.build_num) + '/'
                 build_archive += str(self.opt.arch_type) + '/'
@@ -234,7 +236,7 @@ def search_file(filename, search_path):
 
 def parse_options(args):
     """ Parse command line arguments """
-    parser = argparse.ArgumentParser(description='Contrail build wrapper script - version 1.01')
+    parser = argparse.ArgumentParser(description='Contrail build wrapper script - version 1.02')
 
     parser.add_argument('-v', '--verbose', dest='debug', action='store_true',
                         help='Enable verbose mode')
@@ -266,7 +268,7 @@ def parse_options(args):
 
     parser.add_argument('-d', '--dir', nargs='?', dest='dir_name',
                         default='/volume/junosv-storage01/contrail/',
-                        help='Base directory to search for builds')
+                        help='Base directory to search for archived daily builds')
 
     parser.add_argument('-k', '--sku', nargs='?', dest='sku_name',
                         default='grizzly',
