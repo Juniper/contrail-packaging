@@ -87,8 +87,9 @@ class ContrailBuild(object):
                 print "Manifest file and build number parameters both supplied"
                 print "Manifest file take precedence, ignoring build number for sandbox creation"
             else:
-                print "Using supplied build number"
-                build_archive = '/volume/junosv-storage01/contrail/'
+                print "Using supplied build number: %s" % self.opt.build_num
+                print "Searching for build in: %s " % self.opt.dir_name
+                build_archive = self.opt.dir_name
                 if not os.path.isdir(build_archive):
                     print "Can't find the build archive:", build_archive
                     sys.exit(1)
@@ -238,7 +239,7 @@ def parse_options(args):
     parser.add_argument('-v', '--verbose', dest='debug', action='store_true',
                         help='Enable verbose mode')
 
-    parser.add_argument('-x', '--xprint', dest='no_print', action='store_true',
+    parser.add_argument('-q', '--quiet', dest='no_print', action='store_true',
                         help="Don\'t print output on STDOUT")
 
     parser.add_argument('-m', '--manifest', nargs='?', dest='manifest_file',
@@ -262,6 +263,10 @@ def parse_options(args):
     parser.add_argument('-b', '--branch', nargs='?', dest='branch_name',
                         default='mainline',
                         help='Branch to use to fetch manifest file')
+
+    parser.add_argument('-d', '--dir', nargs='?', dest='dir_name',
+                        default='/volume/junosv-storage01/contrail/',
+                        help='Base directory to search for builds')
 
     parser.add_argument('-k', '--sku', nargs='?', dest='sku_name',
                         default='grizzly',
