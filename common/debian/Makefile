@@ -76,7 +76,7 @@ contrail-install-packages-deb:
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-install-packages/debian ${BUILDDIR}
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-	@echo "Wrote: ${BUILDDIR}/contrail-install-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
+	@echo "Wrote: ${BUILDDIR}/../contrail-install-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
 
 contrail-install-packages-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-install-packages)
@@ -88,7 +88,7 @@ contrail-storage-packages-deb:
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-storage-packages/debian ${BUILDDIR}
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-	@echo "Wrote: ${BUILDDIR}/contrail-storage-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
+	@echo "Wrote: ${BUILDDIR}/../contrail-storage-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
 
 contrail-storage-packages-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-storage-packages)
