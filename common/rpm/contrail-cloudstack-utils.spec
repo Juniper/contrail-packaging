@@ -1,7 +1,8 @@
 
 %define         _cloudstackutils  /opt/contrail/cloudstack-utils
-%define         _distroprovdir    %{_builddir}/../tools/provisioning
-%define         _distrocloudstackprovdir  %{_builddir}/../tools/provisioning/cloudstack
+%define         _utils  /opt/contrail/utils
+%define         _distroprovdir    %{_builddir}/tools/provisioning
+%define         _distrocloudstackprovdir  %{_builddir}/tools/provisioning/cloudstack
 
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
@@ -64,8 +65,8 @@ install -d -m 755 %{buildroot}%{_cloudstackutils}/config_templates/
 #install -m 755 %{_distroprovdir}/templates/* %{buildroot}%{_cloudstackutils}/config_templates/
 
 # TODO: below should be in separate package (We now have contrail-setup package that we can pull)
-#install -d -m 755 %{buildroot}/opt/contrail/utils
-#install -m 755 src/cfgm/utils/* %{buildroot}/opt/contrail/utils/
+install -d -m 755 %{buildroot}/opt/contrail/utils
+install -m 755 src/config/utils/* %{buildroot}/opt/contrail/utils/
 
 
 %clean
@@ -75,6 +76,7 @@ install -d -m 755 %{buildroot}%{_cloudstackutils}/config_templates/
 %files
 %defattr(-,root,root,-)
 %{_cloudstackutils}
+%{_utils}
 
 %doc
 
