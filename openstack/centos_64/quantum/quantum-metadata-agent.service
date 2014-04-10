@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenStack Quantum Metadata Agent
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=quantum
+ExecStart=/usr/bin/quantum-metadata-agent --config-file /etc/quantum/quantum.conf --config-file /etc/quantum/metadata_agent.ini --log-file /var/log/quantum/metadata-agent.log
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target

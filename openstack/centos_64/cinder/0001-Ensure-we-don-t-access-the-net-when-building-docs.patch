@@ -1,0 +1,22 @@
+From 632fb0194715d52f2b03c5b4b8697d4271bd81f7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?P=C3=A1draig=20Brady?= <P@draigBrady.com>
+Date: Fri, 21 Sep 2012 13:33:26 +0100
+Subject: [PATCH] Ensure we don't access the net when building docs
+
+(Note, this has not been sent upstream)
+---
+ doc/source/conf.py |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/doc/source/conf.py b/doc/source/conf.py
+index 7436039..9a5b826 100644
+--- a/doc/source/conf.py
++++ b/doc/source/conf.py
+@@ -29,7 +29,6 @@ sys.path.insert(0, os.path.abspath('./'))
+ # or your custom ones.
+ 
+ extensions = ['sphinx.ext.autodoc',
+-              'sphinx.ext.intersphinx',
+               'ext.cinder_todo',
+               'sphinx.ext.coverage',
+               'sphinx.ext.pngmath',

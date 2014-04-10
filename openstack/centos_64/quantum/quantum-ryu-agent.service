@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenStack Quantum Ryu Network Operating System Agent
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=quantum
+ExecStart=/usr/bin/quantum-ryu-agent --config-file /etc/quantum/quantum.conf --config-file /etc/quantum/plugins/ryu/ryu.ini --log-file /var/log/quantum/ryu-agent.log
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
