@@ -115,6 +115,10 @@ class Utils(object):
         if proc.returncode != 0:
             log.error('Cmd: %s; **FAILED**' %cmd)
             raise RuntimeError('Cmd: %s; **FAILED**' %cmd)
+
+    @staticmethod
+    def get_as_list(elm):
+        return [elm] if type(elm) is str else elm
         
     @staticmethod
     def str_to_list(tstr, force=False):
@@ -181,14 +185,17 @@ class Utils(object):
                               for fname in fnmatch.filter(os.listdir(dirname), pattern)]
         return filter(None, filelist)
 
-    @staticmethod
-    def get_files_by_pattern(patterns):
+    def get_files_by_pattern(self, patterns, strict=False):
         ''' get a list of files that matches given pattern '''
         filelist = []
-        patterns = [patterns] if type(patterns) is str else patterns
+        patterns = self.get_as_list(patterns)
         for pattern in patterns:
             filelist.extend(glob.glob(pattern))
-        return filter(None, filelist)
+        filelist = filter(None, filelist)
+        if strict:
+            if len(patterns) != 0 and len(filelist) == 0:
+                raise RuntimeError('No Matching files for given pattern (%s)' % patterns)
+        return filelist
 
     @staticmethod
     def get_latest_file(filelist):
