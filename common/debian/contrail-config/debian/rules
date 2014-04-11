@@ -69,7 +69,7 @@ override_dh_auto_install:
 
 #	Install vnc_api-0.1dev
 	echo $(_build_dist)
-	(cd $(_srcdir)/vnc_cfg_api_server-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
+	(cd $(_srcdir)/vnc_cfg_api_server-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr); cp -R doc/* $(buildroot)/usr/share/doc/python-vnc_cfg_api_server)
 
 	(cd $(_srcdir)/cfgm_common-0.1dev; $(__python) setup.py install --root=$(buildroot) $(_venvtr))
 
