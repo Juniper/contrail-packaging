@@ -12,12 +12,13 @@ import getpass
 import tempfile
 import operator
 import platform
+import traceback
 from lxml import etree
 from xml.etree import ElementTree
 
 from utils import Utils
 
-log = logging.getLogger("pkg.%s" %__name__)
+log = logging.getLogger("pkg")
 PLATFORM = Utils.get_platform_info()
 
 class BasePackager(Utils):
@@ -97,6 +98,7 @@ class BasePackager(Utils):
                 log.info('\n')
             except:
                 self.exec_status = 255
+                log.error(traceback.format_exc())
                 log.error('Packager Failed for Type (%s)' % pkgtype)
                 log.error('Skipping rest of the steps for Type (%s)' % pkgtype)
           
