@@ -199,13 +199,17 @@ class Utils(object):
                               for fname in fnmatch.filter(os.listdir(dirname), pattern)]
         return filter(None, filelist)
 
-    def get_files_by_pattern(self, patterns):
+    def get_files_by_pattern(self, patterns, strict=False):
         ''' get a list of files that matches given pattern '''
         filelist = []
         patterns = self.get_as_list(patterns)
         for pattern in patterns:
             filelist.extend(glob.glob(pattern))
-        return filter(None, filelist)
+        filelist = filter(None, filelist)
+        if strict:
+            if len(patterns) != 0 and len(filelist) == 0:
+                raise RuntimeError('No Matching files for given pattern (%s)' % patterns)
+        return filelist
 
     def get_latest_file(self, filelist):
         ''' get the latest file based on creation time from the 

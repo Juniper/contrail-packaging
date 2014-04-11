@@ -134,16 +134,16 @@ class PackagerArgParser(Utils):
 
         # update sku in package files
         ns_cliargs.base_package_file = [base_file.format(skuname=ns_cliargs.sku) for \
-                                        base_file in ns_cliargs.base_package_file]
-        ns_cliargs.base_package_file = self.get_files_by_pattern(ns_cliargs.base_package_file)
+                                        base_file in Utils.get_as_list(ns_cliargs.base_package_file)]
+        ns_cliargs.base_package_file = self.get_files_by_pattern(ns_cliargs.base_package_file, True)
 
         ns_cliargs.depends_package_file = [deps_file.format(skuname=ns_cliargs.sku) for \
-                                           deps_file in ns_cliargs.depends_package_file]
-        ns_cliargs.depends_package_file = self.get_files_by_pattern(ns_cliargs.depends_package_file)
+                                           deps_file in Utils.get_as_list(ns_cliargs.depends_package_file)]
+        ns_cliargs.depends_package_file = self.get_files_by_pattern(ns_cliargs.depends_package_file, True)
 
         ns_cliargs.contrail_package_file = [cont_file.format(skuname=ns_cliargs.sku) for \
-                                            cont_file in ns_cliargs.contrail_package_file]
-        ns_cliargs.contrail_package_file = self.get_files_by_pattern(ns_cliargs.contrail_package_file)
+                                            cont_file in Utils.get_as_list(ns_cliargs.contrail_package_file)]
+        ns_cliargs.contrail_package_file = self.get_files_by_pattern(ns_cliargs.contrail_package_file, True)
 
         # validate file and dir exists
         self.is_dir_exists(ns_cliargs.cache_base_dir)
