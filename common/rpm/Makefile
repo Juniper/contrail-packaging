@@ -30,8 +30,7 @@ ifdef FILE_LIST
 endif
 G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
 
-ifdef CONTRAIL_SKU
-else
+ifndef CONTRAIL_SKU
   CONTRAIL_SKU := "grizzly"
 endif
 G_TAG += --define "_skuTag $(CONTRAIL_SKU)"
@@ -136,9 +135,15 @@ contrail-openstack-analytics: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-openstack-analytics
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-analytics.spec $(G_TAG) $(RPM_PY)
 
+ifeq ($(CONTRAIL_SKU), grizzly)
 contrail-openstack-config: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-openstack-config
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-config.spec $(G_TAG) $(RPM_PY)
+else
+contrail-openstack-config: $(PREP) $(LOCAL_PY)
+	@echo making rpm for contrail-openstack-config
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-config.spec $(G_TAG) $(RPM_PY)
+endif
 
 contrail-openstack-control: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-openstack-control
