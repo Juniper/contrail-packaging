@@ -4,8 +4,9 @@ SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
 ifdef CONTRAIL_SKU
+  export CONTRAIL_SKU
 else
-  CONTRAIL_SKU := havana
+  export CONTRAIL_SKU := havana
 endif
 
 VERSION = 
@@ -70,26 +71,27 @@ ifmap-server-clean:
 	rm -rf ${BUILDDIR}
 
 contrail-install-packages-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-install-packages)
 	mkdir -p ${BUILDDIR}
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-install-packages/debian ${BUILDDIR}
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary && mv ../contrail-install-packages_*_all.deb ../debian/)
-	@echo "Wrote: ${BUILDDIR}/../debian/contrail-install-packages_*_all.deb"
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	@echo "Wrote: ${BUILDDIR}/../contrail-install-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
 
 contrail-install-packages-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/contrail-install-packages)
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-install-packages)
 	rm -rf ${BUILDDIR}
 
 contrail-storage-packages-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/contrail-storage-packages)
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-storage-packages)
 	mkdir -p ${BUILDDIR}
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-storage-packages/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; fakeroot debian/rules binary && mv ../contrail-storage-packages_*_all.deb ../debian/)
-	@echo "Wrote: ${BUILDDIR}/../debian/contrail-storage-packages_*_all.deb"
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	@echo "Wrote: ${BUILDDIR}/../contrail-storage-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
 
 contrail-storage-packages-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/contrail-storage-packages)
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-storage-packages)
 	rm -rf ${BUILDDIR}
 
 contrail-fabric-utils-deb:

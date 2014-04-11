@@ -14,6 +14,8 @@ import pprint
 import datetime
 import logging.config
 
+from logger import logger
+logging.setLoggerClass(logger.PackagerLogger)
 from libs.packager.utils import Utils
 from templates import comps_xml
 
@@ -22,7 +24,7 @@ sys.path.append(os.path.abspath(os.path.join('libs', 'packager')))
 PLATFORM = Utils.get_platform_info()
 packager = __import__('%s_packager' % PLATFORM[0])
 
-log = logging.getLogger("pkg.%s" %__name__)
+log = logging.getLogger("pkg")
 
 class PackagerArgParser(Utils):
     ''' Argument parser for Packager '''
@@ -261,6 +263,7 @@ if __name__ == '__main__':
     try:
         packer.ks_build()
     except:
+        packer.exec_status = 1
         raise
     else:
         if packer.exec_status != 0:
@@ -269,6 +272,12 @@ if __name__ == '__main__':
         log.info('Copying available built ' \
                  'packages to (%s)' %packer.artifacts_dir)
         packer.copy_to_artifacts()
+        if packer.exec_status != 0:
+            log.info('*' * 78)
+            log.info('Packager Completed with ERRORs...')
+            log.info('Reprinting ALL ERRORS...')
+            log.reprint_errors()
+            log.error('View Detailed logs at (%s)' % args.cliargs['logfile'])
 
     duration = datetime.datetime.now() - start
     log.info('Execution Duration: %s' %str(duration))
