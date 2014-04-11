@@ -161,7 +161,6 @@ package-neutron: $(PREP)
 	echo $(OPENSTACK_PKGDIR)
 	cd $(OPENSTACK_PKGDIR)/centos_64/neutron && \
 	cp `grep '^Source[0-9]\+:' openstack-neutron.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
-	@echo atul
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
 	-bb neutron/openstack-neutron.spec $(G_TAG)
 
