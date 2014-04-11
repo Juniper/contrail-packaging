@@ -3,23 +3,16 @@
 - hosts: contrail
   user: root
   tasks:
-    - copy: src=../../auto/cc.repo dest=/etc/yum.repos.d/cc.repo
-    - copy: src=../../auto/rpmforge.repo dest=/etc/yum.repos.d/rpmforge.repo
-    - yum: name="python-pip" state=installed
+    - script: ../../auto/RPMS/fix-repos.sh
+    - copy: src=../../auto/RPMS/contrail-base.repo dest=/etc/yum.repos.d/contrail-base.repo
     - yum: name="perl" state=installed
     - yum: name="python" state=installed
     - yum: name="gcc" state=installed
-    - yum: name="flex" state=installed
-    - yum: name="bison" state=installed
     - yum: name="vim-common" state=installed
     - yum: name="python-devel" state=installed
     - yum: name="python-lxml" state=installed
     - yum: name="wget" state=installed
-    - yum: name="python-docutils" state=installed
     - yum: name="python-babel" state=installed
-    - rpm_key: state=present key=http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
-    - yum: name="python-sphinx" disablerepo=base,centos_build_repo  state=installed
-    - yum: name="openssl-devel" state=installed
     - yum: name="apr-util" state=installed
     - yum: name="subversion" state=installed
     - yum: name="neon" state=installed
@@ -31,85 +24,84 @@
     - yum: name="patch" state=installed
     - yum: name="patchutils" state=installed
     - yum: name="unzip" state=installed
-    - yum: name="libevent" state=installed
     - yum: name="make" state=installed
-    - yum: name="automake" state=installed
     - yum: name="gcc-c++" state=installed
     - yum: name="nfs-utils" state=installed
     - yum: name="ypbind" state=installed
     - yum: name="autofs" state=installed
-    - yum: name="libevent-devel" state=installed
     - yum: name="libxml2-devel" state=installed
     - yum: name="libxslt-devel" state=installed
     - yum: name="rpm-build" state=installed
     - yum: name="python-netaddr" state=installed
     - yum: name="graphviz" state=installed
-    - yum: name="intltool" enablerepo=centos_build_repo state=installed
-    - yum: name="openstack-utils" enablerepo=centos_build_repo state=installed
-    - yum: name="python-eventlet" enablerepo=centos_build_repo state=installed
-    - yum: name="python-routes" enablerepo=centos_build_repo state=installed
-    - yum: name="python-sqlalchemy" enablerepo=centos_build_repo state=installed
-    - yum: name="python-webob" enablerepo=centos_build_repo state=installed
-    - yum: name="python-migrate" enablerepo=centos_build_repo state=installed
-    - yum: name="python-iso8601" enablerepo=centos_build_repo state=installed
-    - yum: name="python-boto" enablerepo=centos_build_repo state=installed
-    - yum: name="nodejs" enablerepo=centos_build_repo state=installed
-    - yum: name="devtoolset-1.1-gcc" enablerepo=centos_build_repo state=installed
-    - yum: name="devtoolset-1.1-gcc-c++" enablerepo=centos_build_repo state=installed
-    - yum: name="ant" enablerepo=centos_build_repo state=installed
-    - yum: name="java" enablerepo=centos_build_repo state=installed
-    - yum: name="java" enablerepo=centos_build_repo state=installed
-    - yum: name="device-mapper-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="ant-nodeps" enablerepo=centos_build_repo state=installed
-    - yum: name="cppunit" enablerepo=centos_build_repo state=installed
-    - yum: name="cppunit-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="libtool" enablerepo=centos_build_repo state=installed
-    - yum: name="libblkid-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="xhtml1-dtds" enablerepo=centos_build_repo state=installed
-    - yum: name="readline-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="ncurses-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="libtasn1-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="gnutls-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="augeas" enablerepo=centos_build_repo state=installed
-    - yum: name="libpciaccess-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="yajl-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="sanlock-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="libpcap-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="libnl-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="avahi-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="dnsmasq" enablerepo=centos_build_repo state=installed
-    - yum: name="radvd" enablerepo=centos_build_repo state=installed
-    - yum: name="ebtables" enablerepo=centos_build_repo state=installed
-    - yum: name="cyrus-sasl-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="polkit" enablerepo=centos_build_repo state=installed
-    - yum: name="iscsi-initiator-utils" enablerepo=centos_build_repo state=installed
-    - yum: name="parted-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="numactl-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="libcap-ng-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="netcf-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="libcurl-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="audit-libs-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="systemtap-sdt-devel" enablerepo=centos_build_repo state=installed
-    - yum: name="scrub" enablerepo=centos_build_repo state=installed
-    - yum: name="numad" enablerepo=centos_build_repo state=installed
-    - yum: name="avahi" enablerepo=centos_build_repo state=installed
-    - yum: name="qemu-img" enablerepo=centos_build_repo state=installed
-    - yum: name="ruby" enablerepo=centos_build_repo state=installed
-    - yum: name="python-nose" enablerepo=centos_build_repo state=installed
-    - yum: name="python-webtest" enablerepo=centos_build_repo state=installed
-    - yum: name="comps-extras" enablerepo=centos_build_repo state=installed
-    - yum: name="python-argparse" enablerepo=centos_build_repo state=installed
-    - yum: name="redhat-rpm-config" enablerepo=centos_build_repo state=installed
     - yum: name="createrepo" state=installed
-    - yum: name="pungi" state=installed
-    - yum: name="cppunit-devel" state=installed
     - yum: name="libcurl-devel" state=installed
     - yum: name="libtool" state=installed
     - yum: name="ttmkfdir" state=installed
     - yum: name="bzip2-devel" state=installed
-    - easy_install: name="PyGitHub" 
-    - easy_install: name="fabric" 
-    - easy_install: name="virtualenv" 
-    - easy_install: name="pep8" 
-    - easy_install: name="autopep8" 
+    - yum: name="kernel-devel" state=installed
+    - yum: name="kernel-headers" state=installed
+    - yum: name="authconfig-gtk" state=installed
+    - yum: name="control-center-filesystem" state=installed
+    - yum: name="firstboot" state=installed
+    - yum: name="glibc.i686" state=installed
+    - yum: name="glibc-headers" state=installed
+    - yum: name="gnome-icon-theme" state=installed
+    - yum: name="gnome-themes" state=installed
+    - yum: name="gtk2-engines" state=installed
+    - yum: name="libcurl-devel" state=installed
+    - yum: name="libtool" state=installed
+    - yum: name="metacity" state=installed
+    - yum: name="openssl-devel" state=installed
+    - yum: name="perl-DBI" state=installed
+    - yum: name="perl-Error" state=installed
+    - yum: name="perl-Git" state=installed
+    - yum: name="perl-Test-Harness" state=installed
+    - yum: name="perl-Test-Simple" state=installed
+    - yum: name="perl-YAML" state=installed
+    - yum: name="python-decoratortools" state=installed
+    - yum: name="python-ethtool" state=installed
+    - yum: name="python-peak-rules" state=installed
+    - yum: name="python-peak-util-addons" state=installed
+    - yum: name="python-peak-util-assembler" state=installed
+    - yum: name="python-peak-util-extremes" state=installed
+    - yum: name="python-peak-util-symbols" state=installed
+    - yum: name="rsync" state=installed
+    - yum: name="rsyslog" state=installed
+    - yum: name="setuptool" state=installed
+    - yum: name="subversion-perl" state=installed
+    - yum: name="system-config-users" state=installed
+    - yum: name="system-config-users-docs" state=installed
+    - yum: name="systemtap-sdt-devel" state=installed
+    - yum: name="xdg-utils" state=installed
+    - yum: name="gcc" state=installed
+    - yum: name="gcc-c++" state=installed
+    - yum: name="devtoolset-1.1-gcc-c++" state=installed
+    - yum: name="libnl-devel" state=installed
+    - yum: name="libcap-ng-devel" state=installed
+    - yum: name="audit-libs-devel" state=installed
+    - yum: name="scons" state=installed
+    - yum: name="python-pip" state=installed
+    - pip: name="PyGitHub" version=1.12.1
+    - pip: name="fabric" version=1.8.0
+    - yum: name="python-virtualenv" 
+    - pip: name="pep8" version=1.4.6
+    - pip: name="autopep8" version=0.9.7
+    - pip: name="paramiko" version=1.12.0
+    - yum: name="python-decorator" state=installed
+    - yum: name="python-eventlet" state=installed
+    - yum: name="python-greenlet" state=installed
+    - yum: name="python-iso8601" state=installed
+    - yum: name="python-jinja2" state=installed
+    - yum: name="python-kid" state=installed
+    - yum: name="python-nose" state=installed
+    - pip: name="PIL" version=1.1.7
+    - yum: name="pungi" state=installed
+    - yum: name="python-crypto" state=installed
+    - yum: name="python-cryptsetup" state=installed
+    - yum: name="python-pygments" state=installed
+    - yum: name="pykickstart" state=installed
+    - yum: name="python-nss" state=installed
+    - yum: name="python-repoze-lru" state=installed
+    - yum: name="python-routes" state=installed
 
