@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenStack Quantum Linux Bridge Agent
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=quantum
+ExecStart=/usr/bin/quantum-linuxbridge-agent --config-file /etc/quantum/quantum.conf --config-file /etc/quantum/plugins/linuxbridge/linuxbridge_conf.ini --log-file /var/log/quantum/linuxbridge-agent.log
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

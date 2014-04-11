@@ -65,12 +65,19 @@ cat > reqs/reqs.txt <<END
 %{_builddir}/../%{_distrothirdpartydir}/psutil-1.0.1.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/pbr-0.5.21.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/prettytable-0.7.2.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/bottle-0.11.6.tgz
 END
 
 
 %install
 install -d -m 755 %{buildroot}/opt/contrail/
 %define _target %{buildroot}/opt/contrail/analytics-venv
+
+%define         _thirdpartydir       third_party
+[ -f %{_builddir}/../%{_distrothirdpartydir}/bottle-0.11.6.tgz ] || \
+    ( cd %{_builddir}/../%{_thirdpartydir} && \
+    tar czvf %{_builddir}/../%{_distrothirdpartydir}/bottle-0.11.6.tgz \
+    bottle-0.11.6 )
 
 # start venv
 pushd %{_builddir}/virtualenv-1.9.1
@@ -80,7 +87,7 @@ popd
 pushd %{_target}
 
 source bin/activate
-bin/python bin/pip install --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+bin/python bin/pip install --upgrade --no-deps --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
 
 pushd %{_builddir}/../%{_distrothirdpartydir}/pycassa-1.10.0
 %{__python} setup.py install

@@ -86,17 +86,28 @@ cat > reqs/reqs.txt <<END
 %{_builddir}/../%{_distrothirdpartydir}/SQLAlchemy-0.8.2.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/Routes-1.13.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/qpid-python-0.20.tar.gz
-%{_builddir}/../%{_distrothirdpartydir}/stevedore-0.12.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/pbr-0.5.21.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/librabbitmq-1.0.3.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/amqp-1.4.1.tar.gz   
 %{_builddir}/../%{_distrothirdpartydir}/anyjson-0.3.3.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/kombu-3.0.9.tar.gz  
+%{_builddir}/../%{_distrothirdpartydir}/bottle-0.11.6.tgz
+%if %{_skuTag} != "grizzly"
+%{_builddir}/../%{_distrothirdpartydir}/python-novaclient-3776fe9.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/python-keystoneclient-0.0.360.0b66ca5.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/python-neutronclient.tar.gz
+%endif
 END
 
 %install
 install -d -m 755 %{buildroot}/opt/contrail/
 %define _target %{buildroot}/opt/contrail/api-venv
+
+%define         _thirdpartydir       third_party
+[ -f %{_builddir}/../%{_distrothirdpartydir}/bottle-0.11.6.tgz ] || \
+    ( cd %{_builddir}/../%{_thirdpartydir} && \
+    tar czvf %{_builddir}/../%{_distrothirdpartydir}/bottle-0.11.6.tgz \
+    bottle-0.11.6 )
 
 # start venv
 pushd %{_builddir}/virtualenv-1.9.1
@@ -106,9 +117,12 @@ popd
 pushd %{_target}
 
 source bin/activate
-bin/python bin/pip install --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+bin/python bin/pip install --upgrade --no-deps --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
 #PYTHONPATH=%{_target}/lib/python2.7/site-packages:$PYTHONPATH pip install --index-url='' --install-option="--install-lib=%{_target}/lib/python2.7/site-packages" --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
 
+pushd %{_builddir}/../%{_distrothirdpartydir}/stevedore-0.12
+%{__python} setup.py install
+popd
 pushd %{_builddir}/../%{_distrothirdpartydir}/pycassa-1.10.0
 %{__python} setup.py install
 popd

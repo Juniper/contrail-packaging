@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "configure" ]; then
+	# /etc/apache2/conf.d/dashboard.conf -> /etc/apache2/conf.d/openstack-dashboard.conf
+	dpkg-maintscript-helper mv_conffile \
+	  /etc/apache2/conf.d/dashboard.conf /etc/apache2/conf.d/openstack-dashboard.conf \
+	  2012.1~rc1-0ubuntu1 -- "$@"
+
+	if [ -x /etc/init.d/apache2 ]; then
+		invoke-rc.d --quiet apache2 reload
+	fi
+
+  if [ -e /usr/share/openstack-dashboard/openstack_dashboard/static ] ; then
+    chown -R www-data:www-data \
+      /usr/share/openstack-dashboard/openstack_dashboard/static
+  fi
+fi
+
+#DEBHELPER#

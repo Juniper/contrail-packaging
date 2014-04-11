@@ -18,11 +18,17 @@ export _contrailopt := /opt/contrail
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
+TGZ_FILE =
 ifdef TAG
 BUILDTAG = $(SRC_VER)-$(TAG)~$(CONTRAIL_SKU)
 else
 BUILDTAG = $(SRC_VER)-$(BUILDTIME)~$(CONTRAIL_SKU)
 endif
+
+ifdef FILE_LIST
+TGZ_FILE = $(FILE_LIST)
+endif
+
 
 %:
 	dh $@
@@ -35,19 +41,20 @@ override_dh_auto_install:
 	@echo "making deb for contrail-install-packages"
 	install -d -m 755 $(buildroot)
 	install -d -m 755 $(buildroot)/usr/bin
+	install -d -m 755 $(buildroot)/etc/contrail/
 	install -d -m 755 $(buildroot)$(_contrailopt)
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_packages
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_packages/helpers
 	install -d -m 755 $(buildroot)$(_contrailopt)/bin
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils
-	# install files
-	install -p -m 644 $(SB_TOP)/tools/packaging/build/contrail_packages_${BUILDTAG}.tgz  $(buildroot)$(_contrailopt)/contrail_packages/contrail_packages.tgz
+	# install TGZ file and packages list file
+	if [ -f $(TGZ_FILE) ]; then echo "Using TGZ FILE = $(TGZ_FILE)"; install -p -m 644 $(TGZ_FILE) $(buildroot)$(_contrailopt)/contrail_packages/contrail_debs.tgz; else echo "ERROR: TGZ file containing all debs is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
 	# install etc files
 	install -p -m 644 $(SB_TOP)/build/debian/contrail_installer.tgz  $(buildroot)$(_contrailopt)/contrail_installer.tgz
 	# install pkgs needed first
 	install -p -m 644 $(SB_TOP)/distro/third_party/ecdsa-0.10.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/ecdsa-0.10.tar.gz
 	install -p -m 644 $(SB_TOP)/distro/third_party/Fabric-1.7.0.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
-	echo BUILDID=`echo $(BUILDTAG) | cut -d '.' -f3 | cut -d '~' -f1` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu; fi
+	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2 | cut -d '~' -f1` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu; fi
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_packages/VERSION
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/setup_ubuntu.sh  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/helpers/*  $(buildroot)$(_contrailopt)/contrail_packages/helpers/
@@ -56,8 +63,7 @@ override_dh_auto_install:
 	# need this for openstack-config for keystone specific, this needs to move away to openstack-config package
 	install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh $(buildroot)/usr/bin/contrail-keystone-setup.sh
 	# extract contrail_installer 
-	cd $(buildroot)$(_contrailopt); tar xzvf contrail_installer.tgz
-	cd $(buildroot)$(_contrailopt)/contrail_packages/; tar xzvf contrail_packages.tgz; rm -rf contrail_packages.tgz;
+	cd $(buildroot)$(_contrailopt); tar xzvf contrail_installer.tgz; rm -rf contrail_installer.tgz
 	
 override_dh_shlibdeps:
 

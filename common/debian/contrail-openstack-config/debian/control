@@ -10,6 +10,7 @@ Architecture: all
 Maintainer: rrugge <rrugge@juniper.net>
 Depends:
  supervisor,
+ contrail-nodemgr,
  contrail-libs,
  contrail-config-extension,
  contrail-config,
@@ -21,7 +22,8 @@ Depends:
  euca2ools,
  rabbitmq-server,
  python-qpid,
- python-iniparse
+ python-iniparse,
+ python-bottle
 Section: contrail-openstack-config
 Priority: extra
 Description: Contrail Openstack Config composite debian package

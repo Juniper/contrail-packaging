@@ -92,11 +92,13 @@ class ContrailArchive(object):
         execute(command, ignore_errors=False)
 
 
-        os.mkdir (self.opt.archive_path + "/artifacts")
-        store_path = sandbox_path + "/build/artifacts"
-        os.chdir (store_path)
-        command = "cp -r . " + self.opt.archive_path + "/artifacts"
-        execute(command, ignore_errors=False)
+        # No longer have to make this diretory
+        # os.mkdir (self.opt.archive_path + "/artifacts")
+        store_path = sandbox_path + "/build"
+        os.chdir(store_path)
+        for files in glob.iglob("artifacts*"):
+            command = "cp -r " + files + " " + self.opt.archive_path
+            execute(command, ignore_errors=False)
         os.chdir (sandbox_path)
 
         """
@@ -121,9 +123,13 @@ class ContrailArchive(object):
         for files in glob.iglob("contrail-install*"):
             command = "cp " + files + " .."
             execute(command, ignore_errors=False)
+            command = "rm " + files
+            execute(command, ignore_errors=False)
 
         for files in glob.iglob("*.iso"):
             command = "cp " + files + " .."
+            execute(command, ignore_errors=False)
+            command = "rm " + files
             execute(command, ignore_errors=False)
 
 

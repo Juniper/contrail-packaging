@@ -15,6 +15,7 @@ import tarfile
 import logging
 import fnmatch
 import operator
+import platform
 import tempfile
 import itertools
 import subprocess
@@ -26,15 +27,22 @@ log = logging.getLogger("pkg.%s" %__name__)
 class Utils(object):
     ''' Utilities for packager '''
 
-    @staticmethod
-    def expanduser(dirnames=None):
+    def expanduser(self, dirnames=None):
         '''Expand user ~ in directory names'''
         if dirnames is None:
             return None
-        dirnames = [dirnames] if type(dirnames) is str else dirnames
+        dirnames = self.get_as_list(dirnames)
         absdirs = [os.path.abspath(os.path.expanduser(dirname)) \
                   for dirname in dirnames]
         return absdirs[0] if len(absdirs) == 1 else absdirs
+
+    @staticmethod
+    def get_platform_info():
+        '''Retrieve Platform Info and customize it'''
+        platform_info = platform.linux_distribution()
+        platform_info = map(str.lower, platform_info)
+        platform_info = [pinfo.replace(' ', '') for pinfo in platform_info]
+        return platform_info
 
     @staticmethod
     def create_dir(dirname):
@@ -46,10 +54,9 @@ class Utils(object):
             log.debug('Dir %s exists' %dirname)
         return dirname
 
-    @staticmethod
-    def copyfiles(files, dirs):
-        files = [files] if type(files) is str else files
-        dirs  = [dirs] if type(dirs) is str else dirs
+    def copyfiles(self, files, dirs):
+        files = self.get_as_list(files)
+        dirs  = self.get_as_list(dirs)
         copyiter = itertools.product(files, dirs)
         for item in copyiter:
             log.debug('Copying ({0}) to dir ({1})'.format(*item))
@@ -84,7 +91,10 @@ class Utils(object):
         '''
         wd = wd or os.getcwd()
         wd = os.path.normpath(wd)
-        log.debug('cd %s; cmd: %s' %(wd, cmd))
+        if wd == os.getcwd():
+            log.debug('cmd: %s' % cmd)
+        else:
+            log.debug('cd %s; cmd: %s' %(wd, cmd))
         proc = subprocess.Popen(cmd, shell=True, cwd=wd, 
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)  
@@ -99,7 +109,10 @@ class Utils(object):
         ''' DEBUG execute given command after chdir to given directory '''
         wd = wd or os.getcwd()
         wd = os.path.normpath(wd)
-        log.debug('cd %s; cmd: %s' %(wd, cmd))
+        if wd == os.getcwd():
+            log.debug('cmd: %s' % cmd)
+        else:
+            log.debug('cd %s; cmd: %s' %(wd, cmd))
         proc = subprocess.Popen(cmd, shell=True, cwd=wd, 
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
@@ -116,6 +129,10 @@ class Utils(object):
             log.error('Cmd: %s; **FAILED**' %cmd)
             raise RuntimeError('Cmd: %s; **FAILED**' %cmd)
         
+    @staticmethod
+    def get_as_list(elm):
+        return [elm] if type(elm) is str else elm
+
     @staticmethod
     def str_to_list(tstr, force=False):
         ''' convert string separated with comma into a list '''
@@ -140,7 +157,7 @@ class Utils(object):
         md5dict = {}
         if files is None or len(files) == 0:
             return
-        files = [files] if type(files) is str else files
+        files = self.get_as_list(files)
         for filename in files:
             if not os.path.isfile(filename):
                 raise RuntimeError('File (%s) is not present' %filename)
@@ -148,56 +165,55 @@ class Utils(object):
             md5dict[filename] = md5out[0].split()[0]
         return md5dict
 
-    def check_package_md5(self, pkginfo):
+    def check_package_md5(self, pkginfo, location='location'):
         for pkg in pkginfo.keys():
-            if pkginfo[pkg]['location'] == '':
-                raise RuntimeError('Location of the Package (%s) is empty' %pkg)
-            pkgfile = self.get_file_list(pkginfo[pkg]['location'], pkginfo[pkg]['file'], True)
+            pkg_loc = pkginfo[pkg][location]
+            if pkg_loc is '':
+                raise RuntimeError('Given Location (%s) of the Package'\
+                                   ' (%s) is empty' % (location, pkg))
+            pkgfile = self.get_file_list(pkg_loc, pkginfo[pkg]['file'], True)
             if len(pkgfile) == 0:
                 raise RuntimeError('Package file for package (%s) is not present in (%s)' %(
-                                    pkg, pkginfo[pkg]['location']))
+                                    pkg, pkg_loc))
             pkgfile = self.get_latest_file(pkgfile)
             actual_md5 = self.get_md5(pkgfile)
             if actual_md5 is None:
-                raise RuntimeError('MD5 checksum is empty for file (%s)' %pkgfile)
+                raise RuntimeError('MD5 checksum is empty for file (%s)' % pkgfile)
             if pkginfo[pkg]['md5'] != actual_md5[pkgfile]:
-                raise RuntimeError('MD5 Checksum validation for Package (%s) failed' %(
-                                    pkgfile))
+                raise RuntimeError('MD5 Checksum validation for Package'\
+                                   ' (%s) failed' % (pkgfile))
             else:
                 pkginfo[pkg]['found_at'] = pkgfile
             
-    @staticmethod
-    def get_file_list(dirs, pattern, recursion=True):
+    def get_file_list(self, dirs, pattern, recursion=True):
         ''' get a list of files that matches given pattern '''
         filelist = []
-        dirs = [dirs] if type(dirs) is str else dirs
+        dirs = self.get_as_list(dirs)
         for dirname in dirs:
             if recursion:
-                for dir, sdir, flist in os.walk(dirname):
-                    filelist += [os.path.abspath('%s/%s' %(dir, fname)) \
+                for dirn, sdir, flist in os.walk(dirname):
+                    filelist += [os.path.abspath('%s/%s' %(dirn, fname)) \
                                     for fname in fnmatch.filter(flist, pattern)]  
             else:
                 filelist += [os.path.abspath('%s/%s' %(dirname, fname)) \
                               for fname in fnmatch.filter(os.listdir(dirname), pattern)]
         return filter(None, filelist)
 
-    @staticmethod
-    def get_files_by_pattern(patterns):
+    def get_files_by_pattern(self, patterns):
         ''' get a list of files that matches given pattern '''
         filelist = []
-        patterns = [patterns] if type(patterns) is str else patterns
+        patterns = self.get_as_list(patterns)
         for pattern in patterns:
             filelist.extend(glob.glob(pattern))
         return filter(None, filelist)
 
-    @staticmethod
-    def get_latest_file(filelist):
+    def get_latest_file(self, filelist):
         ''' get the latest file based on creation time from the 
             given list of files
         '''
         if len(filelist) == 0:
             return ''
-        filelist = [filelist] if type(filelist) is str else filelist
+        filelist = self.get_as_list(filelist)
         ctime = operator.attrgetter('st_ctime')
         filestats = map(lambda fname: (ctime(os.lstat(fname)), fname), filelist)
         if len(filestats) == 0:
@@ -216,6 +232,17 @@ class Utils(object):
         tar.close()
         return os.path.abspath(filename)
 
+    def create_pkgs_tgz(self, dirnames=None):
+        '''Create tgz from each repo directory'''
+        dirnames = dirnames or self.repo_dirs
+        for repo_dir in dirnames:
+            tgz_prefix = os.path.basename(repo_dir)
+            tgz_name = os.path.join('%s' %self.store, 
+                                    '%s_%s-%s~%s.tgz' %(tgz_prefix,
+                                    self.branch, self.id, self.sku))
+            log.info('Create (%s) file' %tgz_name)
+            self.create_tgz(tgz_name, repo_dir)
+
     def parse_git_cfg_file(self, cfgfile):
         ''' parse git config file and return a dict of git config '''
         tmpfile = tempfile.NamedTemporaryFile()
@@ -229,18 +256,27 @@ class Utils(object):
             with sections as keys and its items as dictionary items
         '''
         parsed_dict = {}
-        parser = SafeConfigParser()
-        cfg_files = [cfg_files] if type(cfg_files) is str else cfg_files
-        parsed_files = parser.read(cfg_files)
+        sections = []
+        cfg_files = self.get_as_list(cfg_files)
         for cfg_file in cfg_files:
+            parser = SafeConfigParser()
+            parsed_files = parser.read(cfg_file)
             if cfg_file not in parsed_files:
-                raise RuntimeError('Unable to parse (%s), No such file' %cfg_file)
-        for sect in parser.sections():
-            parsed_dict[sect] = dict((iname, self.str_to_list(ival)) \
-                                   for iname, ival in parser.items(sect))
-            if additems != None:
-                for item in additems.keys():
-                    parsed_dict[sect][item] = copy.deepcopy(additems[item])
+                raise RuntimeError('Unable to parse (%s), '
+                                   'No such file or invalid format' %cfg_file)
+            common_sections = list(set(parser.sections()) & \
+                                   set(sections))
+            if len(common_sections) != 0:
+                raise RuntimeError('Duplication Section Error while parsing '
+                           '(%s): %s' %(cfg_file, "\n".join(common_sections)))
+            for sect in parser.sections():
+                parsed_dict[sect] = dict((iname, self.str_to_list(ival)) \
+                                       for iname, ival in parser.items(sect))
+                if additems != None:
+                    for item in additems.keys():
+                        parsed_dict[sect][item] = copy.deepcopy(additems[item])
+            sections.extend(parser.sections())
+            del parser
         return parsed_dict
 
     def import_file(self, cfile):
@@ -255,36 +291,86 @@ class Utils(object):
             raise ImportError('Unable to import "%s" file.\nERROR: %s' %(cfile_name, err))
         return cfgfile
 
-    def copy_pkg_files(self, pkginfo, destdirs, error=True):
+    def get_repodirs(self, *pkgcfgs):
+        '''Get list of repo dirs defined for each package'''
+        repo_dirs = []
+        for pkgcfg in pkgcfgs:
+            repos = [pkgcfg[pkg]['repo'] for pkg in pkgcfg.keys()]
+            repo_dirs.extend(repos)
+        repo_dirs = list(set(repo_dirs))
+        log.debug('Repo dirs from config files:')
+        for dirname in repo_dirs:
+            log.debug(dirname)
+        return filter(None, repo_dirs)
+
+    def update_repoinfo(self, *pkgcfgs):
+        '''Update repo dirs defined for each package with store dir'''
+        for pkgcfg in pkgcfgs:
+            for pkg in pkgcfg.keys():
+                pkgtype = pkgcfg[pkg]['package_type']
+                pkgcfg[pkg]['repo'] = os.path.join(self.store, pkgtype)
+
+    @staticmethod
+    def get_dict_by_item(tdict, titem):
+        matrix = {}
+        cfg_itemgetter = operator.itemgetter(titem)
+        for key, items in tdict.items():
+            matrix_key = cfg_itemgetter(items)
+            if not matrix.has_key(matrix_key):
+                matrix[matrix_key] = {}
+            matrix[matrix_key].update({key: items})
+        return matrix
+
+    def copy_pkg_files(self, pkginfo, error=True):
         ''' copy the packages present in location specified in package data structure
             to given destination directories
         '''
         for pkg in pkginfo.keys():
             if pkginfo[pkg]['found_at'] == '':
                 if error:
-                    raise IOError('Info about package file for Package (%s) is not found' %pkg)
+                    raise IOError('Info about package file for '
+                                  'Package (%s) is not found' %pkg)
                 else:
-                    log.warn('Info about package file for Package (%s) is not found' %pkg)
+                    log.warn('Skipping Copy package file (%s)' % pkg)
+                    log.warn('Info about package file for '
+                             'Package (%s) is not found' %pkg)
+                    continue
             pkgfile = pkginfo[pkg]['found_at']
+            destdirs = pkginfo[pkg]['repo']
             self.copyfiles(pkgfile, destdirs)
 
-    def copy_built_pkg_files(self, destdirs, targets=None, skips=None, error=True):
+    def copy_built_pkg_files(self, targets=None, destdirs=None, 
+                             extra_dirs=None, skips=None, error=True):
         ''' copy the contrail packages present in location specified in 
             package data structure to given destination directories
         '''
-        targets = targets if targets else self.contrail_pkgs.keys()
-        targets = list(set(targets) - set(skips)) if skips else targets     
+        targets = targets or self.contrail_pkgs.keys()
+        targets = list(set(targets) - set(self.get_as_list(skips))) if skips \
+                            else self.get_as_list(targets)
+        if destdirs is not None:
+            destdirs = self.get_as_list(destdirs)
+        if extra_dirs is not None:
+            extra_dirs = self.get_as_list(extra_dirs)
+
         for each in targets:
             pkgs = self.contrail_pkgs[each]['pkgs']
-            pkgs = [pkgs] if type(pkgs) is str else pkgs
+            pkgs = self.get_as_list(pkgs)
             for pkg in filter(None, pkgs):      
                 if self.contrail_pkgs[each]['found_at'][pkg] == '':
                     if error:
-                        raise IOError('Info about package file for Package (%s) is not found' %pkg)
+                        raise IOError('Info about package file for '
+                                      'Package (%s) is not found' %pkg)
                     else:
-                        log.warn('Info about package file for Package (%s) is not found' %pkg)
+                        log.warn('Skipping Copy package file (%s)' % pkg)
+                        log.warn('Info about package file for '
+                                 'Package (%s) is not found' %pkg)
+                        continue
                 pkgfile = self.contrail_pkgs[each]['found_at'][pkg]
-                self.copyfiles(pkgfile, destdirs)
+                repo_dirs = destdirs or \
+                            self.get_as_list(self.contrail_pkgs[each]['repo'])
+                if extra_dirs is not None:
+                    repo_dirs.extend(extra_dirs)
+                self.copyfiles(pkgfile, repo_dirs)
 
     def copy_to_artifacts(self):
         '''Copies rpm or deb files to artifacts directory'''

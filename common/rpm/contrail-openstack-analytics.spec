@@ -22,7 +22,6 @@ BuildArch: noarch
 
 Requires: contrail-api-lib
 Requires: contrail-analytics
-Requires: openstack-quantum-contrail
 Requires: contrail-setup
 %if 0%{?rhel}
 Requires: python-importlib

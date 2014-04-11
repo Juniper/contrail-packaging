@@ -34,7 +34,6 @@ Requires: python-requests
 Requires: python-zope-interface
 Requires: irond
 Requires: zookeeper
-Requires: zkpython
 Requires: xmltodict >= 0.1
 Requires: redis
 Requires: redis-py
@@ -143,7 +142,6 @@ install -D -m 644 %{_distropkgdir}/supervisor-config.service %{buildroot}/usr/li
 install -D -m 755 %{_distropkgdir}/supervisor-config.initd %{buildroot}%{_initddir}/supervisor-config
 install -D -m 755 %{_distropkgdir}/contrail-api.initd.supervisord %{buildroot}%{_initddir}/contrail-api
 install -D -m 755 %{_distropkgdir}/contrail-discovery.initd.supervisord %{buildroot}%{_initddir}/contrail-discovery
-install -D -m 755 %{_distropkgdir}/contrail-zookeeper.initd.supervisord %{buildroot}%{_initddir}/contrail-zookeeper
 install -D -m 755 %{_distropkgdir}/contrail-schema.initd.supervisord %{buildroot}%{_initddir}/contrail-schema
 install -D -m 755 %{_distropkgdir}/contrail-svc-monitor.initd.supervisord %{buildroot}%{_initddir}/contrail-svc-monitor
 install -p -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
@@ -153,10 +151,10 @@ install -p -m 755 %{_distropkgdir}/contrail-api.ini %{buildroot}%{_sysconfdir}/c
 install -p -m 755 %{_distropkgdir}/contrail-schema.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 install -p -m 755 %{_distropkgdir}/contrail-svc-monitor.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 install -p -m 755 %{_distropkgdir}/contrail-discovery.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
-install -p -m 755 %{_distropkgdir}/contrail-zookeeper.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-zookeeper.ini
 install -p -m 755 %{_distropkgdir}/redis-config.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/
 install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-api.kill %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.kill
 install -p -m 755 %{_distropkgdir}/contrail-config.rules %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config.rules
+install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
 pushd %{_builddir}
 install -D -m 755 src/config/schema-transformer/ifmap_view.py %{buildroot}%{_bindir}/ifmap_view.py
 #install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py
@@ -167,6 +165,15 @@ install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helpe
 
 # install nodemgr
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
+
+pushd %{buildroot}
+
+for f in $(find . -type f -exec grep -nH "^#\!.*BUILD.*python" {} \; | grep -v 'Binary file' | cut -d: -f1); do
+    sed "s/#\!.*python/#!\/usr\/bin\/python/g" $f > ${f}.b
+    mv ${f}.b $f
+    echo "changed $f .... Done!"
+done
+popd
 
 %files
 %defattr(-,root,root,-)
@@ -196,7 +203,7 @@ install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}
 %{_bindir}/venv-helper
 #%{_bindir}/encap.py
 %{_initddir}
-%{_venv_root}/bin/contrail-nodemgr
+%{_venv_root}/bin
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then

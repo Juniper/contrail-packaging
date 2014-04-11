@@ -14,11 +14,9 @@ end script
 
 script
     supervisord --nodaemon -c /etc/contrail/supervisord_control.conf
-    deactivate
 end script
 
 pre-stop script
     supervisorctl -s http://localhost:9003 stop all
     supervisorctl -s http://localhost:9003 shutdown
-    /usr/bin/supervisor_killall /etc/contrail/supervisord_control_files
 end script
