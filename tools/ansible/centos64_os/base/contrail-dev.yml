@@ -104,4 +104,6 @@
     - yum: name="python-nss" state=installed
     - yum: name="python-repoze-lru" state=installed
     - yum: name="python-routes" state=installed
+    - yum: name="python-oslo-sphinx" state=installed
+    - yum: name="python-pbr" state=installed
 
