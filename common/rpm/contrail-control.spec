@@ -145,7 +145,7 @@ popd
 %defattr(-,root,root,-)
 %{_bindir}/control-node
 %{_supervisordir}
-%{_contrailetc}/supervisord_control.conf
+%config(noreplace) %{_contrailetc}/supervisord_control.conf
 %{_venv_root}
 /usr/share/doc/
 %if 0%{?fedora} >= 17
@@ -165,6 +165,7 @@ popd
 %config(noreplace) %{_contrailetc}/control-node.conf
 %config(noreplace) %{_contrailetc}/dns.conf
 %{_venv_root}/bin/contrail-nodemgr
+%config(noreplace) %{_supervisordir}/contrail-control.ini
 
 %post
 (umask 007; /bin/echo "HOSTNAME=$(hostname)" >> /etc/contrail/control_param)
