@@ -1,5 +1,5 @@
 Name:     contrail-vrouter-src-dkms
-Maintainer: rrugge <rrugge@juniper.net>
+Maintainer: anandhk <anandhk@juniper.net>
 License:  Commercial
 Files: *
- Copyright (c) 2013 Juniper Networks, Inc. All rights reserved.
+ Copyright (c) 2014 Juniper Networks, Inc. All rights reserved.

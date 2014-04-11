@@ -1,6 +1,6 @@
-contrail-vrouter-src-dkms (BUILDTAG) rrugge; urgency=low
+contrail-vrouter-src-dkms (BUILDTAG) anandhk; urgency=low
 
-  [rrugge ]
+  [anandhk ]
   * debian/changelog: changelog
 
- -- rrugge <rrugge@juniper.net>  Mon, 11 Nov 2013 8:00:11 +0800
+ -- anandhk <anandhk@juniper.net>  Fri, 11 April 2014 8:00:11 +0800
