@@ -106,6 +106,14 @@ package-python-swiftclient:
 
 all-openstack-client: $(PREP) cinderclient glanceclient keystoneclient novaclient quantumclient \
 	swiftclient
+else
+neutronclient:package-python-neutronclient
+python-neutronclient:package-python-neutronclient
+package-python-neutronclient:
+	@echo making rpm for package-python-neutronclient
+	rpmbuild $(RPMBLDOPTS) python-neutronclient.spec $(G_TAG)
+
+all-openstack-client: $(PREP) neutronclient
 endif
 
 # Other 3rd party packages
@@ -221,13 +229,11 @@ xmltodict: $(PREP)
 ifeq ($(CONTRAIL_SKU), grizzly)
 all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
-	libvirt puppet python-bitarray python-geventhttpclient python-pycassa python-thrift \
-	redis-py supervisor webob xmltodict ixgbe python-bottle
+	python-pycassa python-thrift redis-py supervisor webob xmltodict ixgbe python-bottle
 else
-all: $(PREP) contrail-fabric-utils contrail-test euca2ools hiredis-py \
+all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
-	libvirt puppet python-bitarray python-geventhttpclient python-pycassa python-thrift \
-	redis-py supervisor xmltodict ixgbe
+	python-pycassa python-thrift redis-py supervisor xmltodict ixgbe
 endif
 
 clean:
