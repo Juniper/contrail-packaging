@@ -14,7 +14,11 @@
 
 Name: python-thrift
 Summary: Python Thrift Package %{?_gitVer}
+%if  "%{dist}" == ".xen"
+Version: 0.8.0
+%else
 Version: 0.9.1
+%endif
 Release: %{_relstr}%{?dist}
 License: MIT
 Group: Applications/System
@@ -30,21 +34,27 @@ fi
 
 %build
 pushd %{_builddir}/..
+%if  "%{dist}" == ".xen"
+pushd third_party/thrift-0.8.0/lib/py
+%else
 pushd %{_distrothirdpartydir}/thrift-0.9.1
-#pushd third_party/thrift-0.8.0/lib/py
+%endif
 CFLAGS="%{optflags}" %{__python} setup.py build
 
 %install
 pushd %{_builddir}/..
+%if  "%{dist}" == ".xen"
+pushd third_party/thrift-0.8.0/lib/py
+%else
 pushd %{_distrothirdpartydir}/thrift-0.9.1
-#pushd third_party/thrift-0.8.0/lib/py
+%endif
 %{__python} setup.py install -O1 --skip-build --root %{buildroot}
 
 %files
 %defattr(-,root,root,-)
 %if  "%{dist}" == ".xen"
 %{buildroot}%{python_sitearch}/thrift
-%{buildroot}%{python_sitearch}/thrift-0.9.1-*.egg-info
+%{buildroot}%{python_sitearch}/thrift-0.8.0-*.egg-info
 %else
 %{python_sitearch}/thrift
 %{python_sitearch}/thrift-0.9.1-*.egg-info
