@@ -22,9 +22,5 @@ class Packager(BasePackager):
         self.verify_built_pkgs_exists(self.meta_pkg)
         self.copy_built_pkg_files(self.meta_pkg,
                                   extra_dirs=self.store)
-        self.create_comps_xml()
-        ks_file = self.create_ks()
-        self.createrepo(extraargs='-g comps.xml')
-        self.run_pungi(ks_file)
         self.create_log()
         self.create_git_ids()
