@@ -93,9 +93,11 @@ cat > reqs/reqs.txt <<END
 %{_builddir}/../%{_distrothirdpartydir}/kombu-3.0.9.tar.gz  
 %{_builddir}/../%{_distrothirdpartydir}/bottle-0.11.6.tgz
 %if %{_skuTag} != "grizzly"
+%{_builddir}/../%{_distrothirdpartydir}/six-1.6.1.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/Babel-1.3.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/pytz-2014.2.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/python-novaclient-3776fe9.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/python-keystoneclient-0.0.360.0b66ca5.tar.gz
-%{_builddir}/../%{_distrothirdpartydir}/python-neutronclient.tar.gz
 %endif
 END
 
