@@ -121,9 +121,6 @@ popd
 pushd %{_builddir}/../%{_distrothirdpartydir}/pycassa-1.10.0
 %{__python} setup.py install
 popd
-pushd %{_builddir}/../%{_distrothirdpartydir}/redis-2.8.0
-%{__python} setup.py install
-popd
 
 deactivate
 
