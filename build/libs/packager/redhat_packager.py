@@ -5,7 +5,7 @@ import logging
 
 from common import BasePackager
 
-log = logging.getLogger("pkg.%s" %__name__)
+log = logging.getLogger("pkg")
 
 
 class Packager(BasePackager):
