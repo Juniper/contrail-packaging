@@ -1,0 +1,143 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+# Uncomment this to turn on verbose mode.
+#
+export DH_VERBOSE=1
+
+export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+export buildroot := $(SB_TOP)/build/debian/contrail-vrouter-src-dkms
+export _srcdir := ${SB_TOP}/vrouter/
+export _sandesh_srcdir := ${SB_TOP}/tools/sandesh/
+export _builddir := $(SB_TOP)/build/debug/vrouter/
+
+BUILDTAG =
+ifdef TAG
+BUILDTAG = $(TAG)
+else
+BUILDTAG = $(BUILDTIME)
+endif
+
+export _target_srcroot := /usr/src/vrouter-$(BUILDTAG)/
+export _packagedir := $(buildroot)/$(_target_srcroot)
+export _package_builddir := $(buildroot)/$(_target_builddir)
+export _arch := x86_64
+
+
+%:
+	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
+
+override_dh_auto_build: 
+	sed 's,BUILDTAG,$(BUILDTAG),g' debian/changelog.in > debian/changelog
+	sed 's,BUILDTAG,$(BUILDTAG),g' debian/postinst.in > debian/postinst
+	sed 's,BUILDTAG,$(BUILDTAG),g' debian/prerm.in > debian/prerm
+	(cd ${SB_TOP}; scons --target=$(_arch) $(BUILD_ARCH_TARGETS) $(_srcdir)/sandesh)
+
+override_dh_auto_install: 
+	install -d -m 755 $(_packagedir)/dp-core
+	install -d -m 755 $(_packagedir)/include
+	install -d -m 755 $(_packagedir)/linux
+	install -d -m 755 $(_packagedir)/sandesh
+	install -d -m 755 $(_packagedir)/sandesh/gen-c/
+	install -d -m 755 $(_packagedir)/sandesh/library/c
+	install -d -m 755 $(_packagedir)/sandesh/library/c/protocol
+	install -d -m 755 $(_packagedir)/sandesh/library/c/transport
+
+	echo "MAKE[0]=\"'make' -C . KERNELDIR=/lib/modules/\$${kernelver}/build\"" >> $(_packagedir)/dkms.conf
+	echo "CLEAN[0]=\"'make' -C . KERNELDIR=/lib/modules/\$${kernelver}/build\"" >> $(_packagedir)/dkms.conf
+	echo "DEST_MODULE_LOCATION[0]=\"/kernel/extra/net/vrouter\"" >> $(_packagedir)/dkms.conf
+	echo "BUILT_MODULE_NAME[0]=\"vrouter\"" >> $(_packagedir)/dkms.conf
+	echo "PACKAGE_NAME=vrouter" >> $(_packagedir)/dkms.conf
+	echo "PACKAGE_VERSION=$(BUILDTAG)" >> $(_packagedir)/dkms.conf
+	echo "AUTOINSTALL=\"yes\"" >> $(_packagedir)/dkms.conf
+
+
+	install -p -m 755 $(_srcdir)/dp-core/SConscript $(_packagedir)/dp-core/SConscript
+	install -p -m 755 $(_srcdir)/dp-core/vnsw_ip4_mtrie.c $(_packagedir)/dp-core/vnsw_ip4_mtrie.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_bridge.c $(_packagedir)/dp-core/vr_bridge.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_btable.c $(_packagedir)/dp-core/vr_btable.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_datapath.c $(_packagedir)/dp-core/vr_datapath.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_flow.c $(_packagedir)/dp-core/vr_flow.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_fragment.c $(_packagedir)/dp-core/vr_fragment.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_htable.c $(_packagedir)/dp-core/vr_htable.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_index_table.c $(_packagedir)/dp-core/vr_index_table.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_interface.c $(_packagedir)/dp-core/vr_interface.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_mcast.c $(_packagedir)/dp-core/vr_mcast.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_message.c $(_packagedir)/dp-core/vr_message.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_mirror.c $(_packagedir)/dp-core/vr_mirror.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_mpls.c $(_packagedir)/dp-core/vr_mpls.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_nexthop.c $(_packagedir)/dp-core/vr_nexthop.c
+	install -p -m 755 $(_srcdir)/dp-core/vrouter.c $(_packagedir)/dp-core/vrouter.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_packet.c $(_packagedir)/dp-core/vr_packet.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_proto_ip.c $(_packagedir)/dp-core/vr_proto_ip.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_queue.c $(_packagedir)/dp-core/vr_queue.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_response.c $(_packagedir)/dp-core/vr_response.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_route.c $(_packagedir)/dp-core/vr_route.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_sandesh.c $(_packagedir)/dp-core/vr_sandesh.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_stats.c $(_packagedir)/dp-core/vr_stats.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_vrf_assign.c $(_packagedir)/dp-core/vr_vrf_assign.c
+	install -p -m 755 $(_srcdir)/dp-core/vr_vxlan.c $(_packagedir)/dp-core/vr_vxlan.c
+
+	install -p -m 755 $(_srcdir)/include/nl_util.h $(_packagedir)/include/nl_util.h
+	install -p -m 755 $(_srcdir)/include/udp_util.h $(_packagedir)/include/udp_util.h
+	install -p -m 755 $(_srcdir)/include/ulinux.h $(_packagedir)/include/ulinux.h
+	install -p -m 755 $(_srcdir)/include/vhost.h $(_packagedir)/include/vhost.h
+	install -p -m 755 $(_srcdir)/include/vnsw_ip4_mtrie.h $(_packagedir)/include/vnsw_ip4_mtrie.h
+	install -p -m 755 $(_srcdir)/include/vr_bridge.h $(_packagedir)/include/vr_bridge.h
+	install -p -m 755 $(_srcdir)/include/vr_btable.h $(_packagedir)/include/vr_btable.h
+	install -p -m 755 $(_srcdir)/include/vr_compat.h $(_packagedir)/include/vr_compat.h
+	install -p -m 755 $(_srcdir)/include/vr_defs.h $(_packagedir)/include/vr_defs.h
+	install -p -m 755 $(_srcdir)/include/vr_flow.h $(_packagedir)/include/vr_flow.h
+	install -p -m 755 $(_srcdir)/include/vr_fragment.h $(_packagedir)/include/vr_fragment.h
+	install -p -m 755 $(_srcdir)/include/vr_genetlink.h $(_packagedir)/include/vr_genetlink.h
+	install -p -m 755 $(_srcdir)/include/vr_hash.h $(_packagedir)/include/vr_hash.h
+	install -p -m 755 $(_srcdir)/include/vr_htable.h $(_packagedir)/include/vr_htable.h
+	install -p -m 755 $(_srcdir)/include/vr_index_table.h $(_packagedir)/include/vr_index_table.h
+	install -p -m 755 $(_srcdir)/include/vr_interface.h $(_packagedir)/include/vr_interface.h
+	install -p -m 755 $(_srcdir)/include/vr_linux.h $(_packagedir)/include/vr_linux.h
+	install -p -m 755 $(_srcdir)/include/vr_mcast.h $(_packagedir)/include/vr_mcast.h
+	install -p -m 755 $(_srcdir)/include/vr_message.h $(_packagedir)/include/vr_message.h
+	install -p -m 755 $(_srcdir)/include/vr_mirror.h $(_packagedir)/include/vr_mirror.h
+	install -p -m 755 $(_srcdir)/include/vr_mpls.h $(_packagedir)/include/vr_mpls.h
+	install -p -m 755 $(_srcdir)/include/vr_nexthop.h $(_packagedir)/include/vr_nexthop.h
+	install -p -m 755 $(_srcdir)/include/vr_os.h $(_packagedir)/include/vr_os.h
+	install -p -m 755 $(_srcdir)/include/vrouter.h $(_packagedir)/include/vrouter.h
+	install -p -m 755 $(_srcdir)/include/vr_packet.h $(_packagedir)/include/vr_packet.h
+	install -p -m 755 $(_srcdir)/include/vr_proto.h $(_packagedir)/include/vr_proto.h
+	install -p -m 755 $(_srcdir)/include/vr_queue.h $(_packagedir)/include/vr_queue.h
+	install -p -m 755 $(_srcdir)/include/vr_response.h $(_packagedir)/include/vr_response.h
+	install -p -m 755 $(_srcdir)/include/vr_route.h $(_packagedir)/include/vr_route.h
+	install -p -m 755 $(_srcdir)/include/vr_sandesh.h $(_packagedir)/include/vr_sandesh.h
+	install -p -m 755 $(_srcdir)/include/vr_vxlan.h $(_packagedir)/include/vr_vxlan.h
+
+	install -p -m 755 $(_srcdir)/linux/vhost_dev.c $(_packagedir)/linux/vhost_dev.c
+	install -p -m 755 $(_srcdir)/linux/vr_genetlink.c $(_packagedir)/linux/vr_genetlink.c
+	install -p -m 755 $(_srcdir)/linux/vr_host_interface.c $(_packagedir)/linux/vr_host_interface.c
+	install -p -m 755 $(_srcdir)/linux/vr_mem.c $(_packagedir)/linux/vr_mem.c
+	install -p -m 755 $(_srcdir)/linux/vrouter_mod.c $(_packagedir)/linux/vrouter_mod.c
+
+	install -p -m 755 $(_builddir)/sandesh/gen-c/vr_types.c $(_packagedir)/sandesh/gen-c/vr_types.c
+	install -p -m 755 $(_builddir)/sandesh/gen-c/vr_types.h $(_packagedir)/sandesh/gen-c/vr_types.h
+
+	install -p -m 755 $(_sandesh_srcdir)/library/c/sandesh.c $(_packagedir)/sandesh/library/c/sandesh.c
+	install -p -m 755 $(_sandesh_srcdir)/library/c/sandesh.h $(_packagedir)/sandesh/library/c/sandesh.h
+	install -p -m 755 $(_sandesh_srcdir)/library/c/thrift.h $(_packagedir)/sandesh/library/c/thrift.h
+
+	install -p -m 755 $(_sandesh_srcdir)/library/c/protocol/thrift_binary_protocol.c $(_packagedir)/sandesh/library/c/protocol/thrift_binary_protocol.c
+	install -p -m 755 $(_sandesh_srcdir)/library/c/protocol/thrift_binary_protocol.h $(_packagedir)/sandesh/library/c/protocol/thrift_binary_protocol.h
+	install -p -m 755 $(_sandesh_srcdir)/library/c/protocol/thrift_protocol.c $(_packagedir)/sandesh/library/c/protocol/thrift_protocol.c
+	install -p -m 755 $(_sandesh_srcdir)/library/c/protocol/thrift_protocol.h $(_packagedir)/sandesh/library/c/protocol/thrift_protocol.h
+
+	install -p -m 755 $(_sandesh_srcdir)/library/c/transport/thrift_fake_transport.c $(_packagedir)/sandesh/library/c/transport/thrift_fake_transport.c
+	install -p -m 755 $(_sandesh_srcdir)/library/c/transport/thrift_fake_transport.h $(_packagedir)/sandesh/library/c/transport/thrift_fake_transport.h
+	install -p -m 755 $(_sandesh_srcdir)/library/c/transport/thrift_memory_buffer.c $(_packagedir)/sandesh/library/c/transport/thrift_memory_buffer.c
+	install -p -m 755 $(_sandesh_srcdir)/library/c/transport/thrift_memory_buffer.h $(_packagedir)/sandesh/library/c/transport/thrift_memory_buffer.h
+	install -p -m 755 $(_sandesh_srcdir)/library/c/transport/thrift_transport.c $(_packagedir)/sandesh/library/c/transport/thrift_transport.c
+	install -p -m 755 $(_sandesh_srcdir)/library/c/transport/thrift_transport.h $(_packagedir)/sandesh/library/c/transport/thrift_transport.h
+
+	install -p -m 755 $(_srcdir)/Makefile $(_packagedir)/Makefile

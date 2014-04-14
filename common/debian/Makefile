@@ -21,6 +21,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-dns-deb \
 	contrail-vrouter-deb \
 	contrail-vrouter-init-deb \
+	contrail-vrouter-src-dkms-deb \
 	contrail-config-venv-deb \
 	contrail-config-deb \
 	contrail-config-extension-deb \

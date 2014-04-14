@@ -1,0 +1,14 @@
+Source: contrail-vrouter-src-dkms
+Maintainer: anandhk <anandhk@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends:
+
+Package: contrail-vrouter-src-dkms
+Architecture: all
+Maintainer: anandhk <anandhk@juniper.net>
+Depends: dkms
+Section: contrail-vrouter-src-dkms
+Priority: extra
+Description: Contrail Openstack vRouter kernel source debian package
