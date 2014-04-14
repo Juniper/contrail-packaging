@@ -31,9 +31,9 @@ class ContrailBuild(object):
         if self.opt.manifest_file:
             manifest_real_path = os.path.realpath(self.opt.manifest_file)
 
-        require_arch = ["centos64_os", "ubuntu-12-04"]
+        require_arch = ["centos64_os", "ubuntu-12-04", "xen6.2SP1_os"]
         if not self.opt.arch_type in require_arch:
-            print 'Error: Only centos64_os and ubuntu-12-04 are currently supported'
+            print 'Error: Only centos64_os, ubuntu-12-04, and xen6.2.SP1 are currently supported'
             sys.exit(1)
 
         required_commands = ["package", "all"]
@@ -236,7 +236,7 @@ def search_file(filename, search_path):
 
 def parse_options(args):
     """ Parse command line arguments """
-    parser = argparse.ArgumentParser(description='Contrail build wrapper script - version 1.02')
+    parser = argparse.ArgumentParser(description='Contrail build wrapper script - version 1.03')
 
     parser.add_argument('-v', '--verbose', dest='debug', action='store_true',
                         help='Enable verbose mode')
@@ -272,11 +272,11 @@ def parse_options(args):
 
     parser.add_argument('-k', '--sku', nargs='?', dest='sku_name',
                         default='grizzly',
-                        help='Tag to use when creating packages')
+                        help='SKU to use to fetch manifest file or TAG to use in packaging')
 
     parser.add_argument('-a', '--arch', nargs='?', dest='arch_type',
                         default='centos64_os',
-                        help='Branch to use to fetch manifest file')
+                        help='Architecture to use to fetch manifest file')
 
     subparsers = parser.add_subparsers(title='ContrailBuild Commands',
                                        description='Select one command',
