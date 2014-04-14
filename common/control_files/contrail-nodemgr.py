@@ -63,11 +63,18 @@ class EventManager:
     rules_data = []
     process_state_db = {}
 
-    def __init__(self, rules, node_type='contrail-analytics'):
+    def __init__(self, rules, node_type='contrail-analytics', dbthreshold = 50, database_ttl = 48):
         self.stdin = sys.stdin
         self.stdout = sys.stdout
         self.stderr = sys.stderr
         self.rules_data = rules 
+        self.dbthreshold = dbthreshold
+        self.database_ttl = database_ttl
+        # db_purge_level is the level to which a database should be purged to upon crossing threshold, the value is the fraction of the threshold
+        # For e.g. if dbthreshold is 50 and db_purge_level is .6, as soon as the database crosses the threshold (50% of disk space), it will be purged down to 30% (50*.6) of disk space
+        self.db_purge_level = .6
+        # counts number of minute ticks received
+        self.tick_count = 0
         self.max_cores = 4
         self.max_old_cores = 3
         self.max_new_cores = 1
@@ -176,6 +183,10 @@ class EventManager:
                 from analytics_cpuinfo.ttypes import *
                 from analytics_cpuinfo.cpuinfo.ttypes import *
 
+        if (self.node_type == 'contrail-database'):
+            from database.sandesh.database_cpuinfo.ttypes import *
+            from database.sandesh.database_cpuinfo.cpuinfo.ttypes import *
+
         # following code is node independent
         process_state_list = []
         #sys.stderr.write("Sending whole of process state db as UVE:" + str(self.process_state_db))
@@ -197,9 +208,9 @@ class EventManager:
             #sys.stderr.write("Sending process state list:" + str(process_state_list))
 
         # send UVE based on node type
-        if ( (self.node_type == 'contrail-analytics') or 
-             (self.node_type == 'contrail-config')
-            ):
+        if (self.node_type == 'contrail-analytics' or 
+            self.node_type == 'contrail-config' or 
+            self.node_type == 'contrail-database'):
             mod_cpu_state = ModuleCpuState()
             mod_cpu_state.name = socket.gethostname()
             mod_cpu_state.process_state_list = process_state_list
@@ -277,6 +288,7 @@ class EventManager:
             
             # do periodic events
             if headers['eventname'].startswith("TICK_60"):
+                self.tick_count +=1
                 # check for openstack nova compute status
                 if (self.node_type == "contrail-vrouter"):
                     os_nova_comp = self.process_state_db['openstack-nova-compute']
@@ -306,6 +318,28 @@ class EventManager:
                         
                     self.process_state_db['openstack-nova-compute'] = os_nova_comp
                              
+            try:
+                if (self.node_type == "contrail-database"):
+                    if (subprocess.call("service contrail-database status| grep RUNNING", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0):
+                        (db_disk_usage, error_value) = Popen("/usr/bin/contrail-dbutils -d --cassandra_server_ip " + socket.gethostname(), shell=True, stderr=PIPE, stdout=PIPE).communicate()
+                        if ((db_disk_usage is not None) and (db_disk_usage.strip()).isdigit()):
+                            sys.stderr.write("DB Usage is " + db_disk_usage.strip() + " and threshold is:" + str(self.dbthreshold) + "\n");
+                            if (int(db_disk_usage) > self.dbthreshold):
+                                self.send_process_state_db(sandeshconn)
+                                sys.stderr.write("WARNING: Contrail-Database disk usage of " + db_disk_usage.strip() + "% exceeds threshold" + "\n")
+                                sys.stderr.write("\ncontrail database disk space usage of " + db_disk_usage.strip() + " percent exceeds threshold of " + str(self.dbthreshold) + "\n")
+                                # purge database but not right away, only at the hour boundary
+                                if (self.tick_count%60 == 0):
+                                    sys.stderr.write("purging contrail database disk space usage down to " + str(self.dbthreshold * self.db_purge_level) + " percent\n")
+                                    sys.stderr.write("starting purging\n")
+                                    (purge_stdout, purge_stderr) = Popen("/usr/bin/contrail-dbutils --cassandra_server_ip " + socket.gethostname() + " --cassandra_db_ttl " + str(int(self.database_ttl)) + " --purge_db_threshold " + str(int(self.dbthreshold * self.db_purge_level)), shell=True, stdout=PIPE, stderr=PIPE).communicate()
+                                    sys.stderr.write("done with purging\n")
+                                    if (purge_stdout is not None):
+                                        sys.stderr.write("\npurge command output:\n" + purge_stdout)
+                                    if (purge_stderr is not None):
+                                        sys.stderr.write("purge command stderr:\n" + purge_stderr)
+            except Exception as e:
+                sys.stderr.write("Exception: " + str(e) + "\n")
 
             childutils.listener.ok(self.stdout)
 
@@ -330,6 +364,14 @@ def main(argv=sys.argv):
                         type = int,
                         default = 5998, 
                         help = 'Port of Discovery Server')
+    parser.add_argument("--db_usage_threshold",
+                        type = int,
+                        default = 50,
+                        help = 'Database threshold for disk usage')
+    parser.add_argument("--db_ttl_value",
+                        type = int,
+                        default = 48,
+                        help = 'Database time to live value')
     try:
         _args = parser.parse_args()
     except:
@@ -360,7 +402,7 @@ def main(argv=sys.argv):
 
     json_file = open(rule_file)
     json_data = json.load(json_file)
-    prog = EventManager(json_data, node_type)
+    prog = EventManager(json_data, node_type, _args.db_usage_threshold, _args.db_ttl_value)
 
     #initialize sandesh
     if (node_type is 'contrail-analytics'):
@@ -381,7 +423,7 @@ def main(argv=sys.argv):
             sandesh_pkg_dir = 'analytics_cpuinfo'
         sandesh_global.init_generator(module_name, socket.gethostname(), 
             node_type_name, instance_id, collector_addr,
-            module_name, 8099, [sandesh_pkg_dir])
+            module_name, 8104, [sandesh_pkg_dir])
         sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-config'):
@@ -449,6 +491,23 @@ def main(argv=sys.argv):
             8102, ['vrouter.vrouter'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
     
+    if (node_type == 'contrail-database'):
+        try:
+            import discovery.client as client
+        except:
+            import discoveryclient.client as client
+
+        module = Module.DATABASE_NODE_MGR
+        module_name = ModuleNames[module]
+        node_type = Module2NodeType[module]
+        node_type_name = NodeTypeNames[node_type]
+        instance_id = INSTANCE_ID_DEFAULT
+        _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
+        sandesh_global.init_generator(module_name, socket.gethostname(),
+            node_type_name, instance_id, [], module_name,
+            8103, ['database.sandesh'], _disc)
+        #sandesh_global.set_logging_params(enable_local_log=True)
+
     gevent.joinall([gevent.spawn(prog.runforever, sandesh_global)])
 
 if __name__ == '__main__':

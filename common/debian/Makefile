@@ -44,6 +44,8 @@ PACKAGES = contrail-libs-deb \
 	contrail-fabric-utils-deb \
 	contrail-test-deb \
 	euca2ools-deb \
+    contrail-database-venv-deb \
+    contrail-database-deb \
 	python-boto-deb \
 	libvirt-deb \
 	contrail-openstack-dashboard-deb \

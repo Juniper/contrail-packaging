@@ -181,12 +181,6 @@ install -p -m 755 %{_distropkgdir}/redis-uve.initd.supervisord          %{buildr
 pushd %{_builddir}
 install -D -m 644 src/analytics/ruleparser/tabledump.py %{buildroot}%{_contrailanalytics}/tabledump.py
 install -D -m 755 src/analytics/ruleparser/tabledump %{buildroot}%{_contrailanalytics}/tabledump
-install -D -m 755 src/analytics/ruleparser/contrail-dbutils %{buildroot}%{_venv_root}/bin/contrail-dbutils
-
-pushd %{_builddir}/..
-%define _helper   %{_distropkgdir}/analytics-venv-helper
-install -p -m 755 %{_helper} %{buildroot}%{_bindir}/contrail-dbutils
-popd
 install -D -m 644 src/opserver/log.py %{buildroot}%{_contrailutils}/log.py
 install -D -m 644 src/opserver/stats.py %{buildroot}%{_contrailutils}/stats.py
 install -D -m 755 src/opserver/contrail-logs %{buildroot}%{_contrailutils}/contrail-logs
@@ -203,7 +197,7 @@ rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/gen_py/__init__.*
 rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/bottle.py*
 
 # install nodemgr
-install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
+install -D -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
 
 %post
 %if 0%{?fedora} >= 17
@@ -228,7 +222,6 @@ fi
 %defattr(-, root, root)
 %{_bindir}/vizd
 %{_bindir}/qed
-%{_bindir}/contrail-dbutils
 %{_bindir}/contrail_collector_pre
 %{_bindir}/contrail_qe_pre
 %{_venv_root}
