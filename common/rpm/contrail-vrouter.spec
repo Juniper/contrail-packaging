@@ -265,8 +265,8 @@ exit 0
 %{_contrailetc}/vnagent_param_setup.sh
 %{_contrailetc}/contrail_reboot
 %{_servicedir}/supervisor-vrouter.service
-%{_contrailetc}/supervisord_vrouter.conf
-%{_supervisordir}/contrail-vrouter.ini
+%config(noreplace) %{_contrailetc}/supervisord_vrouter.conf
+%config(noreplace) %{_supervisordir}/contrail-vrouter.ini
 %{_supervisordir}/contrail-vrouter.rules
 %{_supervisordir}/contrail-vrouter.kill
 %{_venv_root}/bin/contrail-nodemgr

@@ -186,7 +186,7 @@ fi
 %doc
 %{_sysconfdir}/rc.d/init.d/contrail-database
 %{_sysconfdir}/rc.d/init.d/supervisord-contrail-database
-%{_sysconfdir}/contrail/supervisord_contrail_database.conf
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_contrail_database.conf
 
 %changelog
 * Wed Dec 12 2012 Pedro Marques <roque@build02> - 

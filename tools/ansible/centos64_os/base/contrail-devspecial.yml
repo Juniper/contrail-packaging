@@ -1,31 +1,20 @@
 - hosts: contrail
   user: root
   tasks:
-    - yum: name="autoconf" state=absent
-    - yum: name="m4" state=absent
-    - yum: name="scons" state=absent
-    - yum: name="log4cplus" state=absent
-    - script: ../../auto/mktmp.sh
-    - copy: src=../../auto/RPMS/autoconf-2.68-2.fc15.noarch.rpm dest=/tmp/RPMS
-    - copy: src=../../auto/RPMS/scons-2.2.0-1.noarch.rpm  dest=/tmp/RPMS
-    - copy: src=../../auto/RPMS/rpm-build-4.8.0-32.el6.x86_64.rpm dest=/tmp/RPMS
-    - copy: src=../../auto/RPMS/log4cplus-1.1.1-1.el6.x86_64.rpm dest=/tmp/RPMS
-    - copy: src=../../auto/RPMS/m4-1.4.16-9.3.x86_64.rpm dest=/tmp/RPMS
     - copy: src=../../auto/RPMS/apache-ivy-2.3.0-bin-with-deps.tar.gz dest=/opt
     - copy: src=../../auto/link.sh dest=/tmp
     - copy: src=../../auto/gitcommits.tgz dest=/tmp
-    - command: /bin/rpm -i /tmp/RPMS/m4-1.4.16-9.3.x86_64.rpm
-    - command: /bin/rpm -i /tmp/RPMS/autoconf-2.68-2.fc15.noarch.rpm
     - command: wget -O /usr/local/bin/repo http://commondatastorage.googleapis.com/git-repo-downloads/repo
     - command: sh /tmp/link.sh
     - file: path=/usr/local/bin/repo  mode=0755
-    - yum: name="bison" state=installed
-    - yum: name="flex" state=installed
-    - yum: name="automake" state=installed
     - command: tar xzf /opt/apache-ivy-2.3.0-bin-with-deps.tar.gz --directory /opt
-    - command: rpm -i /tmp/RPMS/scons-2.2.0-1.noarch.rpm
-    - command: rpm -i /tmp/RPMS/log4cplus-1.1.1-1.el6.x86_64.rpm
-    - yum: name="intltool" enablerepo=centos_build_repo state=installed
+    - yum: name="autoconf" state=removed
+    - yum: name="automake" state=removed
+    - yum: name="m4" state=removed
+    - yum: name="m4" state=installed
+    - yum: name="automake" state=installed
+    - yum: name="autoconf" state=installed
+ 
       tags:
          - special-repos
 
