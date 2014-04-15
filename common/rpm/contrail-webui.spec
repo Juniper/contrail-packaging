@@ -120,9 +120,10 @@ rm -rf %{_specdir}/contrail-webui.spec
 %endif
 %{_libdir}/*
 %config(noreplace) %{_contrailetc}/config.global.js
-%config(noreplace) %{_supervisordir}/*
-%config(noreplace) %{_contrailetc}/supervisord_webui.conf
-%config(noreplace) %{_contrailetc}/redis-webui.conf
+%{_supervisordir}/*
+%{_contrailetc}/supervisord_webui.conf
+%{_contrailetc}/redis-webui.conf
+
 
 %post
 %if 0%{?rhel}

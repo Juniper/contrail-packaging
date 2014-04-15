@@ -191,11 +191,6 @@ install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}
 #%{_bindir}/encap.py
 %{_initddir}
 %{_venv_root}/bin/contrail-nodemgr
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config.conf
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
 %config(noreplace) %{_sysconfdir}/contrail/api_server.conf
 %config(noreplace) %{_sysconfdir}/contrail/schema_transformer.conf
 %config(noreplace) %{_sysconfdir}/contrail/svc_monitor.conf
