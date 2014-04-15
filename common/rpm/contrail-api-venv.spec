@@ -87,6 +87,7 @@ cat > reqs/reqs.txt <<END
 %{_builddir}/../%{_distrothirdpartydir}/Routes-1.13.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/qpid-python-0.20.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/pbr-0.5.21.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/WebOb-1.2.3.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/librabbitmq-1.0.3.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/amqp-1.4.1.tar.gz   
 %{_builddir}/../%{_distrothirdpartydir}/anyjson-0.3.3.tar.gz
