@@ -163,7 +163,14 @@ package-neutron: $(PREP)
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
 	-bb neutron/openstack-neutron.spec $(G_TAG)
 
-all: $(PREP) package-nova package-neutron
+horizon: package-horizon
+openstack-dashboard: package-horizon
+package-horizon: $(PREP)
+	@echo making rpm for package-horizon
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
+	-bb horizon/openstack-horizon-havana.spec $(G_TAG)
+
+all: $(PREP) package-nova package-neutron horizon
 endif
 
 clean:
