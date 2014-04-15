@@ -86,11 +86,18 @@ cat > reqs/reqs.txt <<END
 %{_builddir}/../%{_distrothirdpartydir}/SQLAlchemy-0.8.2.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/Routes-1.13.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/qpid-python-0.20.tar.gz
+%{_builddir}/../%{_distrothirdpartydir}/bottle-0.11.6.tgz
 END
 
 %install
 install -d -m 755 %{buildroot}/opt/contrail/
 %define _target %{buildroot}/opt/contrail/control-venv
+
+%define         _thirdpartydir       third_party
+[ -f %{_builddir}/../%{_distrothirdpartydir}/bottle-0.11.6.tgz ] || \
+    ( cd %{_builddir}/../%{_thirdpartydir} && \
+    tar czvf %{_builddir}/../%{_distrothirdpartydir}/bottle-0.11.6.tgz \
+    bottle-0.11.6 )
 
 # start venv
 pushd %{_builddir}/virtualenv-1.9.1
