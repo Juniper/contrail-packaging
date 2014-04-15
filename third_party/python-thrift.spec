@@ -10,6 +10,7 @@
 
 %if 0%(grep -c XenServer /etc/redhat-release)
 %define dist .xen
+BuildRoot:	%{_topdir}/BUILDROOT
 %endif
 
 Name: python-thrift
@@ -53,11 +54,16 @@ pushd %{_distrothirdpartydir}/thrift-0.9.1
 %files
 %defattr(-,root,root,-)
 %if  "%{dist}" == ".xen"
-%{buildroot}%{python_sitearch}/thrift
-%{buildroot}%{python_sitearch}/thrift-0.8.0-*.egg-info
+%undefine buildroot
+%{python_sitearch}/thrift
+%{python_sitearch}/thrift-0.8.0-*.egg-info
 %else
 %{python_sitearch}/thrift
 %{python_sitearch}/thrift-0.9.1-*.egg-info
+%endif
+
+%if  "%{dist}" == ".xen"
+%define buildroot %{_topdir}/BUILDROOT
 %endif
 
 %changelog

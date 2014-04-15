@@ -24,6 +24,7 @@
 
 %if 0%(grep -c Xen /etc/redhat-release)
 %define		dist	.xen
+BuildRoot:	%{_topdir}/BUILDROOT
 %endif
 
 %{echo: "Building release %{_relstr}\n"}
@@ -232,17 +233,8 @@ exit 0
 %files
 %defattr(-, root, root)
 %if  "%{dist}" == ".xen"
-%{buildroot}%{_bindir}/flow
-%{buildroot}%{_bindir}/vif
-%{buildroot}%{_bindir}/mpls
-%{buildroot}%{_bindir}/mirror
-%{buildroot}%{_bindir}/nh
-%{buildroot}%{_bindir}/rt
-%{buildroot}%{_bindir}/vrfstats
-%{buildroot}%{_bindir}/vxlan
-%{buildroot}%{_bindir}/dropstats
-%{buildroot}%{_bindir}/vnswad
-%else
+%undefine buildroot
+%endif
 %{_bindir}/flow
 %{_bindir}/vif
 %{_bindir}/mpls
@@ -253,9 +245,8 @@ exit 0
 %{_bindir}/vxlan
 %{_bindir}/dropstats
 %{_bindir}/vnswad
-%endif
 %if 0%(if [ "%{dist}" == ".xen" ]; then echo 1; fi)
-%{buildroot}%{_sysconfdir}/init.d/contrail-vrouter
+%{_sysconfdir}/init.d/contrail-vrouter
 %else
 %{_venv_root}
 %{_contrailetc}/rpm_agent.conf
@@ -282,11 +273,10 @@ exit 0
 /etc/init.d/supervisor-vrouter
 %endif
 
-%if  "%{dist}" == ".xen"
-%{buildroot}/lib/modules/%{_osVer}/extra/net/vrouter/vrouter.ko
-%else
 /lib/modules/%{_osVer}/extra/net/vrouter/vrouter.ko
-%endif
 
+%if  "%{dist}" == ".xen"
+%define buildroot  %{_topdir}/BUILDROOT
+%endif
 %changelog
 
