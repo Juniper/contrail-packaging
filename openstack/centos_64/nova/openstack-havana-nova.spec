@@ -83,7 +83,6 @@ Requires:         openstack-nova-console = %{version}-%{release}
 Requires:         openstack-nova-cells = %{version}-%{release}
 Requires:         openstack-nova-novncproxy = %{version}-%{release}
 
-
 %description
 OpenStack Compute (codename Nova) is open source software designed to
 provision and manage large networks of virtual machines, creating a
@@ -140,6 +139,8 @@ Requires:         python-cinderclient
 Requires(pre):    qemu-kvm
 Requires:         sysfsutils
 Requires:         genisoimage
+# Add python-pbr dependency for a while, we need to investigate, how to remove it
+Requires:         python-pbr
 
 %description compute
 OpenStack Compute (codename Nova) is open source software designed to
