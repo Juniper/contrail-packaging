@@ -99,8 +99,10 @@ Documentation for the Django Horizon application for talking with Openstack
 
 %prep
 pushd horizon
+#setup -q -n horizon-%{version}
 # remove unnecessary .po files
-find . -name "django*.po" -exec rm -f '{}' \;
+#find . -name "django*.po" -exec rm -f '{}' \;
+rm -rf {test-,}requirements.txt tools/{pip,test}-requires
 popd horizon
 
 %build
@@ -214,6 +216,10 @@ mkdir -p %{buildroot}%{_sharedstatedir}/openstack-dashboard
 %{python_sitelib}/horizon/utils
 %{python_sitelib}/horizon/workflows
 %{python_sitelib}/*.egg-info
+%{python_sitelib}/horizon/locale
+%{python_sitelib}/horizon/locale/??
+%{python_sitelib}/horizon/locale/??_??
+%{python_sitelib}/horizon/locale/??/LC_MESSAGES
 
 %files -n openstack-dashboard -f horizon/dashboard.lang
 %dir %{_datadir}/openstack-dashboard/
@@ -230,12 +236,12 @@ mkdir -p %{buildroot}%{_sharedstatedir}/openstack-dashboard
 %{_datadir}/openstack-dashboard/openstack_dashboard/usage
 %{_datadir}/openstack-dashboard/openstack_dashboard/utils
 %{_datadir}/openstack-dashboard/openstack_dashboard/wsgi
+%{_datadir}/openstack-dashboard/openstack_dashboard/locale
+%{_datadir}/openstack-dashboard/openstack_dashboard/locale/??
+%{_datadir}/openstack-dashboard/openstack_dashboard/locale/??_??
+%{_datadir}/openstack-dashboard/openstack_dashboard/locale/??/LC_MESSAGES
 %dir %{_datadir}/openstack-dashboard/openstack_dashboard
 %dir %{_datadir}/openstack-dashboard/static/dashboard/css
-%dir %{_datadir}/openstack-dashboard/openstack_dashboard/locale
-%dir %{_datadir}/openstack-dashboard/openstack_dashboard/locale/??
-%dir %{_datadir}/openstack-dashboard/openstack_dashboard/locale/??_??
-%dir %{_datadir}/openstack-dashboard/openstack_dashboard/locale/??/LC_MESSAGES
 
 %{_sharedstatedir}/openstack-dashboard
 %dir %attr(0750, root, apache) %{_sysconfdir}/openstack-dashboard
