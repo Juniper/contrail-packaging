@@ -117,7 +117,7 @@ all-openstack-client: $(PREP) neutronclient
 endif
 
 # Other 3rd party packages
-contrail-fabric-utils:
+contrail-fabric-utils: $(PPREP)
 	@echo making rpm for contrail-fabric-utils
 	rpmbuild $(RPMBLDOPTS) fabric-utils.spec $(G_TAG)
 	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-fabric-utils-$(TOOLS_VERSION).tgz fabric-utils
