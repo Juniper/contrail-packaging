@@ -1,7 +1,7 @@
 
 %define mod_name openstack_dashboard
-%define script_name /
-%define httpd_conf openstack_dashboard.conf
+%define script_name /dashboard
+%define httpd_conf openstack-dashboard.conf
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -15,7 +15,8 @@
 
 Name:       django-horizon
 Epoch:      %{_epochstr}
-Version:    2012.1
+
+Version:    2013.1.4
 Release:    %{_relstr}
 Summary:    Django application for talking to Openstack %{?_gitVer}
 
@@ -44,11 +45,11 @@ Requires:   python-django-openstack-auth
 Requires:   python-django-compressor
 Requires:   django-staticfiles
 Requires:   python-dateutil
-Requires:   python-cinderclient 
+Requires:   python-cinderclient
 Requires:   python-glanceclient
-Requires:   python-keystoneclient 
-Requires:   python-novaclient 
-Requires:   python-quantumclient 
+Requires:   python-keystoneclient
+Requires:   python-novaclient
+Requires:   python-quantumclient
 Requires:   python-swiftclient
 Requires:   pytz
 
@@ -66,7 +67,21 @@ Group:      Applications/System
 
 Requires:   httpd
 Requires:   mod_wsgi
-Requires:   django-horizon >= %{version}
+Requires:   django-horizon
+Requires:   Django >= 1.4
+Requires:   nodejs
+Requires:   python-django-openstack-auth
+Requires:   python-django-compressor
+Requires:   django-staticfiles
+Requires:   python-dateutil
+Requires:   python-cinderclient
+Requires:   python-glanceclient
+Requires:   python-keystoneclient
+Requires:   python-novaclient
+Requires:   python-quantumclient
+Requires:   python-swiftclient
+Requires:   pytz
+
 
 BuildRequires: python2-devel
 
@@ -121,7 +136,7 @@ echo '    Alias /static/%{mod_name} %{python_sitelib}/%{mod_name}/static/opensta
 echo '    WSGIDaemonProcess dashboard' >> %{httpd_conf}
 echo '    WSGIProcessGroup dashboard' >> %{httpd_conf}
 echo '    #DocumentRoot %HORIZON_DIR%/.blackhole/' >> %{httpd_conf}
-echo '    <Directory />' >> %{httpd_conf}
+echo '    <Directory %{script_name}>' >> %{httpd_conf}
 echo '        Options FollowSymLinks' >> %{httpd_conf}
 echo '        AllowOverride None' >> %{httpd_conf}
 echo '    </Directory>' >> %{httpd_conf}
@@ -141,7 +156,7 @@ popd
 pushd horizon
 %{__python} setup.py install --root %{buildroot}
 
-install -m 0644 -D -p %{httpd_conf} %{buildroot}%{_sysconfdir}/httpd/conf.d/openstack_dashboard.conf
+install -m 0644 -D -p %{httpd_conf} %{buildroot}%{_sysconfdir}/httpd/conf.d/%{httpd_conf}
 
 
 sed -e 's|^STATIC_ROOT = .*|STATIC_ROOT = os.path.join\("/var/www/html", "static"\)|' -i %{buildroot}%{python_sitelib}/openstack_dashboard/settings.py
@@ -176,7 +191,7 @@ install -d -m 755 %{buildroot}/var/www/html/static
 
 
 %files -n openstack-dashboard
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/openstack_dashboard.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/%{httpd_conf}
 %config(noreplace) %{_sysconfdir}/openstack_dashboard/local_settings
 %config(noreplace) %{python_sitelib}/openstack_dashboard/local/local_settings.py
 %{python_sitelib}/openstack_dashboard
