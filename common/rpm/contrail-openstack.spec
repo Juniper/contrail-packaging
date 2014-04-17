@@ -22,6 +22,7 @@ BuildArch: noarch
 
 Requires: contrail-api-lib
 Requires: openstack-dashboard
+Requires: contrail-openstack-dashboard
 Requires: openstack-glance
 Requires: openstack-keystone
 Requires: openstack-nova
