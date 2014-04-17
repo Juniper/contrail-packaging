@@ -5,25 +5,22 @@ import logging
 
 from common import BasePackager
 
-log = logging.getLogger("pkg.%s" %__name__)
-
-
+log = logging.getLogger("pkg")
+        
 class Packager(BasePackager):
     ''' Centos Packager '''
-    def ks_build(self):
+    def exec_steps(self):
+        '''Packager Steps'''
         self.setup_env()
         self.create_pkg_list_file()
         self.make_pkgs()
-        self.verify_built_pkgs_exists(skips=['contrail-install-packages'])
-        self.copy_built_pkg_files(self.pkg_repo, skips=['contrail-install-packages'])
-        self.createrepo(self.pkg_repo)
-        self.create_tgz(self.pkgs_tgz, self.pkg_repo)
+        self.verify_built_pkgs_exists(skips=self.meta_pkg)
+        self.copy_built_pkg_files(skips=self.meta_pkg)
+        self.createrepo()
+        self.create_pkgs_tgz()
         self.create_contrail_pkg()
-        self.verify_built_pkgs_exists(['contrail-install-packages'])        
-        self.copy_built_pkg_files([self.store, self.pkg_repo], ['contrail-install-packages'])
-        self.create_comps_xml()
-        ks_file = self.create_ks()
-        self.createrepo(self.pkg_repo, extraargs='-g comps.xml')
-        self.run_pungi(ks_file)
+        self.verify_built_pkgs_exists(self.meta_pkg)
+        self.copy_built_pkg_files(self.meta_pkg,
+                                  extra_dirs=self.store)
         self.create_log()
         self.create_git_ids()

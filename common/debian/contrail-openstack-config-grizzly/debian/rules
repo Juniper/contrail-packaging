@@ -53,7 +53,6 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/contrail-schema.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-schema.ini
 	install -p -m 755 $(_src_config)/contrail-svc-monitor.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-svc-monitor.ini
 	install -p -m 755 $(_src_config)/contrail-discovery.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-discovery.ini
-	install -p -m 755 $(_src_config)/redis-config.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/redis-config.ini
 	install -p -m 755 $(_src_config)/supervisord_wrapper_scripts/contrail-api.kill $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-api.kill
 	install -p -m 755 $(_src_config)/contrail-config.rules $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-config.rules
 	install -D -m 644 $(_src_config)/supervisor-config.service $(buildroot)/usr/lib/systemd/system/supervisor-config.service
