@@ -58,10 +58,10 @@ Source34:         nova_havana.conf
 #
 # patches_base=2013.2.b3
 #
-Patch0001: 0001-Ensure-we-don-t-access-the-net-when-building-docs.patch
-Patch0002: 0002-remove-runtime-dep-on-python-pbr.patch
-Patch0003: 0003-Revert-Use-oslo.sphinx-and-remove-local-copy-of-doc-.patch
-Patch0004: 0004-Fix-compute_node_get_all-for-Nova-Baremetal.patch
+Patch01:          0001-Ensure-we-don-t-access-the-net-when-building-docs.patch
+Patch02:          0002-remove-runtime-dep-on-python-pbr.patch
+#Patch03:         0003-Revert-Use-oslo.sphinx-and-remove-local-copy-of-doc-.patch
+#Patch04:         0004-Fix-compute_node_get_all-for-Nova-Baremetal.patch
 
 BuildArch:        noarch
 BuildRequires:    intltool
@@ -139,8 +139,6 @@ Requires:         python-cinderclient
 Requires(pre):    qemu-kvm
 Requires:         sysfsutils
 Requires:         genisoimage
-# Add python-pbr dependency for a while, we need to investigate, how to remove it
-Requires:         python-pbr
 
 %description compute
 OpenStack Compute (codename Nova) is open source software designed to
@@ -418,6 +416,12 @@ This package contains documentation files for nova.
 %endif
 
 %prep
+pushd nova
+# stash all previosly applied patches as we are applying patches only at build time
+git stash
+%patch01 -p1
+%patch02 -p1
+popd
 # Remove the requirements file so that pbr hooks don't add it 
 # to distutils requiers_dist config
 rm -rf {test-,}requirements.txt tools/{pip,test}-requires
