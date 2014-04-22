@@ -17,10 +17,7 @@ export buildroot := $(SB_TOP)/build/debian/contrail-webui
 export WS := `cat ~/rpmbuild/SOURCES/git_root`
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):debian/contrail-control/usr/lib64/contrail:debian/contrail-libs/usr/lib64/contrail
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export _initddir := /etc/init.d
-export _initdir := /etc/init
 export _contrailetc := /etc/contrail
-export _supervisordir := /etc/contrail/supervisord_webui_files
 export _sourcedir := $(WS)/tools/packaging
 export _distropkgdir := $(SB_TOP)/tools/packaging/common/control_files
 export _distrothirdpartydir := $(SB_TOP)/contrail-web-third-party
@@ -56,9 +53,6 @@ override_dh_auto_install:
 	mkdir -p $(buildroot)/$(_contrailwebsrc)
 	mkdir -p $(buildroot)/$(_libdir)/node_modules
 	mkdir -p $(buildroot)/$(_contrailetc)
-	install -d -m 755 $(buildroot)$(_initdir)
-	install -d -m 755 $(buildroot)$(_initddir)
-	install -d -m 755 $(buildroot)$(_supervisordir)
 
 	cp -r -p $(SB_TOP)/contrail-web-core/* $(buildroot)/$(_contrailwebsrc)/.
 
@@ -73,8 +67,6 @@ override_dh_auto_install:
 	cp -p $(_config)/config.global.js $(buildroot)/$(_contrailetc)/
 	ln -s $(_contrailetc)/config.global.js $(buildroot)/$(_contrailwebsrc)/config/config.global.js
 
-	#install contrail-webui conf files
-	install -d -m 755 $(buildroot)/$(_supervisordir)
 	install -p -m 644 $(_distropkgdir)/redis-webui.conf $(buildroot)/$(_contrailetc)/redis-webui.conf
 
 override_dh_shlibdeps:
