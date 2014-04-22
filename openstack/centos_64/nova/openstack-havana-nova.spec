@@ -417,10 +417,29 @@ This package contains documentation files for nova.
 
 %prep
 pushd nova
-# stash all previosly applied patches as we are applying patches only at build time
-git stash
+echo %{_topdir}
+
+# check if patch01 is applied 
+ret=0
+patch -p1 -N -t --silent --dry-run < %{_topdir}/SOURCES/0001-Ensure-we-don-t-access-the-net-when-building-docs.patch > /dev/null || export ret=1
+echo $ret
+if [ $ret == 0 ]; then
+echo "patch01 is not applied" 
 %patch01 -p1
+else 
+echo "patch01 is already applied" 
+fi
+
+# check if patch02 is applied 
+ret=0
+patch -p1 -N -t --silent --dry-run < %{_topdir}/SOURCES/0002-remove-runtime-dep-on-python-pbr.patch > /dev/null || export ret=1
+echo $ret
+if [ $ret == 0 ]; then
+echo "patch02 is not applied" 
 %patch02 -p1
+else 
+echo "patch02 is already applied" 
+fi
 popd
 # Remove the requirements file so that pbr hooks don't add it 
 # to distutils requiers_dist config
