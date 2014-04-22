@@ -154,6 +154,8 @@ package-nova: $(PREP)
 	echo $(OPENSTACK_PKGDIR)
 	cd $(OPENSTACK_PKGDIR)/centos_64/nova && \
 	cp `grep '^Source[0-9]\+:' openstack-havana-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
+	cd $(OPENSTACK_PKGDIR)/centos_64/nova && \
+	cp `grep '^Patch[0-9]\+:' openstack-havana-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
 	-bb nova/openstack-havana-nova.spec $(G_TAG)
 
