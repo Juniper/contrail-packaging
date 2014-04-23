@@ -35,8 +35,6 @@ Requires: python-zope-interface
 Requires: irond
 Requires: zookeeper
 Requires: xmltodict >= 0.1
-Requires: redis
-Requires: redis-py
 Requires: supervisor
 
 Requires: contrail-api-venv
@@ -132,10 +130,10 @@ pushd %{_distrothirdpartydir}/ncclient
 popd
 
 pushd %{_builddir}/..
-install -D -m 644 %{_distropkgdir}/api_server.conf %{buildroot}%{_sysconfdir}/contrail/api_server.conf.rpmsave
-install -D -m 644 %{_distropkgdir}/schema_transformer.conf %{buildroot}%{_sysconfdir}/contrail/schema_transformer.conf.rpmsave
-install -D -m 644 %{_distropkgdir}/svc_monitor.conf %{buildroot}%{_sysconfdir}/contrail/svc_monitor.conf.rpmsave
-install -D -m 644 %{_distropkgdir}/discovery.conf %{buildroot}%{_sysconfdir}/contrail/discovery.conf.rpmsave
+install -D -m 644 %{_distropkgdir}/api_server.conf %{buildroot}%{_sysconfdir}/contrail/api_server.conf
+install -D -m 644 %{_distropkgdir}/schema_transformer.conf %{buildroot}%{_sysconfdir}/contrail/schema_transformer.conf
+install -D -m 644 %{_distropkgdir}/svc_monitor.conf %{buildroot}%{_sysconfdir}/contrail/svc_monitor.conf
+install -D -m 644 %{_distropkgdir}/discovery.conf %{buildroot}%{_sysconfdir}/contrail/discovery.conf
 %if 0%{?fedora} >= 17
 install -D -m 644 %{_distropkgdir}/supervisor-config.service %{buildroot}/usr/lib/systemd/system/supervisor-config.service
 %endif
@@ -146,12 +144,10 @@ install -D -m 755 %{_distropkgdir}/contrail-schema.initd.supervisord %{buildroot
 install -D -m 755 %{_distropkgdir}/contrail-svc-monitor.initd.supervisord %{buildroot}%{_initddir}/contrail-svc-monitor
 install -p -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
-install -p -m 755 %{_distropkgdir}/redis_config.conf %{buildroot}%{_sysconfdir}/contrail/
 install -p -m 755 %{_distropkgdir}/contrail-api.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
 install -p -m 755 %{_distropkgdir}/contrail-schema.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 install -p -m 755 %{_distropkgdir}/contrail-svc-monitor.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 install -p -m 755 %{_distropkgdir}/contrail-discovery.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
-install -p -m 755 %{_distropkgdir}/redis-config.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/
 install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-api.kill %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.kill
 install -p -m 755 %{_distropkgdir}/contrail-config.rules %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config.rules
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
@@ -204,16 +200,20 @@ popd
 #%{_bindir}/encap.py
 %{_initddir}
 %{_venv_root}/bin
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_config.conf
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
+%config(noreplace) %{_sysconfdir}/contrail/api_server.conf
+%config(noreplace) %{_sysconfdir}/contrail/schema_transformer.conf
+%config(noreplace) %{_sysconfdir}/contrail/svc_monitor.conf
+%config(noreplace) %{_sysconfdir}/contrail/discovery.conf
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then
    /bin/systemctl daemon-reload > /dev/null
 fi
-
-[ -f %{_sysconfdir}/contrail/api_server.conf ] || mv %{_sysconfdir}/contrail/api_server.conf.rpmsave  %{_sysconfdir}/contrail/api_server.conf
-[ -f %{_sysconfdir}/contrail/schema_transformer.conf ] || mv %{_sysconfdir}/contrail/schema_transformer.conf.rpmsave  %{_sysconfdir}/contrail/schema_transformer.conf
-[ -f %{_sysconfdir}/contrail/svc_monitor.conf ] || mv %{_sysconfdir}/contrail/svc_monitor.conf.rpmsave  %{_sysconfdir}/contrail/svc_monitor.conf
-[ -f %{_sysconfdir}/contrail/discovery.conf ] || mv %{_sysconfdir}/contrail/discovery.conf.rpmsave  %{_sysconfdir}/contrail/discovery.conf
 
 %changelog
 * Mon Dec 17 2012 Pedro Marques <roque@build01> - config-1

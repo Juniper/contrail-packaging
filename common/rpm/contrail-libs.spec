@@ -8,6 +8,7 @@
 %endif
 %if 0%(grep -c Xen /etc/redhat-release)
 %define dist .xen
+BuildRoot:	%{_topdir}/BUILDROOT
 %endif
 %{echo: "Building release %{_relstr}\n"}
 %if 0%{?_srcVer:1}
@@ -107,17 +108,18 @@ ln -sf libboost_chrono.so.1.48.0    	  	%{buildroot}%{_libdir}/contrail/libboost
 %files
 %defattr(-,root,root)
 %if  "%{dist}" == ".xen"
-%{buildroot}%{_libdir}/contrail
-%{buildroot}%{_ldconfdir}/contrail.conf
-%else
+%undefine buildroot
+%endif
 %{_libdir}/contrail
 %if %{_target_cpu} == "x86_64"
 %{_ldconfdir}/contrail-64.conf
 %else
 %{_ldconfdir}/contrail.conf
 %endif
-%endif
 
+%if  "%{dist}" == ".xen"
+%define buildroot %{_topdir}/BUILDROOT
+%endif
 %changelog
 * Fri Dec 21 2012 Dave Kunkel <dkunkel@contrailsystems.com>
 - initial build

@@ -22,7 +22,7 @@ import subprocess
 
 from ConfigParser import SafeConfigParser
 
-log = logging.getLogger("pkg.%s" %__name__)
+log = logging.getLogger("pkg")
 
 class Utils(object):
     ''' Utilities for packager '''
@@ -78,8 +78,9 @@ class Utils(object):
             out = self.read_async(fd)
             if out:
                 sys.stdout.write(out)
-                log.parent.handlers[1].stream.write(out)
-                log.parent.handlers[1].stream.flush()
+                log.handlers[1].stream.write(out)
+                log.handlers[1].stream.flush()
+
 
     def make_async(self, fd):
         '''add O_NONBLOCK flag to a file descriptor'''
@@ -102,7 +103,7 @@ class Utils(object):
         if proc.returncode != 0:
             log.error(stdout)
             log.error(stderr)
-            raise RuntimeError('Cmd: %s; **FAILED**' %cmd)
+            raise RuntimeError('cd %s; Cmd: %s; **FAILED**' % (wd, cmd))
         return stdout.strip('\n'), stderr.strip('\n')
   
     def exec_cmd(self, cmd, wd=''):
@@ -127,7 +128,7 @@ class Utils(object):
         proc.communicate()
         if proc.returncode != 0:
             log.error('Cmd: %s; **FAILED**' %cmd)
-            raise RuntimeError('Cmd: %s; **FAILED**' %cmd)
+            raise RuntimeError('cd %s; Cmd: %s; **FAILED**' % (wd, cmd))
         
     @staticmethod
     def get_as_list(elm):
@@ -398,14 +399,6 @@ class Utils(object):
             for pkgfile in pkgfiles:
                 log.debug('Copying (%s) to (%s)' %(pkgfile, self.artifacts_dir))
                 shutil.copy(pkgfile, self.artifacts_dir)
-
-        # copy iso to artifacts
-        if os.path.isfile(self.imgname):
-            log.debug('Copying ISO file (%s) to (%s)' %(
-                           self.imgname, self.artifacts_dir))
-            shutil.copy(self.imgname, self.artifacts_dir)
-        else:
-            log.warn('ISO file is not created yet. Skipping...')
 
         # copy tools tgz to artifacts-extras
         for dirname in toolsdirs:

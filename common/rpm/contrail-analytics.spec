@@ -153,8 +153,8 @@ pushd %{_builddir}/..
 install -p -m 755 build/debug/analytics/vizd    %{buildroot}%{_bindir}/vizd
 install -p -m 755 build/debug/query_engine/qed  %{buildroot}%{_bindir}/qed
 install -p -m 755 %{_distropkgdir}/contrail-analytics.rules %{buildroot}%{_supervisordir}/contrail-analytics.rules
-install -D -m 644 controller/src/analytics/collector.conf %{buildroot}/%{_contrailetc}/collector.conf
-install -D -m 644 controller/src/query_engine/query-engine.conf %{buildroot}/%{_contrailetc}/query-engine.conf
+install -D -m 644 controller/src/analytics/contrail-collector.conf %{buildroot}/%{_contrailetc}/collector.conf
+install -D -m 644 controller/src/query_engine/contrail-query-engine.conf %{buildroot}/%{_contrailetc}/query-engine.conf
 
 #install wrapper scripts for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail_collector_pre  %{buildroot}%{_bindir}/contrail_collector_pre
@@ -239,11 +239,11 @@ fi
 %config(noreplace) %{_contrailetc}/collector.conf
 %config(noreplace) %{_contrailetc}/query-engine.conf
 %{_venv_root}
-%{_supervisordir}/contrail-collector.ini
-%{_supervisordir}/contrail-opserver.ini
-%{_supervisordir}/contrail-qe.ini
-%{_supervisordir}/redis-query.ini
-%{_supervisordir}/redis-uve.ini
+%config(noreplace) %{_supervisordir}/contrail-collector.ini
+%config(noreplace) %{_supervisordir}/contrail-opserver.ini
+%config(noreplace) %{_supervisordir}/contrail-qe.ini
+%config(noreplace) %{_supervisordir}/redis-query.ini
+%config(noreplace) %{_supervisordir}/redis-uve.ini
 %{_supervisordir}/contrail-analytics.rules
 %if 0%{?rhel}
 %{_initddir}/supervisor-analytics
@@ -275,7 +275,7 @@ fi
 /usr/share/doc/python-vnc_opserver
 %config(noreplace) %{_contrailetc}/redis-query.conf
 %config(noreplace) %{_contrailetc}/redis-uve.conf
-%{_contrailetc}/supervisord_analytics.conf
+%config(noreplace) %{_contrailetc}/supervisord_analytics.conf
 %if 0%{?fedora} >= 17
 %{_servicedir}/supervisor-analytics.service
 %endif

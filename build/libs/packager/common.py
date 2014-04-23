@@ -12,12 +12,13 @@ import getpass
 import tempfile
 import operator
 import platform
+import traceback
 from lxml import etree
 from xml.etree import ElementTree
 
 from utils import Utils
 
-log = logging.getLogger("pkg.%s" %__name__)
+log = logging.getLogger("pkg")
 PLATFORM = Utils.get_platform_info()
 
 class BasePackager(Utils):
@@ -31,14 +32,12 @@ class BasePackager(Utils):
         self.branch                = kwargs.get('branch', None)
         store                      = self.expanduser(kwargs['store_dir'])
         self.store                 = os.path.join(store, str(self.id))
-        self.iso_prefix            = kwargs.get('iso_prefix', getpass.getuser())
         self.abs_pkg_dirs          = self.expanduser(kwargs['absolute_package_dir'])
         self.cache_base_dir        = self.expanduser(kwargs['cache_base_dir'])
         self.contrail_pkg_dirs     = self.expanduser(kwargs.get('contrail_package_dir', None))
         self.git_local_repo        = self.expanduser(kwargs['git_local_repo']) 
         self.make_targets          = kwargs.get('make_targets', None)
         self.make_targets_file     = self.expanduser(kwargs.get('make_targets_file', None))
-        self.comps_xml_template    = kwargs.get('comps_xml_template', None)
         pkg_types                  = {'ubuntu': 'deb', 'centos': 'rpm', \
                                       'redhat': 'rpm', 'fedora': 'rpm'}
         self.platform              = platform.dist()[0].lower()
@@ -55,7 +54,6 @@ class BasePackager(Utils):
         self.base_pkgs             = {}
         self.depends_pkgs          = {}
         self.contrail_pkgs         = {}
-        self.imgname               = ''
         self.repo_dirs             = []
         self.exec_status           = 0
 
@@ -97,6 +95,7 @@ class BasePackager(Utils):
                 log.info('\n')
             except:
                 self.exec_status = 255
+                log.error(traceback.format_exc())
                 log.error('Packager Failed for Type (%s)' % pkgtype)
                 log.error('Skipping rest of the steps for Type (%s)' % pkgtype)
           
@@ -323,50 +322,6 @@ class BasePackager(Utils):
             file_id.flush()
         return filename
         
-    def run_pungi(self, ks_file):
-        ''' execute pungi tool and copy built iso file to store directory '''
-        self.exec_cmd('sync')
-        tempdir = tempfile.mkdtemp()
-        self.exec_cmd('sudo pungi \
-                            --name=%s \
-                            --config=%s \
-                            --destdir=%s/destdir \
-                            --cachedir=%s/cachedir \
-                            --ver=%s \
-                            --force \
-                            --nosource' %(self.iso_prefix, ks_file, 
-                                          tempdir, tempdir, self.id),
-                        wd=self.store)
-        isofiles = self.get_file_list([tempdir], '%s-%s*-DVD.iso' %(
-                                      self.iso_prefix, self.id))
-        isofile = self.get_latest_file(isofiles)
-        shutil.copy2(isofile, self.store)
-        self.imgname = os.path.join(self.store, os.path.basename(isofile))
-        self.exec_cmd('sudo rm -rf %s' %tempdir)
-        log.info('ISO (%s) has been built Successfully!'%isofile)
-        log.info('ISO (%s) is copied to (%s)' %(isofile, self.imgname))
-
-    def create_comps_xml (self):
-        ''' create comps xml need for repo creation '''
-        repo_dir = os.path.join(self.store, self.meta_pkg)
-        pkgs = ['%s<packagereq type="mandatory">%s</packagereq>' % (' '*6, pkg)\
-                for pkg in self.base_pkgs.keys()]
-        template = self.comps_xml_template.format(__packagesinfo__='\n'.join(pkgs))
-        with open(os.path.join(repo_dir, 'comps.xml'), 'w') as fd:
-            fd.write ('%s' %template)
-            
-    def create_ks(self):
-        ''' create kick start file need for pungi '''
-        ks_file = os.path.join (self.store, 'cf.ks')
-        repo_dir = os.path.join(self.store, self.meta_pkg)
-        with open (ks_file, 'w') as fd:
-            fd.write('repo --name=jnpr-ostk-%s --baseurl=file://%s\n' %(
-                      self.iso_prefix, repo_dir))
-            fd.write('%packages --nobase\n')
-            fd.write('@core\n')
-            fd.write('%end\n')
-        return ks_file
-
     def createrepo(self, extraargs=''):
         ''' execute create repo '''
         for repo_dir in self.repo_dirs:

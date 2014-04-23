@@ -12,6 +12,7 @@ LOCAL_PY_BLD        := $(BUILD_BASE)/BUILDROOT/Python-2.7.5
 DISTRO_PACKAGING    := $(CPLANE_GIT_ROOT)/../distro/python-venv-packaging
 OPENSTACK_PKGDIR    := $(CPLANE_GIT_ROOT)/../tools/packaging/openstack
 DISTRO_BLDDIR       := $(CPLANE_GIT_ROOT)/../distro/openstack
+DASH_PLUGIN_BLDDIR  := $(CPLANE_GIT_ROOT)/../contrail-horizon
 RPM_PY              := --define "__python $(LOCAL_PY)"
 DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu" /etc/issue)
 PREP = prep
@@ -102,6 +103,11 @@ package-keystone: $(PREP)
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
 	-bb keystone/package-keystone.spec $(G_TAG)
 
+contrail-openstack-dashboard: $(PREP)
+	@echo making rpm for package-horizon
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DASH_PLUGIN_BLDDIR)' \
+	-bb horizon-plugin/openstack-horizon-plugin.spec $(G_TAG)
+
 nova: package-nova
 openstack-nova-cert: package-nova
 openstack-nova-objectstore: package-nova
@@ -131,7 +137,7 @@ package-quantum: $(PREP)
 	-bb quantum/openstack-quantum.spec $(G_TAG)
 
 
-all: $(PREP) auth cinder glance horizon keystone nova quantum
+all: $(PREP) auth cinder glance horizon keystone nova quantum contrail-openstack-dashboard
 else
 nova: package-nova
 openstack-nova-cert: package-nova
@@ -148,6 +154,8 @@ package-nova: $(PREP)
 	echo $(OPENSTACK_PKGDIR)
 	cd $(OPENSTACK_PKGDIR)/centos_64/nova && \
 	cp `grep '^Source[0-9]\+:' openstack-havana-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
+	cd $(OPENSTACK_PKGDIR)/centos_64/nova && \
+	cp `grep '^Patch[0-9]\+:' openstack-havana-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
 	-bb nova/openstack-havana-nova.spec $(G_TAG)
 
@@ -163,7 +171,19 @@ package-neutron: $(PREP)
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
 	-bb neutron/openstack-neutron.spec $(G_TAG)
 
-all: $(PREP) package-nova package-neutron
+horizon: package-horizon
+openstack-dashboard: package-horizon
+package-horizon: $(PREP)
+	@echo making rpm for package-horizon
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
+	-bb horizon/openstack-horizon-havana.spec $(G_TAG)
+
+contrail-openstack-dashboard: $(PREP)
+	@echo making rpm for package-horizon
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DASH_PLUGIN_BLDDIR)' \
+	-bb horizon-plugin/openstack-horizon-plugin-havana.spec $(G_TAG)
+
+all: $(PREP) package-nova package-neutron horizon contrail-openstack-dashboard
 endif
 
 clean:

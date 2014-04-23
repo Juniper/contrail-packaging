@@ -58,10 +58,10 @@ Source34:         nova_havana.conf
 #
 # patches_base=2013.2.b3
 #
-Patch0001: 0001-Ensure-we-don-t-access-the-net-when-building-docs.patch
-Patch0002: 0002-remove-runtime-dep-on-python-pbr.patch
-Patch0003: 0003-Revert-Use-oslo.sphinx-and-remove-local-copy-of-doc-.patch
-Patch0004: 0004-Fix-compute_node_get_all-for-Nova-Baremetal.patch
+Patch01:          0001-Ensure-we-don-t-access-the-net-when-building-docs.patch
+Patch02:          0002-remove-runtime-dep-on-python-pbr.patch
+#Patch03:         0003-Revert-Use-oslo.sphinx-and-remove-local-copy-of-doc-.patch
+#Patch04:         0004-Fix-compute_node_get_all-for-Nova-Baremetal.patch
 
 BuildArch:        noarch
 BuildRequires:    intltool
@@ -82,7 +82,6 @@ Requires:         openstack-nova-conductor = %{version}-%{release}
 Requires:         openstack-nova-console = %{version}-%{release}
 Requires:         openstack-nova-cells = %{version}-%{release}
 Requires:         openstack-nova-novncproxy = %{version}-%{release}
-
 
 %description
 OpenStack Compute (codename Nova) is open source software designed to
@@ -417,6 +416,31 @@ This package contains documentation files for nova.
 %endif
 
 %prep
+pushd nova
+echo %{_topdir}
+
+# check if patch01 is applied 
+ret=0
+patch -p1 -N -t --silent --dry-run < %{_topdir}/SOURCES/0001-Ensure-we-don-t-access-the-net-when-building-docs.patch > /dev/null || export ret=1
+echo $ret
+if [ $ret == 0 ]; then
+echo "patch01 is not applied" 
+%patch01 -p1
+else 
+echo "patch01 is already applied" 
+fi
+
+# check if patch02 is applied 
+ret=0
+patch -p1 -N -t --silent --dry-run < %{_topdir}/SOURCES/0002-remove-runtime-dep-on-python-pbr.patch > /dev/null || export ret=1
+echo $ret
+if [ $ret == 0 ]; then
+echo "patch02 is not applied" 
+%patch02 -p1
+else 
+echo "patch02 is already applied" 
+fi
+popd
 # Remove the requirements file so that pbr hooks don't add it 
 # to distutils requiers_dist config
 rm -rf {test-,}requirements.txt tools/{pip,test}-requires

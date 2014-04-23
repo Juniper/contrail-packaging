@@ -186,7 +186,7 @@ def parse_options(args):
                         help='Manifest file to use as the base merge file. default: %(default)s')
 
     parser.add_argument('-s', '--source_manifest', nargs='?', dest='source_file',
-                        default='manifesth.xml',
+                        default='manifest.xml',
                         help='Manifest file to merge into base. default: %(default)s')
 
     subparsers = parser.add_subparsers(title='Create Base Manifest Commands',
