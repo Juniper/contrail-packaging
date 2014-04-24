@@ -61,7 +61,7 @@ install -m 755 %{_distroprovdir}/contrail_setup_utils/webui-server-setup.sh     
 
 # Install the template files necessary for cloudstack
 install -d -m 755 %{buildroot}%{_cloudstackutils}/config_templates/
-#install -m 755 %{_distroprovdir}/templates/* %{buildroot}%{_cloudstackutils}/config_templates/
+install -m 755 %{_distroprovdir}/templates/* %{buildroot}%{_cloudstackutils}/config_templates/
 
 # TODO: below should be in separate package (We now have contrail-setup package that we can pull)
 install -d -m 755 %{buildroot}/opt/contrail/utils
