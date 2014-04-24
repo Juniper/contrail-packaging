@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e 
+
+if [ "$1" = "configure" ]
+then
+  openstack-config --set /etc/neutron/neutron.conf DEFAULT core_plugin neutron.plugins.juniper.contrail.contrail_plugin_core.NeutronPluginContrailCoreV2
+fi
+
