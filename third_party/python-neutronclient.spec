@@ -63,7 +63,7 @@ pushd %{_builddir}/..
 pushd third_party/python-neutronclient
 %{__python} setup.py install -O1 --skip-build --root %{buildroot} %{?_venvtr}
 %{__python} setup.py sdist
-install -p -D -m 644 dist/python-neutronclient-2.3.0.18.gb0c191c.tar.gz %{buildroot}/opt/contrail/api-venv/archive/python-neutronclient-2.3.0.18.gb0c191c.tar.gz
+install -p -D -m 644 dist/python-neutronclient-*.tar.gz %{buildroot}/opt/contrail/api-venv/archive/python-neutronclient.tar.gz
 
 # Install other needed files
 # rhbz 888939#c7: bash-completion is not in RHEL
@@ -81,7 +81,7 @@ rm -rf %{buildroot}%{python_sitelib}/neutronclient/tests
 %{python_sitelib}/neutronclient
 %{python_sitelib}/*.egg-info
 %{_sysconfdir}/profile.d/neutron.sh
-/opt/contrail/api-venv/archive/python-neutronclient-2.3.0.18.gb0c191c.tar.gz
+/opt/contrail/api-venv/archive/python-neutronclient.tar.gz
 
 %changelog
 * Mon Sep 09 2013 Jakub Ruzicka <jruzicka@redhat.com> - 2.3.0-1
