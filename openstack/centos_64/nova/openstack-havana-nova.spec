@@ -1000,7 +1000,7 @@ fi
 %defattr(-,root,root,-)
 %doc nova/LICENSE
 %{python_sitelib}/nova
-%{python_sitelib}/nova-%{version}*.egg-info
+%{python_sitelib}/nova-*.egg-info
 
 %if 0%{?with_doc}
 %files doc
