@@ -1,0 +1,37 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+export DH_VERBOSE=1
+
+SPEC_DIR := $(shell pwd)
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+
+export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+export buildrootpy := $(SB_TOP)/build/debian/neutron-contrail-plugin-py
+export buildroot := $(SB_TOP)/build/debian/neutron-contrail-plugin
+
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
+BUILDTAG =
+ifdef TAG
+BUILDTAG = $(SRC_VER)-$(TAG)
+else
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
+endif
+
+%:
+	dh $@ --with python2 --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
+
+override_dh_auto_build:
+	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
+
+override_dh_auto_install:
+	(cp -R ${SB_TOP}/openstack/neutron_contrail_plugin $(buildrootpy))
+	(cd ${buildrootpy} && python setup.py install --root=$(buildroot) --install-layout=deb)
+
+override_dh_shlibdeps:
+
+override_dh_auto_clean:
+	dh_clean
+	(rm -rf $(buildrootpy))
+

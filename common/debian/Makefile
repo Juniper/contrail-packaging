@@ -28,6 +28,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-control-deb \
 	contrail-api-lib-deb \
 	contrail-nova-vif-deb \
+	neutron-plugin-contrail-deb \
 	contrail-nodejs-deb \
 	contrail-webui-deb \
 	contrail-nodemgr-deb \

@@ -1,0 +1,4 @@
+etc/neutron
+etc/neutron/plugins
+etc/neutron/plugins/
+etc/neutron/plugins/opencontrail
