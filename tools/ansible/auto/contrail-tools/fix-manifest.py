@@ -1,0 +1,1 @@
+/mnt/ssd-tools/bin/fix-manifest.py
