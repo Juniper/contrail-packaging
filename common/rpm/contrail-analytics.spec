@@ -210,6 +210,11 @@ rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/bottle.py*
 # install nodemgr
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
 
+for f in $(find %{buildroot} -type f -exec grep -l '^#!%{__python}' {} \; ); do
+    sed 's/^#!.*python/#!\/usr\/bin\/python/g' $f > ${f}.b
+    mv ${f}.b ${f}
+done
+
 %post
 %if 0%{?fedora} >= 17
 chmod -R 777 /var/log/contrail
