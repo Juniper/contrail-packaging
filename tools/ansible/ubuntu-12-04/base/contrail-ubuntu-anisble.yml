@@ -116,5 +116,14 @@
     - copy: src=../../auto/gitcommits.tgz dest=/tmp
     - command: sh /tmp/link.sh
 
+    ##
+    # Copy the contrail build tools
+    - copy: src=../../auto/contrail-tools/contrail-build dest=/usr/local/bin/contrail-build
+    - copy: src=../../auto/contrail-tools/contrail-create-buildarchive dest=/usr/local/bin/contrail-create-buildarchive
+    - copy: src=../../auto/contrail-tools/contrail-manipulate-manifest dest=/usr/local/bin/contrail-manipulate-manifest
+    - copy: src=../../auto/contrail-tools/create-base-manifest dest=/usr/local/bin/create-base-manifest
+    - copy: src=../../auto/contrail-tools/create-config dest=/usr/local/bin/create-config
+    - copy: src=../../auto/contrail-tools/fix-manifest.py dest=/usr/local/bin/fix-manifest.py
+    - copy: src=../../auto/contrail-tools/merge-manifest dest=/usr/local/bin/merge-manifest
 
 
