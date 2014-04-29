@@ -194,6 +194,18 @@ libvirt-clean:
 %-clean:
 	(cd $(@:-clean=); fakeroot debian/rules clean)
 
+neutron-plugin-contrail-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail)
+	mkdir -p ${BUILDDIR}
+	cp -R ${SB_TOP}/openstack/neutron_contrail_plugin/* ${BUILDDIR}
+	cp -R neutron-plugin-contrail/debian ${BUILDDIR}/debian
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+neutron-plugin-contrail-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail)
+	rm -rf ${BUILDDIR}
+
 contrail-openstack-config-deb:
 	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
 		(cd $(@:-deb=); fakeroot debian/rules clean); \
