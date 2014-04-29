@@ -26,6 +26,8 @@ then
 	if [ -f /etc/sudoers.d/neutron_sudoers ] ; then
 		chmod 0440 /etc/sudoers.d/neutron_sudoers
 	fi
+
+   openstack-config --set /etc/neutron/neutron.conf DEFAULT core_plugin neutron.plugins.juniper.contrail.contrail_plugin_core.NeutronPluginContrailCoreV2
 fi
 
 #DEBHELPER#
