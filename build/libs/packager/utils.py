@@ -45,14 +45,19 @@ class Utils(object):
         return platform_info
 
     @staticmethod
-    def create_dir(dirname):
+    def create_dir(dirname, recreate=False):
         dirname = os.path.expanduser(dirname)
         if not os.path.exists(dirname):
             log.debug('Creating directory: %s' %dirname)
             os.makedirs(dirname)
         else:
             log.debug('Dir %s exists' %dirname)
+            if recreate:
+                log.debug('Remove and Recreate existing (%s)' % dirname)
+                shutil.rmtree(dirname)
+                os.makedirs(dirname)
         return dirname
+
 
     def copyfiles(self, files, dirs):
         files = self.get_as_list(files)
@@ -237,16 +242,15 @@ class Utils(object):
         tar.close()
         return os.path.abspath(filename)
 
-    def create_pkgs_tgz(self, dirnames=None):
+    def create_pkgs_tgz(self, dirname=None):
         '''Create tgz from each repo directory'''
-        dirnames = dirnames or self.repo_dirs
-        for repo_dir in dirnames:
-            tgz_prefix = os.path.basename(repo_dir)
-            tgz_name = os.path.join('%s' %self.store, 
-                                    '%s_%s-%s~%s.tgz' %(tgz_prefix,
-                                    self.branch, self.id, self.sku))
-            log.info('Create (%s) file' %tgz_name)
-            self.create_tgz(tgz_name, repo_dir)
+        dirname = dirname or self.repo_dir
+        tgz_prefix = os.path.basename(dirname)
+        tgz_name = os.path.join(self.store, 
+                                '%s_%s-%s~%s.tgz' % (tgz_prefix,
+                                self.branch, self.id, self.sku))
+        log.info('Create (%s) file' % tgz_name)
+        self.create_tgz(tgz_name, dirname)
 
     def parse_git_cfg_file(self, cfgfile):
         ''' parse git config file and return a dict of git config '''
@@ -309,11 +313,10 @@ class Utils(object):
         return filter(None, repo_dirs)
 
     def update_repoinfo(self, *pkgcfgs):
-        '''Update repo dirs defined for each package with store dir'''
+        '''Update repo of each package with repo dir value'''
         for pkgcfg in pkgcfgs:
             for pkg in pkgcfg.keys():
-                pkgtype = pkgcfg[pkg]['package_type']
-                pkgcfg[pkg]['repo'] = os.path.join(self.store, pkgtype)
+                pkgcfg[pkg]['repo'] = self.repo_dir
 
     @staticmethod
     def get_dict_by_item(tdict, titem):
@@ -396,9 +399,7 @@ class Utils(object):
                 log.warn('Dir (%s) do not exists. Skipping...' %dirname)
                 continue
             pkgfiles = self.get_file_list(dirname, pattern, False)
-            for pkgfile in pkgfiles:
-                log.debug('Copying (%s) to (%s)' %(pkgfile, self.artifacts_dir))
-                shutil.copy(pkgfile, self.artifacts_dir)
+            self.copyfiles(pkgfiles, self.artifacts_dir)
 
         # copy tools tgz to artifacts-extras
         for dirname in toolsdirs:
@@ -406,7 +407,5 @@ class Utils(object):
                 log.warn('Dir (%s) do not exists. Skipping...' %dirname)
                 continue
             pkgfiles = self.get_file_list(dirname, '*.tgz', False)
-            for pkgfile in pkgfiles:
-                log.debug('Copying (%s) to (%s)' %(pkgfile, 
-                           self.artifacts_extra_dir))
-                shutil.copy(pkgfile, self.artifacts_extra_dir)
+            self.copyfiles(pkgfiles, self.artifacts_extra_dir)
+
