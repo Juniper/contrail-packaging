@@ -31,8 +31,7 @@ URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
 Requires:	  contrail-libs
-Requires:         supervisor
-Requires:         contrail-control-venv
+Requires:         contrail-control-venv 
 Requires:         xmltodict
 %define _venv_root    /opt/contrail/control-venv
 %define _venvtr       --prefix=%{_venv_root}
@@ -63,11 +62,7 @@ fi
 
 
 %build
-scons -U src/sandesh/common
-pushd %{_builddir}/../tools/
-scons -U sandesh/library/python:pysandesh
-popd
-scons -U src/discovery
+#Remove build of pysandesh,sandesh_common,discovery
 scons -U src/control-node
 if [ $? -ne 0 ] ; then
     echo "build failed"
@@ -84,88 +79,40 @@ install -d -m 755 %{buildroot}%{_venv_root}
 install -d -m 755 %{buildroot}%{_venv_root}/bin
 
 pushd %{_builddir}/..
-
-%if 0%{?fedora} >= 17
-install -d -m 755 %{buildroot}%{_servicedir}
-%endif
-%if 0%{?fedora} >= 17
-install -D -m 644 %{_distropkgdir}/supervisor-control.service %{buildroot}%{_servicedir}/supervisor-control.service
-%endif
-install -D -m 755 %{_distropkgdir}/supervisor-control.initd %{buildroot}%{_initddir}/supervisor-control
-install -D -m 755 %{_distropkgdir}/contrail-control.initd.supervisord %{buildroot}%{_initddir}/contrail-control
-%if 0%{?rhel}
-install -D -m 755 %{_distropkgdir}/supervisor-control.initd %{buildroot}%{_initddir}/supervisor-control
-install -D -m 755 %{_distropkgdir}/contrail-control.initd.supervisord %{buildroot}%{_initddir}/contrail-control
-%endif
-
+#Removed installation of files that are now done by nodemgr
 
 #install files
 install -d -m 755 %{buildroot}%{_bindir}
 install -p -m 755 build/debug/control-node/control-node %{buildroot}%{_bindir}/control-node
 install -D -m 644 controller/src/control-node/control-node.conf %{buildroot}/%{_contrailetc}/control-node.conf
-install -D -m 644 controller/src/dns/dns.conf %{buildroot}/%{_contrailetc}/dns.conf
+#Install of dns done by nodemgr
 
-#install .ini files for supervisord
-install -p -m 755 %{_distropkgdir}/supervisord_control.conf %{buildroot}%{_contrailetc}/supervisord_control.conf
-install -p -m 755 %{_distropkgdir}/contrail-control.ini %{buildroot}%{_supervisordir}/contrail-control.ini
- 
-install -D -m 644 %{_distropkgdir}/control_param %{buildroot}/etc/contrail/control_param
-install -p -m 755 %{_distropkgdir}/contrail-control.rules %{buildroot}%{_supervisordir}/contrail-control.rules
-install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
-
-# install pysandesh files
 %define _build_dist %{_builddir}/../build/debug
-install -d -m 755 %{buildroot}%{_venv_root}
+#This definiton to install control_node pkg in venv as well
+%define __python_venv %{buildroot}/../../BUILD/python2.7/bin/python
 
 mkdir -p build/python_dist
 pushd build/python_dist
 
 tar zxf %{_build_dist}/control-node/dist/Control-Node-0.1dev.tar.gz
 pushd Control-Node-0.1dev
-%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
+#Need to install in venv as well
+%{__python} setup.py install --root=%{buildroot}
+%{__python_venv} setup.py install --root=%{buildroot}  %{?_venvtr}
 install -d -m 755 %{buildroot}/usr/share/doc/python-Control-Node
 if [ -d doc ]; then
    cp -R doc/* %{buildroot}/usr/share/doc/python-Control-Node
 fi
 popd
-tar zxf %{_build_dist}/sandesh/common/dist/sandesh-common-0.1dev.tar.gz
-pushd sandesh-common-0.1dev
-%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
-popd
-tar zxf %{_build_dist}/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz
-pushd sandesh-0.1dev
-%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
-popd
-tar zxf %{_build_dist}/discovery/client/dist/discoveryclient-0.1dev.tar.gz
-pushd discoveryclient-0.1dev
-%{__python}  setup.py install --root=%{buildroot} %{?_venvtr}
-popd
 
 %files
 %defattr(-,root,root,-)
 %{_bindir}/control-node
-%{_supervisordir}
-%config(noreplace) %{_contrailetc}/supervisord_control.conf
 %{_venv_root}
 /usr/share/doc/
-%if 0%{?fedora} >= 17
-/usr/lib/systemd/system
-%{_initddir}/supervisor-control
-%{_initddir}/contrail-control
-%endif
-%if 0%{?rhel}
-%{_initddir}/supervisor-control
-%{_initddir}/contrail-control
-%endif
-%if 0%{?fedora} >= 17
-%{_servicedir}/supervisor-control.service
-%endif
-
-%config(noreplace) /etc/contrail/control_param
+%{python_sitelib}/Control_Node*
+%{python_sitelib}/control_node*
 %config(noreplace) %{_contrailetc}/control-node.conf
-%config(noreplace) %{_contrailetc}/dns.conf
-%{_venv_root}/bin/contrail-nodemgr
-%config(noreplace) %{_supervisordir}/contrail-control.ini
 
 %post
 (umask 007; /bin/echo "HOSTNAME=$(hostname)" >> /etc/contrail/control_param)
@@ -176,3 +123,4 @@ fi
 %changelog
 * Tue Dec 18 2012 Ted <ted@contrailsystems.com> - 1
 - Initial package 
+
