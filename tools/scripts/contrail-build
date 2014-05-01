@@ -36,14 +36,9 @@ class ContrailBuild(object):
             print 'Error: Only centos64_os, ubuntu-12-04, and xen6.2.SP1 are currently supported'
             sys.exit(1)
 
-        required_commands = ["package", "all"]
-        if self.opt.command in required_commands:
-            if not self.opt.build_num:
-                print "Error: Package command needs a build number"
-                sys.exit(1)
-
         """ Make sure we are in sandbox """
-        if self.opt.command != 'sandbox':
+        required_commands = ["build", "package"]
+        if self.opt.command in required_commands:
             if not os.path.exists(".repo"):
                 path = str(self.opt.sandbox_name)
                 path += '/.repo'
@@ -149,6 +144,16 @@ class ContrailBuild(object):
     def package(self):
         if DEBUG:
             print "Package got called"
+
+        # Need to catch the case where build number was not specified
+        # Can't set it in the init routine because of the "all" parameter
+        # If we set it in init for all then the sandbox command will do the
+        # wrong thing.
+        if not self.opt.build_num:
+           command = "date +%F-%R"
+           self.opt.build_num = execute(command, ignore_errors=False)
+
+
 
         current_dir = os.getcwd()
 
