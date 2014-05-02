@@ -598,7 +598,6 @@ if [ $1 -eq 1 ] ; then
     /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 fi
 ln -sf /etc/neutron/plugins/juniper/contrail/ContrailPlugin.ini /etc/neutron/plugin.ini
-openstack-config --set /etc/neutron/neutron.conf DEFAULT core_plugin neutron.plugins.juniper.contrail.contrail_plugin_core.NeutronPluginContrailCoreV2
 
 %preun
 if [ $1 -eq 0 ] ; then
