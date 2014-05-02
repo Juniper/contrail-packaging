@@ -51,9 +51,12 @@ rm -rf %{buildroot}%{_cloudstackutils}
 
 #create cloudstack utils dir
 install -d -m 755 %{buildroot}%{_cloudstackutils}
+install -d -m 755 %{buildroot}%{_cloudstackutils}/setup_files/
 
 #get all cloudstack utils
-install -m 755 %{_distrocloudstackprovdir}/*   %{buildroot}%{_cloudstackutils}
+install -m 755 %{_distrocloudstackprovdir}/*.sh   %{buildroot}%{_cloudstackutils}
+install -m 755 %{_distrocloudstackprovdir}/*.py   %{buildroot}%{_cloudstackutils}
+install -m 755 %{_distrocloudstackprovdir}/setup_files/* %{buildroot}%{_cloudstackutils}/setup_files/
 
 #Install some other helper scripts in this directory
 install -m 755 %{_distroprovdir}/contrail_setup_utils/collector-server-setup.sh  %{buildroot}%{_cloudstackutils}
