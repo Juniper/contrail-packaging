@@ -2,6 +2,7 @@
 
 %define		_base	node
 %define		_contrailbase	/opt/contrail
+%define     _sbtop      %(pwd | awk '{sub("tools/packaging/common/rpm", "", $1);print}')
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -42,10 +43,9 @@ rm -rf %{_builddir}/%{_base}js-v%{version}
 
 %build
 #cp -r -p %{_sourcedir}/contrail-webui/third-party/%{_base}-v%{version} %{_builddir}/
-pushd %{_builddir}/..
-cp -r -p contrail-web-third-party/%{_base}-v%{version} %{_builddir}/
+#pushd %{_builddir}/..
+cd %{_sbtop}/third_party/%{_base}-v%{version}
 
-cd %{_builddir}/%{_base}-v%{version}
 ./configure \
 	--prefix=/usr \
 	--shared-openssl \
@@ -58,8 +58,8 @@ make binary %{?_smp_mflags}
 %install
 mkdir  -p %{buildroot}%{_contrailbase}/%{_base}js-v%{version}/bin
 mkdir  -p %{buildroot}%{_bindir}
-cp -p %{_builddir}/%{_base}-v%{version}/out/Release/%{_base} %{buildroot}%{_contrailbase}/%{_base}js-v%{version}/bin/%{_base}js
-ln -sf %{_contrailbase}/%{_base}js-v%{version}/bin/%{_base}js %{buildroot}%{_bindir}/%{_base}js-contrail
+cp -p %{_sbtop}/third_party/%{_base}-v%{version}/out/Release/%{_base} %{buildroot}%{_contrailbase}/%{_base}js-v%{version}/bin/%{_base}
+ln -sf %{_contrailbase}/%{_base}js-v%{version}/bin/%{_base} %{buildroot}%{_bindir}/%{_base}
 
 %files
 %defattr(-,root,root,-)

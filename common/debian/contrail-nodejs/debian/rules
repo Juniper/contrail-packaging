@@ -16,7 +16,8 @@ export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := $(SB_TOP)/build/debian/contrail-nodejs
 export _contrailbase := /opt/contrail
 export _target := $(buildroot)/nodejs-v0.8.15
-export _src := $(buildroot)/node-v0.8.15
+export _targetver := nodejs-v0.8.15
+export _src := $(SB_TOP)/third_party/node-v0.8.15
 export _bindir := /usr/bin
 
 export WS := `cat ~/rpmbuild/SOURCES/git_root`
@@ -37,18 +38,17 @@ endif
 override_dh_auto_build: 
 	mkdir $(buildroot)
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog 
-	rm -rf $(_target) $(_src)
-	cp -r -p $(SB_TOP)/contrail-web-third-party/node-v0.8.15 $(_src)
+	rm -rf $(_target)
 	cd $(_src); ./configure --prefix=/usr --shared-openssl --shared-openssl-includes=/usr/include --shared-zlib --shared-zlib-includes=/usr/include; make binary -j4
 	cp -p $(_src)/out/Release/node $(buildroot)/../.
 
 override_dh_auto_install: 
 	# Install directories
-	install -d -m 755 $(buildroot)/$(_contrailbase)/nodejs-v0.8.15/bin
+	install -d -m 755 $(buildroot)/$(_contrailbase)/$(_targetver)/bin
 	install -d -m 755 $(buildroot)/$(_bindir)
 	# Copy/install files
-	mv $(buildroot)/../node $(buildroot)/$(_contrailbase)/nodejs-v0.8.15/bin
-	ln -sf $(_contrailbase)/nodejs-v0.8.15/bin/node $(buildroot)/$(_bindir)/nodejs-contrail
+	mv $(buildroot)/../node $(buildroot)/$(_contrailbase)/$(_targetver)/bin
+	ln -sf $(_contrailbase)/$(_targetver)/bin/node $(buildroot)/$(_bindir)/node
 
 
 override_dh_shlibdeps:
