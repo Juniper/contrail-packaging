@@ -170,6 +170,7 @@ libvirt:
 		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
 		-bp libvirt.spec && \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch  $(BUILD_BASE)/SPECS/ && \
+		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.test-disable.patch $(BUILD_BASE)/SPECS/ && \
 		patch -p0 -i $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.patch && \
 		patch -p0 -i $(THIRDPARTY_DIR)/libvirt/libvirt.centos.spec.test-disable.patch && \
 		cd $(THIRDPARTY_DIR) && \
