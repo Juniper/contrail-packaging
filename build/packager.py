@@ -69,7 +69,6 @@ class PackagerArgParser(Utils):
         if git_local_repo == '':
             raise RuntimeError('Cant find Git local Repo. Seems repo command is not available...')
         cache_base_dir = os.path.join(os.path.sep, 'cs-shared', 'builder', 'cache')
-        logfile = os.path.join(git_local_repo, 'packager_store', '{id}', 'logs', logname)
         skuname = 'grizzly'
         if PLATFORM[0] == 'ubuntu':
             skuname= 'havana'
@@ -78,7 +77,7 @@ class PackagerArgParser(Utils):
             'build_id'              : random.randint(1000, 9999), 
             'sku'                   : skuname,
             'branch'                : None, 
-            'store_dir'             : os.path.join(git_local_repo, 'packager_store'),
+            'store_dir'             : os.path.join(git_local_repo, 'build'),
             'absolute_package_dir'  : None,
             'contrail_package_dir'  : None,
             'base_package_file'     : [os.path.join(pkg_file_dir, dist_dir, '{skuname}', base_pkg_file)],
@@ -87,7 +86,7 @@ class PackagerArgParser(Utils):
             'make_targets'          : [],
             'make_targets_file'     : None,
             'loglevel'              : 'DEBUG',
-            'logfile'               : logfile,
+            'logfile'               : os.path.join('{storedir}', 'logs', logname),
             'log_config'            : os.path.join(cwd, 'logger', 'logging.cfg'),
             'git_local_repo'        : git_local_repo,
             'cache_base_dir'        : [cache_base_dir],
@@ -124,7 +123,8 @@ class PackagerArgParser(Utils):
         ns_cliargs = parser.parse_args(self.unparsed_args)
 
         # Create log file
-        ns_cliargs.logfile = self.defaults['logfile'].format(id=ns_cliargs.build_id)
+        ns_cliargs.logfile = self.defaults['logfile'].format(storedir=ns_cliargs.store_dir,
+                                                             id=ns_cliargs.build_id)
         if not os.path.isdir(os.path.dirname(ns_cliargs.logfile)):
             os.makedirs(os.path.dirname(ns_cliargs.logfile))
         logging.config.fileConfig(self.defaults['log_config'],
@@ -227,10 +227,7 @@ class PackagerArgParser(Utils):
         aparser.parse_args(self.unparsed_args)
         self.parser = aparser
 
-
-# ** MAIN **
-
-if __name__ == '__main__':
+def main():
     args = PackagerArgParser(__doc__, VERSION, sys.argv[1:])
     args.parse()
 
@@ -239,7 +236,7 @@ if __name__ == '__main__':
 
     log.info('Received CLI: %s' %" ".join(sys.argv))
     log.info('')
-    log.info('Arguments from config file') 
+    log.info('Arguments from config file')
     log.info(args.cliargs['config'])
     args.banner(args.get_config_file_args())
     log.info('Working with Argument Set: ')
@@ -257,6 +254,7 @@ if __name__ == '__main__':
         packer.ks_build()
     except:
         packer.exec_status = 1
+        log.error('** Packager Failed **')
         raise
     else:
         if packer.exec_status != 0:
@@ -267,11 +265,17 @@ if __name__ == '__main__':
         packer.copy_to_artifacts()
         if packer.exec_status != 0:
             log.info('*' * 78)
-            log.info('Packager Completed with ERRORs...')
+            log.info('Packager completed with ERRORs...')
             log.info('Reprinting ALL ERRORS...')
             log.reprint_errors()
-            log.error('View Detailed logs at (%s)' % args.cliargs['logfile'])
-
-    duration = datetime.datetime.now() - start
-    log.info('Execution Duration: %s' %str(duration))
+            log.error('View detailed logs at (%s)' % args.cliargs['logfile'])
+        duration = datetime.datetime.now() - start
+        log.info('Execution Duration: %s' %str(duration))
     log.info('Packaging Complete!')
+
+
+# ** MAIN **
+
+if __name__ == '__main__':
+    main()
+
