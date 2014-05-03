@@ -190,7 +190,7 @@ class BasePackager(Utils):
                 self.create_dir(builddir)
                 files = self.get_file_list(self.contrail_pkg_dirs, 'contrail_installer.tgz')
                 installer_tgz = self.get_latest_file(files)
-                if not installer_tgz:
+                if installer_tgz:
                     if os.path.dirname(installer_tgz) == builddir:
                         log.debug('Installer TGZ (%s) is already present '
                                   ' in build dir (%s)' % (
