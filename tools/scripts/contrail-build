@@ -241,7 +241,7 @@ def search_file(filename, search_path):
 
 def parse_options(args):
     """ Parse command line arguments """
-    parser = argparse.ArgumentParser(description='Contrail build wrapper script - version 1.03')
+    parser = argparse.ArgumentParser(description='Contrail build wrapper script - version 1.04')
 
     parser.add_argument('-v', '--verbose', dest='debug', action='store_true',
                         help='Enable verbose mode')
