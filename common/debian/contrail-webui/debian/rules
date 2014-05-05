@@ -20,7 +20,6 @@ export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export _contrailetc := /etc/contrail
 export _sourcedir := $(WS)/tools/packaging
 export _distropkgdir := $(SB_TOP)/tools/packaging/common/control_files
-export _distrothirdpartydir := $(SB_TOP)/contrail-web-third-party
 export _contrailwebsrc := /usr/src/contrail/contrail-webui
 export _libdir := /usr/lib64
 export _nodemodules := node_modules
@@ -58,7 +57,7 @@ override_dh_auto_install:
 
 	cp -p $(_distropkgdir)/contrailWebServer.sh $(buildroot)/$(_contrailwebsrc)/
 	cp -p $(_distropkgdir)/contrailWebMiddleware.sh $(buildroot)/$(_contrailwebsrc)/
-	cp -r -p $(_distrothirdpartydir)/$(_nodemodules)/* $(buildroot)/$(_libdir)/node_modules
+	cp -r -p $(buildroot)/$(_contrailwebsrc)/$(_nodemodules)/* $(buildroot)/$(_libdir)/node_modules
 
 	rm -rf  $(buildroot)/$(_contrailwebsrc)/node_modules
 

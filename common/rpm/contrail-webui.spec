@@ -1,7 +1,6 @@
 # view contents of rpm file: rpm -qlp <filename>.rpm
 
 %define         _distropkgdir tools/packaging/common/control_files
-%define         _distrothirdpartydir contrail-web-third-party
 %define		_contrailetc 		/etc/contrail
 %define		_contrailwebsrc 	/usr/src/contrail/contrail-webui
 %if 0%{?fedora} >= 17
@@ -84,7 +83,7 @@ install -p -m 755 %{_distropkgdir}/redis-webui.initd.supervisord          %{buil
 cp -p %{_distropkgdir}/contrailWebServer.sh %{buildroot}%{_contrailwebsrc}/
 cp -p %{_distropkgdir}/contrailWebMiddleware.sh %{buildroot}%{_contrailwebsrc}/
 #cp -r -p %{_distropkgdir}/%{name}/%{_nodemodules}/* %{buildroot}%{_libdir}/node_modules
-cp -r -p %{_distrothirdpartydir}/%{_nodemodules}/* %{buildroot}%{_libdir}/node_modules
+cp -r -p %{buildroot}%{_contrailwebsrc}/%{_nodemodules}/* %{buildroot}%{_libdir}/node_modules
 rm -rf  %{buildroot}%{_contrailwebsrc}/node_modules
 ln -s %{_libdir}/node_modules %{buildroot}%{_contrailwebsrc}/node_modules
 rm %{buildroot}%{_contrailwebsrc}/config/config.global.js
