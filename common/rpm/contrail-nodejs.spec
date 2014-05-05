@@ -58,8 +58,8 @@ make binary %{?_smp_mflags}
 %install
 mkdir  -p %{buildroot}%{_contrailbase}/%{_base}js-v%{version}/bin
 mkdir  -p %{buildroot}%{_bindir}
-cp -p %{_sbtop}/third_party/%{_base}-v%{version}/out/Release/%{_base} %{buildroot}%{_contrailbase}/%{_base}js-v%{version}/bin/%{_base}
-ln -sf %{_contrailbase}/%{_base}js-v%{version}/bin/%{_base} %{buildroot}%{_bindir}/%{_base}
+cp -p %{_sbtop}/third_party/%{_base}-v%{version}/out/Release/%{_base} %{buildroot}%{_contrailbase}/%{_base}js-v%{version}/bin/%{_base}js
+ln -sf %{_contrailbase}/%{_base}js-v%{version}/bin/%{_base}js %{buildroot}%{_bindir}/%{_base}js-contrail
 
 %files
 %defattr(-,root,root,-)

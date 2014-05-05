@@ -48,7 +48,7 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)/$(_bindir)
 	# Copy/install files
 	mv $(buildroot)/../node $(buildroot)/$(_contrailbase)/$(_targetver)/bin
-	ln -sf $(_contrailbase)/$(_targetver)/bin/node $(buildroot)/$(_bindir)/node
+	ln -sf $(_contrailbase)/$(_targetver)/bin/node $(buildroot)/$(_bindir)/nodejs-contrail
 
 
 override_dh_shlibdeps:
