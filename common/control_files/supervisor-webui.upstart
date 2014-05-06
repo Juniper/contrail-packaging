@@ -13,7 +13,13 @@ pre-start script
 end script
 
 script
-    supervisord --nodaemon -c /etc/contrail/supervisord_webui.conf
+    supervisord --nodaemon -c /etc/contrail/supervisord_webui.conf || true
+    echo "supervisor-webui failed. lsof -i :9008..."
+    lsof -i :9008 || true
+    pid=`lsof -Fp -i :9008 | cut -d'p' -f2` || true
+    if [ "x$pid" != "x" ]; then
+        ps uw -p $pid
+    fi
 end script
 
 pre-stop script

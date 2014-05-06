@@ -14,7 +14,13 @@ pre-start script
 end script
 
 script
-    supervisord --nodaemon -c /etc/contrail/supervisord_vrouter.conf
+    supervisord --nodaemon -c /etc/contrail/supervisord_vrouter.conf || true
+    echo "supervisor-vrouter  failed. lsof -i :9005..."
+    lsof -i :9005 || true
+    pid=`lsof -Fp -i :9005 | cut -d'p' -f2` || true
+    if [ "x$pid" != "x" ]; then
+        ps uw -p $pid
+    fi
 end script
 
 post-start script
