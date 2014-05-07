@@ -30,7 +30,15 @@ function daemon_start() {
      /usr/bin/supervisord -c /etc/contrail/supervisord_control.conf 
      RETVAL=$?
      if [ $RETVAL -ne 0 ]; then
-	log_failure_msg "Could not start controller"
+        echo "supervisor-control start on port 9003 failed. checking lsof.."
+        lsof -i :9003
+        if [ $? -eq 0 ]; then
+            echo "Another program listening on 9003"
+            pid=`lsof -Fp -i :9003 | cut -f2 -d'p'`
+            if [ "x$pid" != "x" ] ; then
+                ps uw -p $pid
+            fi
+        fi
      fi
 }
 

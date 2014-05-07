@@ -13,7 +13,13 @@ pre-start script
 end script
 
 script
-    supervisord --nodaemon -c /etc/contrail/supervisord_control.conf
+    supervisord --nodaemon -c /etc/contrail/supervisord_control.conf || true
+    echo "supervisor-control  failed. lsof -i :9003..."
+    lsof -i :9003 || true
+    pid=`lsof -Fp -i :9003 | cut -d'p' -f2` || true
+    if [ "x$pid" != "x" ]; then
+        ps uw -p $pid
+    fi
 end script
 
 pre-stop script

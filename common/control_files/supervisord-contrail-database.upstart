@@ -13,7 +13,13 @@ pre-start script
 end script
 
 script
-    supervisord --nodaemon -c /etc/contrail/supervisord_contrail_database.conf
+    supervisord --nodaemon -c /etc/contrail/supervisord_contrail_database.conf || true
+    echo "supervisor-database  failed. lsof -i :9007..."
+    lsof -i :9007 || true
+    pid=`lsof -Fp -i :9007 | cut -d'p' -f2` || true
+    if [ "x$pid" != "x" ]; then
+        ps uw -p $pid
+    fi
 end script
 
 pre-stop script
