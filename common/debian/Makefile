@@ -3,6 +3,9 @@ SB_TOP := $(PWD:/tools/packaging/common/debian=)
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
+# Skip unit-tests for building packages
+export BUILD_ONLY := TRUE
+
 ifdef CONTRAIL_SKU
   export CONTRAIL_SKU
 else
