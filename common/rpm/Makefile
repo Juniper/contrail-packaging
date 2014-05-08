@@ -19,7 +19,7 @@ PREP = prep
 PPREP = pprep
 
 # Skip unit-tests for building packages
-BUILD_ONLY := TRUE
+export BUILD_ONLY := TRUE
 
 G_TAG :=
 ifdef GIT_VER
