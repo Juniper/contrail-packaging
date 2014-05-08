@@ -21,7 +21,7 @@ export _initdir := /etc/init
 export _bindir := /usr/bin
 export _arch := x86_64
 
-BUILD_ARCH_TARGETS=src/vnsw/agent:vnswad vrouter vrouter/utils
+BUILD_ARCH_TARGETS=agent:vnswad vrouter vrouter/utils
 ifdef OSVER
 export _osVer := $(OSVER)
 SCNS :=  scons --kernel-dir=/lib/modules/$(_osVer)/build --target=$(_arch) $(BUILD_ARCH_TARGETS)
