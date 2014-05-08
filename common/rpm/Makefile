@@ -18,6 +18,9 @@ RPMBLDOPTS          := --define '_topdir $(BUILD_BASE)' --define '_builddir $(CP
 PREP = prep
 PPREP = pprep
 
+# Skip unit-tests for building packages
+BUILD_ONLY := TRUE
+
 G_TAG :=
 ifdef GIT_VER
  G_TAG := --define "_gitVer $(GIT_VER)"
