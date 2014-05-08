@@ -85,7 +85,7 @@ if [ %{?_kernel_dir} ]; then
     fi
 fi
 
-scons -U --target=%{_target_cpu} ${OPT_KERNEL} ${OPT_HEADERS} src/vnsw/agent:vnswad
+scons -U --target=%{_target_cpu} ${OPT_KERNEL} ${OPT_HEADERS} agent:vnswad
 pushd %{_builddir}/..
 scons -U --target=%{_target_cpu} ${OPT_KERNEL} ${OPT_HEADERS} vrouter
 scons -U --target=%{_target_cpu} ${OPT_KERNEL} ${OPT_HEADERS} vrouter/utils
