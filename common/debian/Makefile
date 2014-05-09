@@ -53,7 +53,8 @@ PACKAGES = contrail-libs-deb \
 	python-boto-deb \
 	libvirt-deb \
 	contrail-openstack-dashboard-deb \
-	contrail-ostack-dashboard-deb
+	contrail-ostack-dashboard-deb \
+	neutron-plugin-contrail-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -185,16 +186,20 @@ libvirt-clean:
 	(cd $(@:-clean=); fakeroot debian/rules clean)
 
 neutron-plugin-contrail-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail)
-	mkdir -p ${BUILDDIR}
-	cp -R ${SB_TOP}/openstack/neutron_contrail_plugin/* ${BUILDDIR}
-	cp -R neutron-plugin-contrail/debian ${BUILDDIR}/debian
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
+		$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail) \
+		mkdir -p ${BUILDDIR}; \
+		cp -R ${SB_TOP}/openstack/neutron_plugin/* ${BUILDDIR}; \
+		cp -R ${SB_TOP}/tools/packages/debian/neutron-plugin-contrail/debian ${BUILDDIR}/debian; \
+		(cd ${BUILDDIR}; fakeroot debian/rules clean); \
+		(cd ${BUILDDIR}; fakeroot debian/rules binary); \
+	fi
 
 neutron-plugin-contrail-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail)
-	rm -rf ${BUILDDIR}
+	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
+		$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail) \
+		rm -rf ${BUILDDIR}; \
+	fi
 
 contrail-openstack-config-deb:
 	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \

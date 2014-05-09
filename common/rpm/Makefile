@@ -102,6 +102,10 @@ contrail-nova-vif: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-nova-vif
 	rpmbuild $(RPMBLDOPTS) contrail-nova-vif.spec $(G_TAG)
 
+neutron-plugin-contrail: $(PREP) $(LOCAL_PY)
+	@echo making rpm for neutron-plugin-plugin
+	rpmbuild $(RPMBLDOPTS) neutron-plugin-contrail.spec $(G_TAG)
+
 contrail-setup: $(PREP)
 	@echo making rpm for contrail-setup
 	rpmbuild $(RPMBLDOPTS) contrail-setup.spec $(G_TAG)
@@ -221,7 +225,7 @@ contrail-database: $(PREP) $(LOCAL_PY)
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
 	contrail-setup contrail-openstack-all contrail-webui contrail-nodejs venv-packages \
-	contrail-database contrail-nova-vif
+	contrail-database contrail-nova-vif neutron-plugin-contrail
 
 clean:
 	@echo clean
