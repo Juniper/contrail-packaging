@@ -643,17 +643,6 @@ Description: Neutron is a virutal network service for Openstack - Python library
 #  .
 #  This package provides the metering plugin.
 
-Package: neutron-plugin-contrail
-Architecture: all
-Provides: neutron-plugin
-Depends:
-  neutron-common (= ${source:Version}),
-  contrail-api-lib,
-  ${misc:Depends},
-  ${python:Depends},
-  ${shlibs:Depends}
-Description: OpenContrail Neutron plugin
-
 # Package: quantum-server
 # Depends: neutron-server, ${misc:Depends}
 # Architecture: all
