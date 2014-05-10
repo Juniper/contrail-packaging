@@ -188,6 +188,7 @@ neutron-plugin-contrail-deb:
 		mkdir -p ${BUILDDIR}; \
 		cp -R ${SB_TOP}/openstack/neutron_plugin/* ${BUILDDIR}; \
 		cp -R ${SB_TOP}/tools/packages/debian/neutron-plugin-contrail/debian ${BUILDDIR}/debian; \
+		sed -i 's/VERSION/$(VERSION)/g' ${BUILDDIR}/debian/changelog
 		(cd ${BUILDDIR}; fakeroot debian/rules clean); \
 		(cd ${BUILDDIR}; fakeroot debian/rules binary); \
 	fi
