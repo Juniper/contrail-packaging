@@ -23,7 +23,6 @@ URL:		http://launchpad.net/neutron/
 #Source0:    http://launchpad.net/neutron/%{release_name}/%{release_name}-1/+download/neutron-%{version}.b3.tar.gz
 Source1:	neutron.logrotate
 Source2:	neutron-sudoers
-Source4:	neutron-server-setup
 Source5:	neutron-node-setup
 Source6:	neutron-dhcp-setup
 Source7:	neutron-l3-setup
@@ -384,14 +383,6 @@ This package contains the neutron Python library.
 #This package contains the neutron agent responsible for implenting VPNaaS with
 #IPSec.
 
-%package -n openstack-neutron-contrail
-Summary: Contrail System Openstack plugin %{?_gitVer}
-Requires:       openstack-neutron
-Group:          Applications/System
-
-%description -n openstack-neutron-contrail
-Contrail System Virtual Router neutron plugin.
-
 %prep
 #%setup -q -n neutron-%{version}
 
@@ -544,7 +535,6 @@ rm -f  %{buildroot}/usr/etc/neutron/policy.json
 rm -f  %{buildroot}/usr/etc/neutron/rootwrap.conf
 rm -f  %{buildroot}/usr/etc/neutron/vpn_agent.ini
 rm -f  %{buildroot}/usr/etc/neutron/fwaas_driver.ini
-rm -f  %{buildroot}/usr/etc/neutron/plugins/juniper/contrail/ContrailPlugin.ini
 
 #  Install logrotate
 install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/openstack-neutron
@@ -571,7 +561,6 @@ install -d -m 755 %{buildroot}%{_localstatedir}/log/neutron
 install -d -m 755 %{buildroot}%{_localstatedir}/run/neutron
 
 # Install setup helper scripts
-install -p -D -m 755 %{SOURCE4} %{buildroot}%{_bindir}/neutron-server-setup
 install -p -D -m 755 %{SOURCE5} %{buildroot}%{_bindir}/neutron-node-setup
 install -p -D -m 755 %{SOURCE6} %{buildroot}%{_bindir}/neutron-dhcp-setup
 install -p -D -m 755 %{SOURCE7} %{buildroot}%{_bindir}/neutron-l3-setup
@@ -597,7 +586,6 @@ if [ $1 -eq 1 ] ; then
     # Initial installation
     /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 fi
-ln -sf /etc/neutron/plugins/juniper/contrail/ContrailPlugin.ini /etc/neutron/plugin.ini
 
 %preun
 if [ $1 -eq 0 ] ; then
@@ -654,7 +642,6 @@ fi
 %{_bindir}/neutron-rootwrap
 %{_bindir}/neutron-rootwrap-xen-dom0
 %{_bindir}/neutron-server
-%{_bindir}/neutron-server-setup
 %{_bindir}/neutron-usage-audit
 
 #%{_unitdir}/neutron-dhcp-agent.service
@@ -711,11 +698,6 @@ fi
 %exclude %{python_sitelib}/neutron/plugins/plumgrid
 %exclude %{python_sitelib}/neutron/plugins/ryu
 %{python_sitelib}/neutron-%%{version}*.egg-info
-
-%files -n openstack-neutron-contrail
-%dir %{_sysconfdir}/neutron/plugins/juniper/contrail
-%config(noreplace) %attr(0640, root, neutron) %{_sysconfdir}/neutron/plugins/juniper/contrail/*.ini
-%{python_sitelib}/neutron/plugins/juniper/contrail
 
 %changelog
 * Fri Sep 13  2013 Dan Prince <dprince@redhat.com> - 2013.2-0.8.b3
