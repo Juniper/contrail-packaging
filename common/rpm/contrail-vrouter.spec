@@ -123,7 +123,7 @@ install -p -m 755 build/debug/vrouter/utils/rt          %{buildroot}%{_bindir}/r
 install -p -m 755 build/debug/vrouter/utils/vrfstats    %{buildroot}%{_bindir}/vrfstats
 install -p -m 755 build/debug/vrouter/utils/dropstats    %{buildroot}%{_bindir}/dropstats
 install -p -m 755 build/debug/vrouter/utils/vxlan       %{buildroot}%{_bindir}/vxlan
-install -p -m 755 build/debug/vnsw/agent/vnswad         %{buildroot}%{_bindir}/vnswad
+install -p -m 755 build/debug/vnsw/agent/contrail/vnswad         %{buildroot}%{_bindir}/vnswad
 
 # install etc files
 if [ "%{?dist}" != ".xen" ]; then

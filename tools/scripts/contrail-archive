@@ -146,7 +146,7 @@ class ContrailArchive(object):
         os.symlink ("../sandbox/build/debug/dns/dnsd", "dnsd")
         os.symlink ("../sandbox/build/debug/query_engine/qed", "qed")
         os.symlink ("../sandbox/build/debug/analytics/vizd", "vizd")
-        os.symlink ("../sandbox/build/debug/vnsw/agent/vnswad", "vnswad")
+        os.symlink ("../sandbox/build/debug/vnsw/agent/contrail/vnswad", "vnswad")
         os.symlink ("../sandbox/vrouter/vrouter.ko", "vrouter.ko")
 
 def execute(command, ignore_errors=False):
