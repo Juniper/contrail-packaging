@@ -62,7 +62,7 @@ override_dh_auto_install:
 	install -p -m 755 ${SB_TOP}/build/debug/vrouter/utils/vrfstats $(buildroot)$(_bindir)
 	install -p -m 755 ${SB_TOP}/build/debug/vrouter/utils/dropstats $(buildroot)$(_bindir)
 
-	install -p -m 755 ${SB_TOP}/build/debug/vnsw/agent/vnswad $(buildroot)$(_bindir)/vnswad
+	install -p -m 755 ${SB_TOP}/build/debug/vnsw/agent/contrail/vnswad $(buildroot)$(_bindir)/vnswad
 
 #	install etc files
 	install -p -m 644 ${SB_TOP}/tools/packaging/common/control_files/agent.conf $(buildroot)$(_contrailetc)/rpm_agent.conf
