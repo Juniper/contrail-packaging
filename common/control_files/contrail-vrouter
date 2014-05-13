@@ -24,13 +24,50 @@ insert_kmod() {
     fi
 }
 
+#parse br-interface from ini file
+find_br_interface() {
+    beg_token="VIRTUAL-HOST-INTERFACE"
+    end_token="physical_interface"
+
+    local line1=`grep -n -e "\[$beg_token\]" $CONF_FILE | cut -d ':' -f1`
+
+    #find line containing beg_token
+    if [ -z "$line1" ]; then
+            echo "Couldn't find $beg_token, bailing out!"
+            exit
+    fi
+
+    #convert to int
+    line1=$(($line1))
+
+    #find line containing end_token
+    line2=`grep -n -e "$end_token" $CONF_FILE | grep -v "#" | cut -d ':' -f1`
+
+    if [ ! -z "$line2" ]; then
+        line2=$(($line2))
+
+        #find insertion point
+        local insert=$( sed -n "$line1","$line2"p $CONF_FILE | \
+                        grep -n -e "name=" | grep -v '#' | cut -d ':' -f1 )
+        if [ ! -z "$insert" ]; then
+                insert=$(($insert+$line1-1))
+        else
+                insert=$line1
+        fi
+    else
+        insert=$line1
+    fi
+    interface=$( sed -n "${insert}p" $CONF_FILE | grep -n -e "name=" | cut -d '=' -f2 )
+    echo $interface
+}
+
 admin_interface() {
-    eth=$( cat $CONF_FILE | sed -n -e "s/.*<name>\(eth[0-9.]\+\).*/\1/gp" )
+    eth=$( cat $CONF_FILE | grep 'physical_interface=' | grep -v "#" | cut -d '=' -f2 )
     echo $eth
 }
 
 br_interface() {
-    br=$( cat $CONF_FILE | sed -n -e "s/.*<name>\(xenbr[0-9.]\+\).*/\1/gp" )
+    br=$( find_br_interface )
     echo $br
 }
 
@@ -80,7 +117,7 @@ start() {
 	interface_setup
     fi
     
-    /usr/bin/vnswad --config-file $CONF_FILE 1>$LOG 2>&1 &
+    /usr/bin/vnswad --config_file $CONF_FILE 1>$LOG 2>&1 &
     echo $! >$PID_FILE
 }
 
