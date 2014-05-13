@@ -387,7 +387,6 @@ This package contains the neutron Python library.
 #%setup -q -n neutron-%{version}
 
 pushd neutron
-sed -i 's/%{version}/%{version}/' PKG-INFO
 
 find neutron -name \*.py -exec sed -i '/\/usr\/bin\/env python/d' {} \;
 
