@@ -64,8 +64,7 @@ class PackagerArgParser(Utils):
         base_pkg_file = 'base*_packages.cfg'
         deps_pkg_file = 'depends*_packages.cfg'
         cont_pkg_file = 'contrail*_packages.cfg'
-        cmd = os.popen('repo info contrail-controller | grep "Mount path"|cut -f3 -d" "')
-        git_local_repo = os.path.dirname(cmd.read().strip('\n'))
+        git_local_repo = os.getcwd().replace('tools/packaging/build', '')
         if git_local_repo == '':
             raise RuntimeError('Cant find Git local Repo. Seems repo command is not available...')
         cache_base_dir = os.path.join(os.path.sep, 'cs-shared', 'builder', 'cache')
