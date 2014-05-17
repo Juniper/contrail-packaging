@@ -4,10 +4,7 @@
 # description: Supervisord instance for Contrail Database Package
 
 ulimit -c unlimited
-if [ -f /lib/lsb/init-functions ]; then
-    . /lib/lsb/init-functions
-else
-    . /etc/init.d/functions
+. /etc/init.d/functions
 
 function log_success_msg() {
     success
@@ -15,8 +12,6 @@ function log_success_msg() {
 function log_failure_msg() {
     failure
 }
-
-fi
 
 PID_FILE=/var/run/supervisord_contrail_database.pid
 
