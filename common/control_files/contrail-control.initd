@@ -3,10 +3,7 @@
 # chkconfig: 2345 99 01
 # description: Juniper Network Virtualization Control Daemon
 ulimit -c unlimited
-if [ -f /lib/lsb/init-functions ]; then
-    . /lib/lsb/init-functions
-else
-    . /etc/init.d/functions
+. /etc/init.d/functions
 
 function log_success_msg() {
     success
@@ -14,8 +11,6 @@ function log_success_msg() {
 function log_failure_msg() {
     failure
 }
-
-fi
 
 LOG=/var/log/contrail-control.log
 PID_FILE=/var/run/contrail-control.pid
