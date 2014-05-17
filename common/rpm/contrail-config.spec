@@ -36,7 +36,7 @@ Requires: irond
 Requires: zookeeper
 Requires: xmltodict >= 0.1
 Requires: supervisor
-Requires: jsonpickle
+Requires: python-jsonpickle
 
 Requires: contrail-api-venv
 %define _venv_root    /opt/contrail/api-venv
