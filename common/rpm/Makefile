@@ -78,9 +78,13 @@ contrail-config: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-config
 	rpmbuild $(RPMBLDOPTS) contrail-config.spec  $(G_TAG) $(RPM_PY)
 
-contrail-control: $(PREP) $(LOCAL_PY)
+contrail-nodemgr: $(PREP)
+	@echo making rpm for contrail-nodemgr
+	rpmbuild $(RPMBLDOPTS) contrail-nodemgr.spec  $(G_TAG)
+
+contrail-control: $(PREP)
 	@echo making rpm for contrail-control
-	rpmbuild $(RPMBLDOPTS) contrail-control.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) contrail-control.spec $(G_TAG) 
 
 contrail-dns: $(PREP)
 	@echo making rpm for contrail-dns
