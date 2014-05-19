@@ -23,6 +23,7 @@ BuildArch: noarch
 Requires: contrail-api-lib
 Requires: contrail-analytics
 Requires: contrail-setup
+Requires: contrail-nodemgr
 %if 0%{?rhel}
 Requires: python-importlib
 %endif

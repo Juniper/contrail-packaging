@@ -380,6 +380,17 @@ def main(argv=sys.argv):
         sys.stderr.flush()
         return
 
+    if rule_file == "":
+	if (node_type == 'contrail-analytics'):
+	    rule_file = "/etc/contrail/supervisord_analytics_files/contrail-analytics.rules"
+	if (node_type == 'contrail-config'):
+	    rule_file = "/etc/contrail/supervisord_config_files/contrail-config.rules" 
+	if (node_type == 'contrail-control'):
+	    rule_file = "/etc/contrail/supervisord_control_files/contrail-control.rules"
+	if (node_type == 'contrail-vrouter'):
+	    rule_file = "/etc/contrail/supervisord_vrouter_files/contrail-vrouter.rules"
+	if (node_type == 'contrail-database'):
+	    rule_file = "/etc/contrail/supervisord_contrail_database_files/supervisord_contrail_database.rules"
     if rule_file is "":
         sys.stderr.write('Node manager must be invoked with a rules file\n')
         sys.stderr.flush()
@@ -393,11 +404,27 @@ def main(argv=sys.argv):
     if (node_type is 'contrail-analytics'):
         # since this is local node, wait for sometime to let collector come up
         import time
+	try:
+            import discovery.client as client
+        except:
+            import discoveryclient.client as client
         module = Module.ANALYTICS_NODE_MGR
         module_name = ModuleNames[module]
         node_type = Module2NodeType[module]
         node_type_name = NodeTypeNames[node_type]
         instance_id = INSTANCE_ID_DEFAULT
+        #Read collector info from the conf file
+        #If conf file is indented ConfigParser cannot read, so stripping the contents
+        import ConfigParser
+        from StringIO import StringIO
+        data = StringIO('\n'.join(line.strip() for line in open('/etc/contrail/collector.conf')))
+        Config = ConfigParser.SafeConfigParser()
+        Config.readfp(data)
+        if discovery_server == socket.gethostname():
+            discovery_server = Config.get("DISCOVERY", "server")
+            #Hack becos of Configparser and the conf file format itself
+            discovery_server = discovery_server[:discovery_server.index('#')].strip()
+        _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         # ubuntu packaging is different, figure out where the generated files 
         # are installed
         try:
@@ -408,7 +435,7 @@ def main(argv=sys.argv):
             sandesh_pkg_dir = 'analytics_cpuinfo'
         sandesh_global.init_generator(module_name, socket.gethostname(), 
             node_type_name, instance_id, collector_addr,
-            module_name, 8104, [sandesh_pkg_dir])
+            module_name, 8104, [sandesh_pkg_dir],_disc)
         sandesh_global.set_logging_params(enable_local_log=True)
 
     if (node_type == 'contrail-config'):
@@ -446,11 +473,20 @@ def main(argv=sys.argv):
 
         # since this may be a local node, wait for sometime to let collector come up
         import time
+        import ConfigParser
         module = Module.CONTROL_NODE_MGR
         module_name = ModuleNames[module]
         node_type = Module2NodeType[module]
         node_type_name = NodeTypeNames[node_type]
         instance_id = INSTANCE_ID_DEFAULT
+        from StringIO import StringIO
+        data = StringIO('\n'.join(line.strip() for line in open('/etc/contrail/control-node.conf')))
+        Config = ConfigParser.SafeConfigParser()
+        Config.readfp(data)
+        if discovery_server == socket.gethostname():
+            discovery_server = Config.get("DISCOVERY", "server")
+            #Hack becos of Configparser and the conf file format itself
+            discovery_server = discovery_server[:discovery_server.index('#')].strip()
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         sandesh_global.init_generator(module_name, socket.gethostname(), 
             node_type_name, instance_id, collector_addr, module_name, 
@@ -470,6 +506,16 @@ def main(argv=sys.argv):
         node_type = Module2NodeType[module]
         node_type_name = NodeTypeNames[node_type]
         instance_id = INSTANCE_ID_DEFAULT
+        #Read the discovery server info from the conf file 
+        import ConfigParser
+        from StringIO import StringIO
+        data = StringIO('\n'.join(line.strip() for line in open('/etc/contrail/contrail-vrouter-agent.conf')))
+        Config = ConfigParser.SafeConfigParser()
+        Config.readfp(data)
+        if discovery_server == socket.gethostname():
+            discovery_server = Config.get("DISCOVERY", "server")
+            #Hack becos of Configparser and the conf file format itself
+            discovery_server = discovery_server.strip()
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         sandesh_global.init_generator(module_name, socket.gethostname(), 
             node_type_name, instance_id, collector_addr, module_name, 
@@ -487,6 +533,16 @@ def main(argv=sys.argv):
         node_type = Module2NodeType[module]
         node_type_name = NodeTypeNames[node_type]
         instance_id = INSTANCE_ID_DEFAULT
+        #Read the discovery server info from the conf file 
+        import ConfigParser
+        from StringIO import StringIO
+        data = StringIO('\n'.join(line.strip() for line in open('/etc/contrail/contrail-nodemgr-database.conf')))
+        Config = ConfigParser.SafeConfigParser()
+        Config.readfp(data)
+        if discovery_server == socket.gethostname():
+            discovery_server = Config.get("DISCOVERY", "server")
+            #Hack becos of Configparser and the conf file format itself
+            discovery_server = discovery_server.strip()
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         sandesh_global.init_generator(module_name, socket.gethostname(),
             node_type_name, instance_id, [], module_name,

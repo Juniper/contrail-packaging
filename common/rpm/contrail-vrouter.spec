@@ -163,36 +163,15 @@ install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-vrouter.
 # install pysandesh files
 %if 0%(if [ "%{dist}" != ".xen" ]; then echo 1; fi)
 %define _build_dist %{_builddir}/../build/debug
-install -d -m 755 %{buildroot}%{_venv_root}
-install -d -m 755 %{buildroot}%{_venv_root}/bin
+install -d -m 755 %{buildroot}
+install -d -m 755 %{buildroot}/bin
 
-install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_venv_root}/bin/contrail-nodemgr
-install -p -m 755 %{_controllersrcdir}/vnsw/agent/uve/mock_generator.py %{buildroot}%{_venv_root}/bin/mock_generator
-install -p -m 755 %{_controllersrcdir}/vnsw/agent/uve/run_mock_generator %{buildroot}%{_venv_root}/bin/run_mock_generator
+install -p -m 755 %{_controllersrcdir}/vnsw/agent/uve/mock_generator.py %{buildroot}/bin/mock_generator
+install -p -m 755 %{_controllersrcdir}/vnsw/agent/uve/run_mock_generator %{buildroot}/bin/run_mock_generator
 
 mkdir -p build/python_dist
 pushd build/python_dist
 
-tar zxf %{_build_dist}/vnsw/agent/uve/dist/vrouter-0.1dev.tar.gz
-pushd vrouter-0.1dev
-%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
-install -d -m 755 %{buildroot}/usr/share/doc/python-vrouter
-if [ -d doc ]; then
-   cp -R doc/* %{buildroot}/usr/share/doc/python-vrouter
-fi
-popd
-tar zxf %{_build_dist}/sandesh/common/dist/sandesh-common-0.1dev.tar.gz
-pushd sandesh-common-0.1dev
-%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
-popd
-tar zxf %{_build_dist}/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz
-pushd sandesh-0.1dev
-%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
-popd
-tar zxf %{_build_dist}/discovery/client/dist/discoveryclient-0.1dev.tar.gz
-pushd discoveryclient-0.1dev
-%{__python}  setup.py install --root=%{buildroot} %{?_venvtr}
-popd
 %endif
 
 %post
@@ -248,7 +227,6 @@ exit 0
 %if 0%(if [ "%{dist}" == ".xen" ]; then echo 1; fi)
 %{_sysconfdir}/init.d/contrail-vrouter
 %else
-%{_venv_root}
 %{_contrailetc}/rpm_agent.conf
 %{_contrailetc}/vnagent_ExecStartPre.sh
 %{_contrailetc}/vnagent_ExecStartPost.sh
@@ -260,9 +238,8 @@ exit 0
 %config(noreplace) %{_supervisordir}/contrail-vrouter.ini
 %{_supervisordir}/contrail-vrouter.rules
 %{_supervisordir}/contrail-vrouter.kill
-%{_venv_root}/bin/contrail-nodemgr
-%{_venv_root}/bin/mock_generator
-%{_venv_root}/bin/run_mock_generator
+/bin/mock_generator
+/bin/run_mock_generator
 %endif
 %if 0%{?rhel}
 /etc/init.d/contrail-vrouter
