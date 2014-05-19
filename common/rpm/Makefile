@@ -82,6 +82,10 @@ contrail-control: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-control
 	rpmbuild $(RPMBLDOPTS) contrail-control.spec $(G_TAG) $(RPM_PY)
 
+contrail-nodemgr: $(PREP)
+	@echo making rpm for contrail-nodemgr
+	rpmbuild $(RPMBLDOPTS) contrail-nodemgr.spec  $(G_TAG)
+
 contrail-dns: $(PREP)
 	@echo making rpm for contrail-dns
 	rpmbuild $(RPMBLDOPTS) contrail-dns.spec  $(G_TAG)
@@ -221,7 +225,7 @@ contrail-database: $(PREP) $(LOCAL_PY)
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
 	contrail-setup contrail-openstack-all contrail-webui contrail-nodejs venv-packages \
-	contrail-database contrail-nova-vif
+	contrail-database contrail-nova-vif contrail-nodemgr
 
 clean:
 	@echo clean

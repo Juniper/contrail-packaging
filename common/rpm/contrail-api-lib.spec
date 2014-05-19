@@ -87,6 +87,16 @@ pushd discoveryclient-0.1dev
 %{__python}  setup.py install --root=%{buildroot}
 popd
 
+tar zxf %{_build_dist}/sandesh/common/dist/sandesh-common-0.1dev.tar.gz
+pushd sandesh-common-0.1dev
+%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
+popd
+
+tar zxf %{_build_dist}/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz
+pushd sandesh-0.1dev
+%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
+popd
+
 %files
 %defattr(-,root,root,-)
 %{python_sitelib}/vnc_api
@@ -95,6 +105,10 @@ popd
 %{python_sitelib}/cfgm_common-*
 %{python_sitelib}/discoveryclient
 %{python_sitelib}/discoveryclient-*
+%{python_sitelib}/pysandesh
+%{python_sitelib}/sandesh_common
+%{python_sitelib}/sandesh_common-*
+%{python_sitelib}/sandesh-0.1dev*
 %{_api_venv_archv}/vnc_api-0.1dev.tar.gz
 %{_anl_venv_archv}/vnc_api-0.1dev.tar.gz
 %{_api_venv_archv}/cfgm_common-0.1dev.tar.gz

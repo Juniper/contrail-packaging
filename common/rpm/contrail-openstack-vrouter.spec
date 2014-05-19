@@ -36,6 +36,7 @@ Requires: python-thrift
 Requires: contrail-setup
 Requires: contrail-nova-vif
 Requires: librabbitmq
+Requires: contrail-nodemgr
 
 %if 0%{?rhel}
 Requires: tunctl
