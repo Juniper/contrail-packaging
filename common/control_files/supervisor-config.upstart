@@ -14,9 +14,7 @@ end script
 
 #exec /usr/bin/supervisord --nodaemon -c /etc/contrail/supervisord_config.conf
 script
-    . /opt/contrail/api-venv/bin/activate
     supervisord --nodaemon -c /etc/contrail/supervisord_config.conf || true
-    deactivate
     echo "supervisor-config start failed. lsof -i :9004..."
     lsof -i :9004 || true
     pid=`lsof -Fp -i :9004 | cut -d'p' -f2` || true
@@ -26,9 +24,7 @@ script
 end script
 
 pre-stop script
-    . /opt/contrail/api-venv/bin/activate
     supervisorctl -s http://localhost:9004 stop all
     supervisorctl -s http://localhost:9004 shutdown
     /usr/bin/supervisor_killall /etc/contrail/supervisord_config_files
-    deactivate
 end script

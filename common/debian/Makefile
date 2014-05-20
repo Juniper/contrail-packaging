@@ -12,6 +12,7 @@ else
   export CONTRAIL_SKU := havana
 endif
 
+KVERS ?= $(shell uname -r)
 VERSION = 
 ifdef TAG
 VERSION = $(SRC_VER)-$(TAG)
@@ -19,23 +20,16 @@ else
 VERSION = $(SRC_VER)-$(BUILDTIME)
 endif
 
-PACKAGES = contrail-libs-deb \
-	contrail-analytics-venv-deb \
-	contrail-analytics-deb \
-	contrail-dns-deb \
-	contrail-vrouter-deb \
-	contrail-vrouter-init-deb \
-	contrail-config-venv-deb \
-	contrail-config-deb \
-	contrail-config-extension-deb \
-	contrail-control-deb \
-	contrail-api-lib-deb \
-	contrail-nova-vif-deb \
+PACKAGES = \
+        contrail \
+        ifmap-server \
+        ifmap-python-client \
+        contrail-nova-vif-deb \
+        contrail-vrouter-init-deb \
 	contrail-nodejs-deb \
 	contrail-webui-deb \
 	contrail-nodemgr-deb \
 	contrail-setup-deb \
-	ifmap-server-deb \
 	supervisord-deb \
 	contrail-openstack-deb \
 	contrail-openstack-analytics-deb \
@@ -62,17 +56,52 @@ all: ${PACKAGES}
 clean: $(PACKAGES:%-deb=%-clean)
 	@echo "Clean"
 
-ifmap-server-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/third_party/ifmap-server)
-	mkdir -p ${SB_TOP}/third_party
-	cp -R ${SB_TOP}/third_party/ifmap-server ${BUILDDIR}
-	cp -R ifmap-server/debian ${BUILDDIR}/debian
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+package-%: debian-%
+	$(eval PACKAGE := $(patsubst package-%,%,$@))
+	@echo "Building package $(PACKAGE)"
+	(cd $(SB_TOP)/build/packages/$(PACKAGE); fakeroot debian/rules binary)
 
-ifmap-server-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/third_party/ifmap-server)
-	rm -rf ${BUILDDIR}
+debian-%:
+	$(eval PACKAGE := $(patsubst debian-%,%,$@))
+	mkdir -p $(SB_TOP)/build/packages/$(PACKAGE)
+	cp -R $(SB_TOP)/tools/packages/debian/$(PACKAGE)/debian $(SB_TOP)/build/packages/$(PACKAGE)
+	chmod u+x $(SB_TOP)/build/packages/$(PACKAGE)/debian/rules
+	rm -f $(SB_TOP)/build/packages/$(PACKAGE)/debian/*.upstart
+
+clean-%:
+	$(eval PACKAGE := $(patsubst clean-%,%,$@))
+	rm -rf $(SB_TOP)/build/packages/$(PACKAGE)
+
+KERNEL_VERSIONS := 3.8.0-29-generic 3.2.0-58-generic 3.2.0-51-generic
+package-contrail: debian-contrail
+	$(eval PACKAGE := contrail)
+	@echo "Building package $(PACKAGE)"
+	sed -i 's/VERSION/$(VERSION)/g' $(SB_TOP)/build/packages/$(PACKAGE)/debian/changelog
+	(cd $(SB_TOP)/build/packages/$(PACKAGE); dpkg-buildpackage -uc -us -b -rfakeroot)
+	chmod u+x $(SB_TOP)/build/packages/contrail/debian/rules.modules
+	$(foreach kver, $(KERNEL_VERSIONS), \
+            (cd $(SB_TOP)/vrouter; git clean -f -d); \
+            (cd $(SB_TOP)/build/packages/$(PACKAGE); \
+            fakeroot debian/rules.modules KVERS=$(kver) clean; \
+            fakeroot debian/rules.modules KVERS=$(kver) binary-modules); )
+
+
+package-ifmap-server: debian-ifmap-server
+	$(eval PACKAGE := $(patsubst package-%,%,$@))
+	@echo "Building package $(PACKAGE)"
+	(cd $(SB_TOP)/build/packages/$(PACKAGE); fakeroot debian/rules \
+                get-orig-source)
+	(cd $(SB_TOP)/build/packages/$(PACKAGE); dpkg-buildpackage \
+                -uc -us -b -rfakeroot)
+
+contrail: package-contrail
+	@echo "Package contrail done"
+
+ifmap-server: package-ifmap-server
+	@echo "Package ifmap-server done"
+
+ifmap-python-client: package-ifmap-python-client
+	@echo "Package ifmap-python client done"
 
 contrail-install-packages-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-install-packages)

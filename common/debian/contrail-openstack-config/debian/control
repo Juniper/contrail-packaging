@@ -11,8 +11,7 @@ Maintainer: rrugge <rrugge@juniper.net>
 Depends:
  supervisor,
  contrail-nodemgr,
- contrail-libs,
- contrail-config-extension,
+ contrail-lib,
  contrail-config,
  neutron-plugin-contrail,
  neutron-server,
@@ -23,7 +22,11 @@ Depends:
  rabbitmq-server,
  python-qpid,
  python-iniparse,
- python-bottle
+ python-bottle,
+ zookeeper,
+ ifmap-server,
+ ifmap-python-client,
+ contrail-config-openstack
 Section: contrail-openstack-config
 Priority: extra
 Description: Contrail Openstack Config composite debian package

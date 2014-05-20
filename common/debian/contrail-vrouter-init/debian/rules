@@ -48,6 +48,8 @@ override_dh_auto_install:
 	install -p -m 755 $(_confsrcdir)/vnagent_param_setup_ubuntu.sh ${buildroot}${_opt_bin}/vnagent_param_setup.sh
 	install -p -m 755 $(_confsrcdir)/if-vhost0 ${buildroot}${_opt_bin}/if-vhost0
 	install -p -m 755 $(_confsrcdir)/vrouter-functions.sh ${buildroot}${_opt_bin}/vrouter-functions.sh
+	install -p -m 755 $(_confsrcdir)/contrail_reboot  ${buildroot}/etc/contrail/contrail_reboot
+	install -p -m 755 $(_confsrcdir)/agent.conf  ${buildroot}/etc/contrail/rpm_agent.conf
 
 
 override_dh_shlibdeps:
