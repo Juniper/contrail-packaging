@@ -101,9 +101,6 @@ override_dh_auto_install:
 	install -D -m 644 $(_src_config)/qe_param $(buildroot)/$(_sysconfdir)/contrail/qe_param
 	install -D -m 644 $(_src_config)/opserver_param $(buildroot)/$(_sysconfdir)/contrail/opserver_param
 
-	install -p -m 644 $(_src_config)/redis-query.conf $(buildroot)$(_sysconfdir)/contrail/redis-query.conf
-	install -p -m 644 $(_src_config)/redis-uve.conf $(buildroot)$(_sysconfdir)/contrail/redis-uve.conf
-
 override_dh_shlibdeps: 
 
 override_dh_usrlocal:	

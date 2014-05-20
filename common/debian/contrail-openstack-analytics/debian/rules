@@ -55,6 +55,8 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/contrail-collector.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-collector.ini
 	install -p -m 755 $(_src_config)/contrail-qe.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-qe.ini
 	install -p -m 755 $(_src_config)/contrail-opserver.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-opserver.ini
+	install -p -m 644 $(_src_config)/redis-query.conf $(buildroot)$(_sysconfdir)/contrail/redis-query.conf
+	install -p -m 644 $(_src_config)/redis-uve.conf $(buildroot)$(_sysconfdir)/contrail/redis-uve.conf
 	install -p -m 755 $(_src_config)/redis-query.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/redis-query.ini
 	install -p -m 755 $(_src_config)/redis-uve.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/redis-uve.ini
 	# install supervisord wrapper scripts
