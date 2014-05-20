@@ -93,6 +93,7 @@ cat > reqs/reqs.txt <<END
 %{_builddir}/../%{_distrothirdpartydir}/anyjson-0.3.3.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/kombu-3.0.9.tar.gz  
 %{_builddir}/../%{_distrothirdpartydir}/bottle-0.11.6.tgz
+%{_builddir}/../%{_distrothirdpartydir}/jsonpickle-0.6.1.tar.gz
 %if %{_skuTag} != "grizzly"
 %{_builddir}/../%{_distrothirdpartydir}/six-1.6.1.tar.gz
 %{_builddir}/../%{_distrothirdpartydir}/Babel-1.3.tar.gz
