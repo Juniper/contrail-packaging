@@ -8,7 +8,8 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-nodemgr
 Architecture: all
 Maintainer: amoghe <amoghe@juniper.net>
-Depends: python-contrail
+Depends: python-contrail,
+    python-bottle (>= 0.11.6)
 Section: contrail-nodemgr
 Priority: extra
 Description: Contrail Config API Library package
