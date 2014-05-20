@@ -25,6 +25,7 @@ Requires: contrail-control
 Requires: contrail-libs
 Requires: contrail-dns
 Requires: contrail-setup
+Requires: contrail-nodemgr
 
 %description
 Contrail Package Requirements for Control Node

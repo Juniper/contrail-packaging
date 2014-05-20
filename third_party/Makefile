@@ -212,9 +212,9 @@ redis-py: $(PREP) $(LOCAL_PY)
 	@echo making rpm for redis-py
 	rpmbuild $(RPMBLDOPTS) redis-py.spec $(G_TAG) $(RPM_PY)
 
-supervisor: $(PREP) $(LOCAL_PY)
+supervisor: $(PREP)
 	@echo making rpm for supervisor
-	rpmbuild $(RPMBLDOPTS) supervisor.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) supervisor.spec $(G_TAG)
 
 ifeq ($(CONTRAIL_SKU), grizzly)
 webob:

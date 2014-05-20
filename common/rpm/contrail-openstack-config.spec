@@ -40,6 +40,7 @@ Requires: java-1.7.0-openjdk
 Requires: haproxy
 Requires: rabbitmq-server
 Requires: python-bottle
+Requires: contrail-nodemgr
 
 %description
 Contrail Package Requirements for Contrail Config
