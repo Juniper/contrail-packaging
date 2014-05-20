@@ -236,11 +236,7 @@ endif
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
 	contrail-setup contrail-openstack-all contrail-webui contrail-nodejs venv-packages \
-<<<<<<< HEAD
-	contrail-database contrail-nova-vif ${NEUTRON_PLUGIN}
-=======
-	contrail-database contrail-nova-vif contrail-nodemgr
->>>>>>> The changes made are to take nodemgr code out of venv in centos.
+	contrail-database contrail-nova-vif ${NEUTRON_PLUGIN} contrail-nodemgr
 
 clean:
 	@echo clean
