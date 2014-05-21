@@ -24,8 +24,14 @@ if [ $? != 0 ]; then
      mv new_sources.list sources.list
 fi
 
-#Allow unauthenticated pacakges to get installed
-echo "APT::Get::AllowUnauthenticated \"true\";" > apt.conf
+# Allow unauthenticated pacakges to get installed.
+# Do not over-write apt.conf. Instead just append what is necessary
+# retaining other useful configurations such as http::proxy info.
+apt_auth="APT::Get::AllowUnauthenticated \"true\";"
+grep --quiet "$apt_auth" apt.conf
+if [ "$?" != "0" ]; then
+    echo "$apt_auth" >> apt.conf
+fi
 
 #install local repo preferences from /opt/contrail/ to /etc/apt/
 cp /opt/contrail/contrail_packages/preferences /etc/apt/preferences 
