@@ -43,24 +43,28 @@ class ManifestBase(object):
             if DEBUG:
                 print reponame, remote
 
-            if remote == 'github':
-                if dbranch:
-                    demo.set('branch', dbranch)
+            if not (dbranch and len(dbranch) == 40 and re.match("^[a-f0-9]+$", str(dbranch))):
+                if remote == 'github':
+                    if dbranch:
+                        demo.set('branch', dbranch)
+                    else:
+                        demo.set('branch', self.opt.branch)
+                    if DEBUG:
+                        print "repo not in build repo going to get hash "
+                        print reponame
+                    repo = self.opt.github.get_user(login='Juniper').get_repo(name=reponame)
+                    if (dbranch):
+                        githubBranch = repo.get_branch(branch=dbranch)
+                        commits = githubBranch.commit
+                    else:
+                        commits = repo.get_commits()[0]
+                    demo.set('revision', commits.sha)
                 else:
-                    demo.set('branch', self.opt.branch)
-                if DEBUG:
-                    print "repo not in build repo going to get hash "
-                    print reponame
-                repo = self.opt.github.get_user(login='Juniper').get_repo(name=reponame)
-                if (dbranch):
-                    githubBranch = repo.get_branch(branch=dbranch)
-                    commits = githubBranch.commit
-                else:
-                    commits = repo.get_commits()[0]
-                demo.set('revision', commits.sha)
+                    source.remove(demo)
             else:
-                source.remove(demo)
-
+                if DEBUG:
+                    print reponame
+                    print "found git commit hash as revision "
         return source
 
     def merge(self):
