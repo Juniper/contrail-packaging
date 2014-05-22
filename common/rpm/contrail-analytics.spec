@@ -150,8 +150,8 @@ popd
 
 # install files
 pushd %{_builddir}/..
-install -p -m 755 build/debug/analytics/vizd    %{buildroot}%{_bindir}/vizd
-install -p -m 755 build/debug/query_engine/qed  %{buildroot}%{_bindir}/qed
+install -p -m 755 build/debug/analytics/vizd    %{buildroot}%{_bindir}/contrail-collector
+install -p -m 755 build/debug/query_engine/qed  %{buildroot}%{_bindir}/contrail-query-engine
 install -p -m 755 %{_distropkgdir}/contrail-analytics.rules %{buildroot}%{_supervisordir}/contrail-analytics.rules
 install -D -m 644 controller/src/analytics/contrail-collector.conf %{buildroot}/%{_contrailetc}/collector.conf
 install -D -m 644 controller/src/query_engine/contrail-query-engine.conf %{buildroot}/%{_contrailetc}/query-engine.conf
