@@ -163,7 +163,7 @@ install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail_qe_pre %
 #install .ini files for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_analytics.conf %{buildroot}%{_contrailetc}/supervisord_analytics.conf
 install -p -m 755 %{_distropkgdir}/contrail-collector.ini %{buildroot}%{_supervisordir}/contrail-collector.ini
-install -p -m 755 %{_distropkgdir}/contrail-opserver.ini %{buildroot}%{_supervisordir}/contrail-opserver.ini
+install -p -m 755 %{_distropkgdir}/contrail-opserver-centos.ini %{buildroot}%{_supervisordir}/contrail-opserver.ini
 install -p -m 755 %{_distropkgdir}/contrail-qe.ini %{buildroot}%{_supervisordir}/contrail-qe.ini
 install -p -m 755 %{_distropkgdir}/redis-query.ini %{buildroot}%{_supervisordir}/redis-query.ini
 install -p -m 755 %{_distropkgdir}/redis-uve.ini %{buildroot}%{_supervisordir}/redis-uve.ini
