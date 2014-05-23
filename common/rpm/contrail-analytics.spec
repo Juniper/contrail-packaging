@@ -236,8 +236,8 @@ fi
 
 %files
 %defattr(-, root, root)
-%{_bindir}/vizd
-%{_bindir}/qed
+%{_bindir}/contrail-collector
+%{_bindir}/contrail-query-engine
 %{_bindir}/contrail-dbutils
 %{_bindir}/contrail_collector_pre
 %{_bindir}/contrail_qe_pre
