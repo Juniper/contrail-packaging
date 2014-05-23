@@ -234,7 +234,7 @@ all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools 
 else
 all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
-	python-pycassa python-thrift redis-py supervisor xmltodict ixgbe
+	python-pycassa python-thrift redis-py supervisor xmltodict ixgbe python-bottle
 endif
 
 clean:
