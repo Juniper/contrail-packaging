@@ -1,4 +1,4 @@
-Name:     contrail-webui
+Name:     contrail-web-controller
 Maintainer: swamy <swamy@juniper.net>
 License:  Commercial
 Files: *

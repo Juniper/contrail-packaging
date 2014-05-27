@@ -1,5 +1,5 @@
 
-contrail-webui (BUILDTAG) anantha; urgency=low
+contrail-web-controller (BUILDTAG) anantha; urgency=low
 
   [anantha ]
   * debian/changelog: changelog

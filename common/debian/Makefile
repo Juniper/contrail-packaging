@@ -27,7 +27,8 @@ PACKAGES = \
         contrail-nova-vif-deb \
         contrail-vrouter-init-deb \
 	contrail-nodejs-deb \
-	contrail-webui-deb \
+	contrail-web-core-deb \
+	contrail-web-controller-deb \
 	contrail-nodemgr-deb \
 	contrail-setup-deb \
 	supervisord-deb \
