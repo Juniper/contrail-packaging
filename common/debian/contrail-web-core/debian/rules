@@ -12,7 +12,7 @@ SPEC_DIR := $(shell pwd)
 export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export buildroot := $(SB_TOP)/build/debian/contrail-webui
+export buildroot := $(SB_TOP)/build/debian/contrail-web-core
 
 export WS := `cat ~/rpmbuild/SOURCES/git_root`
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):debian/contrail-control/usr/lib64/contrail:debian/contrail-libs/usr/lib64/contrail
@@ -20,7 +20,7 @@ export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export _contrailetc := /etc/contrail
 export _sourcedir := $(WS)/tools/packaging
 export _distropkgdir := $(SB_TOP)/tools/packaging/common/control_files
-export _contrailwebsrc := /usr/src/contrail/contrail-webui
+export _contrailwebsrc := /usr/src/contrail/contrail-web-core
 export _libdir := /usr/lib64
 export _nodemodules := node_modules
 export _config := $(SB_TOP)/contrail-web-core/config
@@ -41,7 +41,7 @@ endif
 
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog 
-	(cd $(SB_TOP)/contrail-web-core && make package)
+	(cd $(SB_TOP)/contrail-web-core && make package REPO=$(SB_TOP)/contrail-web-core)
 
 override_dh_auto_install: 
 	# Cleanup directories
