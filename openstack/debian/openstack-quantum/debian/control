@@ -367,7 +367,7 @@ Architecture: all
 Provides: quantum-plugin
 Depends:
   quantum-common (= ${source:Version}),
-  contrail-api-lib,
+  python-contrail,
   ${misc:Depends},
   ${python:Depends},
   ${shlibs:Depends}
