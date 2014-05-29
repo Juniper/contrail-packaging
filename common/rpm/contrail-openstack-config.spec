@@ -24,6 +24,7 @@ Requires: contrail-api-lib
 Requires: contrail-api-extension
 Requires: contrail-config
 Requires: openstack-quantum-contrail
+Requires: neutron-plugin-contrail
 Requires: python-novaclient
 Requires: python-keystoneclient >= 0.2.0
 Requires: python-psutil

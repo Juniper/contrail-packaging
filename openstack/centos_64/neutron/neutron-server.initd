@@ -14,6 +14,7 @@ exec="/usr/bin/$prog-server"
 config="/etc/$prog/$prog.conf"
 pidfile="/var/run/$prog/$prog.pid"
 logfile="/var/log/$prog/server.log"
+plugin_config="/etc/$prog/plugins/opencontrail/ContrailPlugin.ini"
 
 [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
 
@@ -23,7 +24,7 @@ start() {
     [ -x $exec ] || exit 5
     [ -f $config ] || exit 6
     echo -n $"Starting $prog: "
-    daemon --user neutron --pidfile $pidfile "$exec --config-file $config --config-file /etc/$prog/plugin.ini --log-file $logfile &>/dev/null & echo \$! > $pidfile"
+    daemon --user neutron --pidfile $pidfile "$exec --config-file $config --config-file ${plugin_config} --log-file $logfile &>/dev/null & echo \$! > $pidfile"
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile
