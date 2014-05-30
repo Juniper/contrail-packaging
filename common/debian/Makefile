@@ -32,6 +32,7 @@ PACKAGES = contrail-libs-deb \
 	contrail-webui-deb \
 	contrail-nodemgr-deb \
 	contrail-setup-deb \
+	contrail-provisioning-tools-deb \
 	ifmap-server-deb \
 	supervisord-deb \
 	contrail-openstack-deb \
