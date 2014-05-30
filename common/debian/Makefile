@@ -86,7 +86,7 @@ package-contrail: debian-contrail
             fakeroot debian/rules.modules KVERS=$(kver) binary-modules); )
 
 
-package-ifmap-server: debian-ifmap-server
+package-ifmap-server: clean-ifmap-server debian-ifmap-server
 	$(eval PACKAGE := $(patsubst package-%,%,$@))
 	@echo "Building package $(PACKAGE)"
 	(cd $(SB_TOP)/build/packages/$(PACKAGE); fakeroot debian/rules \
