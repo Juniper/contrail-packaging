@@ -53,6 +53,10 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/contrail-control.ini $(buildroot)$(_supervisordir)/contrail-control.ini
 	install -p -m 755 $(_src_config)/contrail-dns.ini $(buildroot)$(_supervisordir)/contrail-dns.ini
 	install -p -m 755 $(_src_config)/contrail-control.rules $(buildroot)$(_sysconfdir)/contrail/supervisord_control_files/contrail-control.rules
+	install -p -m 755 $(_src_config)/contrail-dns.initd.supervisord $(buildroot)$(_initddir)/contrail-dns
+	install -p -m 755 $(_src_config)/contrail-named.initd.supervisord $(buildroot)$(_initddir)/contrail-named
+	install -p -m 755 $(_src_config)/contrail-dns.ini $(buildroot)$(_supervisordir)/contrail-dns.ini
+	install -p -m 755 $(_src_config)/contrail-named.ini $(buildroot)$(_supervisordir)/contrail-named.ini
 override_dh_usrlocal:	
 
 override_dh_shlibdeps:
