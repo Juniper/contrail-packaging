@@ -2,7 +2,7 @@
 
 %define         _distropkgdir tools/packaging/common/control_files
 %define		_contrailetc 		/etc/contrail
-%define		_contrailwebsrc 	/usr/src/contrail/contrail-webui
+%define		_contrailwebsrc 	/usr/src/contrail/contrail-web-core
 %if 0%{?fedora} >= 17
 %define		_servicedir  		/usr/lib/systemd/system
 %endif
@@ -23,7 +23,7 @@
 %define         _verstr      1
 %endif
 
-Name:		contrail-webui
+Name:		contrail-web-core
 Version:	%{_verstr}
 Release:	%{_relstr}
 Summary:	Contrail Web UI %{?_gitVer}

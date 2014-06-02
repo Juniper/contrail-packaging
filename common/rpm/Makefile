@@ -188,10 +188,10 @@ contrail-openstack-all: contrail-openstack contrail-openstack-analytics contrail
 	contrail-openstack-control contrail-openstack-database contrail-openstack-vrouter \
 	contrail-openstack-webui contrail-openstack-storage
 
-contrail-webui:
-	@echo making rpm for contrail-webui
-	cd $(CPLANE_GIT_ROOT)/../contrail-web-core && make package
-	cp contrail-webui.spec $(BUILD_BASE)/SPECS/
+contrail-web-core:
+	@echo making rpm for contrail-web-core
+	cd $(CPLANE_GIT_ROOT)/../contrail-web-core && make package REPO=$(CPLANE_GIT_ROOT)/../contrail-web-core
+	cp contrail-web-core.spec $(BUILD_BASE)/SPECS/
 	cp ../control_files/contrailWebServer.sh $(BUILD_SRC)/
 	cp ../control_files/contrailWebMiddleware.sh $(BUILD_SRC)/
 	cp ../control_files/contrail-webui-middleware.service $(BUILD_SRC)/
@@ -208,7 +208,13 @@ contrail-webui:
 	cp ../control_files/redis-webui.conf $(BUILD_SRC)/
 	cp ../control_files/redis-webui.ini $(BUILD_SRC)/
 	cp ../control_files/redis-webui.initd.supervisord $(BUILD_SRC)/
-	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-webui.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-web-core.spec $(G_TAG)
+
+contrail-web-controller:
+	@echo making rpm for contrail-web-controller
+	cd $(CPLANE_GIT_ROOT)/../contrail-web-core && make package REPO=$(CPLANE_GIT_ROOT)/../contrail-web-controller
+	cp contrail-web-controller.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-web-controller.spec $(G_TAG)
 
 contrail-nodejs:
 	cp contrail-nodejs.spec $(BUILD_BASE)/SPECS/
@@ -235,7 +241,8 @@ endif
 
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
-	contrail-setup contrail-openstack-all contrail-webui contrail-nodejs venv-packages \
+	contrail-setup contrail-openstack-all contrail-web-core contrail-web-controller \
+	contrail-nodejs venv-packages \
 	contrail-database contrail-nova-vif ${NEUTRON_PLUGIN} contrail-nodemgr
 
 clean:
