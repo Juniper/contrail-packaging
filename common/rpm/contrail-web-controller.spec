@@ -84,6 +84,6 @@ fi
 exit 0
 
 %changelog
-* Mon May 26 2013
+* Mon May 26 2013 - bmandal@juniper.net
 - first release
 
