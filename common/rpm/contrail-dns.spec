@@ -105,7 +105,7 @@ install -p -m 755 %{_distropkgdir}/contrail-named.initd.supervisord %{buildroot}
 install -p -m 755 %{_distropkgdir}/contrail-dns.ini %{buildroot}%{_supervisordir}/contrail-dns.ini
 install -p -m 755 %{_distropkgdir}/contrail-named.ini %{buildroot}%{_supervisordir}/contrail-named.ini
 perl -pi -e '{ s/user=contrail\s*//g; }' %{buildroot}%{_supervisordir}/contrail-named.ini
-
+perl -pi -e '{ s/\/usr\/bin\/authbind //g; }' %{buildroot}%{_supervisordir}/contrail-named.ini
 
 %post
 %if 0%{?fedora} >= 17
