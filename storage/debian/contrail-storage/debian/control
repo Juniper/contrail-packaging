@@ -8,7 +8,7 @@ Build-Depends:
 Package: contrail-storage
 Architecture: all
 Maintainer: jjeya <jjeya@juniper.net>
-Depends: ceph, ceph-deploy, libvirt-bin, libaio1, libboost-thread1.46.1, python-cinderclient, cinder-volume, libsensors4, sysstat
+Depends: ceph, ceph-deploy, libvirt-bin, libaio1, libboost-thread1.46.1, python-cinderclient, cinder-volume, libsensors4, sysstat, nfs-common
 Section: contrail-openstack-storage
 Priority: extra
 Description: Contrail storage package
