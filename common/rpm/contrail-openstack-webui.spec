@@ -22,7 +22,8 @@ Vendor:             Juniper Networks Inc
 BuildArch: noarch
 
 Requires: contrail-api-lib
-Requires: contrail-webui
+Requires: contrail-web-core
+Requires: contrail-web-controller
 Requires: contrail-setup
 
 %description
