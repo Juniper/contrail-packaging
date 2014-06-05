@@ -11,6 +11,7 @@
 %{echo: "Building release %{_relstr}\n"}
 %if 0%(grep -c Xen /etc/redhat-release)
 %define		dist	.xen
+BuildRoot:      %{_topdir}/BUILDROOT
 %endif
 
 Summary: supervisor %{?_gitVer}
@@ -24,11 +25,17 @@ URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
 Requires: python
+%if  "%{dist}" != ".xen"
 Requires: python-gevent
 Requires: python-requests
+%endif
 
 Autoreq:0
 
+%if  "%{dist}" == ".xen"
+%define __python /usr/local/bin/python
+%define python_sitelib /usr/local/lib/python2.7/site-packages
+%endif
 %define _pyver        %( %{__python} -c "import sys; print '%s.%s' % sys.version_info[0:2]" )
 %define _pysitepkg    /lib/python%{_pyver}/site-packages
 %description
@@ -95,11 +102,21 @@ install -p -m 755 %{_distropkgdir}/supervisor_killall %{buildroot}%{_bindir}/sup
 %clean
 %files
 %defattr(-,root,root,-)
+%if  "%{dist}" == ".xen"
+%undefine buildroot
+/usr/local/bin/echo_supervisord_conf
+/usr/local/bin/pidproxy
+/usr/local/bin/supervisorctl
+/usr/local/bin/supervisord
+/usr/bin/supervisor_killall
+/archive/supervisor-3.0b2.tar.gz
+%else
 /usr/bin/echo_supervisord_conf
 /usr/bin/pidproxy
 /usr/bin/supervisorctl
 /usr/bin/supervisord
 /usr/bin/supervisor_killall
+%endif
 /archive/supervisor-3.0b2.tar.gz
 %{python_sitelib}/supervisor
 %{python_sitelib}/supervisor-*
@@ -107,6 +124,10 @@ install -p -m 755 %{_distropkgdir}/supervisor_killall %{buildroot}%{_bindir}/sup
 %{python_sitelib}/meld3-*
 %{python_sitelib}/elementtree
 %{python_sitelib}/elementtree-*
+
+%if  "%{dist}" == ".xen"
+%define buildroot %{_topdir}/BUILDROOT
+%endif
 %changelog
 * Mon Jul 22 2013 Chandan Mishra <cdmishra@juniper.net> - config-1
 - Initial build.
