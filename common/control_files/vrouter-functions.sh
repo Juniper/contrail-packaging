@@ -59,16 +59,17 @@ function insert_vrouter() {
             echo "$(date): Error creating interface: $DEVICE"
         fi
 
-        vif --add $DEVICE --mac $DEV_MAC --vrf 0 --mode x --type vhost
-        if [ $? != 0 ]; then
-            echo "$(date): Error adding $DEVICE to vrouter"
-        fi
 
         echo "$(date): Adding $dev to vrouter"
         DEV_MAC=$(cat /sys/class/net/$dev/address)
         vif --add $dev --mac $DEV_MAC --vrf 0 --mode x --type physical
         if [ $? != 0 ]; then
             echo "$(date): Error adding $dev to vrouter"
+        fi
+
+        vif --add $DEVICE --mac $DEV_MAC --vrf 0 --mode x --type vhost --xconnect $dev
+        if [ $? != 0 ]; then
+            echo "$(date): Error adding $DEVICE to vrouter"
         fi
     fi
     return 0
