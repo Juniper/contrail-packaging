@@ -23,7 +23,7 @@ function pkt_setup () {
 function insert_vrouter() {
     grep $kmod /proc/modules 1>/dev/null 2>&1
     if [ $? != 0 ]; then 
-        insmod $kmod
+        modprobe $kmod
         if [ $? != 0 ]
         then
             echo "$(date) : Error inserting vrouter module"

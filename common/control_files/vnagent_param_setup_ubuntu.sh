@@ -1,7 +1,5 @@
 #! /bin/bash
 
-OS_VER=$1
-
 CFG_FILE=/etc/contrail/agent_param.tmpl
 
 if [ -f $CFG_FILE ] ; then
@@ -17,7 +15,7 @@ echo CONFIG=$CONFIG >> $CFG_FILE
 prog=/usr/bin/vnswad
 echo prog=$prog >> $CFG_FILE
 
-kmod=/lib/modules/${OS_VER}/extra/net/vrouter/vrouter.ko
+kmod=vrouter
 echo kmod=$kmod >> $CFG_FILE
 
 pname=$(basename $prog)

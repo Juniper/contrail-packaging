@@ -2,7 +2,7 @@
 set -e
 
 #echo "create the agent_param file..."
-#/etc/contrail/vnagent_param_setup.sh 3.2.0-35-generic
+#/etc/contrail/vnagent_param_setup.sh
 
 echo "Running Postinst ldconfig .."
 if [ ! -f /etc/ld.so.conf.d/contrail-libs.conf ]; then
