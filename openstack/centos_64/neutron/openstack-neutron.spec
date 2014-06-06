@@ -476,6 +476,8 @@ rm -f  %{buildroot}%{_sysconfdir}/neutron/plugins/nec/nec.ini
 rm -f  %{buildroot}%{_sysconfdir}/neutron/plugins/nicira/nvp.ini
 rm -f  %{buildroot}%{_sysconfdir}/neutron/plugins/openvswitch/ovs_neutron_plugin.ini
 rm -f  %{buildroot}%{_sysconfdir}/neutron/plugins/plumgrid/plumgrid.ini
+rm -f  %{buildroot}%{_sysconfdir}/neutron/plugins/juniper/contrail/ContrailPlugin.ini
+rm -f  %{buildroot}/usr%{_sysconfdir}/neutron/plugins/juniper/contrail/ContrailPlugin.ini
 
 rm -f  %{buildroot}%{_sysconfdir}/neutron/plugins/ryu/ryu.ini
 rm -f  %{buildroot}%{_sysconfdir}/neutron/vpn_agent.ini
