@@ -55,7 +55,7 @@ fi
 #fi
 
 #pushd $BUILD_DIR
-scons  -U --target=%{_target_cpu}  src/dns
+BUILD_ONLY=TRUE scons  -U --target=%{_target_cpu}  src/dns
 if [ $? -ne 0 ] ; then
     echo " Dnsd build failed"
     exit -1

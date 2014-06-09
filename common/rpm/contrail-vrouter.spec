@@ -97,7 +97,7 @@ pushd %{_builddir}/../tools/
 scons -U sandesh/library/python:pysandesh
 popd
 scons -U src/discovery
-scons -U --target=%{_target_cpu} ${OPT_KERNEL} src/vnsw/agent/uve
+BUILD_ONLY=TRUE scons -U --target=%{_target_cpu} ${OPT_KERNEL} src/vnsw/agent/uve
 %endif
 
 %install

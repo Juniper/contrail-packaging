@@ -68,7 +68,7 @@ pushd %{_builddir}/../tools/
 scons -U sandesh/library/python:pysandesh
 popd
 scons -U src/discovery
-scons -U src/control-node
+BUILD_ONLY=TRUE scons -U src/control-node
 if [ $? -ne 0 ] ; then
     echo "build failed"
     exit -1
