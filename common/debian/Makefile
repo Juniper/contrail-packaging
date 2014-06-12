@@ -112,8 +112,20 @@ contrail-install-packages-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 	@echo "Wrote: ${BUILDDIR}/../contrail-install-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
 
+contrail-thirdparty-packages-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-thirdparty-packages)
+	mkdir -p ${BUILDDIR}
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-thirdparty-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	@echo "Wrote: ${BUILDDIR}/../contrail-thirdparty-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
+
 contrail-install-packages-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-install-packages)
+	rm -rf ${BUILDDIR}
+
+contrail-thirdparty-packages-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-thirdparty-packages)
 	rm -rf ${BUILDDIR}
 
 contrail-fabric-utils-deb:
