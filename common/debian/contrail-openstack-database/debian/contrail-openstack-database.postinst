@@ -1,7 +1,22 @@
 #!/bin/sh
+set -e
 
-echo "Running Postinst for contrail-database"
-sudo service cassandra stop
-sudo rm -rf /var/lib/cassandra/
-sudo rm -rf /etc/init.d/cassandra
-echo "Postinst for contrail-database done"
+echo "Running Postinst for contrail-openstack-database with option $1"
+case "$1" in
+    install)
+        # cassandra is being monitored/started by supervisord
+        # hence remove init.d script
+        sudo service cassandra stop
+        sudo rm -rf /var/lib/cassandra/
+        sudo rm -rf /etc/init.d/cassandra
+        ;;
+
+    upgrade|abort-upgrade)
+        ;;
+
+    *)
+        echo "postinst called with unknown argument '$1'" >&2
+        exit 0
+        ;;
+esac
+echo "Postinst for contrail-openstack-database done"
