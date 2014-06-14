@@ -297,6 +297,9 @@ class BasePackager(Utils):
             fid.flush()
 
     def create_git_ids(self, manifest=None, filename=None, retries=5):
+        if os.environ.has_key('SKIP_CREATE_GIT_IDS'):
+            return
+
         filename = filename or os.path.join(self.store, 'git_build_%s.txt' %self.id)
         manifest = manifest or os.path.join(self.git_local_repo, '.repo', 'manifest.xml')
         ids_dict = {}
