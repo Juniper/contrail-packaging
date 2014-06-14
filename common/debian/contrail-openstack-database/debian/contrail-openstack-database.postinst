@@ -3,15 +3,21 @@ set -e
 
 echo "Running Postinst for contrail-openstack-database with option $1"
 case "$1" in
-    install)
-        # cassandra is being monitored/started by supervisord
-        # hence remove init.d script
-        sudo service cassandra stop
-        sudo rm -rf /var/lib/cassandra/
-        sudo rm -rf /etc/init.d/cassandra
+    configure)
+        if [ -z "$2" ]; then
+            # do install stuff
+            # cassandra is being monitored/started by supervisord
+            # hence remove init.d script
+            sudo service cassandra stop
+            sudo rm -rf /var/lib/cassandra/
+            sudo rm -rf /etc/init.d/cassandra
+        else
+            # do upgrade stuff
+            :
+        fi
         ;;
 
-    upgrade|abort-upgrade)
+    abort-upgrade)
         ;;
 
     *)
