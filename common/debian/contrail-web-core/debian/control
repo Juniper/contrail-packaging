@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-web-core
 Architecture: amd64
 Maintainer: swamy <swamy@juniper.net>
-Depends: redis-server (>= 2.6.13-1), contrail-nodejs, python-contrail
+Depends: redis-server (>= 2.6.13-1), nodejs, python-contrail
 Section: contrail-web-core
 Priority: extra
 Description: Contrail Systems Web UI
