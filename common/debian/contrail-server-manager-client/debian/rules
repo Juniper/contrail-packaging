@@ -39,7 +39,7 @@ override_dh_auto_install:
 	
 	# Copy/install files
 	cp -r $(src_path)/client/*.py $(build_root)/opt/contrail/server_manager/client/
-	cp -r $(src_path)/client/server_manager $(build_root)/opt/contrail/server_manager/client/
+	cp -r $(src_path)/client/server-manager $(build_root)/opt/contrail/server_manager/client/
 	cp -r $(src_path)/client/smgr_client_config.ini  $(build_root)/opt/contrail/server_manager/client/
 
 override_dh_shlibdeps:
