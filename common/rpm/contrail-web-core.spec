@@ -131,14 +131,14 @@ rm -rf %{_specdir}/contrail-webui.spec
 
 %preun
 if [ $1 = 1 ] ; then 
-	echo "Upgrading contrail-webui Package"
+	echo "Upgrading contrail-web-core Package"
 %if 0%{?rhel}
 	/etc/init.d/supervisor-webui restart
 %else
 	/bin/systemctl restart supervisor-webui.service
 %endif
 elif [ $1 = 0 ] ; then
-	echo "Removing contrail-webui Package"
+	echo "Removing contrail-web-core Package"
 %if 0%{?rhel}
 	/etc/init.d/supervisor-webui stop
 %else

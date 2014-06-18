@@ -29,6 +29,11 @@ Requires: contrail-setup
 %description
 Contrail Package Requirements for WebUI
 
+%post
+if [ -d /usr/src/contrail/contrail-webui ] ; then
+    rm -rf /usr/src/contrail/contrail-webui
+fi
+
 %files
 
 %changelog
