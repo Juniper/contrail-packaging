@@ -318,15 +318,18 @@ class Utils(object):
             for pkg in pkgcfg.keys():
                 pkgcfg[pkg]['repo'] = self.repo_dir
 
-    @staticmethod
-    def get_dict_by_item(tdict, titem):
+    def get_dict_by_item(self, tdict, titem):
+        '''converts a given dict with given items as keys
+        '''
         matrix = {}
         cfg_itemgetter = operator.itemgetter(titem)
         for key, items in tdict.items():
-            matrix_key = cfg_itemgetter(items)
-            if not matrix.has_key(matrix_key):
-                matrix[matrix_key] = {}
-            matrix[matrix_key].update({key: items})
+            matrix_keys = cfg_itemgetter(items)
+            matrix_keys = self.get_as_list(matrix_keys)
+            for matrix_key in matrix_keys:
+                if not matrix.has_key(matrix_key):
+                    matrix[matrix_key] = {}
+                matrix[matrix_key].update({key: items})
         return matrix
 
     def copy_pkg_files(self, pkginfo, error=True):
