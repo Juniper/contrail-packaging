@@ -232,6 +232,15 @@ contrail-database: $(PREP) $(LOCAL_PY)
 	cp ../control_files/supervisord_contrail_database.initd $(BUILD_SRC)/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-database.spec $(G_TAG) $(RPM_PY)
 
+contrail-server-manager: $(PREP) $(LOCAL_PY)
+	@echo making rpm for contrail-server-manager
+	cp contrail-server-manager.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager.spec $(G_TAG)
+
+contrail-server-manager-client: $(PREP) $(LOCAL_PY)
+	@echo making rom for contrail-server-manager-client
+	cp contrail-server-manager-client.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager-client.spec $(G_TAG)
 
 ifeq ($(CONTRAIL_SKU), grizzly)
 NEUTRON_PLUGIN = 
@@ -243,7 +252,8 @@ all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
 	contrail-setup contrail-openstack-all contrail-web-core contrail-web-controller \
 	contrail-nodejs venv-packages \
-	contrail-database contrail-nova-vif ${NEUTRON_PLUGIN} contrail-nodemgr
+	contrail-database contrail-nova-vif ${NEUTRON_PLUGIN} contrail-nodemgr \
+	contrail-server-manager contrail-server-manager-client
 
 clean:
 	@echo clean
