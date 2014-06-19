@@ -1,3 +1,5 @@
+%define         _distropkgdir tools/packaging/common/control_files
+
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -24,10 +26,18 @@ Requires: contrail-database
 Requires: contrail-api-lib
 Requires: contrail-setup
 Requires: contrail-nodemgr
+Requires: zookeeper
+
 %description
 Contrail Package Requirements for Contrail Database
 
+%install
+pushd %{_builddir}/..
+install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
+popd
+
 %files
+%{_initddir}
 
 %changelog
 * Tue Aug  6 2013 <ndramesh@juniper.net>
