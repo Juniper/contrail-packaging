@@ -3,4 +3,4 @@
 # chkconfig: 2345 99 01
 # description: Juniper Network Virtualization Named
 
-supervisorctl -s http://localhost:9006 ${1} `basename ${0}`
+supervisorctl -s http://localhost:9003 ${1} `basename ${0}`
