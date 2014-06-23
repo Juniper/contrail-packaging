@@ -1,3 +1,6 @@
 { "Rules": [
+    {"processname": "contrail-api", "process_state": "PROCESS_STATE_STOPPED", "action": "service ifmap restart"},
+    {"processname": "contrail-api", "process_state": "PROCESS_STATE_EXITED", "action": "service ifmap restart"},
+    {"processname": "contrail-api", "process_state": "PROCESS_STATE_FATAL", "action": "service ifmap restart"}
      ]
 }
