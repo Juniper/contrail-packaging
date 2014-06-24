@@ -3,4 +3,7 @@
 # chkconfig: 2345 11 01
 # description: Juniper Network Virtualization service offering
 
+ulimit -c unlimited
+# apport updates the core pattern; overwrite here to use /var/crashes pattern
+echo "/var/crashes/core.%e.%p.%h.%t" > /proc/sys/kernel/core_pattern
 supervisorctl -s http://localhost:9005 ${1} `basename ${0}`
