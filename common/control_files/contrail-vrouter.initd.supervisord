@@ -3,4 +3,5 @@
 # chkconfig: 2345 11 01
 # description: Juniper Network Virtualization service offering
 
+ulimit -c unlimited
 supervisorctl -s http://localhost:9005 ${1} `basename ${0}`
