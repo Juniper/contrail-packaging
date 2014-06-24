@@ -169,6 +169,7 @@ libvirt-deb:
 	(cd ${LIBDIR}; dpkg-source -x libvirt_0.9.8-2ubuntu17.17.dsc)
 	(cd ${LIBDIR}; patch -p0 -i libvirt.ubuntu.patch)
 	(cd ${LIBDIR}; patch -p0 -i libvirt.ubuntu.test-disable.patch)
+	(cd ${LIBDIR}; patch -p0 -i libvirt.ubuntu.gnulib_test_disable.patch)
 	(cd ${LIBDIR}; patch -p0 -i libvirt_0.9.8_17.17.ubuntu.version.patch)
 	(cd ${LIBDIR}/libvirt-0.9.8; dpkg-buildpackage -b -uc)
 	(cd ${LIBDIR}; mv libvirt0_0.9.8-2ubuntu17.17_amd64.deb ${BUILDDIR})
