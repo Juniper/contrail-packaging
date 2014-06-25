@@ -85,7 +85,7 @@ if [ %{?_kernel_dir} ]; then
     fi
 fi
 
-scons -U --target=%{_target_cpu} ${OPT_KERNEL} ${OPT_HEADERS} agent:vnswad
+scons -U --target=%{_target_cpu} ${OPT_KERNEL} ${OPT_HEADERS} agent:contrail-vrouter-agent
 pushd %{_builddir}/..
 scons -U --target=%{_target_cpu} ${OPT_KERNEL} ${OPT_HEADERS} vrouter
 scons -U --target=%{_target_cpu} ${OPT_KERNEL} ${OPT_HEADERS} vrouter/utils
@@ -123,7 +123,7 @@ install -p -m 755 build/debug/vrouter/utils/rt          %{buildroot}%{_bindir}/r
 install -p -m 755 build/debug/vrouter/utils/vrfstats    %{buildroot}%{_bindir}/vrfstats
 install -p -m 755 build/debug/vrouter/utils/dropstats    %{buildroot}%{_bindir}/dropstats
 install -p -m 755 build/debug/vrouter/utils/vxlan       %{buildroot}%{_bindir}/vxlan
-install -p -m 755 build/debug/vnsw/agent/contrail/vnswad         %{buildroot}%{_bindir}/vnswad
+install -p -m 755 build/debug/vnsw/agent/contrail/contrail-vrouter-agent         %{buildroot}%{_bindir}/contrail-vrouter-agent
 
 # install etc files
 if [ "%{?dist}" != ".xen" ]; then
@@ -223,7 +223,7 @@ exit 0
 %{_bindir}/vrfstats
 %{_bindir}/vxlan
 %{_bindir}/dropstats
-%{_bindir}/vnswad
+%{_bindir}/contrail-vrouter-agent
 %if 0%(if [ "%{dist}" == ".xen" ]; then echo 1; fi)
 %{_sysconfdir}/init.d/contrail-vrouter
 %else

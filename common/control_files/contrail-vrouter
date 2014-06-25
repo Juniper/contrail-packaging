@@ -8,7 +8,7 @@ ulimit -c unlimited
 LOG=/var/log/contrail-agent.log
 PID_FILE=/var/run/contrail-agent.pid
 CONF_FILE=/etc/contrail/agent.conf
-AGENT="vnswad"
+AGENT="contrail-vrouter-agent"
 
 insert_kmod() {
     KMOD=/lib/modules/$(uname -r)/extra/net/vrouter/vrouter.ko
@@ -117,7 +117,7 @@ start() {
 	interface_setup
     fi
     
-    /usr/bin/vnswad --config_file $CONF_FILE 1>$LOG 2>&1 &
+    /usr/bin/contrail-vrouter-agent --config_file $CONF_FILE 1>$LOG 2>&1 &
     echo $! >$PID_FILE
 }
 
