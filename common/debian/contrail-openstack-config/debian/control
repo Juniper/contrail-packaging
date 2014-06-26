@@ -23,7 +23,6 @@ Depends:
  python-qpid,
  python-iniparse,
  python-bottle,
- zookeeper,
  ifmap-server,
  ifmap-python-client,
  contrail-config-openstack
