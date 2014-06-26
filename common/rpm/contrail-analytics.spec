@@ -32,7 +32,7 @@ License:            Commercial
 URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
-Requires:	    redis 
+Requires:	    redis >= 2.6.13-1
 Requires:	    redis-py
 Requires:	    xmltodict
 Requires:	    contrail-libs
@@ -165,8 +165,6 @@ install -p -m 755 %{_distropkgdir}/supervisord_analytics.conf %{buildroot}%{_con
 install -p -m 755 %{_distropkgdir}/contrail-collector.ini %{buildroot}%{_supervisordir}/contrail-collector.ini
 install -p -m 755 %{_distropkgdir}/contrail-opserver-centos.ini %{buildroot}%{_supervisordir}/contrail-opserver.ini
 install -p -m 755 %{_distropkgdir}/contrail-qe.ini %{buildroot}%{_supervisordir}/contrail-qe.ini
-install -p -m 755 %{_distropkgdir}/redis-query.ini %{buildroot}%{_supervisordir}/redis-query.ini
-install -p -m 755 %{_distropkgdir}/redis-uve.ini %{buildroot}%{_supervisordir}/redis-uve.ini
 
 #install .kill files for supervisord
 
@@ -176,13 +174,9 @@ install -p -m 755 %{_distropkgdir}/supervisor-analytics.initd          %{buildro
 install -p -m 755 %{_distropkgdir}/contrail-collector.initd.supervisord          %{buildroot}%{_initddir}/contrail-collector
 install -p -m 755 %{_distropkgdir}/contrail-qe.initd.supervisord          %{buildroot}%{_initddir}/contrail-qe
 install -p -m 755 %{_distropkgdir}/contrail-opserver.initd.supervisord          %{buildroot}%{_initddir}/contrail-opserver
-install -p -m 755 %{_distropkgdir}/redis-query.initd.supervisord          %{buildroot}%{_initddir}/redis-query
-install -p -m 755 %{_distropkgdir}/redis-uve.initd.supervisord          %{buildroot}%{_initddir}/redis-uve
 #perl -pi -e 's/python2.7/python%{_pyver}/g' %{buildroot}%{_supervisordir}/contrail-opserver.ini
 
 pushd %{_builddir}
-install -D -m 644 src/analytics/ruleparser/tabledump.py %{buildroot}%{_contrailanalytics}/tabledump.py
-install -D -m 755 src/analytics/ruleparser/tabledump %{buildroot}%{_contrailanalytics}/tabledump
 install -D -m 755 src/analytics/ruleparser/contrail-dbutils %{buildroot}%{_venv_root}/bin/contrail-dbutils
 
 pushd %{_builddir}/..
@@ -199,10 +193,6 @@ install -D -m 755 src/opserver/contrail-stats %{buildroot}%{_bindir}/contrail-st
 install -D -m 755 src/opserver/contrail-flows %{buildroot}%{_contrailutils}/contrail-flows
 install -D -m 755 src/opserver/contrail-flows %{buildroot}%{_bindir}/contrail-flows
 popd
-
-# install etc files
-install -p -m 755 %{_distropkgdir}/redis-query.conf %{buildroot}%{_contrailetc}/redis-query.conf
-install -p -m 755 %{_distropkgdir}/redis-uve.conf %{buildroot}%{_contrailetc}/redis-uve.conf
 
 rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/gen_py/__init__.*
 rm  -f %{buildroot}%{_venv_root}%{_pysitepkg}/bottle.py*
@@ -247,8 +237,6 @@ fi
 %config(noreplace) %{_supervisordir}/contrail-collector.ini
 %config(noreplace) %{_supervisordir}/contrail-opserver.ini
 %config(noreplace) %{_supervisordir}/contrail-qe.ini
-%config(noreplace) %{_supervisordir}/redis-query.ini
-%config(noreplace) %{_supervisordir}/redis-uve.ini
 %{_supervisordir}/contrail-analytics.rules
 %if 0%{?rhel}
 %{_initddir}/supervisor-analytics
@@ -256,12 +244,6 @@ fi
 %{_initddir}/contrail-collector
 %{_initddir}/contrail-qe
 %{_initddir}/contrail-opserver
-%{_initddir}/redis-query
-%{_initddir}/redis-uve
-%{_contrailanalytics}/tabledump
-%{_contrailanalytics}/tabledump.py
-%{_contrailanalytics}/tabledump.pyc
-%{_contrailanalytics}/tabledump.pyo
 %{_contrailutils}/contrail-logs
 %{_bindir}/contrail-logs
 %{_contrailutils}/log.py
@@ -278,8 +260,6 @@ fi
 %{_contrailutils}/stats.pyc
 %{_contrailutils}/stats.pyo
 /usr/share/doc/python-vnc_opserver
-%config(noreplace) %{_contrailetc}/redis-query.conf
-%config(noreplace) %{_contrailetc}/redis-uve.conf
 %config(noreplace) %{_contrailetc}/supervisord_analytics.conf
 %if 0%{?fedora} >= 17
 %{_servicedir}/supervisor-analytics.service
