@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: ifmap-server
 Architecture: all
 Maintainer: amoghe <amoghe@juniper.net>
-Depends:
+Depends: openjdk-6-jre-headless, liblog4j1.2-java, libslf4j-java
 Section: ifmap-server
 Priority: extra
 Description: Ifmap server package

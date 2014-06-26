@@ -8,7 +8,7 @@ Build-Depends:
 Package: contrail-openstack-database
 Architecture: all
 Maintainer: rrugge <rrugge@juniper.net>
-Depends: contrail-nodemgr, supervisor, contrail-setup, cassandra (>= 1.1.12)
+Depends: zookeeper, contrail-nodemgr, supervisor, contrail-setup, cassandra (>= 1.1.12)
 Section: contrail-openstack-database
 Priority: extra
 Description: Contrail Openstack database composite debian package
