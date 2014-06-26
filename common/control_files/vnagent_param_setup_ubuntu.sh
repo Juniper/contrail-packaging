@@ -12,7 +12,7 @@ echo "LOG=$LOG" > $CFG_FILE
 CONFIG=/etc/contrail/agent.conf
 echo CONFIG=$CONFIG >> $CFG_FILE
 
-prog=/usr/bin/vnswad
+prog=/usr/bin/contrail-vrouter-agent
 echo prog=$prog >> $CFG_FILE
 
 kmod=vrouter
