@@ -88,13 +88,13 @@ function insert_vrouter() {
 
     echo "$(date): Adding $dev to vrouter"
     DEV_MAC=$(cat /sys/class/net/$dev/address)
-    vif --add $dev --mac $DEV_MAC --vrf 0 --type physical --mode x
+    vif --add $dev --mac $DEV_MAC --vrf 0 --vhost-phys --type physical
     if [ $? != 0 ]
     then
         echo "$(date): Error adding $dev to vrouter"
     fi
 
-    vif --add $DEVICE --mac $DEV_MAC --vrf 0 --type vhost --xconnect $dev --mode x
+    vif --add $DEVICE --mac $DEV_MAC --vrf 0 --type vhost --xconnect $dev
     if [ $? != 0 ]
     then
        echo "$(date): Error adding $DEVICE to vrouter"
