@@ -1,10 +1,7 @@
 { "Rules": [
         {"processname": "contrail-qe", "process_state": "PROCESS_STATE_FATAL", "action": "service contrail-opserver stop"},
-        {"processname": "contrail-collector", "process_state": "PROCESS_STATE_STOPPED", "action": "service redis-uve restart"},
-        {"processname": "contrail-collector", "process_state": "PROCESS_STATE_EXITED", "action": "service redis-uve restart"},
-        {"processname": "contrail-collector", "process_state": "PROCESS_STATE_FATAL", "action": "service redis-uve restart"},
-        {"processname": "redis-uve", "process_state": "PROCESS_STATE_FATAL", "action": "service contrail-collector stop"},
-        {"processname": "redis-uve", "process_state": "PROCESS_STATE_FATAL", "action": "service contrail-opserver stop"},
-        {"processname": "redis-query", "process_state": "PROCESS_STATE_FATAL", "action": "service contrail-opserver stop"}
+        {"processname": "contrail-collector", "process_state": "PROCESS_STATE_STOPPED", "action": "redis-cli -n 1 flushdb"},
+        {"processname": "contrail-collector", "process_state": "PROCESS_STATE_EXITED", "action": "redis-cli -n 1 flushdb"},
+        {"processname": "contrail-collector", "process_state": "PROCESS_STATE_FATAL", "action": "redis-cli -n 1 flushdb"}
     ]
 }
