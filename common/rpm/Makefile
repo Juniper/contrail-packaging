@@ -216,10 +216,6 @@ contrail-web-controller:
 	cp contrail-web-controller.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-web-controller.spec $(G_TAG)
 
-contrail-nodejs:
-	cp contrail-nodejs.spec $(BUILD_BASE)/SPECS/
-	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-nodejs.spec $(G_TAG)
-
 contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
 	rpmbuild $(RPMBLDOPTS) contrail-install-packages.spec  $(G_TAG)
@@ -251,7 +247,7 @@ endif
 all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
 	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
 	contrail-setup contrail-openstack-all contrail-web-core contrail-web-controller \
-	contrail-nodejs venv-packages \
+	venv-packages \
 	contrail-database contrail-nova-vif ${NEUTRON_PLUGIN} contrail-nodemgr \
 	contrail-server-manager contrail-server-manager-client
 
