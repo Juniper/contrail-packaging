@@ -16,6 +16,8 @@ import shlex
 import subprocess
 import shutil
 
+version = 1.3
+
 class buildDir (object):
     def __init__(self, options):
         self.opt = options
@@ -164,8 +166,10 @@ def parse_options(args):
 
 
 if __name__ == '__main__':
+    print "Version: %s" % version
     options = parse_options(sys.argv[1:])
     DEBUG = options.debug
+ 
     build = buildDir(options)
 
     # Test to make sure all our commands exist
