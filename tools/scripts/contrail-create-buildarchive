@@ -43,7 +43,8 @@ class buildDir (object):
             for filename in (dirs + files)]
             test = re.compile("\.xml", re.IGNORECASE)
             newfiles = filter(test.search, files)
-            for m in newfiles:
+            searchfiles = list (newfiles)
+            for m in searchfiles:
                 command = "grep NO-BUILD " + m
                 result = execute(command, ignore_errors=True)
                 if result:
