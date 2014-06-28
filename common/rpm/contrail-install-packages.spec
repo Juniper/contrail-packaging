@@ -48,6 +48,7 @@ Contrail Installer Packages - Container of Contrail RPMs
 rm -rf %{buildroot}
 install -d -m 755 %{buildroot}%{_contrailopt}
 install -d -m 755 %{buildroot}%{_contrailopt}/bin
+install -d -m 755 %{buildroot}%{_contrailopt}/puppet
 install -d -m 755 %{buildroot}%{_contrailopt}/contrail_packages
 install -d -m 755 %{buildroot}%{_contrailopt}/contrail_packages/helpers
 install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils
@@ -60,6 +61,8 @@ install -p -m 755 tools/packaging/build/README %{buildroot}%{_contrailopt}/contr
 install -p -m 755 tools/packaging/build/helpers/* %{buildroot}%{_contrailopt}/contrail_packages/helpers/
 if [ -f %{_flist} ]; then echo "Using TGZ FILE = %{_flist}"; install -p -m 644 %{_flist} %{buildroot}%{_contrailopt}/contrail_packages/contrail_rpms.tgz; else echo "ERROR: TGZ file containing all rpms is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
 install -p -m 755 tools/packaging/common/control_files/contrail_ifrename.sh %{buildroot}%{_contrailopt}/bin/getifname.sh
+tar -cvzf %{_builddir}/../build/contrail-puppet-manifest.tgz -C %{_builddir}/../tools/puppet .
+install -p -m 755 %{_builddir}/../build/contrail-puppet-manifest.tgz %{buildroot}%{_contrailopt}/puppet/contrail-puppet-manifest.tgz
 
 # install etc files
 pushd %{_builddir}/build
@@ -84,6 +87,7 @@ tar xzvf contrail_installer.tgz
 %{_contrailopt}/contrail_packages/helpers/*
 %{_contrailopt}/contrail_packages/contrail_rpms.tgz
 %{_contrailopt}/contrail_installer.tgz
+%{_contrailopt}/puppet/contrail-puppet-manifest.tgz
 %{_contrailopt}/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz
 %{_contrailopt}/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
 %{_contrailopt}/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz

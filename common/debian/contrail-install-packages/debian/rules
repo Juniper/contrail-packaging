@@ -42,6 +42,7 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)/usr/bin
 	install -d -m 755 $(buildroot)/etc/contrail/
 	install -d -m 755 $(buildroot)$(_contrailopt)
+	install -d -m 755 $(buildroot)$(_contrailopt)/puppet
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_packages
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_packages/helpers
 	install -d -m 755 $(buildroot)$(_contrailopt)/bin
@@ -50,6 +51,8 @@ override_dh_auto_install:
 	if [ -f $(TGZ_FILE) ]; then echo "Using TGZ FILE = $(TGZ_FILE)"; install -p -m 644 $(TGZ_FILE) $(buildroot)$(_contrailopt)/contrail_packages/contrail_debs.tgz; else echo "ERROR: TGZ file containing all debs is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
 	# install etc files
 	install -p -m 644 $(SB_TOP)/build/debian/contrail_installer.tgz  $(buildroot)$(_contrailopt)/contrail_installer.tgz
+	tar -cvzf $(SB_TOP)/build/contrail-puppet-manifest.tgz -C $(SB_TOP)/tools/puppet .
+	install -p -m 755 $(SB_TOP)/build/contrail-puppet-manifest.tgz $(buildroot)$(_contrailopt)/puppet/contrail-puppet-manifest.tgz
 	# install pkgs needed first
 	install -p -m 644 $(SB_TOP)/distro/third_party/ecdsa-0.10.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/ecdsa-0.10.tar.gz
 	install -p -m 644 $(SB_TOP)/distro/third_party/Fabric-1.7.0.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
