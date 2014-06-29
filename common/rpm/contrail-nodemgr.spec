@@ -123,10 +123,10 @@ popd
 %{python_sitelib}/control_node*
 %{python_sitelib}/vrouter
 %{python_sitelib}/vrouter-*
-%{python_sitelib}/analytics_cpuinfo
 %{python_sitelib}/node_mgr-*
 %{python_sitelib}/database
 %{python_sitelib}/database-*
+%{python_sitelib}/analytics
 
 %post
 if [ -x /bin/systemctl ]; then
