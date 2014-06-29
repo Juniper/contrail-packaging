@@ -127,6 +127,7 @@ popd
 %{python_sitelib}/node_mgr-*
 %{python_sitelib}/database
 %{python_sitelib}/database-*
+%{python_sitelib}/analytics
 
 %post
 if [ -x /bin/systemctl ]; then
