@@ -190,6 +190,7 @@ contrail-openstack-all: contrail-openstack contrail-openstack-analytics contrail
 
 contrail-web-core:
 	@echo making rpm for contrail-web-core
+	cd $(CPLANE_GIT_ROOT)/../contrail-webui-third-party && python fetch_packages.py
 	cd $(CPLANE_GIT_ROOT)/../contrail-web-core && make package REPO=$(CPLANE_GIT_ROOT)/../contrail-web-core
 	cp contrail-web-core.spec $(BUILD_BASE)/SPECS/
 	cp ../control_files/contrailWebServer.sh $(BUILD_SRC)/
