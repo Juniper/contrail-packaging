@@ -131,6 +131,10 @@ class ContrailBuild(object):
             command = self.opt.python + " distro/third_party/fetch_packages.py"
             execute (command, f, ignore_errors=False)
 
+        if os.path.isdir ("contrail-webui-third-party"):
+            command = self.opt.python + " contrail-webui-third-party/fetch_packages.py"
+            execute (command, f, ignore_errors=False)
+
         f.close()
 
         print "Running top level build"
