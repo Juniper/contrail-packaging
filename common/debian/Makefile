@@ -211,6 +211,11 @@ libvirt-clean:
 	$(eval LIBDIR=${SB_TOP}/third_party/libvirt)
 	rm -rf ${LIBDIR}/libvirt-0.9.8
 
+contrail-web-core-deb:
+	cd $(SB_TOP)/contrail-webui-third-party && python fetch_packages.py
+	(cd $(@:-deb=); fakeroot debian/rules clean)
+	(cd $(@:-deb=); fakeroot debian/rules binary)
+
 %-deb:
 	(cd $(@:-deb=); fakeroot debian/rules clean)
 	(cd $(@:-deb=); fakeroot debian/rules binary)
