@@ -27,17 +27,13 @@ clean: $(PACKAGES:%-deb=%-clean)
 
 
 contrail-storage-packages-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-storage-packages)
-	mkdir -p ${BUILDDIR}
-	cp -ar ${SB_TOP}/tools/packaging/storage/debian/contrail-storage-packages/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-	@echo "Wrote: ${BUILDDIR}/contrail-storage-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
+	@echo "making deb for $@"
+	(cd $(@:-deb=); fakeroot debian/rules clean)
+	(cd $(@:-deb=); fakeroot debian/rules binary)
 
 contrail-storage-packages-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-storage-packages)
-	rm -rf ${BUILDDIR}
-
+	@echo "clean $@"
+	(cd $(@:-clean=); fakeroot debian/rules clean)
 
 %-deb:
 	(cd $(@:-deb=); fakeroot debian/rules clean)

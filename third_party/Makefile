@@ -22,7 +22,10 @@ PREP = prep
 PPREP = pprep
 
 G_TAG :=
+ifndef TAG
 TAG := $(shell date -u +%y%m%d%H%M)
+endif
+
 ifdef GIT_VER
  G_TAG := --define "_gitVer $(GIT_VER)"
 endif 
@@ -121,10 +124,14 @@ contrail-fabric-utils: $(PPREP)
 	@echo making rpm for contrail-fabric-utils
 	rpmbuild $(RPMBLDOPTS) fabric-utils.spec $(G_TAG)
 	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-fabric-utils-$(TOOLS_VERSION).tgz fabric-utils
+	mkdir -p $(CPLANE_GIT_ROOT)/../build/artifacts_extra/
+	cp $(BUILD_BASE)/TOOLS/contrail-fabric-utils-$(TOOLS_VERSION).tgz $(CPLANE_GIT_ROOT)/../build/artifacts_extra/
 
 contrail-test:
 	@echo making tgz for contrail-test
 	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz contrail-test
+	mkdir -p $(CPLANE_GIT_ROOT)/../build/artifacts_extra/
+	cp $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz $(CPLANE_GIT_ROOT)/../build/artifacts_extra/
 
 euca2ools:
 	@echo making rpm for euca2ools

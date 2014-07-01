@@ -1,0 +1,14 @@
+Source: contrail-thirdparty-packages
+Maintainer: npchandran <npchandran@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends: debhelper (>= 8)
+
+Package: contrail-thirdparty-packages
+Architecture: all
+Maintainer: npchandran <npchandran@juniper.net>
+Depends:
+Section: contrail-thirdparty-packages
+Priority: extra
+Description: Contrail Thirdparty Packages - Container of third party debian packages 

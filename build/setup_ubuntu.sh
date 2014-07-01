@@ -1,14 +1,7 @@
 #! /bin/bash
 
-# copy files over
-mkdir -p /opt/contrail/contrail_install_repo
-cd /opt/contrail/contrail_install_repo; tar xvzf /opt/contrail/contrail_packages/contrail_debs.tgz
-
 # create shell scripts and put to bin
 mkdir -p /opt/contrail/bin
-
-cd /opt/contrail/contrail_install_repo
-DEBIAN_FRONTEND=noninteractive dpkg -i binutils_2.22-6ubuntu1.1_amd64.deb dpkg-dev_1.16.1.2ubuntu7.2_all.deb libdpkg-perl_1.16.1.2ubuntu7.2_all.deb make_3.81-8.1ubuntu1.1_amd64.deb patch_2.6.1-3_amd64.deb python-pip_1.0-1build1_all.deb python-pkg-resources_0.6.24-1ubuntu1_all.deb python-setuptools_0.6.24-1ubuntu1_all.deb
 
 cd /etc/apt/
 # create repo with only local packages
@@ -41,14 +34,7 @@ cd /opt/contrail/contrail_install_repo
 dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
 apt-get update
 
-#install python-software-properties and curl
-DEBIAN_FRONTEND=noninteractive sudo apt-get -y --force-yes --allow-unauthenticated install python-software-properties
-DEBIAN_FRONTEND=noninteractive sudo apt-get -y --force-yes --allow-unauthenticated install curl
-
-# install base packages and fabric utils
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-crypto
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-netaddr
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-paramiko
+# install fabric utils
 DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install contrail-fabric-utils
 
 # install ecdsa and fabric

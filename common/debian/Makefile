@@ -107,24 +107,32 @@ ifmap-python-client: package-ifmap-python-client
 	@echo "Package ifmap-python client done"
 
 contrail-install-packages-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-install-packages)
-	mkdir -p ${BUILDDIR}
-	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-install-packages/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-	@echo "Wrote: ${BUILDDIR}/../contrail-install-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
+	@echo "making deb for contrail-install-packages"
+	(cd $(@:-deb=); fakeroot debian/rules clean)
+	(cd $(@:-deb=); fakeroot debian/rules binary)
 
 contrail-install-packages-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-install-packages)
-	rm -rf ${BUILDDIR}
+	@echo "clean contrail-install-packages"
+	(cd $(@:-clean=); fakeroot debian/rules clean)
+
+contrail-thirdparty-packages-deb:
+	@echo "making deb for contrail-thirdparty-packages"
+	(cd $(@:-deb=); fakeroot debian/rules clean)
+	(cd $(@:-deb=); fakeroot debian/rules binary)
+
+contrail-thirdparty-packages-clean:
+	@echo "clean contrail-thirdparty-packages"
+	(cd $(@:-clean=); fakeroot debian/rules clean)
 
 contrail-fabric-utils-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
+	mkdir -p $(SB_TOP)/build/artifacts_extra
 	cp -R ${SB_TOP}/third_party/fabric-utils ${BUILDDIR}
 	cp -R contrail-fabric-utils/debian ${BUILDDIR}/debian
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz fabric-utils)
+	cp $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz $(SB_TOP)/build/artifacts_extra/
 	@echo "Wrote: $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz"
 
 contrail-fabric-utils-clean:
@@ -134,7 +142,9 @@ contrail-fabric-utils-clean:
 	rm -rf ${TGZ_FILE}
 
 contrail-test-deb:
+	mkdir -p $(SB_TOP)/build/artifacts_extra
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test)
+	cp $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz $(SB_TOP)/build/artifacts_extra/
 	@echo "Wrote: $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz"
 
 contrail-test-clean:

@@ -37,7 +37,16 @@ G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
 
 ifdef CONTRAIL_SKU
 else
-  CONTRAIL_SKU := "grizzly"
+  CONTRAIL_SKU := grizzly
+endif
+ifdef PACKAGE_DIRS
+  G_TAG += --define "_pkgSrcDirs $(PACKAGE_DIRS)"
+endif
+ifdef PACKAGE_FILE
+  G_TAG += --define "_pkgFile $(PACKAGE_FILE)"
+endif
+ifdef OS_VERSION
+  G_TAG += --define "_osVer $(OS_VERSION)"
 endif
 G_TAG += --define "_skuTag $(CONTRAIL_SKU)"
 
@@ -233,6 +242,10 @@ contrail-nodejs:
 contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
 	rpmbuild $(RPMBLDOPTS) contrail-install-packages.spec  $(G_TAG)
+
+contrail-thirdparty-packages: $(PREP)
+	@echo making rpm for contrail-thirdparty-packages
+	rpmbuild $(RPMBLDOPTS) contrail-thirdparty-packages.spec  $(G_TAG)
 
 contrail-database: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-database
