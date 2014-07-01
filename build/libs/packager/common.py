@@ -16,7 +16,8 @@ import traceback
 from lxml import etree
 from xml.etree import ElementTree
 
-from utils import Utils
+#from utils import Utils
+from libs.packager.utils import Utils
 
 log = logging.getLogger("pkg")
 PLATFORM = Utils.get_platform_info()
