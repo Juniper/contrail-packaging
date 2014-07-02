@@ -9,6 +9,4 @@ Package: contrail-openstack-analytics
 Architecture: all
 Maintainer: rrugge <rrugge@juniper.net>
 Depends: supervisor, python-contrail, contrail-analytics, contrail-setup, contrail-nodemgr
-Section: contrail-openstack-analytics
-Priority: extra
 Description: Contrail Openstack Analytics composite debian package
