@@ -21,7 +21,6 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-api-venv
 %define _venv_root    /opt/contrail/api-venv
 %define _venvtr       --prefix=%{_venv_root}
 
@@ -58,13 +57,13 @@ pushd build/python_dist
 
 tar zxf %{_build_dist}/config/vnc_openstack/dist/vnc_openstack-0.1dev.tar.gz
 pushd vnc_openstack-0.1dev
-%{__python} setup.py install --root=%{buildroot} %{?_venvtr}
+%{__python} setup.py install --root=%{buildroot}
 popd
 
 %files
 %defattr(-,root,root,-)
-%{_venv_root}%{_pysitepkg}/vnc_openstack
-%{_venv_root}%{_pysitepkg}/vnc_openstack-*
+%{python_sitelib}/vnc_openstack
+%{python_sitelib}/vnc_openstack-*
 
 %post
 

@@ -25,7 +25,6 @@ Requires:         python-httplib2
 Requires:         python-prettytable
 Requires:         python-setuptools
 Requires:         python-iso8601
-Requires:         contrail-api-venv
 
 %description
 This is a client for the OpenStack Nova API. There's a Python API (the
@@ -69,7 +68,6 @@ pushd third_party/python-novaclient
 %{__python} setup.py install -O1 --skip-build --root %{buildroot}
 %{__python} setup.py sdist
 
-install -p -D -m 644 dist/python-novaclient-3776fe9.tar.gz %{buildroot}/opt/contrail/api-venv/archive/python-novaclient-3776fe9.tar.gz
 mkdir -p %{buildroot}%{_sysconfdir}/bash_completion.d
 install -pm 644 tools/nova.bash_completion %{buildroot}%{_sysconfdir}/bash_completion.d/nova
 
@@ -90,7 +88,6 @@ rm -fr html/.doctrees html/.buildinfo
 %{python_sitelib}/novaclient
 %{python_sitelib}/*.egg-info
 %{_sysconfdir}/bash_completion.d
-/opt/contrail/api-venv/archive/python-novaclient-3776fe9.tar.gz
 
 %files doc
 ## %doc python-novaclient/html

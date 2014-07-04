@@ -29,11 +29,12 @@ License:            Commercial
 URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
-Requires:         contrail-libs
+Requires:         contrail-lib
 Requires:         supervisor
 Requires:         xmltodict
 Requires:	  python-importlib
 Requires:	  python-bottle
+Requires:	  python-contrail
 
 %define _pyver        %( %{__python} -c "import sys; print '%s.%s' % sys.version_info[0:2]" )
 %define _pysitepkg    /lib/python%{_pyver}/site-packages

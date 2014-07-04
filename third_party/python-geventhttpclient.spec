@@ -18,10 +18,6 @@ License: MIT
 Group: Applications/System
 URL: https://github.com/gwik/geventhttpclient
 
-Requires:           contrail-analytics-venv
-%define             _venv_root    /opt/contrail/analytics-venv
-%define             _venvtr       --prefix=%{_venv_root}
-
 %define _pyver        %( %{__python} -c "import sys; print '%s.%s' % sys.version_info[0:2]" )
 %define _pysitepkg    /lib/python%{_pyver}/site-packages
 %description
@@ -41,13 +37,12 @@ CFLAGS="%{optflags}" %{__python} setup.py build
 %install
 pushd %{_builddir}/..
 pushd %{_distrothirdpartydir}/geventhttpclient-1.0a
-%{__python} setup.py install -O1 --skip-build --root %{buildroot} %{?_venvtr}
+%{__python} setup.py install -O1 --skip-build --root %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%{_venv_root}/lib*/python%{_pyver}/site-packages/%{upstream_name}
-%{_venv_root}/lib*/python%{_pyver}/site-packages/%{upstream_name}-%{version}-*.egg-info
-
+/usr/lib64/python2.6/site-packages/%{upstream_name}
+/usr/lib64/python2.6/site-packages/%{upstream_name}-%{version}-*.egg-info
 
 
 %changelog

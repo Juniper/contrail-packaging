@@ -29,10 +29,6 @@ Requires: python-keystone
 Requires: python-requests
 Requires: python-zope-interface
 
-Requires:           contrail-analytics-venv
-%define             _venv_root    /opt/contrail/analytics-venv
-%define             _venvtr       --prefix=%{_venv_root}
-
 %define _pyver        %( %{__python} -c "import sys; print '%s.%s' % sys.version_info[0:2]" )
 %define _pysitepkg    /lib/python%{_pyver}/site-packages
 %description
@@ -56,13 +52,13 @@ fi
 %build
 pushd %{_builddir}/..
 pushd %{_distrothirdpartydir}/redis-2.8.0
-%{__python} setup.py install --root=%{buildroot} %{?_venvtr}
+%{__python} setup.py install --root=%{buildroot}
 popd
 
 %files
 %defattr(-,root,root,-)
-%{_venv_root}%{_pysitepkg}/redis
-%{_venv_root}%{_pysitepkg}/redis*egg-info
+%{python_sitelib}/redis
+%{python_sitelib}/redis*egg-info
 
 %post
 if [ $1 -eq 1 ] ; then

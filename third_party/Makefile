@@ -130,9 +130,9 @@ euca2ools:
 	@echo making rpm for euca2ools
 	rpmbuild $(RPMBLDOPTS) euca2ools.spec $(G_TAG)
 
-hiredis-py: $(PREP) $(LOCAL_PY)
+hiredis-py: $(PREP)
 	@echo making rpm for hiredis-py
-	rpmbuild $(RPMBLDOPTS) hiredis-py.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) hiredis-py.spec $(G_TAG) 
 
 ifmap-server:
 	@echo making rpm for ifmap-server
@@ -192,25 +192,25 @@ puppet: $(PREP)
 	@echo making rpm for puppet
 	rpmbuild $(RPMBLDOPTS) puppet.spec $(G_TAG)
 
-python-bitarray: $(PREP) $(LOCAL_PY)
+python-bitarray: $(PREP) 
 	@echo making rpm for python-bitarray
-	rpmbuild $(RPMBLDOPTS) python-bitarray.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) python-bitarray.spec $(G_TAG) 
 
-python-geventhttpclient: $(PREP) $(LOCAL_PY)
+python-geventhttpclient: $(PREP)
 	@echo making rpm for python-geventhttpclient
-	rpmbuild $(RPMBLDOPTS) python-geventhttpclient.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) python-geventhttpclient.spec $(G_TAG)
 
-python-pycassa: $(PREP) $(LOCAL_PY)
+python-pycassa: $(PREP)
 	@echo making rpm for python-pycassa
-	rpmbuild $(RPMBLDOPTS) python-pycassa.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) python-pycassa.spec $(G_TAG) 
 
 python-thrift: $(PREP)
 	@echo making rpm for python-thrift
 	rpmbuild $(RPMBLDOPTS) python-thrift.spec $(G_TAG)
 
-redis-py: $(PREP) $(LOCAL_PY)
+redis-py: $(PREP) 
 	@echo making rpm for redis-py
-	rpmbuild $(RPMBLDOPTS) redis-py.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) redis-py.spec $(G_TAG)
 
 supervisor: $(PREP)
 	@echo making rpm for supervisor
@@ -230,7 +230,7 @@ xmltodict: $(PREP)
 ifeq ($(CONTRAIL_SKU), grizzly)
 all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
-	python-pycassa python-thrift redis-py supervisor webob xmltodict ixgbe python-bottle
+	python-thrift redis-py supervisor webob xmltodict ixgbe python-bottle
 else
 all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \

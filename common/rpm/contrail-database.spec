@@ -31,7 +31,6 @@ BuildArch: noarch
 Requires: cassandra12
 Requires: supervisor
 Requires: java-1.7.0-openjdk
-Requires: contrail-database-venv
 
 Source1: supervisord_contrail_database.initd
 Source2: supervisord_contrail_database.conf

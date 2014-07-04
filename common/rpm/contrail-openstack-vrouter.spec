@@ -1,3 +1,9 @@
+%define         _contrailetc /etc/contrail
+%define         _servicedir  /usr/lib/systemd/system
+%define         _supervisordir /etc/contrail/supervisord_vrouter_files
+%define         _distropkgdir tools/packaging/common/control_files
+%define         _controllersrcdir controller/src
+
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -21,7 +27,6 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-api-lib
 Requires: contrail-vrouter
 Requires: abrt
 # abrt-addon-vmcore might be needed for centos. Add when package is available
@@ -37,6 +42,7 @@ Requires: contrail-setup
 Requires: contrail-nova-vif
 Requires: librabbitmq
 Requires: contrail-nodemgr
+Requires: contrail-vrouter-init
 
 %if 0%{?rhel}
 Requires: tunctl
@@ -45,7 +51,105 @@ Requires: tunctl
 %description
 Contrail Package Requirements for Contrail vRouter
 
+%install
+# Setup directories
+rm -rf %{buildroot}
+install -d -m 755 %{buildroot}%{_bindir}
+install -d -m 755 %{buildroot}%{_contrailetc}
+install -d -m 755 %{buildroot}%{_servicedir}
+%if 0%(if [ "%{dist}" != ".xen" ]; then echo 1; fi)
+install -d -m 755 %{buildroot}%{_supervisordir}
+%endif
+install -d -m 755 %{buildroot}/lib/modules/%{_osVer}/extra/net/vrouter
+
+# install etc files
+pushd %{_builddir}/..
+if [ "%{?dist}" != ".xen" ]; then
+install -p -m 644 %{_distropkgdir}/agent.conf               %{buildroot}%{_contrailetc}/rpm_agent.conf
+
+install -p -m 755 %{_distropkgdir}/contrail_reboot          %{buildroot}%{_contrailetc}/contrail_reboot
+else
+install -D -m 755 %{_distropkgdir}/contrail-vrouter     %{buildroot}/etc/init.d/contrail-vrouter
+fi
+
+%if 0%{?fedora} >= 17
+install -D -m 755 %{_distropkgdir}/supervisor-vrouter.initd %{buildroot}/etc/init.d/supervisor-vrouter
+install -p -m 755 %{_distropkgdir}/contrail-vrouter.initd.supervisord %{buildroot}/etc/init.d/contrail-vrouter
+%endif
+
+%if 0%{?rhel}
+install -D -m 755 %{_distropkgdir}/supervisor-vrouter.initd %{buildroot}/etc/init.d/supervisor-vrouter
+install -p -m 755 %{_distropkgdir}/contrail-vrouter.initd.supervisord %{buildroot}/etc/init.d/contrail-vrouter
+%endif
+
+# install .ini files for supervisord
+
+%if 0%(if [ "%{dist}" != ".xen" ]; then echo 1; fi)
+install -d -m 755 %{buildroot}/bin
+install -p -m 755 %{_controllersrcdir}/vnsw/agent/uve/mock_generator.py %{buildroot}/bin/mock_generator
+install -p -m 755 %{_controllersrcdir}/vnsw/agent/uve/run_mock_generator %{buildroot}/bin/run_mock_generator
+%endif
+
+%post
+%if 0%{?fedora} >= 17
+/bin/systemctl daemon-reload
+%endif
+
+%if 0%{?fedora} >= 17 || 0%{?rhel}
+# patch ifup-eth
+#if [ $1 -eq 1 ]; then
+# create the agent_param file
+/etc/contrail/vnagent_param_setup.sh %{_osVer}
+#fi
+%endif
+
+%preun
+%if 0%{?fedora} >= 17
+/bin/systemctl stop supervisor-vrouter.service
+if [ $1 = 0 ] ; then
+    /usr/sbin/rmmod vrouter
+    /bin/systemctl --no-reload disable supervisor-vrouter.service
+fi
+%endif
+exit 0
+
+%postun
+if [ $1 = 0 ] ; then
+    /bin/systemctl daemon-reload || true
+    cp /etc/sysconfig/network-scripts/ifup-eth.rpmsave /etc/sysconfig/network-scripts/ifup-eth
+    phydev=`cat /etc/contrail/agent_param | grep dev | sed 's/dev=//g'`
+    phydev_save_file=/etc/sysconfig/network-scripts/ifcfg-${phydev}.rpmsave
+    phydev_file=/etc/sysconfig/network-scripts/ifcfg-${phydev}
+    [ -f ${phydev_save_file} ] && mv ${phydev_save_file} ${phydev_file} || rm -f /etc/sysconfig/network-scripts/ifcfg-${phydev}
+    rm -f /etc/sysconfig/network-scripts/ifcfg-vhost0
+fi
+exit 0
+
 %files
+%defattr(-, root, root)
+%if  "%{dist}" == ".xen"
+%undefine buildroot
+%endif
+%if 0%(if [ "%{dist}" == ".xen" ]; then echo 1; fi)
+%{_sysconfdir}/init.d/contrail-vrouter
+%else
+%{_contrailetc}/rpm_agent.conf
+%{_contrailetc}/contrail_reboot
+/bin/mock_generator
+/bin/run_mock_generator
+%endif
+%if 0%{?rhel}
+/etc/init.d/contrail-vrouter
+/etc/init.d/supervisor-vrouter
+%endif
+%if 0%{?fedora} >= 17
+/etc/init.d/contrail-vrouter
+/etc/init.d/supervisor-vrouter
+%endif
+
+%if  "%{dist}" == ".xen"
+%define buildroot  %{_topdir}/BUILDROOT
+%endif
 
 %changelog
 * Tue Aug  6 2013 <ndramesh@juniper.net>

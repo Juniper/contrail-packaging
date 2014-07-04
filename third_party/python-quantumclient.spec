@@ -26,7 +26,6 @@ Requires:   python-httplib2
 Requires:   python-prettytable >= 0.6
 Requires:   python-setuptools
 Requires:   python-simplejson
-Requires:   contrail-api-venv
 
 BuildRequires: python2-devel
 BuildRequires: python-setuptools
@@ -61,11 +60,8 @@ pushd third_party/python-quantumclient
 %install
 pushd %{_builddir}/..
 pushd third_party/python-quantumclient
-%{__python} setup.py install -O1 --skip-build --root %{buildroot} %{?_venvtr}
+%{__python} setup.py install -O1 --skip-build --root %{buildroot}
 %{__python} setup.py sdist
-install -p -D -m 644 dist/python-quantumclient-7dca989.tar.gz %{buildroot}/opt/contrail/api-venv/archive/python-quantumclient-7dca989.tar.gz
-#awk '{if (NR!=1) {print}}' %{buildroot}%{_venv_root}/bin/quantum > quantum.n
-#mv quantum.n %{buildroot}%{_venv_root}/bin/quantum
 
 popd
 
@@ -78,8 +74,6 @@ rm -rf %{buildroot}%{python_sitelib}/quantumclient/tests
 %{_bindir}/quantum
 %{python_sitelib}/quantumclient
 %{python_sitelib}/*.egg-info
-/opt/contrail/api-venv/archive/python-quantumclient-7dca989.tar.gz
-
 
 %changelog
 * Mon Sep 24 2012 Robert Kukura <rkukura@redhat.com> - 1:2.1.1-0
