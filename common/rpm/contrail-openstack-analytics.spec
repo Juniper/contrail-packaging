@@ -1,3 +1,9 @@
+%define         _contrailetc /etc/contrail
+%define         _contrailanalytics /opt/contrail/analytics
+%define         _contrailutils /opt/contrail/utils
+%define         _supervisordir /etc/contrail/supervisord_analytics_files
+%define         _distropkgdir tools/packaging/common/control_files
+
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -20,10 +26,10 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-api-lib
 Requires: contrail-analytics
 Requires: contrail-setup
 Requires: contrail-nodemgr
+Requires: python-contrail
 %if 0%{?rhel}
 Requires: python-importlib
 %endif
@@ -31,7 +37,57 @@ Requires: python-importlib
 %description
 Contrail Package Requirements for Analytics
 
+%install
+rm -rf %{buildroot}
+install -d -m 755 %{buildroot}%{_bindir}
+install -d -m 755 %{buildroot}%{_contrailetc}
+install -d -m 755 %{buildroot}%{_contrailanalytics}
+install -d -m 755 %{buildroot}%{_supervisordir}
+install -d -m 755 %{buildroot}%{_initddir}
+
+#install wrapper scripts for supervisord
+pushd %{_builddir}/..
+install -p -m 755 %{_distropkgdir}/contrail-analytics.rules %{buildroot}%{_supervisordir}/contrail-analytics.rules
+install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail_collector_pre  %{buildroot}%{_bindir}/contrail_collector_pre
+install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail_qe_pre %{buildroot}%{_bindir}/contrail_qe_pre
+
+#install .ini files for supervisord
+install -p -m 755 %{_distropkgdir}/supervisord_analytics.conf %{buildroot}%{_contrailetc}/supervisord_analytics.conf
+install -p -m 755 %{_distropkgdir}/contrail-collector.ini %{buildroot}%{_supervisordir}/contrail-collector.ini
+install -p -m 755 %{_distropkgdir}/contrail-opserver.ini %{buildroot}%{_supervisordir}/contrail-opserver.ini
+install -p -m 755 %{_distropkgdir}/contrail-qe.ini %{buildroot}%{_supervisordir}/contrail-qe.ini
+
+%if 0%{?rhel}
+install -p -m 755 %{_distropkgdir}/supervisor-analytics.initd          %{buildroot}%{_initddir}/supervisor-analytics
+%endif
+install -p -m 755 %{_distropkgdir}/contrail-collector.initd.supervisord          %{buildroot}%{_initddir}/contrail-collector
+install -p -m 755 %{_distropkgdir}/contrail-qe.initd.supervisord          %{buildroot}%{_initddir}/contrail-qe
+install -p -m 755 %{_distropkgdir}/contrail-opserver.initd.supervisord          %{buildroot}%{_initddir}/contrail-opserver
+
+
+for f in $(find %{buildroot} -type f -exec grep -l '^#!%{__python}' {} \; ); do
+    sed 's/^#!.*python/#!\/usr\/bin\/python/g' $f > ${f}.b
+    mv ${f}.b ${f}
+done
+
+%post
+
 %files
+%defattr(-, root, root)
+%{_bindir}/contrail_collector_pre
+%{_bindir}/contrail_qe_pre
+
+%config(noreplace) %{_supervisordir}/contrail-collector.ini
+%config(noreplace) %{_supervisordir}/contrail-opserver.ini
+%config(noreplace) %{_supervisordir}/contrail-qe.ini
+%{_supervisordir}/contrail-analytics.rules
+%if 0%{?rhel}
+%{_initddir}/supervisor-analytics
+%endif
+%{_initddir}/contrail-collector
+%{_initddir}/contrail-qe
+%{_initddir}/contrail-opserver
+%config(noreplace) %{_contrailetc}/supervisord_analytics.conf
 
 %changelog
 * Tue Aug  6 2013 <ndramesh@juniper.net>

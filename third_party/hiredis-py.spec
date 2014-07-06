@@ -22,14 +22,10 @@ Source0:   git_root
 BuildRequires: python-pip
 Requires: python-bitarray
 Requires: python-gevent
-Requires: python-pycassa
+Requires: pycassa
 Requires: python-keystone
 Requires: python-requests
 Requires: python-zope-interface
-
-Requires:           contrail-analytics-venv
-%define             _venv_root    /opt/contrail/analytics-venv
-%define             _venvtr       --prefix=%{_venv_root}
 
 %define _pyver        %( %{__python} -c "import sys; print '%s.%s' % sys.version_info[0:2]" )
 %define _pysitepkg    /lib/python%{_pyver}/site-packages
@@ -56,13 +52,13 @@ fi
 ##pushd $( cat  %{SOURCE0} )
 pushd %{_builddir}/..
 pushd %{_distrothirdpartydir}/hiredis-0.1.1
-%{__python} setup.py install --root=%{buildroot} %{?_venvtr}
+%{__python} setup.py install --root=%{buildroot}
 popd
 
 %files
 %defattr(-,root,root,-)
-%{_venv_root}%{_pysitepkg}/hiredis
-%{_venv_root}%{_pysitepkg}/hiredis-*.egg-info
+/usr/lib64/python*/site-packages/hiredis
+/usr/lib64/python*/site-packages/hiredis-*.egg-info
 
 %post
 if [ $1 -eq 1 ] ; then

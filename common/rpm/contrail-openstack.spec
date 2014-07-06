@@ -20,7 +20,7 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-api-lib
+Requires: python-contrail
 Requires: openstack-dashboard
 Requires: contrail-openstack-dashboard
 Requires: openstack-glance

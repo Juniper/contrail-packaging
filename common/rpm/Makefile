@@ -15,6 +15,8 @@ DISTRO_PACKAGING    := $(CPLANE_GIT_ROOT)/../distro/python-venv-packaging
 RPM_PY              := --define "__python $(LOCAL_PY)"
 DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu" /etc/issue)
 RPMBLDOPTS          := --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' -bb
+SB_TOP              := $(CPLANE_GIT_ROOT)/..
+SB_TOPDIR	    := --define '_sbtop $(SB_TOP)'
 PREP = prep
 PPREP = pprep
 
@@ -61,6 +63,13 @@ $(LOCAL_PY): $(PPREP)
 		./configure --prefix=$(LOCAL_PY_PTH) && make install &&  \
 		$(LOCAL_PY) $(PKGBLDDIR)/packaging/archives/ez_setup.py; \
 	fi
+
+contrail: $(PREP)
+	@echo making rpm for contrail
+	mkdir -p $(SB_TOP)/build/packages/$@
+	cp -R $(SB_TOP)/tools/packaging/common/rpm/ $(SB_TOP)/build/packages/$@/
+	cd $(SB_TOP)/build/packages/$@/
+	rpmbuild $(RPMBLDOPTS) contrail.spec $(G_TAG) $(SB_TOPDIR)
 
 contrail-analytics: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-analytics
@@ -144,31 +153,31 @@ contrail-cloudstack-utils: $(PREP)
 	rpmbuild $(RPMBLDOPTS) contrail-cloudstack-utils.spec $(G_TAG)
 
 # Contrail Openstack stuff
-contrail-openstack: $(PREP) $(LOCAL_PY)
+contrail-openstack: $(PREP)
 	@echo making rpm for contrail-openstack
-	rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG)
 
-contrail-openstack-analytics: $(PREP) $(LOCAL_PY)
+contrail-openstack-analytics: $(PREP)
 	@echo making rpm for contrail-openstack-analytics
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-analytics.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-analytics.spec $(G_TAG)
 
 ifeq ($(CONTRAIL_SKU), grizzly)
-contrail-openstack-config: $(PREP) $(LOCAL_PY)
+contrail-openstack-config: $(PREP)
 	@echo making rpm for contrail-openstack-config
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-config.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-config.spec $(G_TAG)
 else
-contrail-openstack-config: $(PREP) $(LOCAL_PY)
+contrail-openstack-config: $(PREP)
 	@echo making rpm for contrail-openstack-config
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-config.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-config.spec $(G_TAG)
 endif
 
-contrail-openstack-control: $(PREP) $(LOCAL_PY)
+contrail-openstack-control: $(PREP)
 	@echo making rpm for contrail-openstack-control
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-control.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-control.spec $(G_TAG)
 
-contrail-openstack-database: $(PREP) $(LOCAL_PY)
+contrail-openstack-database: $(PREP)
 	@echo making rpm for contrail-openstack-database
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-database.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-database.spec $(G_TAG)
 
 contrail-openstack-vrouter: $(PREP)
 	@echo making rpm for contrail-openstack-vrouter
@@ -243,18 +252,29 @@ contrail-server-manager-client: $(PREP) $(LOCAL_PY)
 	cp contrail-server-manager-client.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager-client.spec $(G_TAG)
 
+ifmap-python-client: $(PREP)
+	@echo making rpm for ifmap-python-client
+	cp -a ifmap-python-client/patches/. $(BUILD_BASE)/SOURCES
+	wget -O $(BUILD_BASE)/SOURCES/master.zip  https://github.com/ITI/ifmap-python-client/archive/master.zip
+	rpmbuild $(RPMBLDOPTS) ifmap-python-client.spec $(G_TAG)
+
+contrail-vrouter-init: $(PREP)
+	@echo making rpm for contrail-vrouter-init
+	rpmbuild $(RPMBLDOPTS) contrail-vrouter-init.spec $(G_TAG)
+
+
 ifeq ($(CONTRAIL_SKU), grizzly)
 NEUTRON_PLUGIN = 
 else
 NEUTRON_PLUGIN = neutron-plugin-contrail
 endif
 
-all: $(PREP) contrail-analytics contrail-api-extension contrail-api-lib contrail-config \
-	contrail-control contrail-dns contrail-interface-name contrail-libs contrail-vrouter \
-	contrail-setup contrail-openstack-all contrail-web-core contrail-web-controller \
-	contrail-nodejs venv-packages \
-	contrail-database contrail-nova-vif ${NEUTRON_PLUGIN} contrail-nodemgr \
-	contrail-server-manager contrail-server-manager-client
+all: $(PREP) contrail contrail-api-extension contrail-dns \
+       contrail-interface-name ifmap-python-client \
+       contrail-nodejs contrail-nodemgr contrail-setup contrail-openstack-all \
+       contrail-web-core contrail-web-controller contrail-database \
+       ${NEUTRON_PLUGIN} contrail-server-manager contrail-server-manager-client \
+       contrail-vrouter-init 
 
 clean:
 	@echo clean

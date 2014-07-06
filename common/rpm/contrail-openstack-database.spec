@@ -23,10 +23,10 @@ Vendor:             Juniper Networks Inc
 BuildArch: noarch
 
 Requires: contrail-database
-Requires: contrail-api-lib
 Requires: contrail-setup
 Requires: contrail-nodemgr
 Requires: zookeeper
+Requires: supervisor
 
 %description
 Contrail Package Requirements for Contrail Database

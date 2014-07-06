@@ -1,3 +1,14 @@
+%define         _distropkgdir tools/packaging/common/control_files
+%define         _contrailetc            /etc/contrail
+%define         _contrailwebsrc         /usr/src/contrail/contrail-webui
+%if 0%{?fedora} >= 17
+%define         _servicedir             /usr/lib/systemd/system
+%endif
+%define         _nodemodules            node_modules/
+%define         _config                 contrail-web-core/config
+%define         _contrailuitoolsdir     src/tools
+%define         _supervisordir /etc/contrail/supervisord_webui_files
+
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -21,7 +32,7 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-api-lib
+Requires: python-contrail
 Requires: contrail-web-core
 Requires: contrail-web-controller
 Requires: contrail-setup
@@ -29,8 +40,18 @@ Requires: contrail-setup
 %description
 Contrail Package Requirements for WebUI
 
-%files
+%install
+pushd %{_builddir}/..
+install -d -m 755 %{buildroot}%{_contrailetc}
+#install -d -m 755 %{buildroot}%{_initddir}
+install -p -m 755 %{_distropkgdir}/supervisord_webui.conf %{buildroot}%{_contrailetc}/supervisord_webui.conf
+#install -p -m 755 %{_distropkgdir}/supervisor-webui.conf %{buildroot}%{_initddir}/supervisor-webui.conf
 
+%files
+%defattr(-,root,root)
+%config(noreplace) %{_contrailetc}/supervisord_webui.conf
+#%config(noreplace) %{_initddir}/supervisor-webui.conf
+ 
 %changelog
 * Tue Aug  6 2013 <ndramesh@juniper.net>
 * Initial build.

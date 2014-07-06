@@ -36,6 +36,7 @@ Vendor:             Juniper Networks Inc
 Requires:	redis
 Requires:	contrail-nodejs
 Requires:	supervisor
+Requires: 	python-contrail
 
 Source:		%{name}
 

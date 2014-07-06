@@ -23,7 +23,6 @@ BuildRequires:  python2-devel
 BuildRequires:  python-setuptools-devel
 BuildRequires:  python-nose
 BuildRequires:  python-webtest
-Requires:       contrail-api-venv
 
 %description
 WebOb provides wrappers around the WSGI request environment, and an object to 
@@ -47,7 +46,6 @@ environment.
 %{__rm} -rf %{buildroot}
 %{__python} setup.py install --skip-build --root %{buildroot}
 %{__python} setup.py sdist
-install -p -D -m 644 dist/WebOb-1.2.3.tar.gz %{buildroot}/opt/contrail/api-venv/archive/WebOb-1.2.3.tar.gz
 
 
 %check
@@ -59,7 +57,6 @@ PYTHONPATH=$(pwd) nosetests
 %doc docs/*
 %{python_sitelib}/webob/
 %{python_sitelib}/WebOb*.egg-info/
-/opt/contrail/api-venv/archive/WebOb-1.2.3.tar.gz
 %changelog
 * Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild

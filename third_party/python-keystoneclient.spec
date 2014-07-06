@@ -32,7 +32,6 @@ Requires:   python-setuptools
 Requires:   python-simplejson
 Requires:   python-keyring
 Requires:   python-requests
-Requires:   contrail-api-venv
 
 BuildRequires: make
 BuildRequires: python2-devel
@@ -71,7 +70,6 @@ pushd third_party/python-keystoneclient
 %{__python} setup.py sdist
 mv %{buildroot}/usr/keystoneclient/versioninfo %{buildroot}%{python_sitelib}/keystoneclient/versioninfo
 install -p -D -m 644 tools/keystone.bash_completion %{buildroot}%{_sysconfdir}/bash_completion.d/keystone.bash_completion
-install -p -D -m 644 dist/python-keystoneclient-0.0.360.0b66ca5.tar.gz %{buildroot}/opt/contrail/api-venv/archive/python-keystoneclient-0.0.360.0b66ca5.tar.gz
 
 # Delete tests
 rm -fr %{buildroot}%{python_sitelib}/tests
@@ -89,7 +87,6 @@ rm -fr doc/build/html/.doctrees doc/build/html/.buildinfo
 %{_sysconfdir}/bash_completion.d/keystone.bash_completion
 %{python_sitelib}/keystoneclient
 %{python_sitelib}/*.egg-info
-/opt/contrail/api-venv/archive/python-keystoneclient-0.0.360.0b66ca5.tar.gz
 
 %files doc
 ## %doc python-keystoneclient/LICENSE python-keystoneclient/doc/build/html
