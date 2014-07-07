@@ -18,6 +18,7 @@ all: ${PACKAGES}
 clean: $(PACKAGES:%-deb=%-clean)
 	@echo "Clean"
 
+ifneq ($(CONTRAIL_SKU), icehouse)
 openstack-nova-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/openstack/nova)
 	$(eval DISTRODIR=${SB_TOP}/distro/openstack/nova)
@@ -46,8 +47,8 @@ openstack-nova-clean:
 		(cd ${BUILDDIR}; fakeroot debian/rules binary) \
 	fi
 
+endif
 %-clean:
 	$(eval PKGNAME:=$(@:openstack-%-clean=%))
 	$(eval BUILDDIR=${SB_TOP}/build/openstack/${PKGNAME})
 	rm -rf ${BUILDDIR}
-
