@@ -12,6 +12,12 @@ else
   export CONTRAIL_SKU := havana
 endif
 
+ifeq ($(CONTRAIL_SKU),grizzly)
+    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-grizzly-deb
+else
+    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
+endif
+
 KVERS ?= $(shell uname -r)
 VERSION = 
 ifdef TAG
@@ -34,8 +40,7 @@ PACKAGES = \
 	supervisord-deb \
 	contrail-openstack-deb \
 	contrail-openstack-analytics-deb \
-	contrail-openstack-config-deb \
-	contrail-openstack-config-grizzly-deb \
+	$(CONTRAIL_OPENSTACK_CONFIG) \
 	contrail-openstack-control-deb \
 	contrail-openstack-database-deb \
 	contrail-openstack-vrouter-deb \
@@ -235,11 +240,16 @@ contrail-web-core-deb:
 	(cd $(@:-deb=); fakeroot debian/rules binary)
 
 %-deb:
+	(cd $(@:-deb=); [ -f debian/control.in ] && python \
+         $(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+           --version $(VERSION) --file debian/control.in ) || echo no control.in
 	(cd $(@:-deb=); fakeroot debian/rules clean)
 	(cd $(@:-deb=); fakeroot debian/rules binary)
 
 %-clean:
 	(cd $(@:-clean=); fakeroot debian/rules clean)
+	(cd $(@:-clean=); [ -f debian/control.in ] && rm -f debian/control) || \
+                || echo no control.in
 
 neutron-plugin-contrail-deb:
 	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
@@ -256,18 +266,6 @@ neutron-plugin-contrail-clean:
 	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
 		$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail) \
 		rm -rf ${BUILDDIR}; \
-	fi
-
-contrail-openstack-config-deb:
-	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
-		(cd $(@:-deb=); fakeroot debian/rules clean); \
-		(cd $(@:-deb=); fakeroot debian/rules binary); \
-	fi
-
-contrail-openstack-config-grizzly-deb:
-	if [ '${CONTRAIL_SKU}' = 'grizzly' ]; then \
-		(cd $(@:-deb=); fakeroot debian/rules clean); \
-		(cd $(@:-deb=); fakeroot debian/rules binary); \
 	fi
 
 contrail-vrouter-deb: contrail-libs-deb

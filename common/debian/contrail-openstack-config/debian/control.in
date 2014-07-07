@@ -26,6 +26,4 @@ Depends:
  ifmap-server,
  ifmap-python-client,
  contrail-config-openstack
-Section: contrail-openstack-config
-Priority: extra
 Description: Contrail Openstack Config composite debian package

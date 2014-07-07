@@ -10,6 +10,4 @@ Architecture: all
 Maintainer: amoghe <amoghe@juniper.net>
 Depends: contrail-nodemgr, contrail-setup, contrail-vrouter-init, nova-compute, python-iniparse, python-novaclient, contrail-nova-vif, librabbitmq0, linux-crashdump,
     contrail-vrouter,
-Section: contrail-openstack-vrouter
-Priority: extra
 Description: Contrail Openstack vRouter composite debian package
