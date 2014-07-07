@@ -345,6 +345,9 @@ Requires:           pycassa
 Requires:	    redis-py
 Requires:	    redis >= 2.6.13-1 
 Requires:	    python-contrail
+Requires:	    python-psutil
+Requires:	    python-prettytable
+Requires:	    python-geventhttpclient
 
 %description analytics
 Contrail Analytics package

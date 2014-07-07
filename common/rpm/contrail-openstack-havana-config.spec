@@ -44,6 +44,8 @@ Requires: haproxy
 Requires: rabbitmq-server
 Requires: python-contrail
 Requires: contrail-config-openstack
+Requires: python-bottle
+Requires: contrail-nodemgr 
 
 %description
 Contrail Package Requirements for Contrail Config
