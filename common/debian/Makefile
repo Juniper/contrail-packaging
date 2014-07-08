@@ -18,6 +18,12 @@ else
     CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 endif
 
+ifeq ($(CONTRAIL_SKU),icehouse)
+    CONTRAIL_OPENSTACK := contrail-openstack-icehouse-deb
+else
+    CONTRAIL_OPENSTACK := contrail-openstack-deb
+endif
+
 KVERS ?= $(shell uname -r)
 VERSION = 
 ifdef TAG
@@ -38,7 +44,7 @@ PACKAGES = \
 	contrail-nodemgr-deb \
 	contrail-setup-deb \
 	supervisord-deb \
-	contrail-openstack-deb \
+	$(CONTRAIL_OPENSTACK) \
 	contrail-openstack-analytics-deb \
 	$(CONTRAIL_OPENSTACK_CONFIG) \
 	contrail-openstack-control-deb \
@@ -166,20 +172,19 @@ python-boto-clean:
 	$(eval BUILDDIR=${SB_TOP}/third_party/python-boto)
 	rm -rf ${BUILDDIR}/debian
 
-contrail-openstack-deb:
-	if [ '${CONTRAIL_SKU}' != 'icehouse' ]; then \
-		(cd $(@:-deb=); fakeroot debian/rules clean); \
-		(cd $(@:-deb=); fakeroot debian/rules binary); \
-	else \
-		$(eval BUILDDIR=${SB_TOP}/build/debian/tmp) \
-		rm -rf ${BUILDDIR}; \
-		mkdir -p ${BUILDDIR}/debian; \
-                (cp -R contrail-openstack/debian ${BUILDDIR}); \
-		(cp ${BUILDDIR}/debian/control.icehouse ${BUILDDIR}/debian/control); \
-		(cp ${BUILDDIR}/debian/rules.icehouse ${BUILDDIR}/debian/rules); \
-		(cd ${BUILDDIR}; fakeroot debian/rules clean); \
-		(cd ${BUILDDIR}; fakeroot debian/rules binary) \
-	fi
+contrail-openstack-icehouse-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -R contrail-openstack/debian ${BUILDDIR}
+	cp ${BUILDDIR}/debian/control.icehouse ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.icehouse ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-icehouse-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
 
 contrail-openstack-dashboard-deb:
 	if [ '${CONTRAIL_SKU}' != 'icehouse' ]; then \
