@@ -29,7 +29,7 @@ class ChangeDepends(object):
             self.control.readfp(self.cfg_fp)
 
     def cset_cond(self, pkg):
-        return 'contrail' in pkg
+        return 'contrail' in pkg and pkg != 'contrail-vrouter'
 
     def partition(self, pred, ittr):
         t1, t2 = tee(ittr)
