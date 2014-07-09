@@ -1,0 +1,15 @@
+package, md5
+augeas-lenses_0.10.0-0ubuntu4_all.deb, 7eafe1d84a7cfe64340d60a0fbffb14c
+debconf-utils_1.5.42ubuntu1_all.deb, af53b78f589371568704968374bac9e4
+facter_1.6.5-1ubuntu1.2_all.deb, 8207cc82b5d18c7f0e243ea02cb6ece0
+libaugeas0_0.10.0-0ubuntu4_amd64.deb, b845899826ecabedfc803abe1eb71ccd
+libaugeas-ruby1.8_0.3.0-1.1ubuntu4_amd64.deb, 18009f220b0bef19326b4a665e70f282
+libreadline5_5.2-11_amd64.deb, 7f1a5bc806abf015dc11fb597b6ab67c
+libruby1.8_1.8.7.352-2ubuntu1.4_amd64.deb, d17fa211728f6f6aa7e1aea8f4212cf2
+libruby_4.8_all.deb, 8cc1c8fe9ca1cabcdaca2b734fb70e4a
+libshadow-ruby1.8_1.4.1-8build1_amd64.deb, f4df08de22922d5eb7195965a8b15afc
+puppet_2.7.11-1ubuntu2.7_all.deb, 389c61f683c0a389315f9d2833067bc7
+puppet-common_2.7.11-1ubuntu2.7_all.deb, 406eafeb4c392b9dacf20034286107f6
+puppetlabs-release-precise.deb, 8a30a179f20e0768943447f3e9e7be02
+ruby1.8_1.8.7.352-2ubuntu1.4_amd64.deb, 2ae7a774a6f69003d43fd97c2aad106f
+ruby_4.8_all.deb, 55247c5c4791de1d41489a6ea46f7421
