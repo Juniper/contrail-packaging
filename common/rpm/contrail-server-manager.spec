@@ -119,7 +119,6 @@ cp %{_contrailetc}/sendmail.cf /etc/mail/
 cp /usr/bin/server_manager/dhcp.template /etc/cobbler/
 cp -r /usr/bin/server_manager/kickstarts /var/www/html/
 mkdir -p /var/www/html/contrail
-mkdir -p /var/www/html/thirdparty_packages
 
 cp -u /etc/puppet/puppet_init_rd /var/www/cobbler/aux/puppet
 easy_install argparse
