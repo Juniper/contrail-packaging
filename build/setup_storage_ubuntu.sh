@@ -13,8 +13,7 @@ echo "deb file:/opt/contrail/contrail_storage_repo ./" > local_storage_repo
 #modify /etc/apt/soruces.list/ to add local repo on the top
 grep "deb file:/opt/contrail/contrail_storage_repo ./" sources.list
 if [ $? != 0 ]; then
-     sed '1 a\
-deb file:/opt/contrail/contrail_storage_repo ./' sources.list > sources.temp.list
+     sed '1 a\deb file:/opt/contrail/contrail_storage_repo ./' sources.list > sources.temp.list
      mv sources.temp.list sources.list
 fi
 
