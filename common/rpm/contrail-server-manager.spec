@@ -24,6 +24,27 @@
 %define         _sku      None
 %endif
 
+
+%if 0%{?_osVer:1}
+%define         _osver   %(echo %{_osVer} | sed 's,[-|.],,g')
+%else
+%define         _osver   %(PYTHONPATH=%{PYTHONPATH}:%{_builddir}/../tools/packaging/tools/scripts/ python -c "import package_utils; print package_utils.get_platform()")
+%endif
+
+%if 0%{?_pkgFile:1}
+%define _pkg_file  %{_pkgFile}
+%else
+%define _pkg_file  %{_builddir}/../tools/packaging/tools/scripts/server-manager-thirdparty
+%endif
+
+
+%if 0%{?_pkgDirs:1}
+%define _pkg_sources  %{_pkgDirs}
+%else
+%define _pkg_sources  /cs-shared/builder/cache/%{_osver}/server-manager/
+%endif
+
+
 %define         _contrailetc /etc/contrail_smgr
 %define         _initd/etc /etc/init.d
 %define         _contrailutils /opt/contrail/utils
@@ -98,6 +119,7 @@ cp %{_contrailetc}/sendmail.cf /etc/mail/
 cp /usr/bin/server_manager/dhcp.template /etc/cobbler/
 cp -r /usr/bin/server_manager/kickstarts /var/www/html/
 mkdir -p /var/www/html/contrail
+mkdir -p /var/www/html/thirdparty_packages
 
 cp -u /etc/puppet/puppet_init_rd /var/www/cobbler/aux/puppet
 easy_install argparse
@@ -134,7 +156,7 @@ chkconfig puppet on
 %install
 rm -rf %{buildroot}
 mkdir -p  %{buildroot}
-
+mkdir -p  %{buildroot}/var/www/html/thirdparty_packages
 
 install -d -m 755 %{buildroot}%usr
 install -d -m 755 %{buildroot}%{_sbinusr}
@@ -181,6 +203,10 @@ install -d -m 755 %{buildroot}%{_pysitepkg}/cobbler/modules
 cp %{_contrail_smgr_src}third_party/server_post_install.py %{buildroot}%{_pysitepkg}/cobbler/modules/
 cp %{_contrail_smgr_src}third_party/server_pre_install.py %{buildroot}%{_pysitepkg}/cobbler/modules/
 
+%{_builddir}/../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file %{_pkg_file} \
+ --destination-dir %{buildroot}/var/www/html/thirdparty_packages \
+ --source-dirs %{_pkg_sources} || (echo "Copying Built packages failed"; exit 1)
+
 %clean
 rm -rf %{buildroot}
 
@@ -195,6 +221,7 @@ rm -rf %{buildroot}
 #/etc/cobbler/dhcp.template
 #/etc/puppet/*
 %{_pysitepkg}/cobbler/modules/*
+/var/www/html/thirdparty_packages/*
 %changelog
 * Thu Nov 29 2013  Thilak Raj S <tsurendra@juniper.net> 1.0-1
 - First Build
