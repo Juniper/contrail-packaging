@@ -54,6 +54,9 @@ BuildRequires:  python-lxml
 BuildRequires:  python-setuptools
 BuildRequires:  unzip
 BuildRequires:  vim-common
+BuildRequires:  protobuf
+BuildRequires:  protobuf-compiler
+BuildRequires:  protobuf-devel
 
 %prep
 
@@ -348,6 +351,7 @@ Requires:	    python-contrail
 Requires:	    python-psutil
 Requires:	    python-prettytable
 Requires:	    python-geventhttpclient
+Requires:	    protobuf
 
 %description analytics
 Contrail Analytics package
