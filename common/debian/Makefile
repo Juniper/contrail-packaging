@@ -86,7 +86,7 @@ clean-%:
 	$(eval PACKAGE := $(patsubst clean-%,%,$@))
 	rm -rf $(SB_TOP)/build/packages/$(PACKAGE)
 
-KERNEL_VERSIONS := 3.8.0-29-generic 3.2.0-58-generic 3.2.0-51-generic 3.13.0-24-generic
+KERNEL_VERSIONS := 3.8.0-29-generic 3.2.0-58-generic 3.2.0-51-generic 3.11.0-22-generic 3.13.0-24-generic
 package-contrail: debian-contrail
 	$(eval PACKAGE := contrail)
 	@echo "Building package $(PACKAGE)"
@@ -300,6 +300,12 @@ contrail-vrouter-deb: contrail-libs-deb
 		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
 	fi
 	$(eval BUILDKVER=3.13.0-24-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+		(cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+	fi
+	$(eval BUILDKVER=3.11.0-22-generic)
 	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
 	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
 		(cd contrail-vrouter; fakeroot debian/rules clean); \
