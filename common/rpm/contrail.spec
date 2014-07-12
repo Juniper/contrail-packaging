@@ -262,6 +262,20 @@ if [ "$1" = "configure" ] || [ "$1" = "reconfigure" ] ; then
 
 fi
 
+%package python-contrail-vrouter-netns
+
+Summary:            Contrail vRouter netns %{?_gitVer}
+
+Group:              Applications/System
+
+%description python-contrail-vrouter-netns
+Contrail Virtual Router NetNS package
+
+%files python-contrail-vrouter-netns
+%defattr(-,root,root)
+%{python_sitelib}/opencontrail_vrouter_netns*
+%{_bindir}/opencontrail-vrouter-netns
+
 
 %package lib
 Summary:  Libraries used by the Contrail Virtual Router %{?_gitVer}
