@@ -222,7 +222,7 @@ contrail-web-core:
 
 contrail-web-controller:
 	@echo making rpm for contrail-web-controller
-	cd $(CPLANE_GIT_ROOT)/../contrail-web-core && make package REPO=$(CPLANE_GIT_ROOT)/../contrail-web-controller
+	cd $(CPLANE_GIT_ROOT)/../contrail-web-core && make package REPO=$(CPLANE_GIT_ROOT)/../contrail-web-controller,webController
 	cp contrail-web-controller.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-web-controller.spec $(G_TAG)
 

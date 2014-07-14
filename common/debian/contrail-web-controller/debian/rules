@@ -41,7 +41,7 @@ endif
 
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog 
-	(cd $(SB_TOP)/contrail-web-core && make package REPO=$(SB_TOP)/contrail-web-controller)
+	(cd $(SB_TOP)/contrail-web-core && make package REPO=$(SB_TOP)/contrail-web-controller,webController)
 
 override_dh_auto_install: 
 	rm -rf $(buildroot)/$(_contrailwebsrc)
