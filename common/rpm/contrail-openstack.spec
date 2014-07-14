@@ -27,7 +27,8 @@ Requires: openstack-glance
 Requires: openstack-keystone
 Requires: openstack-nova
 Requires: openstack-cinder
-Requires: mysql-server
+Requires: mysql-server-wsrep
+Requires: openssl098e
 Requires: contrail-setup
 Requires: memcached
 Requires: openstack-nova-novncproxy

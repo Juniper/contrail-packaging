@@ -58,6 +58,9 @@ override_dh_auto_install:
 	install -D -m 644 $(_src_config)/supervisor-config.service $(buildroot)/usr/lib/systemd/system/supervisor-config.service
 	install -p -D -m 644 $(_src_config)/ifmap.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/ifmap.ini
 	install -p -D -m 644 $(_src_config)/ifmap.kill $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/ifmap.kill
+	# Install upstart, supervisord ini for rabbitmq-server
+	install -p -m 755 $(_src_config)/rabbitmq-server.initd.supervisord $(buildroot)$(_initddir)/rabbitmq-server.initd.supervisord
+	install -p -m 755 $(_src_config)/rabbitmq-server.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/rabbitmq-server.ini
 override_dh_usrlocal:	
 
 
