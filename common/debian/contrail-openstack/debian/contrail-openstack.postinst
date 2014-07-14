@@ -1,0 +1,57 @@
+echo "Running Postinst for contrail-openstack"
+if [ -f /etc/redhat-release ]; then
+   keystone=openstack-keystone
+   nova_api=openstack-nova-api
+   nova_scheduler=openstack-nova-scheduler
+   nova_conductor=openstack-nova-conductor
+   nova_objectstore=openstack-nova-objectstore
+   nova_console=openstack-nova-console
+   nova_consoleauth=openstack-nova-consoleauth
+   nova_novncproxy=openstack-nova-novncproxy
+   glance_api=openstack-glance-api
+   glance_registry=openstack-glance-registry
+   cinder_api=openstack-cinder-api
+   cinder_scheduler=openstack-cinder-scheduler
+fi
+
+if [ -f /etc/lsb-release ] && egrep -q 'DISTRIB_ID.*Ubuntu' /etc/lsb-release; then
+   keystone=keystone
+   nova_api=nova-api
+   nova_scheduler=nova-scheduler
+   nova_conductor=nova-conductor
+   nova_objectstore=nova-objectstore
+   nova_console=nova-console
+   nova_consoleauth=nova-consoleauth
+   nova_novncproxy=nova-novncproxy
+   glance_api=glance-api
+   glance_registry=glance-registry
+   cinder_api=cinder-api
+   cinder_scheduler=cinder-scheduler
+fi
+
+for svc in $keystone $nova_api $nova_scheduler $nova_conductor $nova_console\
+           $nova_consoleauth $nova_objectstore $nova_novncproxy $glance_api\
+           $glance_registry $cinder_api $cinder_scheduler; do
+    if [ -f /etc/init/$svc.conf ]; then
+        service $svc stop || true
+        mv /etc/init/$svc.conf /etc/init/$svc.conf.backup
+        mv /etc/init.d/$svc /etc/init.d/$svc.backup
+        cp /etc/init.d/$svc.initd.supervisord /etc/init.d/$svc
+    fi
+done
+
+if [ ! -f /etc/init/supervisor-openstack.conf ]; then
+    mv /etc/init/supervisor-openstack.conf.upstart_openstack /etc/init/supervisor-openstack.conf
+else
+    rm /etc/init/supervisor-openstack.conf.upstart_openstack
+fi
+if [ ! -f /etc/contrail/supervisord_openstack.conf ]; then
+    mv /etc/contrail/supervisord_openstack.conf.supervisord_openstack /etc/contrail/supervisord_openstack.conf
+else
+    rm /etc/contrail/supervisord_openstack.conf.supervisord_openstack
+fi
+
+# Start mysql at boot time
+sudo update-rc.d -f mysql remove
+sudo update-rc.d mysql defaults
+echo "Postinst for contrail-openstack done"

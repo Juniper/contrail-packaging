@@ -45,6 +45,7 @@ PACKAGES = \
 	contrail-setup-deb \
 	supervisord-deb \
 	$(CONTRAIL_OPENSTACK) \
+	contrail-openstack-ha-deb \
 	contrail-openstack-analytics-deb \
 	$(CONTRAIL_OPENSTACK_CONFIG) \
 	contrail-openstack-control-deb \

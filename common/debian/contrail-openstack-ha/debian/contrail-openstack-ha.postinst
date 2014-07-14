@@ -1,0 +1,11 @@
+echo "Running Postinst for contrail-openstack-ha"
+grep "/opt/contrail/bin/contrail-bootstrap-galera.sh &" /etc/rc.local> /dev/null 2>&1
+if [ $? ];then
+    sed -i '/^exit 0/i  /opt/contrail/bin/contrail-bootstrap-galera.sh &' /etc/rc.local
+fi
+cd /usr/local
+ln -s cmon-1.2.6-357-64bit-glibc23-mc70 cmon
+cp cmon/etc/init.d/cmon /etc/init.d/
+chmod u+x /etc/init.d/cmon
+update-rc.d cmon defaults
+echo "Postinst for contrail-openstack-ha done"
