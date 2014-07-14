@@ -64,8 +64,7 @@ class Utils(object):
         dirs  = self.get_as_list(dirs)
         copyiter = itertools.product(files, dirs)
         for item in copyiter:
-            log.debug('Copying ({0}) to dir ({1})'.format(*item))
-            shutil.copy(*item)
+            shutil.copy2(*item)
             
     def read_async(self, fd):
         '''read data from a file descriptor, ignoring EAGAIN errors'''
