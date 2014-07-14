@@ -1,0 +1,40 @@
+description "Supervisord for Openstack Services"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+respawn
+chdir /var/run
+
+pre-start script
+    mkdir -p /var/run/cinder
+    chown cinder:cinder /var/run/cinder
+    
+    mkdir -p /var/lock/cinder
+    chown cinder:root /var/lock/cinder
+
+    mkdir -p /var/run/nova
+    chown nova:root /var/run/nova/
+
+    mkdir -p /var/lock/nova
+    chown nova:root /var/lock/nova/
+    if [ -e /etc/contrail/supervisord_nova_files/nova-compute.ini ]; then
+        modprobe nbd
+    fi
+end script
+
+script
+    supervisord --nodaemon -c /etc/contrail/supervisord_openstack.conf || true
+    echo "supervisor-keystone start failed. lsof -i :9010..."
+    lsof -i :9010 || true
+    pid=`lsof -Fp -i :9010 | cut -d'p' -f2` || true
+    if [ "x$pid" != "x" ]; then
+        ps uw -p $pid
+    fi
+end script
+
+pre-stop script
+    supervisorctl -s http://localhost:9010 stop all
+    supervisorctl -s http://localhost:9010 shutdown
+    /usr/bin/supervisor_killall /etc/contrail/supervisord_openstack_files
+end script
