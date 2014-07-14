@@ -157,6 +157,10 @@ contrail-openstack: $(PREP)
 	@echo making rpm for contrail-openstack
 	rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG)
 
+contrail-openstack-ha: $(PREP)
+	@echo making rpm for contrail-openstack-ha
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-ha.spec $(G_TAG)
+
 contrail-openstack-analytics: $(PREP)
 	@echo making rpm for contrail-openstack-analytics
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-analytics.spec $(G_TAG)
@@ -195,7 +199,7 @@ contrail-openstack-storage: $(PREP) $(LOCAL_PY)
 
 contrail-openstack-all: contrail-openstack contrail-openstack-analytics contrail-openstack-config \
 	contrail-openstack-control contrail-openstack-database contrail-openstack-vrouter \
-	contrail-openstack-webui contrail-openstack-storage
+	contrail-openstack-webui contrail-openstack-storage contrail-openstack-ha
 
 contrail-web-core:
 	@echo making rpm for contrail-web-core
