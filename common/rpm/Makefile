@@ -66,10 +66,7 @@ $(LOCAL_PY): $(PPREP)
 
 contrail: $(PREP)
 	@echo making rpm for contrail
-	mkdir -p $(SB_TOP)/build/packages/$@
-	cp -R $(SB_TOP)/tools/packaging/common/rpm/ $(SB_TOP)/build/packages/$@/
-	cd $(SB_TOP)/build/packages/$@/
-	rpmbuild $(RPMBLDOPTS) contrail.spec $(G_TAG) $(SB_TOPDIR)
+	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/packages/rpm/contrail/contrail.spec $(G_TAG) $(SB_TOPDIR)
 
 contrail-analytics: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-analytics
@@ -254,9 +251,9 @@ contrail-server-manager-client: $(PREP) $(LOCAL_PY)
 
 ifmap-python-client: $(PREP)
 	@echo making rpm for ifmap-python-client
-	cp -a ifmap-python-client/patches/. $(BUILD_BASE)/SOURCES
+	cp -a $(SB_TOP)/tools/packages/rpm/ifmap-python-client/patches/. $(BUILD_BASE)/SOURCES
 	wget -O $(BUILD_BASE)/SOURCES/master.zip  https://github.com/ITI/ifmap-python-client/archive/master.zip
-	rpmbuild $(RPMBLDOPTS) ifmap-python-client.spec $(G_TAG)
+	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/packages/rpm/ifmap-python-client/ifmap-python-client.spec $(G_TAG)
 
 contrail-vrouter-init: $(PREP)
 	@echo making rpm for contrail-vrouter-init
