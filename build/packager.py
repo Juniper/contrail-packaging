@@ -225,6 +225,10 @@ class PackagerArgParser(Utils):
                              action='store',
                              help='Line seperated text file containing list of \
                                    make targets')
+        aparser.add_argument('--fail-on-error', '-e',
+                             action='store_true',
+                             default=False,
+                             help='Aborts Packager from continuing when make fails')
         aparser.parse_args(self.unparsed_args)
         self.parser = aparser
 

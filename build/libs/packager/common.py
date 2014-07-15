@@ -22,6 +22,9 @@ from libs.packager.utils import Utils
 log = logging.getLogger("pkg")
 PLATFORM = Utils.get_platform_info()
 
+class MakeError(Exception):
+    pass
+
 class BasePackager(Utils):
     ''' Base class for packager methods '''
     def __init__(self, **kwargs):
@@ -37,6 +40,7 @@ class BasePackager(Utils):
         self.contrail_pkg_dirs     = self.expanduser(kwargs.get('contrail_package_dir', None))
         self.git_local_repo        = self.expanduser(kwargs['git_local_repo']) 
         self.make_targets          = kwargs.get('make_targets', None)
+        self.fail_on_error         = kwargs.get('fail_on_error', False)
         self.make_targets_file     = self.expanduser(kwargs.get('make_targets_file', None))
         pkg_types                  = {'ubuntu': 'deb', 'centos': 'rpm', \
                                       'redhat': 'rpm', 'fedora': 'rpm'}
@@ -106,6 +110,8 @@ class BasePackager(Utils):
                 log.error(traceback.format_exc())
                 log.error('Packager Failed for Type (%s)' % pkgtype)
                 log.error('Skipping rest of the steps for Type (%s)' % pkgtype)
+                if self.fail_on_error:
+                    raise
           
     def setup_env(self):
         ''' setup basic environment necessary for packager like
@@ -229,7 +235,10 @@ class BasePackager(Utils):
             cmd = 'make CONTRAIL_SKU=%s TAG=%s FILE_LIST=%s %s' %(self.sku, 
                        self.id, self.pkglist_file,
                        self.contrail_pkgs[target]['target'])
-            self.exec_cmd(cmd, wd=self.contrail_pkgs[target]['makeloc'])
+            try:
+                self.exec_cmd(cmd, wd=self.contrail_pkgs[target]['makeloc'])
+            except:
+                raise MakeError(sys.exc_info()[1])
 
     def verify_built_pkgs_exists(self, targets=None, skips=None,
                                  recursion=True):
@@ -357,8 +366,11 @@ class BasePackager(Utils):
         tgz_name = os.path.join(self.store,
                                 '%s_%s-%s~%s.tgz' %(self.meta_pkg,
                                 self.branch, self.id, self.sku))
-        self.exec_cmd('make CONTRAIL_SKU=%s FILE_LIST=%s TAG=%s %s' %(
-                       self.sku, tgz_name, self.id,
-                       pkginfo['target']), pkginfo['makeloc'])
+        try:
+            self.exec_cmd('make CONTRAIL_SKU=%s FILE_LIST=%s TAG=%s %s' %(
+                           self.sku, tgz_name, self.id,
+                           pkginfo['target']), pkginfo['makeloc'])
+        except:
+            raise MakeError(sys.exc_info()[1])
         log.debug('Removing TGZ File (%s) after Make' % tgz_name)
         os.unlink(tgz_name)
