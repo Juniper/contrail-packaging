@@ -32,6 +32,7 @@ import subprocess
 import json
 import time
 import datetime
+import platform
 
 from supervisor import childutils
 
@@ -177,8 +178,8 @@ class EventManager:
                 from analytics.cpuinfo.ttypes import *
 
 	if (self.node_type == 'contrail-database'):
-            from database.sandesh.database_cpuinfo.ttypes import *
-            from database.sandesh.database_cpuinfo.cpuinfo.ttypes import *
+            from database.sandesh.database.ttypes import *
+            from database.sandesh.database.cpuinfo.ttypes import *
 
         # following code is node independent
         process_state_list = []
@@ -201,7 +202,25 @@ class EventManager:
             #sys.stderr.write("Sending process state list:" + str(process_state_list))
 
         # send UVE based on node type
-        if ( (self.node_type == 'contrail-analytics') or 
+        if (self.node_type == 'contrail-database'):
+            (os, x, y) = platform.dist()
+            if (os == 'Ubuntu'):
+                (disk_space_used, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2 \`//ContrailAnalytics | grep %` && echo $3 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+                (disk_space_available, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2\`//ContrailAnalytics | grep %` && echo $4  | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+                (analytics_db_size, error_value) = Popen("set `du -skL \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2\`//ContrailAnalytics` && echo $1 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+            else:
+                (disk_space_used, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2 \`//ContrailAnalytics | grep %` && echo $3 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+                (disk_space_available, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2\`//ContrailAnalytics | grep %` && echo $4  | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+                (analytics_db_size, error_value) = Popen("set `du -skL \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2\`//ContrailAnalytics` && echo $1 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+            db_uve = DatabaseUsageInfo()
+            db_uve.disk_space_used = int(disk_space_used)
+            db_uve.disk_space_available = int(disk_space_available)
+            db_uve.analytics_db_size = int(analytics_db_size)
+            db_uve.name = socket.gethostname()
+            usage_stat = DatabaseUsageStat(data=db_uve)
+            usage_stat.send()
+
+        if ( (self.node_type == 'contrail-analytics') or
              (self.node_type == 'contrail-config') or (self.node_type == 'contrail-database')
             ):
             mod_cpu_state = ModuleCpuState()
