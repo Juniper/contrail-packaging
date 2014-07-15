@@ -18,8 +18,11 @@ from logger import logger
 logging.setLoggerClass(logger.PackagerLogger)
 from libs.packager.utils import Utils
 
+#get script dir
+SCRIPTDIR = os.path.abspath(os.path.dirname(sys.argv[0]))
+
 # Import packager based on distribution
-sys.path.append(os.path.abspath(os.path.join('libs', 'packager')))
+sys.path.append(os.path.abspath(os.path.join(SCRIPTDIR, 'libs', 'packager')))
 PLATFORM = Utils.get_platform_info()
 packager = __import__('%s_packager' % PLATFORM[0])
 
@@ -57,17 +60,15 @@ class PackagerArgParser(Utils):
 
     def set_cli_defaults(self):
         dist_dir = "".join(PLATFORM[:2]).replace('.', '')
-        cwd = os.getcwd()
         timestamp = time.strftime('%m%d%y%H%M%S')
         logname = 'packager_{id}_%s.log' %timestamp
-        pkg_file_dir = os.path.join(cwd, 'package_configs')
+        pkg_file_dir = os.path.join(SCRIPTDIR, 'package_configs')
         base_pkg_file = 'base*_packages.cfg'
         deps_pkg_file = 'depends*_packages.cfg'
         cont_pkg_file = 'contrail*_packages.cfg'
-        cmd = os.popen('repo info contrail-controller | grep "Mount path"|cut -f3 -d" "')
-        git_local_repo = os.path.dirname(cmd.read().strip('\n'))
+        git_local_repo = SCRIPTDIR.replace('tools/packaging/build', '')
         if git_local_repo == '':
-            raise RuntimeError('Cant find Git local Repo. Seems repo command is not available...')
+            raise RuntimeError('Cant find Git local Repo directory (sandbox)...')
         cache_base_dir = os.path.join(os.path.sep, 'cs-shared', 'builder', 'cache')
         skuname = 'grizzly'
         if PLATFORM[0] == 'ubuntu':
@@ -87,7 +88,7 @@ class PackagerArgParser(Utils):
             'make_targets_file'     : None,
             'loglevel'              : 'DEBUG',
             'logfile'               : os.path.join('{storedir}', 'logs', logname),
-            'log_config'            : os.path.join(cwd, 'logger', 'logging.cfg'),
+            'log_config'            : os.path.join(SCRIPTDIR, 'logger', 'logging.cfg'),
             'git_local_repo'        : git_local_repo,
             'cache_base_dir'        : [cache_base_dir],
         }
@@ -163,7 +164,7 @@ class PackagerArgParser(Utils):
         cparser = argparse.ArgumentParser(add_help=False)
         cparser.add_argument('--config', '-c',
                              action='store',
-                             default=os.path.abspath('config.cfg'),
+                             default=os.path.join(SCRIPTDIR, 'config.cfg'),
                              help='Config File for the Packager')
         file_ns, rargs = cparser.parse_known_args(self.unparsed_args)
         self.cfg_file = file_ns.config

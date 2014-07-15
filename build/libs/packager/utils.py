@@ -383,7 +383,8 @@ class Utils(object):
     def copy_to_artifacts(self):
         '''Copies rpm or deb files to artifacts directory'''
         if self.platform == 'ubuntu':
-            builtdirs = [os.path.join(self.git_local_repo, 'build', 'debian'),\
+            builtdirs = [os.path.join(self.git_local_repo, 'build', 'debian'),
+                         os.path.join(self.git_local_repo, 'build', 'packages'),
                          os.path.join(self.git_local_repo, 'build', 'openstack')]
             toolsdirs = [os.path.join(self.git_local_repo, 'build', 'tools')]
             pattern = '*.deb'
