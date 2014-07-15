@@ -39,7 +39,7 @@ endif
 
 TARGETS=src/analytics/database:database \
 	controller/src/sandesh/common \
-	controller/src/discovery/client \
+	src/discovery:client \
 	sandesh/library/python:pysandesh \
 
 %:
