@@ -41,7 +41,7 @@ export _localstatedir := /var
 
 TARGETS = controller/src/api-lib	\
 	controller/src/config/common	\
-	controller/src/discovery/client	\
+	src/discovery:client	\
 	controller/src/sandesh/common	\
 	sandesh/library/python:pysandesh
 

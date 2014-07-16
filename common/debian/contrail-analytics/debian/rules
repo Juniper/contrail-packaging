@@ -43,7 +43,7 @@ TARGETS=src/analytics:vizd \
 	src/query_engine:qed \
 	src/opserver:opserver \
 	controller/src/sandesh/common \
-	controller/src/discovery/client \
+	src/discovery:client \
 	sandesh/library/python:pysandesh \
 
 %:
