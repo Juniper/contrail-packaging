@@ -307,6 +307,7 @@ Requires: python-zope-interface
 Requires: irond
 Requires: xmltodict >= 0.1
 Requires: python-jsonpickle
+Requires: python-amqp
 
 %description config
 Contrail Config package
