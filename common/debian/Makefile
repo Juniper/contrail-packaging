@@ -222,6 +222,24 @@ contrail-vrouter-deb: contrail-libs-deb
                 (cd contrail-vrouter; fakeroot debian/rules clean); \
 		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
         fi
+	$(eval BUILDKVER=3.8.0-31-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+                (cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+        fi
+	$(eval BUILDKVER=3.13.0-24-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+                (cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+        fi
+	$(eval BUILDKVER=3.11.0-22-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+                (cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+        fi
 
 contrail-config-deb: contrail-config-venv-deb
 contrail-analytics-deb: contrail-analytics-venv-deb
