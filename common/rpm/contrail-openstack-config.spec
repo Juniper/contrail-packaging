@@ -64,7 +64,7 @@ install -D -m 644 %{_distropkgdir}/schema_transformer.conf %{buildroot}%{_syscon
 install -D -m 644 %{_distropkgdir}/svc_monitor.conf %{buildroot}%{_sysconfdir}/contrail/svc_monitor.conf
 install -D -m 755 %{_distropkgdir}/supervisor-config.initd %{buildroot}%{_initddir}/supervisor-config
 install -D -m 755 %{_distropkgdir}/contrail-api.initd.supervisord %{buildroot}%{_initddir}/contrail-api
-install -D -m 755 %{_distropkgdir}/rabbitmq-server.initd.supervisord %{buildroot}%{_initddir}/rabbitmq-server.initdnitd.supervisord.supervisord
+install -D -m 755 %{_distropkgdir}/rabbitmq-server.initd.supervisord %{buildroot}%{_initddir}/rabbitmq-server.initd.supervisord
 install -D -m 755 %{_distropkgdir}/contrail-discovery.initd.supervisord %{buildroot}%{_initddir}/contrail-discovery
 install -D -m 755 %{_distropkgdir}/contrail-svc-monitor.initd.supervisord %{buildroot}%{_initddir}/contrail-svc-monitor
 install -p -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
@@ -125,7 +125,6 @@ fi
 for svc in rabbitmq-server; do
     if [ -f %{_initddir}/$svc ]; then
         service $svc stop || true
-        mv /etc/init/$svc.conf /etc/init/$svc.conf.backup
         mv %{_initddir}/$svc %{_initddir}/$svc.backup
         cp %{_initddir}/$svc.initd.supervisord %{_initddir}/$svc
     fi

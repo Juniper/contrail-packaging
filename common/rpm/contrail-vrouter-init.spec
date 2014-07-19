@@ -56,10 +56,10 @@ install -p -m 755 %{_distropkgdir}/contrail_reboot  %{buildroot}/etc/contrail/co
 install -p -m 755 %{_distropkgdir}/agent.conf  %{buildroot}/etc/contrail/rpm_agent.conf
 # Install supervisord nova config files and directories
 install -d -m 755 %{buildroot}%{_supervisoropenstackdir}
-install -D -m 755 %{_distropkgdir}/supervisor-openstack.upstart %{buildroot}/etc/init/supervisor-openstack.conf.upstart_vrouter
-install -p -m 755 %{_distropkgdir}/nova-compute.initd.supervisord %{buildroot}/etc/rc.d/init.d/nova-compute.initd.supervisord
+install -D -m 755 %{_distropkgdir}/supervisor-openstack.initd %{buildroot}/etc/rc.d/init.d/supervisor-openstack.initd_vrouter
+install -p -m 755 %{_distropkgdir}/nova-compute.initd.supervisord %{buildroot}/etc/rc.d/init.d/nova-compute
 install -p -m 755 %{_distropkgdir}/supervisord_openstack.conf %{buildroot}/etc/contrail/supervisord_openstack.conf.supervisord_vrouter
-install -p -m 755 %{_distropkgdir}/nova-compute.ini %{buildroot}%{_supervisoropenstackdir}/nova-compute.ini
+install -p -m 755 %{_distropkgdir}/nova-compute.ini.centos %{buildroot}%{_supervisoropenstackdir}/nova-compute.ini
 
 %files
 /opt/*
@@ -73,18 +73,16 @@ echo "create the agent_param file..."
 /opt/contrail/bin/vnagent_param_setup.sh $kver
 # switch to supervisord
 for svc in openstack-nova_compute; do
-    if [ -e /etc/init/$svc.conf ]; then
+    if [ -e %{_initddir}/$svc ]; then
         service $svc stop || true
-        mv /etc/init/$svc.conf /etc/rc.d/init/$svc.conf.backup
-        mv /etc/rc.d/init.d/$svc /etc/rc.d/init.d/$svc.backup
-        cp /etc/rc.d/init.d/$svc.initd.supervisord /etc/rc.d/init.d/$svc
+        mv %{_initddir}/$svc %{_initddir}/$svc.backup
     fi
 done
 
-if [ ! -f /etc/init/supervisor-openstack.conf ]; then
-    mv /etc/init/supervisor-openstack.conf.upstart_vrouter /etc/init/supervisor-openstack.conf
+if [ ! -f %{_initddir}/supervisor-openstack ]; then
+    mv %{_initddir}/supervisor-openstack.initd_vrouter %{_initddir}/supervisor-openstack
 else
-    rm /etc/init/supervisor-openstack.conf.upstart_vrouter
+    rm %{_initddir}/supervisor-openstack.initd_vrouter
 fi
 if [ ! -f /etc/contrail/supervisord_openstack.conf ]; then
     mv /etc/contrail/supervisord_openstack.conf.supervisord_vrouter /etc/contrail/supervisord_openstack.conf
