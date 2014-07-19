@@ -1,0 +1,11 @@
+
+[program:nova-consoleauth]
+command=/usr/bin/python /usr/bin/nova-consoleauth --config-file /etc/nova/nova.conf --logfile /var/log/nova/consoleauth.log --debug
+user=nova
+redirect_stderr=true
+priority=440
+autostart=true
+killasgroup=true
+stopasgroup=true
+stopsignal=KILL
+exitcodes=0

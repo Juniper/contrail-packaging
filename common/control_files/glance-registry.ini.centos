@@ -1,0 +1,11 @@
+
+[program:glance-registry]
+command=/usr/bin/python /usr/bin/glance-registry
+user=glance
+redirect_stderr=true
+priority=440
+autostart=true
+killasgroup=true
+stopasgroup=true
+stopsignal=KILL
+exitcodes=0

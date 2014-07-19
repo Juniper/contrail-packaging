@@ -1,0 +1,11 @@
+
+[program:nova-api]
+command=/usr/bin/python /usr/bin/nova-api --config-file /etc/nova/nova.conf --logfile /var/log/nova/api.log
+user=nova
+redirect_stderr=true
+priority=440
+autostart=true
+killasgroup=true
+stopasgroup=true
+stopsignal=KILL
+exitcodes=0
