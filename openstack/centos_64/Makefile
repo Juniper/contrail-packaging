@@ -139,6 +139,7 @@ package-quantum: $(PREP)
 
 all: $(PREP) auth cinder glance horizon keystone nova quantum contrail-openstack-dashboard
 else
+ifneq ($(CONTRAIL_SKU), icehouse)
 nova: package-nova
 openstack-nova-cert: package-nova
 openstack-nova-objectstore: package-nova
@@ -184,6 +185,9 @@ contrail-openstack-dashboard: $(PREP)
 	-bb horizon-plugin/openstack-horizon-plugin-havana.spec $(G_TAG)
 
 all: $(PREP) package-nova package-neutron horizon contrail-openstack-dashboard
+else
+all: $(PREP)
+endif
 endif
 
 clean:

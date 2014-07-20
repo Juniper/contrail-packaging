@@ -14,7 +14,7 @@
 Name:		    neutron-plugin-contrail
 Version:	    %{_verstr}
 Release:	    %{_relstr}%{?dist}
-Summary:	    Contrail Neutron Plugin and Extensions%{?_gitVer} 
+Summary:	    Contrail Neutron Plugin and Extensions%{?_gitVer}
 
 Group:              Applications/System
 License:            Commercial
@@ -37,3 +37,7 @@ popd
 %defattr(-,root,root,-)
 %{python_sitelib}/neutron_plugin_contrail*
 %config(noreplace) %{_sysconfdir}/neutron
+
+%post
+rm -rf /etc/neutron/plugin.ini
+ln -sf /etc/neutron/plugins/opencontrail/ContrailPlugin.ini /etc/neutron/plugin.ini

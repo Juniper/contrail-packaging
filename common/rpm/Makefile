@@ -153,9 +153,15 @@ contrail-cloudstack-utils: $(PREP)
 	rpmbuild $(RPMBLDOPTS) contrail-cloudstack-utils.spec $(G_TAG)
 
 # Contrail Openstack stuff
+ifeq ($(CONTRAIL_SKU), icehouse)
+contrail-openstack: $(PREP)
+	@echo making rpm for contrail-openstack
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse.spec $(G_TAG)
+else
 contrail-openstack: $(PREP)
 	@echo making rpm for contrail-openstack
 	rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG)
+endif
 
 contrail-openstack-ha: $(PREP)
 	@echo making rpm for contrail-openstack-ha

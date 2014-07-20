@@ -107,6 +107,7 @@ package-python-swiftclient:
 all-openstack-client: $(PREP) cinderclient glanceclient keystoneclient novaclient quantumclient \
 	swiftclient
 else
+ifneq ($(CONTRAIL_SKU), icehouse)
 neutronclient:package-python-neutronclient
 python-neutronclient:package-python-neutronclient
 package-python-neutronclient:
@@ -114,6 +115,7 @@ package-python-neutronclient:
 	rpmbuild $(RPMBLDOPTS) python-neutronclient.spec $(G_TAG)
 
 all-openstack-client: $(PREP) neutronclient
+endif
 endif
 
 # Other 3rd party packages
@@ -232,9 +234,15 @@ all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools 
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
 	python-thrift redis-py supervisor webob xmltodict ixgbe python-bottle
 else
+ifneq ($(CONTRAIL_SKU), icehouse)
 all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
 	python-pycassa python-thrift redis-py supervisor xmltodict ixgbe python-bottle
+else
+all: $(PREP) contrail-fabric-utils contrail-test euca2ools hiredis-py \
+	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
+	python-pycassa python-thrift redis-py supervisor xmltodict ixgbe python-bottle
+endif
 endif
 
 clean:
