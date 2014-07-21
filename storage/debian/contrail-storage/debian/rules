@@ -22,14 +22,35 @@ BUILDTAG = $(SRC_VER)-$(TAG)
 else
 BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
+TARGETS=controller/src/storage/stats-daemon
+TOP_TARGETS=$(SB_TOP)/${TARGETS}
+export _srcdir = $(SB_TOP)/build/python_dist
+export _build_dist := $(SB_TOP)/build/debug
+export _venv_root := /usr
+export _venvtr := --prefix=$(_venv_root)
+export _build_noarch :=$(SB_TOP)/build/noarch
+export _src_config := $(SB_TOP)/tools/packaging/storage/control_files
+export _sysconfdir := /etc
+export _bindir := /usr/bin
+
+__python ?= /usr/bin/python
 
 %:
 	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
 
 override_dh_auto_build:
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
+	(cd ${SB_TOP};scons ${TARGETS})
 
 override_dh_auto_install:
+#	Install storage_nodemgr
+	(cd ${SB_TOP}/$(TARGETS); scons -U --root=$(buildroot) install_stats_daemon)
+
+	mkdir -p ${buildroot}/etc/init
+	install -p -m 644 $(_src_config)/storage-stats.upstart ${buildroot}/etc/init/contrail-storage-stats.conf
+	mkdir -p ${buildroot}$(_sysconfdir)/contrail
+	install -p -m 644 $(SB_TOP)/controller/src/storage/stats-daemon/stats-daemon.conf ${buildroot}$(_sysconfdir)/contrail/contrail-storage-nodemgr.conf
+	mkdir -p ${buildroot}$(_bindir)
 
 override_dh_usrlocal:
 
