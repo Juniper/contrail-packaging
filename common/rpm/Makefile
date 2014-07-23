@@ -236,10 +236,6 @@ contrail-web-controller:
 	cp contrail-web-controller.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-web-controller.spec $(G_TAG)
 
-contrail-nodejs:
-	cp contrail-nodejs.spec $(BUILD_BASE)/SPECS/
-	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-nodejs.spec $(G_TAG)
-
 contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
 	rpmbuild $(RPMBLDOPTS) contrail-install-packages.spec  $(G_TAG)
@@ -281,7 +277,7 @@ endif
 
 all: $(PREP) contrail contrail-api-extension contrail-dns \
        contrail-interface-name ifmap-python-client \
-       contrail-nodejs contrail-nodemgr contrail-setup contrail-openstack-all \
+       contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
        ${NEUTRON_PLUGIN} contrail-server-manager contrail-server-manager-client \
        contrail-vrouter-init 
