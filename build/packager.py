@@ -70,9 +70,9 @@ class PackagerArgParser(Utils):
         if git_local_repo == '':
             raise RuntimeError('Cant find Git local Repo directory (sandbox)...')
         cache_base_dir = os.path.join(os.path.sep, 'cs-shared', 'builder', 'cache')
-        skuname = 'grizzly'
-        if PLATFORM[0] == 'ubuntu':
-            skuname= 'havana'
+        sku_cmd = os.popen("grep -oP '<label name=\"sku\" value=\"\K\w+' %s" % os.path.join(
+                           git_local_repo, '.repo', 'manifest.xml'))
+        skuname = sku_cmd.read().strip()
 
         self.defaults = {
             'build_id'              : random.randint(1000, 9999), 
