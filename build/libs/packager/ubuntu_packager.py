@@ -23,6 +23,5 @@ class Packager(BasePackager):
         self.verify_built_pkgs_exists(self.meta_pkg,
                                       recursion=False)
         self.create_log()
-        self.create_git_ids()
         self.cleanup_store()
 
