@@ -55,8 +55,6 @@ PACKAGES = \
 	contrail-fabric-utils-deb \
 	contrail-test-deb \
 	euca2ools-deb \
-	contrail-database-venv-deb \
-	contrail-database-deb \
 	python-boto-deb \
 	libvirt-deb \
 	contrail-openstack-dashboard-deb \
@@ -70,6 +68,9 @@ all: ${PACKAGES}
 
 clean: $(PACKAGES:%-deb=%-clean)
 	@echo "Clean"
+
+list:
+	@echo $(patsubst %-deb,%,$(PACKAGES))
 
 package-%: debian-%
 	$(eval PACKAGE := $(patsubst package-%,%,$@))

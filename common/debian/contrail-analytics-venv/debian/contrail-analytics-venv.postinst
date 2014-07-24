@@ -1,6 +1,0 @@
-#!/bin/sh
-
-echo "Running Postinst for contrail-analytics-venv"
-sudo rm /opt/contrail/analytics-venv/bin/python
-sudo cp /usr/bin/python /opt/contrail/analytics-venv/bin/python
-echo "Postinst for contrail-analytics-venv done"
