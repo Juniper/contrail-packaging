@@ -37,7 +37,7 @@ Creates virtual env for contrail api role
 # make sure we are in ctrlplane repo
 # gitrepo=$(basename $(git remote show origin | grep "Fetch URL" | cut -d: -f3 ))
 # if [ x$gitrepo != xctrlplane.git ]; then
-%define _pth %{buildroot}
+%define _bpth %( %{__python} -c "import os; print os.path.basename('%{buildroot}')" )
 
 ## gitrepo=packaging
 ## grep $gitrepo .git/config &> /dev/null
@@ -113,27 +113,28 @@ popd
 pushd %{_target}
 
 source bin/activate
-bin/python bin/pip install --upgrade --no-deps --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+python bin/pip install --upgrade --no-deps --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
 #PYTHONPATH=%{_target}/lib/python2.7/site-packages:$PYTHONPATH pip install --index-url='' --install-option="--install-lib=%{_target}/lib/python2.7/site-packages" --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+popd
 
 pushd %{_builddir}/../%{_distrothirdpartydir}/stevedore-0.12
-%{__python} setup.py install
+python setup.py install
 popd
 pushd %{_builddir}/../%{_distrothirdpartydir}/pycassa-1.10.0
-%{__python} setup.py install
+python setup.py install
 popd
 
 deactivate
 
 #VIRTUAL_ENV=/opt/contrail/cfgm-venv/virtualenv-1.9.1/cfgm-venv %{__python} virtualenv.py --relocatable ENV
 
-_npth=$(echo %{_pth} | sed 's/\//\\\//g')
-for f in $(find . -type f -exec grep -nH "%{_pth}" {} \; | grep -v 'Binary file' | cut -d: -f1); do
-    sed "s/${_npth}//g" $f > ${f}.b
-    mv ${f}.b $f
+for f in $(find . -type f -exec grep -nH "%{_bpth}" {} \; | grep -v 'Binary file' | cut -d: -f1); do
+    echo %{_bpth}
+    sed 's,/.*%{_bpth},,g' $f > ${f}.b
     echo "changed $f .... Done!"
+    diff ${f}.b $f || echo ${f}.b
+    mv ${f}.b $f
 done
-popd
 
 rm -rf %{_builddir}/virtualenv-1.9.1
 

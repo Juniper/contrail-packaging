@@ -101,11 +101,12 @@ popd
 pushd %{_target}
 
 source bin/activate
-bin/python bin/pip install --upgrade --no-deps --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+python bin/pip install --upgrade --no-deps --index-url='' --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
 #PYTHONPATH=%{_target}/lib/python2.7/site-packages:$PYTHONPATH pip install --index-url='' --install-option="--install-lib=%{_target}/lib/python2.7/site-packages" --requirement %{_builddir}/virtualenv-1.9.1/reqs/reqs.txt
+popd
 
 pushd %{_builddir}/../%{_distrothirdpartydir}/stevedore-0.12
-%{__python} setup.py install
+python setup.py install
 popd
 
 deactivate
@@ -118,7 +119,6 @@ for f in $(find . -type f -exec grep -nH "%{_pth}" {} \; | grep -v 'Binary file'
     mv ${f}.b $f
     echo "changed $f .... Done!"
 done
-popd
 
 rm -rf %{_builddir}/virtualenv-1.9.1
 
