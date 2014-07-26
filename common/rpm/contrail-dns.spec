@@ -91,7 +91,7 @@ pushd %{_builddir}/..
 # install bin files
 install -p -m 755 build/third_party/bind/bin/named/named  %{buildroot}%{_bindir}/named
 install -p -m 755 build/third_party/bind/bin/rndc/rndc    %{buildroot}%{_bindir}/rndc
-install -p -m 755 build/debug/dns/dnsd                    %{buildroot}%{_bindir}/dnsd
+install -p -m 755 build/debug/dns/contrail-dns                    %{buildroot}%{_bindir}/contrail-dns
 
 # install etc files
 install -p -m 644 %{_distropkgdir}/rndc.conf                %{buildroot}%{_contraildns}/rndc.conf
@@ -133,7 +133,7 @@ exit 0
 %defattr(-, root, root)
 %{_bindir}/named
 %{_bindir}/rndc
-%{_bindir}/dnsd
+%{_bindir}/contrail-dns
 %{_contraildns}
 %{_namedlogdir}
 

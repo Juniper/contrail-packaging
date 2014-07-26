@@ -155,7 +155,7 @@ install -p -m 755 vrouter/vrouter.ko   %{buildroot}/lib/modules/%{_osVer}/extra/
 %if 0%(if [ "%{dist}" != ".xen" ]; then echo 1; fi)
 # install .ini files for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_vrouter.conf %{buildroot}%{_contrailetc}/supervisord_vrouter.conf
-install -p -m 755 %{_distropkgdir}/contrail-vrouter.ini %{buildroot}%{_supervisordir}/contrail-vrouter.ini
+install -p -m 755 %{_distropkgdir}/contrail-vrouter-agent.ini %{buildroot}%{_supervisordir}/contrail-vrouter-agent.ini
 install -p -m 755 %{_distropkgdir}/contrail-vrouter.rules %{buildroot}%{_supervisordir}/contrail-vrouter.rules
 install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-vrouter.kill %{buildroot}%{_supervisordir}/contrail-vrouter.kill
 %endif
@@ -235,7 +235,7 @@ exit 0
 %{_contrailetc}/contrail_reboot
 %{_servicedir}/supervisor-vrouter.service
 %config(noreplace) %{_contrailetc}/supervisord_vrouter.conf
-%config(noreplace) %{_supervisordir}/contrail-vrouter.ini
+%config(noreplace) %{_supervisordir}/contrail-vrouter-agent.ini
 %{_supervisordir}/contrail-vrouter.rules
 %{_supervisordir}/contrail-vrouter.kill
 /bin/mock_generator

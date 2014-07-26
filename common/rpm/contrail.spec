@@ -236,7 +236,7 @@ Contrail Control package
 
 %files control
 %defattr(-,root,root,-)
-%{_bindir}/control-node
+%{_bindir}/contrail-control
 %config(noreplace) %{_contrailetc}/control-node.conf
 
 %post control
@@ -316,7 +316,7 @@ Contrail Config package
 %defattr(-,root,root,-)
 %{_bindir}/contrail-api
 %{_bindir}/contrail-schema
-%{_bindir}/discovery-server
+%{_bindir}/contrail-discovery
 %{_bindir}/ifmap-view
 %config(noreplace) %{_sysconfdir}/contrail/contrail-api.conf
 %config(noreplace) %{_sysconfdir}/contrail/contrail-schema.conf
@@ -455,7 +455,7 @@ fi
 %defattr(-, root, root)
 %{_bindir}/named
 %{_bindir}/rndc
-%{_bindir}/dnsd
+%{_bindir}/contrail-dns
 %{_contraildns}
 %{_contraildns}/named.conf
 %{_contraildns}/rndc.conf
