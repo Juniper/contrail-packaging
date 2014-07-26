@@ -236,8 +236,8 @@ Contrail Control package
 
 %files control
 %defattr(-,root,root,-)
-%{_bindir}/control-node
-%config(noreplace) %{_contrailetc}/control-node.conf
+%{_bindir}/contrail-control
+%config(noreplace) %{_contrailetc}/contrail-control.conf
 
 %post control
 set -e
@@ -316,11 +316,11 @@ Contrail Config package
 %defattr(-,root,root,-)
 %{_bindir}/contrail-api
 %{_bindir}/contrail-schema
-%{_bindir}/discovery-server
+%{_bindir}/contrail-discovery
 %{_bindir}/ifmap-view
 %config(noreplace) %{_sysconfdir}/contrail/contrail-api.conf
 %config(noreplace) %{_sysconfdir}/contrail/contrail-schema.conf
-%config(noreplace) %{_sysconfdir}/contrail/discovery.conf
+%config(noreplace) %{_sysconfdir}/contrail/contrail-discovery.conf
 %{python_sitelib}/discovery
 %{python_sitelib}/discovery-*
 %{python_sitelib}/schema_transformer*

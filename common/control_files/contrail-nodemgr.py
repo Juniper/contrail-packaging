@@ -14,8 +14,8 @@ Description of Node manager options:
 Rules files looks like following:
 ====================
 { "Rules": [
-    {"process_name": "contrail-qe", "process_state": "PROCESS_STATE_FATAL", "action": "supervisorctl -s http://localhost:9002 stop contrail-opserver"},
-    {"process_name": "contrail-qe", "process_state": "PROCESS_STATE_STOPPED", "action": "supervisorctl -s http://localhost:9002 stop contrail-opserver"},
+    {"process_name": "contrail-query-engine", "process_state": "PROCESS_STATE_FATAL", "action": "supervisorctl -s http://localhost:9002 stop contrail-analytics-api"},
+    {"process_name": "contrail-query-engine", "process_state": "PROCESS_STATE_STOPPED", "action": "supervisorctl -s http://localhost:9002 stop contrail-analytics-api"},
     {"processname": "contrail-collector", "process_state": "PROCESS_STATE_RUNNING", "action": "/usr/bin/echo collector is starting >> /tmp/log"},
     {"flag_name": "test", "flag_value":"true", "action": "/usr/bin/echo flag test is set true >> /tmp/log.1"}
      ]
@@ -466,7 +466,7 @@ def main(argv=sys.argv):
         node_type_name = NodeTypeNames[node_type]
         instance_id = INSTANCE_ID_DEFAULT
         Config = ConfigParser.ConfigParser()
-        Config.read("/etc/contrail/api_server.conf")
+        Config.read("/etc/contrail/contrail-api.conf")
         discovery_server = Config.get("DEFAULTS", "disc_server_ip")
         discovery_port = Config.get("DEFAULTS", "disc_server_port")
         sys.stderr.write("Updated discovery server: " + discovery_server + "\n")
@@ -492,7 +492,7 @@ def main(argv=sys.argv):
         node_type_name = NodeTypeNames[node_type]
         instance_id = INSTANCE_ID_DEFAULT
         from StringIO import StringIO
-        data = StringIO('\n'.join(line.strip() for line in open('/etc/contrail/control-node.conf')))
+        data = StringIO('\n'.join(line.strip() for line in open('/etc/contrail/contrail-control.conf')))
         Config = ConfigParser.SafeConfigParser()
         Config.readfp(data)
         if discovery_server == socket.gethostname():

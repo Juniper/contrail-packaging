@@ -19,7 +19,7 @@ ENV_FILE=/etc/contrail/control_param
 
 function daemon_start() {
      echo  -n "Starting Contrail Control Node"
-     daemon --pidfile $PID_FILE "/usr/bin/control-node 2>&1 &>/dev/null & echo \$! > $PID_FILE"
+     daemon --pidfile $PID_FILE "/usr/bin/contrail-control 2>&1 &>/dev/null & echo \$! > $PID_FILE"
 #     PID=$!
      RETVAL=$?
      [ $RETVAL -eq 0 ] && log_success_msg || log_failure_msg
@@ -35,11 +35,11 @@ function daemon_stop() {
 daemon_status() {
     declare -f -F status > /dev/null
     if [ "$?" = "0" ]; then
-        status -p $PID_FILE control-node
+        status -p $PID_FILE contrail-control
     else
         declare -f -F status_of_proc > /dev/null
         if [ "$?" = "0" ]; then
-            status_of_proc -p $PID_FILE control-node control
+            status_of_proc -p $PID_FILE contrail-control control
         fi
     fi
 }

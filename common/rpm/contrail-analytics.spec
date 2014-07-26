@@ -163,8 +163,8 @@ install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail_qe_pre %
 #install .ini files for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_analytics.conf %{buildroot}%{_contrailetc}/supervisord_analytics.conf
 install -p -m 755 %{_distropkgdir}/contrail-collector.ini %{buildroot}%{_supervisordir}/contrail-collector.ini
-install -p -m 755 %{_distropkgdir}/contrail-opserver-centos.ini %{buildroot}%{_supervisordir}/contrail-opserver.ini
-install -p -m 755 %{_distropkgdir}/contrail-qe.ini %{buildroot}%{_supervisordir}/contrail-qe.ini
+install -p -m 755 %{_distropkgdir}/contrail-opserver-centos.ini %{buildroot}%{_supervisordir}/contrail-analytics-api.ini
+install -p -m 755 %{_distropkgdir}/contrail-query-engine.ini %{buildroot}%{_supervisordir}/contrail-query-engine.ini
 
 #install .kill files for supervisord
 
@@ -172,9 +172,9 @@ install -p -m 755 %{_distropkgdir}/contrail-qe.ini %{buildroot}%{_supervisordir}
 install -p -m 755 %{_distropkgdir}/supervisor-analytics.initd          %{buildroot}%{_initddir}/supervisor-analytics
 %endif
 install -p -m 755 %{_distropkgdir}/contrail-collector.initd.supervisord          %{buildroot}%{_initddir}/contrail-collector
-install -p -m 755 %{_distropkgdir}/contrail-qe.initd.supervisord          %{buildroot}%{_initddir}/contrail-qe
-install -p -m 755 %{_distropkgdir}/contrail-opserver.initd.supervisord          %{buildroot}%{_initddir}/contrail-opserver
-#perl -pi -e 's/python2.7/python%{_pyver}/g' %{buildroot}%{_supervisordir}/contrail-opserver.ini
+install -p -m 755 %{_distropkgdir}/contrail-qe.initd.supervisord          %{buildroot}%{_initddir}/contrail-query-engine
+install -p -m 755 %{_distropkgdir}/contrail-opserver.initd.supervisord          %{buildroot}%{_initddir}/contrail-analytics-api
+#perl -pi -e 's/python2.7/python%{_pyver}/g' %{buildroot}%{_supervisordir}/contrail-analytics-api.ini
 
 pushd %{_builddir}
 install -D -m 755 src/analytics/ruleparser/contrail-dbutils %{buildroot}%{_venv_root}/bin/contrail-dbutils
@@ -235,15 +235,15 @@ fi
 %config(noreplace) %{_contrailetc}/query-engine.conf
 %{_venv_root}
 %config(noreplace) %{_supervisordir}/contrail-collector.ini
-%config(noreplace) %{_supervisordir}/contrail-opserver.ini
-%config(noreplace) %{_supervisordir}/contrail-qe.ini
+%config(noreplace) %{_supervisordir}/contrail-analytics-api.ini
+%config(noreplace) %{_supervisordir}/contrail-query-engine.ini
 %{_supervisordir}/contrail-analytics.rules
 %if 0%{?rhel}
 %{_initddir}/supervisor-analytics
 %endif
 %{_initddir}/contrail-collector
-%{_initddir}/contrail-qe
-%{_initddir}/contrail-opserver
+%{_initddir}/contrail-query-engine
+%{_initddir}/contrail-analytics-api
 %{_contrailutils}/contrail-logs
 %{_bindir}/contrail-logs
 %{_contrailutils}/log.py
