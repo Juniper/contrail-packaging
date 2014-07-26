@@ -142,10 +142,10 @@ class ContrailArchive(object):
         os.chdir (path)
         os.mkdir ("binaries")
         os.chdir ("binaries")
-        os.symlink ("../sandbox/build/debug/control-node/control-node", "control-node")
+        os.symlink ("../sandbox/build/debug/control-node/contrail-control", "contrail-control")
         os.symlink ("../sandbox/build/debug/dns/dnsd", "dnsd")
-        os.symlink ("../sandbox/build/debug/query_engine/qed", "qed")
-        os.symlink ("../sandbox/build/debug/analytics/vizd", "vizd")
+        os.symlink ("../sandbox/build/debug/query_engine/contrail-query-engine", "contrail-query-engine")
+        os.symlink ("../sandbox/build/debug/analytics/contrail-collector", "contrail-collector")
         os.symlink ("../sandbox/build/debug/vnsw/agent/contrail/contrail-vrouter-agent", "contrail-vrouter-agent")
         os.symlink ("../sandbox/vrouter/vrouter.ko", "vrouter.ko")
 

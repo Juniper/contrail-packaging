@@ -61,7 +61,7 @@ pushd %{_distrothirdpartydir}/ncclient
 popd
 
 pushd %{_builddir}/..
-install -D -m 644 %{_distropkgdir}/api_server.conf %{buildroot}%{_sysconfdir}/contrail/api_server.conf
+install -D -m 644 %{_distropkgdir}/contrail-api.conf %{buildroot}%{_sysconfdir}/contrail/contrail-api.conf
 install -D -m 644 %{_distropkgdir}/schema_transformer.conf %{buildroot}%{_sysconfdir}/contrail/schema_transformer.conf
 install -D -m 644 %{_distropkgdir}/svc_monitor.conf %{buildroot}%{_sysconfdir}/contrail/svc_monitor.conf
 %if 0%{?fedora} >= 17
@@ -120,7 +120,7 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
-%config(noreplace) %{_sysconfdir}/contrail/api_server.conf
+%config(noreplace) %{_sysconfdir}/contrail/contrail-api.conf
 %config(noreplace) %{_sysconfdir}/contrail/schema_transformer.conf
 %config(noreplace) %{_sysconfdir}/contrail/svc_monitor.conf
 

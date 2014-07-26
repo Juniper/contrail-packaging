@@ -36,7 +36,7 @@ override_dh_auto_install:
 	install -d -m 755 ${buildroot}/var/log/contrail
 	# TODO: Remove this after spec files for other platforms are fixed.
 	perl -ni -e 's/source \/opt\/contrail\/vrouter-venv\/bin\/activate && exec python \/opt\/contrail\/vrouter-venv/\/usr/g; print $$_;' ${buildroot}/etc/contrail/supervisord_vrouter.conf
-	install -p -m 644 $(_confsrcdir)/contrail-vrouter.ini ${buildroot}${_supervisorconf}
+	install -p -m 644 $(_confsrcdir)/contrail-vrouter-agent.ini ${buildroot}${_supervisorconf}
 	install -p -m 644 $(_confsrcdir)/contrail-vrouter.rules ${buildroot}${_supervisorconf}
 	install -p -m 755 $(_confsrcdir)/vrouter-pre-start.sh ${buildroot}${_opt_bin}
 	install -p -m 755 $(_confsrcdir)/vrouter-post-start.sh ${buildroot}${_opt_bin}

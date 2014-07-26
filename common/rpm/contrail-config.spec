@@ -130,10 +130,10 @@ pushd %{_distrothirdpartydir}/ncclient
 popd
 
 pushd %{_builddir}/..
-install -D -m 644 %{_distropkgdir}/api_server.conf %{buildroot}%{_sysconfdir}/contrail/api_server.conf
+install -D -m 644 %{_distropkgdir}/contrail-api.conf %{buildroot}%{_sysconfdir}/contrail/contrail-api.conf
 install -D -m 644 %{_distropkgdir}/schema_transformer.conf %{buildroot}%{_sysconfdir}/contrail/schema_transformer.conf
 install -D -m 644 %{_distropkgdir}/svc_monitor.conf %{buildroot}%{_sysconfdir}/contrail/svc_monitor.conf
-install -D -m 644 %{_distropkgdir}/discovery.conf %{buildroot}%{_sysconfdir}/contrail/discovery.conf
+install -D -m 644 %{_distropkgdir}/contrail-discovery.conf %{buildroot}%{_sysconfdir}/contrail/contrail-discovery.conf
 %if 0%{?fedora} >= 17
 install -D -m 644 %{_distropkgdir}/supervisor-config.service %{buildroot}/usr/lib/systemd/system/supervisor-config.service
 %endif
@@ -204,10 +204,10 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
-%config(noreplace) %{_sysconfdir}/contrail/api_server.conf
+%config(noreplace) %{_sysconfdir}/contrail/contrail-api.conf
 %config(noreplace) %{_sysconfdir}/contrail/schema_transformer.conf
 %config(noreplace) %{_sysconfdir}/contrail/svc_monitor.conf
-%config(noreplace) %{_sysconfdir}/contrail/discovery.conf
+%config(noreplace) %{_sysconfdir}/contrail/contrail-discovery.conf
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then
