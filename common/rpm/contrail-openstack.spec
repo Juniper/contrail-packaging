@@ -97,11 +97,11 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/nova-novncproxy.ini
 
 %post
-for svc in openstack-keystone openstack-nova_api openstack-nova_scheduler\
-           openstack-nova_consoleauth openstack-nova_conductor\
-           openstack-nova_novncproxy openstack-glance_api\
-           openstack-glance_registry openstack-cinder_api\
-           openstack-cinder_scheduler; do
+for svc in openstack-keystone openstack-nova_api openstack-nova-scheduler\
+           openstack-nova-consoleauth openstack-nova-conductor\
+           openstack-nova-novncproxy openstack-glance-api\
+           openstack-glance-registry openstack-cinder-api\
+           openstack-cinder-scheduler; do
     if [ -f %{_initddir}/$svc ]; then
         service $svc stop || true
         mv %{_initddir}/$svc %{_initddir}/$svc.backup
