@@ -5,16 +5,7 @@ set -e
 echo "create the agent_param file..."
 /opt/contrail/bin/vnagent_param_setup.sh
 
-# switch to supervisord
-if [ -f /etc/redhat-release ]; then
-   nova_compute=openstack-nova-compute
-fi
-
-if [ -f /etc/lsb-release ] && egrep -q 'DISTRIB_ID.*Ubuntu' /etc/lsb-release; then
-   nova_compute=nova-compute
-fi
-
-for svc in $nova_compute; do
+for svc in nova-compute; do
     if [ -e /etc/init/$svc.conf ]; then
         service $svc stop || true
         mv /etc/init/$svc.conf /etc/init/$svc.conf.backup
@@ -25,12 +16,12 @@ done
 
 if [ ! -f /etc/init/supervisor-openstack.conf ]; then
     mv /etc/init/supervisor-openstack.conf.upstart_vrouter /etc/init/supervisor-openstack.conf
-else
+elif [ -f /etc/init/supervisor-openstack.conf.upstart_vrouter ]; then
     rm /etc/init/supervisor-openstack.conf.upstart_vrouter
 fi
 if [ ! -f /etc/contrail/supervisord_openstack.conf ]; then
     mv /etc/contrail/supervisord_openstack.conf.supervisord_vrouter /etc/contrail/supervisord_openstack.conf
-else
+elif [ -f /etc/contrail/supervisord_openstack.conf.supervisord_vrouter ]; then
     rm /etc/contrail/supervisord_openstack.conf.supervisord_vrouter
 fi
 echo "Postinst for contrail-vrouter-init done"
