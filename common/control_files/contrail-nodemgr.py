@@ -177,7 +177,7 @@ class EventManager:
                 from analytics.ttypes import *
                 from analytics.cpuinfo.ttypes import *
 
-	if (self.node_type == 'contrail-database'):
+        if (self.node_type == 'contrail-database'):
             from database.sandesh.database.ttypes import *
             from database.sandesh.database.cpuinfo.ttypes import *
 
@@ -202,28 +202,6 @@ class EventManager:
             #sys.stderr.write("Sending process state list:" + str(process_state_list))
 
         # send UVE based on node type
-        if (self.node_type == 'contrail-database'):
-            (linux_dist, x, y) = platform.linux_distribution()
-            if (linux_dist == 'Ubuntu'):
-                (disk_space_used, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2 \`/ContrailAnalytics | grep %` && echo $3 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
-                (disk_space_available, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics | grep %` && echo $4  | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
-                (analytics_db_size, error_value) = Popen("set `du -skL \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics` && echo $1 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
-            else:
-                (disk_space_used, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2 \`/ContrailAnalytics | grep %` && echo $3 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
-                (disk_space_available, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics | grep %` && echo $4  | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
-                (analytics_db_size, error_value) = Popen("set `du -skL \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics` && echo $1 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
-            db_uve = DatabaseUsageInfo()
-            try:
-                db_uve.disk_space_used = int(disk_space_used)
-                db_uve.disk_space_available = int(disk_space_available)
-                db_uve.analytics_db_size = int(analytics_db_size)
-            except (TypeError, ValueError) as e:
-                sys.stderr.write("Exception: Error in sending disk usage uve: " + str(e) + "\n")
-            else:
-                db_uve.name = socket.gethostname()
-                usage_stat = DatabaseUsageStat(data=db_uve)
-                usage_stat.send()
-
         if ( (self.node_type == 'contrail-analytics') or
              (self.node_type == 'contrail-config') or (self.node_type == 'contrail-database')
             ):
@@ -249,6 +227,33 @@ class EventManager:
             vrouter_stats_trace = VrouterStats(data=vrouter_stats_agent)
             sys.stderr.write('sending UVE:' + str(vrouter_stats_trace))
             vrouter_stats_trace.send()
+    # end send_process_state_db
+
+    def send_database_usage(self):
+        from database.sandesh.database.ttypes import *
+        from database.sandesh.database.cpuinfo.ttypes import *
+
+        (linux_dist, x, y) = platform.linux_distribution()
+        if (linux_dist == 'Ubuntu'):
+            (disk_space_used, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2 \`/ContrailAnalytics | grep %` && echo $3 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+            (disk_space_available, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics | grep %` && echo $4  | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+            (analytics_db_size, error_value) = Popen("set `du -skL \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics` && echo $1 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+        else:
+            (disk_space_used, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2 \`/ContrailAnalytics | grep %` && echo $3 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+            (disk_space_available, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics | grep %` && echo $4  | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+            (analytics_db_size, error_value) = Popen("set `du -skL \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics` && echo $1 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+        db_uve = DatabaseUsageInfo()
+        try:
+            db_uve.disk_space_used = int(disk_space_used)
+            db_uve.disk_space_available = int(disk_space_available)
+            db_uve.analytics_db_size = int(analytics_db_size)
+        except ValueError:
+            sys.stderr.write("Failed to get database usage" + "\n")
+        else:
+            db_uve.name = socket.gethostname()
+            usage_stat = DatabaseUsageStat(data=db_uve)
+            usage_stat.send()
+    # end send_database_usage
 
     def runforever(self, sandeshconn, test=False):
     #sys.stderr.write(str(self.rules_data['Rules'])+'\n')
@@ -332,6 +337,8 @@ class EventManager:
                         sys.stderr.write('Openstack Nova Compute status unchanged at:' + os_nova_comp.process_state + "\n")
                         
                     self.process_state_db['openstack-nova-compute'] = os_nova_comp
+                elif (self.node_type == 'contrail-database'):
+                    self.send_database_usage()
 
                 current_time = int(time.time())
                 #sys.stderr.write("Time changed %d \n",abs(current_time - prev_current_time)
