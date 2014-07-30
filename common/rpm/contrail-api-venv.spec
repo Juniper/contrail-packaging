@@ -121,7 +121,7 @@ pushd %{_builddir}/../%{_distrothirdpartydir}/stevedore-0.12
 python setup.py install
 popd
 pushd %{_builddir}/../%{_distrothirdpartydir}/pycassa-1.10.0
-python setup.py install
+%{__python} setup.py install
 popd
 
 deactivate
