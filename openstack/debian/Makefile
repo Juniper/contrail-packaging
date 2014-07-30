@@ -46,7 +46,17 @@ openstack-nova-clean:
 		cp -R $(@:-deb=)/debian ${BUILDDIR}/debian; \
 		(cd ${BUILDDIR}; fakeroot debian/rules binary) \
 	fi
-
+else
+%-deb:
+	$(eval PKGNAME:=$(@:openstack-%-deb=%))
+	$(eval BUILDDIR=${SB_TOP}/build/openstack/${PKGNAME})
+	$(eval DISTRODIR=${SB_TOP}/distro/openstack/${PKGNAME})
+	if test -d ${DISTRODIR}; then \
+		mkdir -p ${SB_TOP}/build/openstack; \
+		cp -R ${SB_TOP}/distro/openstack/${PKGNAME} ${BUILDDIR}; \
+		cp -R $(@:-deb=)/icehouse/debian ${BUILDDIR}/debian; \
+		(cd ${BUILDDIR}; fakeroot debian/rules binary) \
+	fi
 endif
 %-clean:
 	$(eval PKGNAME:=$(@:openstack-%-clean=%))
