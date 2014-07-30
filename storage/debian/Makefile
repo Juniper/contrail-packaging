@@ -17,6 +17,7 @@ VERSION = $(SRC_VER)-$(BUILDTIME)
 endif
 
 PACKAGES =	contrail-storage-deb	\
+            contrail-web-storage-deb \
 
 
 all: ${PACKAGES}
@@ -37,7 +38,6 @@ contrail-storage-packages-deb:
 contrail-storage-packages-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-storage-packages)
 	rm -rf ${BUILDDIR}
-
 
 %-deb:
 	(cd $(@:-deb=); fakeroot debian/rules clean)
