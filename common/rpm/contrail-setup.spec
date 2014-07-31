@@ -114,7 +114,7 @@ fi
 
 # install bin files
 install -D -m 755 src/config/utils/contrail-version %{buildroot}%{_bindir}/contrail-version
-install -D -m 755 src/config/utils/contrail-status %{buildroot}%{_bindir}/contrail-status
+install -D -m 755 src/config/utils/contrail-status.py %{buildroot}%{_bindir}/contrail-status
 
 
 %post

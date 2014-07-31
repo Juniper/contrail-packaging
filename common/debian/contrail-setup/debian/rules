@@ -61,7 +61,7 @@ override_dh_auto_install:
 	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-config $(buildroot)/usr/bin/openstack-config 
 	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-status-deb $(buildroot)/usr/bin/openstack-status
 	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-db $(buildroot)/usr/bin/openstack-db 
-	install -D -m 755 $(SB_TOP)/controller/src/config/utils/contrail-status-deb $(buildroot)/usr/bin/contrail-status
+	install -D -m 755 $(SB_TOP)/controller/src/config/utils/contrail-status.py $(buildroot)/usr/bin/contrail-status
 
 
 override_dh_shlibdeps:
