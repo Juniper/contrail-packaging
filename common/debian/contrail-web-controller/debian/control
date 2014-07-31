@@ -9,6 +9,8 @@ Package: contrail-web-controller
 Architecture: amd64
 Maintainer: swamy <swamy@juniper.net>
 Depends: contrail-web-core
+Replaces: contrail-webui
+Conflicts: contrail-webui
 Section: contrail-web-controller
 Priority: extra
 Description: Contrail Systems Web UI Feature
