@@ -4,24 +4,4 @@ set -e
 
 echo "create the agent_param file..."
 /opt/contrail/bin/vnagent_param_setup.sh
-
-for svc in nova-compute; do
-    if [ -e /etc/init/$svc.conf ]; then
-        service $svc stop || true
-        mv /etc/init/$svc.conf /etc/init/$svc.conf.backup
-        mv /etc/init.d/$svc /etc/init.d/$svc.backup
-        cp /etc/init.d/$svc.initd.supervisord /etc/init.d/$svc
-    fi
-done
-
-if [ ! -f /etc/init/supervisor-openstack.conf ]; then
-    mv /etc/init/supervisor-openstack.conf.upstart_vrouter /etc/init/supervisor-openstack.conf
-elif [ -f /etc/init/supervisor-openstack.conf.upstart_vrouter ]; then
-    rm /etc/init/supervisor-openstack.conf.upstart_vrouter
-fi
-if [ ! -f /etc/contrail/supervisord_openstack.conf ]; then
-    mv /etc/contrail/supervisord_openstack.conf.supervisord_vrouter /etc/contrail/supervisord_openstack.conf
-elif [ -f /etc/contrail/supervisord_openstack.conf.supervisord_vrouter ]; then
-    rm /etc/contrail/supervisord_openstack.conf.supervisord_vrouter
-fi
 echo "Postinst for contrail-vrouter-init done"
