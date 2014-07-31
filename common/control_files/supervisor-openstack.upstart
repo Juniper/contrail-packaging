@@ -7,11 +7,13 @@ respawn
 chdir /var/run
 
 pre-start script
-    mkdir -p /var/run/cinder
-    chown cinder:cinder /var/run/cinder
-    
-    mkdir -p /var/lock/cinder
-    chown cinder:root /var/lock/cinder
+    if [ -e /etc/contrail/supervisord_nova_files/cinder-api.ini ]; then
+        mkdir -p /var/run/cinder
+        chown cinder:cinder /var/run/cinder
+
+        mkdir -p /var/lock/cinder
+        chown cinder:root /var/lock/cinder
+    fi
 
     mkdir -p /var/run/nova
     chown nova:root /var/run/nova/
