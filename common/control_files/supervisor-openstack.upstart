@@ -7,7 +7,7 @@ respawn
 chdir /var/run
 
 pre-start script
-    if [ -e /etc/contrail/supervisord_nova_files/cinder-api.ini ]; then
+    if [ -e /etc/contrail/supervisord_openstack_files/cinder-api.ini ]; then
         mkdir -p /var/run/cinder
         chown cinder:cinder /var/run/cinder
 
@@ -20,7 +20,7 @@ pre-start script
 
     mkdir -p /var/lock/nova
     chown nova:root /var/lock/nova/
-    if [ -e /etc/contrail/supervisord_nova_files/nova-compute.ini ]; then
+    if [ -e /etc/contrail/supervisord_openstack_files/nova-compute.ini ]; then
         modprobe nbd
     fi
 end script
