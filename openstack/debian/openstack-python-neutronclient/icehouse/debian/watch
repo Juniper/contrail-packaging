@@ -1,0 +1,4 @@
+version=3
+opts="uversionmangle=s/%7E/~/" https://launchpad.net/python-neutronclient/+download https://launchpad.net/python-neutronclient/.*/.*/.*/python-neutronclient-(.*)\.tar\.gz
+http://tarballs.openstack.org/python-neutronclient/ python-neutronclient-(\d.*).tar.gz
+http://pypi.python.org/packages/source/p/python-neutronclient/python-neutronclient-(\d.*).tar.gz
