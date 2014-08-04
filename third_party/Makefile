@@ -16,7 +16,8 @@ DISTRO_BLDDIR       := $(CPLANE_GIT_ROOT)/../distro/openstack
 THIRDPARTY_DIR      := $(CPLANE_GIT_ROOT)/../third_party
 THIRDPARTY_PKGDIR   := $(CPLANE_GIT_ROOT)/../tools/packaging/third_party
 RPM_PY              := --define "__python $(LOCAL_PY)"
-DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu" /etc/issue)
+DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu|Red Hat" /etc/issue)
+DISTRO_VER          := $(shell egrep -o "[0-9.]+" /etc/issue)
 RPMBLDOPTS          := --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' -bb
 PREP = prep
 PPREP = pprep
@@ -156,14 +157,15 @@ libvirt-python: libvirt
 libvirt-debuginfo: libvirt
 libvirt:
 	@echo making rpm for libvirt
-	@echo "Distro is $(DISTRO)"
+	@echo "Distro is $(DISTRO), DISTRO_VER is $(DISTRO_VER)"
 	if [ "$(DISTRO)" == "Fedora" ]; then \
 		[ -d $(BUILD_BASE)/SOURCES/libvirt ] || mkdir -p $(BUILD_BASE)/SOURCES/libvirt && \
 		cd $(BUILD_BASE)/SOURCES/libvirt && cp -ar $(DISTRO_SRCDIR)/libvirt-0.9.12 . && \
 		cd libvirt-0.9.12 && ./configure --localstatedir=/var && \
 		$(MAKE) $(MFLAGS) dist && \
 		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(PKGBLDDIR)' -ta libvirt-0.9.12.tar.gz ; \
-	else cp $(THIRDPARTY_DIR)/libvirt/libvirt-0.10.2-18.el6.src.rpm $(BUILD_BASE)/SOURCES/ && \
+	else if [ "$(DISTRO)" == "CentOS" ]  && [ "$(DISTRO_VER)" == "6.4" ]; then \
+		cp $(THIRDPARTY_DIR)/libvirt/libvirt-0.10.2-18.el6.src.rpm $(BUILD_BASE)/SOURCES/ && \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.patch  $(BUILD_BASE)/SOURCES/ && \
 		cd $(BUILD_BASE)/SOURCES && \
 		rpm --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
@@ -178,6 +180,7 @@ libvirt:
 		cd $(THIRDPARTY_DIR) && \
 		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
 		-ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
+	fi \
 	fi
 
 ixgbe-debuginfo: ixgbe
