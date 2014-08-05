@@ -158,80 +158,62 @@ class EventManager:
     def send_process_state_db(self, sandeshconn):
         # code to import appropriate sandesh odules based on node-type
         if (self.node_type == 'contrail-config'):
-            from cfgm_common.uve.cfgm_cpuinfo.ttypes import *
-            from cfgm_common.uve.cfgm_cpuinfo.cpuinfo.ttypes import *
+            from cfgm_common.uve.cfgm_cpuinfo.ttypes \
+                import NodeStatusUVE, NodeStatus
+            from cfgm_common.uve.cfgm_cpuinfo.process_info.ttypes \
+                import ProcessInfo
 
         if (self.node_type == 'contrail-control'):
-            from control_node.control_node.ttypes import *
-            from control_node.control_node.cpuinfo.ttypes import *
+            from control_node.control_node.ttypes \
+                import NodeStatusUVE, NodeStatus
+            from control_node.control_node.process_info.ttypes \
+                import ProcessInfo
 
         if (self.node_type == 'contrail-vrouter'):
-            from vrouter.vrouter.ttypes import *
-            from vrouter.vrouter.cpuinfo.ttypes import *
+            from vrouter.vrouter.ttypes import \
+                NodeStatusUVE, NodeStatus
+            from vrouter.vrouter.process_info.ttypes import \
+                ProcessInfo
 
         if (self.node_type == 'contrail-analytics'):
-            try:
-                from opserver.sandesh.analytics.ttypes import *
-                from opserver.sandesh.analytics.cpuinfo.ttypes import *
-            except:
-                from analytics.ttypes import *
-                from analytics.cpuinfo.ttypes import *
+            from analytics.ttypes import \
+                NodeStatusUVE, NodeStatus
+            from analytics.process_info.ttypes import \
+                ProcessInfo
 
-        if (self.node_type == 'contrail-database'):
-            from database.sandesh.database.ttypes import *
-            from database.sandesh.database.cpuinfo.ttypes import *
+	if (self.node_type == 'contrail-database'):
+            from database.sandesh.database.ttypes import \
+                NodeStatusUVE, NodeStatus
+            from database.sandesh.database.process_info.ttypes import \
+                ProcessInfo
 
-        # following code is node independent
-        process_state_list = []
-        #sys.stderr.write("Sending whole of process state db as UVE:" + str(self.process_state_db))
+        process_infos = []
         for key in self.process_state_db:
-            process_state = ProcessState()
+            process_info = ProcessInfo()
             pstat = self.process_state_db[key]
-            process_state.process_name = key 
-            process_state.process_state = pstat.process_state
-            process_state.start_count = pstat.start_count
-            process_state.stop_count = pstat.stop_count
-            process_state.exit_count = pstat.exit_count
-            process_state.last_start_time = pstat.start_time
-            process_state.last_stop_time = pstat.stop_time
-            process_state.last_exit_time = pstat.exit_time
-            process_state.core_file_list = pstat.core_file_list
-            #sys.stderr.write(str(pstat.core_file_list))
-            #sys.stderr.write("Adding to UVE:" + str(process_state))
-            process_state_list.append(process_state)
-            #sys.stderr.write("Sending process state list:" + str(process_state_list))
+            process_info.process_name = key 
+            process_info.process_state = pstat.process_state
+            process_info.start_count = pstat.start_count
+            process_info.stop_count = pstat.stop_count
+            process_info.exit_count = pstat.exit_count
+            process_info.last_start_time = pstat.start_time
+            process_info.last_stop_time = pstat.stop_time
+            process_info.last_exit_time = pstat.exit_time
+            process_info.core_file_list = pstat.core_file_list
+            process_infos.append(process_info)
 
-        # send UVE based on node type
-        if ( (self.node_type == 'contrail-analytics') or
-             (self.node_type == 'contrail-config') or (self.node_type == 'contrail-database')
-            ):
-            mod_cpu_state = ModuleCpuState()
-            mod_cpu_state.name = socket.gethostname()
-            mod_cpu_state.process_state_list = process_state_list
-            cpu_state_trace = ModuleCpuStateTrace(data=mod_cpu_state)
-            sys.stderr.write('sending UVE:' + str(cpu_state_trace))
-            cpu_state_trace.send()
-
-        if (self.node_type == 'contrail-control'):
-            bgp_router_state = BgpRouterState()
-            bgp_router_state.name = socket.gethostname()
-            bgp_router_state.process_state_list = process_state_list
-            bgp_router_state_trace = BGPRouterInfo(data=bgp_router_state)
-            sys.stderr.write('sending UVE:' + str(bgp_router_state_trace))
-            bgp_router_state_trace.send()
-
-        if (self.node_type == 'contrail-vrouter'):
-            vrouter_stats_agent = VrouterStatsAgent()
-            vrouter_stats_agent.name = socket.gethostname()
-            vrouter_stats_agent.process_state_list = process_state_list
-            vrouter_stats_trace = VrouterStats(data=vrouter_stats_agent)
-            sys.stderr.write('sending UVE:' + str(vrouter_stats_trace))
-            vrouter_stats_trace.send()
+        # send node UVE
+        node_status = NodeStatus()
+        node_status.name = socket.gethostname()
+        node_status.process_info = process_infos
+        node_status_uve = NodeStatusUVE(data = node_status)
+        sys.stderr.write('Sending UVE:' + str(node_status_uve))
+        node_status_uve.send()
     # end send_process_state_db
 
     def send_database_usage(self):
-        from database.sandesh.database.ttypes import *
-        from database.sandesh.database.cpuinfo.ttypes import *
+        from database.sandesh.database.ttypes import \
+            DatabaseUsageInfo, DatabaseUsageStat
 
         (linux_dist, x, y) = platform.linux_distribution()
         if (linux_dist == 'Ubuntu'):
