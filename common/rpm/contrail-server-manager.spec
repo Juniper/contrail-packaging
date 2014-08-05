@@ -128,12 +128,14 @@ mv /etc/cobbler/pxe/pxesystem_esxi.template /etc/cobbler/pxe/pxesystem_esxi.temp
 cp %{_contrailetc}/cobbler/pxesystem_esxi.template /etc/cobbler/pxe
 
 cp -r %{_contrailetc}/puppet /etc/
-cp -r %{_contrailetc}/kickstarts /var/www/html/
+install -d -m 755 %{_contrailetc}/kickstarts /var/www/html/
 cp %{_contrailetc}/sendmail.cf /etc/mail/
 
 cp /usr/bin/server_manager/dhcp.template /etc/cobbler/
-cp -r /usr/bin/server_manager/kickstarts /var/www/html/
+install -d -m 755 /usr/bin/server_manager/kickstarts/* /var/www/html/kickstarts/
 mkdir -p /var/www/html/contrail
+
+dpkg-scanpackages /var/www/html/thirdparty_packages | gzip -9c > /var/www/html/thirdparty_packages/Packages.gz
 
 cp -u /etc/puppet/puppet_init_rd /var/www/cobbler/aux/puppet
 easy_install argparse
@@ -164,14 +166,15 @@ chkconfig puppetmaster on
 chkconfig contrail_smgrd on
 chkconfig puppet on
 
+%preun
+rm -vv /var/www/html/thirdparty_packages/Packages.gz
 
 %build
 
 %install
 rm -rf %{buildroot}
 mkdir -p  %{buildroot}
-mkdir -p  %{buildroot}/var/www/html/thirdparty_packages
-
+install -d -m 755 %{buildroot}/var/www/html/thirdparty_packages
 install -d -m 755 %{buildroot}%usr
 install -d -m 755 %{buildroot}%{_sbinusr}
 
