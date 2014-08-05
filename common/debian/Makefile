@@ -42,6 +42,7 @@ PACKAGES = \
 	contrail-web-controller-deb \
 	contrail-nodemgr-deb \
 	contrail-setup-deb \
+	contrail-provisioning-tools-deb \
 	supervisord-deb \
 	$(CONTRAIL_OPENSTACK) \
 	contrail-openstack-ha-deb \
