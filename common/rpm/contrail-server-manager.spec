@@ -135,6 +135,8 @@ cp /usr/bin/server_manager/dhcp.template /etc/cobbler/
 cp -r /usr/bin/server_manager/kickstarts /var/www/html/
 mkdir -p /var/www/html/contrail
 
+dpkg-scanpackages /var/www/html/thirdparty_packages | gzip -9c > /var/www/html/thirdparty_packages/Packages.gz
+
 cp -u /etc/puppet/puppet_init_rd /var/www/cobbler/aux/puppet
 easy_install argparse
 easy_install paramiko
@@ -164,14 +166,15 @@ chkconfig puppetmaster on
 chkconfig contrail_smgrd on
 chkconfig puppet on
 
+%preun
+rm -vv /var/www/html/thirdparty_packages/Packages.gz
 
 %build
 
 %install
 rm -rf %{buildroot}
 mkdir -p  %{buildroot}
-mkdir -p  %{buildroot}/var/www/html/thirdparty_packages
-
+install -d -m 755 %{buildroot}/var/www/html/thirdparty_packages
 install -d -m 755 %{buildroot}%usr
 install -d -m 755 %{buildroot}%{_sbinusr}
 
