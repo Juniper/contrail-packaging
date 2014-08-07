@@ -59,16 +59,13 @@ pushd %{_distrothirdpartydir}/ncclient
 popd
 
 pushd %{_builddir}/..
-install -D -m 644 %{_distropkgdir}/contrail-api.conf %{buildroot}%{_sysconfdir}/contrail/contrail-api.conf
-install -D -m 644 %{_distropkgdir}/schema_transformer.conf %{buildroot}%{_sysconfdir}/contrail/schema_transformer.conf
-install -D -m 644 %{_distropkgdir}/svc_monitor.conf %{buildroot}%{_sysconfdir}/contrail/svc_monitor.conf
 install -D -m 755 %{_distropkgdir}/supervisor-config.initd %{buildroot}%{_initddir}/supervisor-config
 install -D -m 755 %{_distropkgdir}/contrail-api.initd.supervisord %{buildroot}%{_initddir}/contrail-api
 install -D -m 755 %{_distropkgdir}/rabbitmq-server.initd.supervisord %{buildroot}%{_initddir}/rabbitmq-server.initd.supervisord
 install -D -m 755 %{_distropkgdir}/contrail-discovery.initd.supervisord %{buildroot}%{_initddir}/contrail-discovery
 install -D -m 755 %{_distropkgdir}/contrail-svc-monitor.initd.supervisord %{buildroot}%{_initddir}/contrail-svc-monitor
 install -D -m 755 %{_distropkgdir}/ifmap.initd.supervisord %{buildroot}%{_initddir}/ifmap
-install -p -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
+install -D -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
 install -p -m 755 %{_distropkgdir}/contrail-api.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
 install -p -m 755 %{_distropkgdir}/rabbitmq-server.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/rabbitmq-server.ini
@@ -115,9 +112,6 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
-%config(noreplace) %{_sysconfdir}/contrail/contrail-api.conf
-%config(noreplace) %{_sysconfdir}/contrail/schema_transformer.conf
-%config(noreplace) %{_sysconfdir}/contrail/svc_monitor.conf
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then

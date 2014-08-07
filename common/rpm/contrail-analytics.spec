@@ -153,8 +153,8 @@ pushd %{_builddir}/..
 install -p -m 755 build/debug/analytics/vizd    %{buildroot}%{_bindir}/contrail-collector
 install -p -m 755 build/debug/query_engine/qed  %{buildroot}%{_bindir}/contrail-query-engine
 install -p -m 755 %{_distropkgdir}/contrail-analytics.rules %{buildroot}%{_supervisordir}/contrail-analytics.rules
-install -D -m 644 controller/src/analytics/contrail-collector.conf %{buildroot}/%{_contrailetc}/collector.conf
-install -D -m 644 controller/src/query_engine/contrail-query-engine.conf %{buildroot}/%{_contrailetc}/query-engine.conf
+install -D -m 644 controller/src/analytics/contrail-collector.conf %{buildroot}/%{_contrailetc}/contrail-collector.conf
+install -D -m 644 controller/src/query_engine/contrail-query-engine.conf %{buildroot}/%{_contrailetc}/contrail-query-engine.conf
 
 #install wrapper scripts for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail_collector_pre  %{buildroot}%{_bindir}/contrail_collector_pre
@@ -231,8 +231,8 @@ fi
 %{_bindir}/contrail-dbutils
 %{_bindir}/contrail_collector_pre
 %{_bindir}/contrail_qe_pre
-%config(noreplace) %{_contrailetc}/collector.conf
-%config(noreplace) %{_contrailetc}/query-engine.conf
+%config(noreplace) %{_contrailetc}/contrail-collector.conf
+%config(noreplace) %{_contrailetc}/contrail-query-engine.conf
 %{_venv_root}
 %config(noreplace) %{_supervisordir}/contrail-collector.ini
 %config(noreplace) %{_supervisordir}/contrail-analytics-api.ini
