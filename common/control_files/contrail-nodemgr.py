@@ -429,7 +429,7 @@ def main(argv=sys.argv):
         #If conf file is indented ConfigParser cannot read, so stripping the contents
         import ConfigParser
         from StringIO import StringIO
-        data = StringIO('\n'.join(line.strip() for line in open('/etc/contrail/collector.conf')))
+        data = StringIO('\n'.join(line.strip() for line in open('/etc/contrail/contrail-collector.conf')))
         Config = ConfigParser.SafeConfigParser()
         Config.readfp(data)
         if discovery_server == socket.gethostname():
