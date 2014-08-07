@@ -226,9 +226,9 @@ class EventManager:
             (analytics_db_size, error_value) = Popen("set `du -skL \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics` && echo $1 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
         db_uve = DatabaseUsageInfo()
         try:
-            db_uve.disk_space_used = int(disk_space_used)
-            db_uve.disk_space_available = int(disk_space_available)
-            db_uve.analytics_db_size = int(analytics_db_size)
+            db_uve.disk_space_used_1k = int(disk_space_used)
+            db_uve.disk_space_available_1k = int(disk_space_available)
+            db_uve.analytics_db_size_1k = int(analytics_db_size)
         except ValueError:
             sys.stderr.write("Failed to get database usage" + "\n")
         else:
