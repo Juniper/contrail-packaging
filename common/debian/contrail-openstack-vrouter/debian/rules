@@ -38,10 +38,6 @@ override_dh_auto_install:
 	install -d -m 755 ${buildroot}/etc/init
 	install -d -m 755 ${buildroot}/etc/init.d
 	install -d -m 755 ${buildroot}${_supervisorconf}
-	install -p -m 644 $(_confsrcdir)/supervisor-vrouter.upstart ${buildroot}/etc/init/supervisor-vrouter.conf
-	ln -sf /lib/init/upstart-job ${buildroot}/etc/init.d/supervisor-vrouter
-	install -p -m 644 $(_confsrcdir)/contrail-vrouter.initd.supervisord ${buildroot}/etc/init.d/contrail-vrouter
-	install -p -m 644 $(_confsrcdir)/supervisord_vrouter.conf ${buildroot}/etc/contrail/supervisord_vrouter.conf
 	# Install supervisord nova config files and directories
 	install -d -m 755 ${buildroot}${_supervisornovaconf}
 	install -D -m 755 $(_confsrcdir)/supervisor-openstack.upstart $(buildroot)/etc/init/supervisor-openstack.conf.upstart_vrouter
