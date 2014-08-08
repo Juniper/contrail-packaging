@@ -1,271 +1,231 @@
-nova (2:2013.1.3-0ubuntu1) raring-proposed; urgency=low
+nova (2:2013.2.1-0ubuntu1) saucy-proposed; urgency=low
 
   * Set epoch to 2 for Contrail
 
- -- Rudra Rugge <rrugge@juniper.net>  Wed, 19 Feb 2014 10:12:27 +0100
+ -- Atul Moghe <amoghe@juniper.net>  Fri, 21 Feb 2014 10:12:27 +0100
 
-nova (1:2013.1.3-0ubuntu1) raring-proposed; urgency=low
+nova (1:2013.2.1-0ubuntu1) saucy-proposed; urgency=low
 
-  * Resynchronize with stable/grizzly (89c7ee4) (LP: #1210447):
-    - [8e6edd2] Bump stable/grizzly next version to 2013.1.3
-    - [61fc529] attach quantum security group to an existing vm failed
-      LP: 1189059
-    - [60774bd] nova-compute fails to start if quantum is down LP: 1186357
-    - [8e6d4b6] asymmetric routes in nova network with external gateway and
-      routing_source_ip LP: 1182143
-    - [8849413] Failed VM's not set to error state on exception LP: 1182056
-    - [ef10eee] Double healing of info_cache with cells LP: 1180304
-    - [7422d83] Can't log into  VM after powervm is resized LP: 1169848
-    - [49ab0e8] stack trace when instance_actions extension can not find
-      instance in GET LP: 1182867
-    - [e71247c] nova service-list returns illegal result with non db service
-      heartbeat LP: 1168861
-    - [3f60606] Volume IO usage gets reset to 0 after a reboot / crash
-      LP: 1169097
-    - [19c443b] unused method  list_interfaces in vmware driver can be removed
-      LP: 1187251
-    - [a8dab9f] No cleanup done when file transfer fails with powervm driver
-      LP: 1173017
-    - [fc98015] nova consoleauth depends on Conductor Service LP: 1186123
-    - [1066418] VMware drivers are no longer passing quantum port-id to
-      vCenter LP: 1183452
-    - [b92075c] nova net-list fails on empty list with Quantum backend
-      LP: 1189976
-    - [3ba31f2] Create VM with no networks with Quantum Gives SecurityGroups
-      Exception LP: 1191044
-    - [89150b2] Periodic ValueErrors when using qpid LP: 1185465
-    - [0e0d615] Libvirt pre-Grizzly instances cannot be block migrated
-      LP: 1185588
-    - [27960ef] ZMQ ipc socket file is created using un-sanitized network
-      input LP: 1122763
-    - [265b868] cannot block migrate old style instances libvirt complains
-      LP: 1175286
-    - [008a68a] code logical error exists in vmwareapi vif.py  LP: 1177635
-    - [378c045] Instance IP addresses are re-used even when previous instance
-      could not be powered off LP: 1180178
-    - [48ddffe] Reboot of compute node breaks VMs with volumes LP: 1188326
-    - [f427f01] Missing dashes from console-log LP: 1194032
-    - [78ebf1a] network-create returns an internal error when network
-      conflicts LP: 1158075
-    - [767c850] Instance nics are reorder after reboot LP: 1187092
-    - [0b45996] instance directory naming update to use uuid  LP: 1186944
-    - [06cfad5] Disassociate failed dhcp fixed ip in deallocate_for_instance()
-      method LP: 1180766
-    - [cbcdfc5] Allow confirm_resize action on an instance in 'deleting'
-      status LP: 1189391
-    - [2563c44] aggregate_get_by_host returns aggregates from other hosts
-      LP: 1201277
-    - [109f3a9] nova libvirt driver requires iscsi initiator name regardless
-      of using it in volume drivers LP: 1007084
-    - [7f1c336] Host is always set to None in get_instance_nw_info(...)
-      LP: 1194178
-    - [1cf30a3] nova boot with colume should fail if the volume is already
-      attached to another instance LP: 1166770
-    - [9cb9361] Aggregate metadata filtering by key returns unrelated metadata
-      LP: 1201283
-    - [a61872b] Need clean up  ftp transfer faiure  in powervm driver
-      LP: 1188884
-    - [91bcd15] Race can cause soft deleted instance to be erased by mistake
-      LP: 1186243
-    - [c57fded] Nova fails to create a security group rule if ::0/0 is used as
-      cidr LP: 1199943
-    - [c698dd3] VMwareESXDriver and VMwareVCDriver report incorrect stat
-      LP: 1180779
-    - [e572faf] novnc fails when amqp_rpc_single_reply_queue=True LP: 1193031
-    - [34ddd27] eventlet.monkey_patch() for spice and vnc proxy
-    - [864837f] hypervisor_hostname not updated on evacuate LP: 1198284
-    - [756a772] libvirt migrate/resize on shared storage can cause data loss
-      LP: 1177247
-    - [889b215] nova live-migration of volume-backed VM fails because of image
-      is None LP: 1199811
-    - [60712a4] VNC console does not work with VCDriver LP: 1178369
-    - [e0aa0f5] metadata service throws error 500 when compute_driver is not
-      set LP: 1184641
-    - [340d337] Instance IP addresses are re-used even when previous instance
-      could not be powered off LP: 1180178
-    - [8247dc8] Resource limit circumvention in Nova private flavors
-      (CVE-2013-2256) LP: 1194093
-    - [bd7e467] Denial of Service in Nova network source security groups
-      (CVE-2013-4185) LP: 1184041
-    - [c3fddb7] Resize a VM when a volume is attached fails LP: 1190364
-    - [01edbaa] Hyper-V versions before 2012 are not properly recognized
-      LP: 1203059
-    - [b18818a] driver libvirt doesn't honor vif quota LP: 1185030
-    - [798984d] config drive not visible to windows LP: 1155842
-    - [d18ceb1] nova live-migration failed due to exception.MigrationError
-      LP: 1171526
-    - [1934dbc] vmware Hyper for nova vnc console url parameters error
-      LP: 1172177
-    - [89c7ee4] [OSSA 2013-023] Potential unsafe XML usage (CVE-2013-4179,
-      CVE-2013-4202) LP: 1190229
-  * debian/rules: Clean new setuptools-git cruft.
-  * debian/control: Update Vcs fields.
+  * Resynchronize with stable/havana (a4ffc06) (LP: #1262788):
+    - [6bf7e78] datastore selection bug - fills first disk only LP: 1227825
+    - [66e5a8d] Deploy instances failed on Hyper-V with Chinese locale
+      LP: 1229671
+    - [6e50dbd] flavor pagination incorrectly uses id rather than flavorid
+      LP: 1226698
+    - [66f2db5] Regression: Cinder Volumes "unable to find iscsi target" for
+      VMware instances LP: 1193980
+    - [d8e6477] Restarting nova compute has an exception LP: 1243291
+    - [a6fc29a] exception.InstanceIsLocked is not caught in start and stop
+      server api LP: 1233026
+    - [2e3da55] VMware: errors booting from volume via Horizon LP: 1235022
+    - [3cdfe89] [OSSA 2013-029] Unchecked qcow2 root disk sizes DoS LP: 1206081
+    - [a44c4d2] nova-api-{ec2,metadata,os-compute} don't allow SSL to be
+      enabled LP: 1237126
+    - [e360dc2] notification failure in _sync_power_states LP: 1244311
+    - [cde1eaa] notification not available for deleting an instance having no
+      host associated LP: 1211742
+    - [55d87dc] Clear text password has been print in log by some API call
+      LP: 1231263
+    - [c139717] Unshelving an instance with an attached volume causes the
+      volume to not get attached LP: 1246412
+    - [458c79f] Bogus ERROR level debug spew when creating a new instance
+      LP: 1239603
+    - [31c9322] VMware: restarting nova compute reports invalid instances
+      LP: 1237795
+    - [818aac9] Nova api doesn't start with a backdoor port set LP: 1243260
+    - [84f20a7] NBD mount errors when booting an instance from volume
+      LP: 1188543
+    - [85c8f12] Hyper-V fails to spawn snapshots LP: 1234759
+    - [f7cfc1c] target_iqn is referenced before assignment after exceptions in
+      hyperv/volumeop.py attch_volume() LP: 1233837
+    - [0df673f] API cell always doing local deletes LP: 1240247
+    - [727261e] flavor extra spec api fails with XML content type if key
+      contains a colon LP: 1213927
+    - [ef9aec1] infinite recursion when deleting an instance with no network
+      interfaces LP: 1251792
+    - [9aea662] encryptors module forces cert and scheduler services to depend
+      on cinderclient LP: 1246103
+    - [c51001e] TypeError in periodic task 'update_available_resource'
+      LP: 1238374
+    - [43d1385] nova compute crashes if you do not have any hosts in your
+      cluster LP: 1197041
+    - [8a99344] VMware: Detaching a volume from an instance also deletes the
+      volume's backing vmdk (ESXDriver only) LP: 1241350
+    - [8affa07] libvirt's _create_ephemeral must accept max_size LP: 1250032
+    - [5847e57] Avoid clobbering {system_,}metadata dicts passed to instance
+      update
+    - [36a08ff] Require new python-cinderclient for Havana LP: 1230925
+    - [0056908] libvirt evacuate(shared storage) fails w/ Permission denied on
+      disk.config LP: 1247526
+    - [4fcd748] Nova live migration failed due to OLE error LP: 1246592
+    - [ac78062] Error mispelt in disk api file LP: 1253510
+    - [e99e9c1] min_count ignored for instance create LP: 1224453
+    - [8f007df] VCDriver: Failed to resize instance LP: 1199954
+    - [bf4addf] Tempest failures due to failure to return console logs from an
+      instance LP: 1251920
+    - [34ec05d] the snapshot of a volume-backed instance cannot be used to boot
+      a new instance LP: 1246327
+    - [6a2bab6] [messaging] QPID broadcast RPC requests to all servers for a
+      given topic LP: 1257293
+    - [ec7059a] VMwareVCDriver: snapshot failure when host in maintenance mode
+      LP: 1229994
+    - [b78f90f] VMWARE: Intermittent problem with stats reporting LP: 1252827
+    - [14baf9a] the snapshot of a volume-backed instance cannot be used to boot
+      a new instance LP: 1246327
+    - [5a9551d] VM re-scheduler mechanism will cause BDM-volumes conflict
+      LP: 1195947
+    - [e5cb2de] Updated from global requirements
+    - [a4ffc06] [OSSA 2013-033] Metadata queries from Neutron to Nova are not
+      restricted by tenant (CVE-2013-6419) LP: 1235450
+  * debian/patches: Refresh.
+  * debian/patches/revert-stable-havana-requirements.patch: Revert
+    version bumps to dependencies in stable/havana back to what was
+    shipped with Saucy.
 
- -- Adam Gandelman <adamg@ubuntu.com>  Fri, 09 Aug 2013 10:12:27 +0100
+ -- Adam Gandelman <adamg@ubuntu.com>  Thu, 12 Dec 2013 15:09:36 -0800
 
-nova (1:2013.1.2-0ubuntu1) raring-proposed; urgency=low
+nova (1:2013.2-0ubuntu1) saucy; urgency=low
 
-  * Dropped patches, applied upstream:
-    - debian/patches/CVE-2013-2096.patch: [a4fc0c8]
-  * Resynchronize with stable/grizzly (8c136a8e) (LP: #1188788):
-    - [8c136a8] instance_type data cannot be extracted from sys_meta after
-      instance deleted LP: 1185190
-    - [6556344] Some nova.tests.integrated.test_api_samples.Hypervisors* tests
-      fail when run as single test LP: 1177802
-    - [bc35dba] Make nova.virt.fake.FakeDriver useable in integration testing
-    - [ab51ac6] Cannot resize instance if base image is not available
-      LP: 1160773
-    - [4933c15] FC attach code doesn't discover multipath device LP: 1180497
-    - [605ea6f] Failure to snapshot backend LP: 1166160
-    - [ec335d0] bug in get_instance_security_groups() if security group has no
-      name LP: 1182738
-    - [fdb33fb] Traceback from cinderclient in nova-api log for BadRequest
-      errors LP: 1098048
-    - [de50a5a] vmwareapi: Add supported_instances to host state
-    - [129d118] ERROR: test_resize_server_revert BuildErrorException LP: 1161529
-    - [e05cf67] EC2 API throws stacktrace if adding security group rule that
-      already exists LP: 1180973
-    - [158f003] The hypervisor_hostname is not updated after live migration
-      LP: 1173376
-    - [b4d8cfe] variable referenced before assignment in vmwareapi code
-      LP: 1177689
-    - [40f3eed] Some Compute API methods unnecessarily alter the vm_state.
-      LP: 1158509
-    - [d4bed18] Cannot resize a volume backed instance booted without an image
-      LP: 1182114
-    - [bba57e9] nova interface-attach fails with quantum LP: 1171636
-    - [e0a8bdd] InstanceMetadata content can be None LP: 1163598
-    - [5094e83] nova coverage create lots empty folders even with coverage
-      extension disabled LP: 1169005
-    - [76eb8f7] ZooKeeper servicegroup driver is trying to import module by
-      wrong name LP: 1177776
-    - [b8c4346] Inconsistent connectivity between instances with floating IPs
-      LP: 1178745
-    - [726ae59] race condition between delete instance(with floating ip
-      associated) and delete floating ip LP: 1172599
-    - [498ce52] Don't swallow missing SR error LP: 1175357
-    - [be0a14a] Nic Ordering not guaranteed with nova-network API LP: 1170725
-    - [3c84539] Detach volume fails when using multipath iscsi LP: 1178893
-    - [fc5c6ec] Quantum Security Group driver doesn't accept none value for
-      from_port & to _port LP: 1176027
-    - [784b6e4] ERROR in log when rebooting too soon after a reboot LP: 1157237
-    - [3b52002] Resize revert operations fail with stack traces LP: 1180111
-    - [25f2025] Live migration fails when the instance booted from volume has no
-      image. LP: 1170596
-    - [1ffab28] internal service AZ not hidden for disabled zones LP: 1167956
-    - [c532f7a] Key error thrown when create lpar instance failed LP: 1173303
-    - [a35e0f4] soft delete values in InstanceSystemMetadata on instance delete
-      LP: 1153827
-    - [1a682a5] Restarting compute service mistakenly reboots live instance
-      LP: 1176897
-    - [a4fc0c8] [OSSA 2013-012] Unchecked qcow2 root disk sizes LP: 1177830
-    - [4226aa9] Nova evacuate failed when the VM is in shutoff status
-      LP: 1176773
-    - [687cd67] floating ip assignment can fail silently LP: 1178658
-    - [5358ee9] when using multi_host and update_dns_entries dnsmasq is missing
-      addn-hosts arg LP: 1170529
-    - [325ab8f] wrong instance bdm response in ec2 api LP: 1165973
+  * New upstream release (LP: #1236462).
 
- -- Adam Gandelman <adamg@ubuntu.com>  Fri, 07 Jun 2013 13:28:36 -0400
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 17 Oct 2013 11:27:05 -0400
 
-nova (1:2013.1.1-0ubuntu2) raring-proposed; urgency=low
+nova (1:2013.2~rc2-0ubuntu1) saucy; urgency=low
 
-  * Rebase on latest security updates.
-  * SECURITY UPDATE: verify virtual size of QCOW2 images
-    - CVE-2013-2096.patch: update nova/virt/libvirt/imagebackend.py to
-      check QCOW2 image size during root disk creation
-    - CVE-2013-2096
+  * New upstream release candidate (LP: #1239156):
+    - d/p/fix-boto-versioning.patch: Cherry picked fix from upstream gerrit for
+      test failures with boto < 2.13.
+  * d/control: Add epoch to versioned dependencies for python-oslo.config. 
 
- -- James Page <james.page@ubuntu.com>  Fri, 17 May 2013 11:02:27 +0100
+ -- James Page <james.page@ubuntu.com>  Sun, 13 Oct 2013 11:05:46 +0100
 
-nova (1:2013.1.1-0ubuntu1) raring-proposed; urgency=low
+nova (1:2013.2~rc1-0ubuntu3) saucy; urgency=low
 
-  * Resynchronize with stable/grizzly (be94dd25) (LP: #1179626):
-    - [e49e38c] ArchiveTestCase.test_archive_deleted_rows_fk_constraint fails on
-      RHEL6 LP: 1158828
-    - [7bf3e8d] Insecure directory creation for signing LP: 1174608
-    - [55df546] VMware Hyper snapshot image missing some properties LP: 1174199
-    - [447e4a3] _update_usage_from_migrations doesn't grab instance for
-      migration LP: 1163622
-    - [79ad6cb] baremetal nodes are garbage collected incorrectly LP: 1174952
-    - [2e55ecc] volume attach fails without systool installed LP: 1172486
-    - [5576985] Nova API memcached key encoding error LP: 1174487
-    - [df5d13c] nova-manage out of memory error creating many floating IPs
-      LP: 1163394
-    - [512d495] import and install gettext in vm_vdi_cleaner.py
-    - [141107f] nova-manage uses nova.db.fixed_ip_get_all_by_instance_host,
-      which no longer exists LP: 1163660
-    - [a43c11e] Wrong proxy port in nova.conf for Spice LP: 1172957
-    - [a313b12] image creation causes stacktrace LP: 1169560
-    - [7771985] Kernel boot output missing from VNC/Spice consoles with AMI
-      images LP: 1164021
-    - [c185195] EC2 CreateVolumes/DescribeVolumes strange status  LP: 1074901
-    - [1168873] console auth does not work with memcache, unicode error (again)
-      LP: 1164784
-    - [c7a0d74] Passing duplicate network ids to Quantum throws wrong exception
-      LP: 1165088
-    - [a1fe8e2] _poll_rescued_instances() makes an invalid database query
-      LP: 1167619
-    - [6c01eee] ec2 api does not work for aws-java-sdk LP: 1156445
-    - [1ecc009] Caching metadata fails when using memcached LP: 1160900
-    - [9909095] Unnecessary db call in scheduler driver live-migration code
-      LP: 1167811
-    - [a3cc7bc] libvirt livemigration warning logger refernces a not defined
-      local variable LP: 1164072
-    - [2574421] set timeout for paramiko ssh connection
-    - [7e527ca] Compute manager fails to cleanup compute_nodes not reported by
-      driver LP: 1161193
-    - [52663f7] Instance joins with system_metadata are critically slow
-      LP: 1164737
-    - [e653938] nova list quantum security group cache  LP: 1161518
-    - [f7bcd95] get_instance_security_groups() get_admin_context() causes lots
-      of keystone chatter LP: 1161081
-    - [232f874] Nova API Memcached Encoding Error LP: 1158958
-    - [6d16278] Wrong disk's over committed size computing caused
-      disk_available_least resource counting increasing LP: 1167695
-    - [02da2d5] PolicyNotAuthorized not returned for confirmResize,
-      revertResize, reboot LP: 1170453
-    - [05e1c47] In-progress migrations may not have stashed instance types
-      LP: 1164110
-    - [e48e194] Update latest oslo.setup.
-    - [9db4729] Argument order inconsistancy in
-      nova.network.quantumv2.api.get_instance_nw_info() LP: 1159042
-    - [c4cd98c] remove unecessary function argument  in vmwareapi LP: 1171376
-    - [71e39dc] Cannot boot Nova as quantum throws 404 when Floating IP
-      extension unavailable LP: 1163670
-    - [0f4c3f9] sql_connection not marked secret LP: 1160680
-    - [c118890] _error_out_instance_on_exception not playing well with eventlet
-      LP: 1163552
-    - [308e721] Fix a typo in attach_interface error path
-    - [44d42e2] libvirt: use_cow_images=false and force_raw_images=false broken
-      LP: 1163009
-    - [99b77cc] migrate/resize failed in same host with powervm driver
-      LP: 1161226
-    - [994ed95] Live-migration leaves instance in MIGRATING state if scheduler
-      fails to find a host LP: 1166771
-    - [c244d66] Instances deleted during migration cause exception in
-      _destroy_evacuated_instances LP: 1155152
-    - [54fd249] nova net-list not return network uuid but id instead LP: 1162409
-    - [b2ec668] legacy_net_info guard incompatible with new-style NetworkInfo
-      LP: 1164152
-    - [8859914] Security groups may be unavailable
-    - [3861f8c] Correctly handle an empty dnsmasq --domain LP: 1161506
-    - [da1763b] Don't join metadata twice in instance_get_all()
-    - [bcd02dd] Instance joins with system_metadata are critically slow
-      LP: 1164737
-    - [e93ea66] Optimize resource tracker queries for instances
-    - [fd66545] Set defaultbranch in .gitreview to stable/grizzly
+  * debian/patches/native-lxc-hypervisor.patch: Update
+    rootwrap.d/compute.filters to allow nova-network to start.
+    (LP: #1235373)
 
- -- Adam Gandelman <adamg@ubuntu.com>  Tue, 14 May 2013 07:49:17 -0700
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 04 Oct 2013 13:18:17 -0400
 
-nova (1:2013.1-0ubuntu2.1) raring-security; urgency=low
+nova (1:2013.2~rc1-0ubuntu2) saucy; urgency=low
 
-  * SECURITY UPDATE: verify virtual size of QCOW2 images
-    - CVE-2013-2096.patch: update nova/virt/libvirt/imagebackend.py to
-      check QCOW2 image size during root disk creation
-    - CVE-2013-2096
+  [ Chuck Short ]
+  * debian/patches/fix-novnc-regression.patch: Fix regression caused
+    by use of more recent version of websockify upstream (LP: #1235044).
 
- -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 15 May 2013 15:16:46 -0500
+ -- James Page <james.page@ubuntu.com>  Fri, 04 Oct 2013 11:13:34 +0100
+
+nova (1:2013.2~rc1-0ubuntu1) saucy; urgency=low
+
+  * New upstream release candidate.
+  * debian/control:
+    - Dropped python-setuptools-git, python-carrot, python-unittest2,
+      python-daemon, python-gflags, python-cheetah, python-glance,
+      python-lockfile, python-routes, python-xattr, python-novaclient,
+      python-pycurl, python-keystone, python-libxml2, python-pyparsing,
+      and python-d2to1.
+    - Suggest python-ldap for python-nova.
+    - Added python-mock, python-greenlet, python-keystoneclient,
+      python-anyjson, python-jsonschema, and python-six
+    - Bumped versioned dependencies for python-fixtures, python-testtools, and
+      testrepository,
+      python-stevedore,
+    - Added versioned depends for python-cinderclient, python-neutronclient,
+      python-boto, python-paramiko, python-amplib, python-eventlet,
+      python-glanceclient, python-oslo.config, python-paramiko, python-six
+  * debian/patches/fix-requirements.patch: Rediffed
+  * debian/patches/native-lxc-hypervisor.patch: Add native lxc support.
+    (LP: #1220701)
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 03 Oct 2013 09:42:52 -0400
+
+nova (1:2013.2~b3-0ubuntu2) saucy; urgency=low
+
+  * debian/tests: Removed tests for nova-compute-xen and nova-compute-xcp.
+
+ -- Chuck Short <zulcss@ubuntu.com>   Fri, 13 Sep 2013 10:12:52 -0400
+
+nova (1:2013.2~b3-0ubuntu1) saucy; urgency=low
+
+  * New usptream release. 
+  * debian/patches/avoid_requirements_cheetah.patch: Dropped
+  * debian/patches/fix-sqlalchemy-0.7.9-usage.patch: Dropped
+  * debian/patches/fix-requirements.patch: Refreshed.
+  * debian/patches/path-to-the-xenhost.conf-fixup.patch: Refreshed
+  * debian/control: Add python-jinja2
+  * debian/control: Dropped python-cheetah
+
+ -- Chuck Short <zulcss@ubuntu.com>  Mon, 09 Sep 2013 13:11:11 -0400
+
+nova (1:2013.2~b2-0ubuntu2) saucy; urgency=low
+
+  * debian/control: Fix python-sqlalchemy dependency. 
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 19 Jul 2013 15:03:16 -0400
+
+nova (1:2013.2~b2-0ubuntu1) saucy; urgency=low
+
+  [ Adam Gandelman ]
+  * d/patches/requirements_drop_requests_vers_cap.patch: Remove
+    upper version limit  on requests dependency, which was capped upstream
+    to fix centos-related gating issues.
+  * debian/control:
+    - Set version requirement python-kombu (>= 2.5.12).
+    - Set version requirement python-pyparsing (>= 1.5.6).
+    - Add websockify to nova-spiceproxy Depends.
+    - Add spice-html5 to nova-spiceproxy Depends (LP: #1197119)
+  * Add nova-xvpvncproxy upstart (LP: #1197163)
+
+  [ James Page ]
+  * d/control: Update VCS fields for new branch locations. 
+
+  [ Chuck Short ]
+  * New upstream release.
+  * debian/patches/fix-requirements.patch: Combined several 
+    patches into one.
+  * debian/control: Replace python-quantumclient with python-neutronclient.
+  * debian/patches/fix-sqlalchemy-0.7.9-usage.patch: Temporary patch to address a FTBFS
+    with sqlalchemy 0.7.9.
+  * debian/patches/avoid-failing-test.patch: Skip failing test on buildds.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 19 Jul 2013 09:15:03 -0400
+
+nova (1:2013.2~b1-0ubuntu3) saucy; urgency=low
+
+  * Depend on python-oslo.config instead of python-oslo-config.
+
+ -- Adam Conrad <adconrad@ubuntu.com>  Sat, 06 Jul 2013 15:36:40 -0600
+
+nova (1:2013.2~b1-0ubuntu2) saucy; urgency=low
+
+  [Yolanda Robla]
+  * debian/tests: added autopkgtests
+
+  [ Adam Gandelman ]
+  * debian/control: Set version requirements python-pbr (>= 0.5.11),
+    python-d2to1 (>= 0.2.10).
+
+ -- Chuck Short <zulcss@ubuntu.com>  Wed, 19 Jun 2013 13:00:11 -0500
+
+nova (1:2013.2~b1-0ubuntu1) saucy; urgency=low
+
+  [ Chuck Short ]
+  * New upstream version.
+  * debian/patches/avoid_setuptools_git_dependency.patch: Dropped
+    no longer needed.
+  * debian/control: Add python-pbr and python-d2to1 as build dependencies.
+  * debian/control: Drop pep8 dependency.
+  * debian/patches/fix-ubuntu-tests.patch: Dropped no longer needed.
+
+  [ Adam Gandelman ]
+  * debian/patches/avoid_requirements_websockify.patch: Remove websockify
+    to avoid making it a dependency of every nova package.
+  * debian/patches/avoid_requirements_cheetah.patch: Temporarily remove
+    Cheetah until cheetah's dependencies have been MIR'd.
+  * debian/control: Add python-babel.
+  * debian/control: Set min. version 0.7.6 on python-netaddr dependency.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 31 May 2013 07:44:38 -0500
 
 nova (1:2013.1-0ubuntu2) raring; urgency=low
 
@@ -1787,3 +1747,4 @@ nova (0.9.1~bzr204-0ubuntu1) maverick; urgency=low
   * First OpenStack release.
 
  -- Soren Hansen <soren@ubuntu.com>  Wed, 04 Aug 2010 13:27:50 +0200
+
