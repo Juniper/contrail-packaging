@@ -15,8 +15,6 @@ export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := $(SB_TOP)/build/debian/contrail-openstack-vrouter
 export buildroot := ${SB_TOP}/build/debian/contrail-vrouter-init
 export _confsrcdir := ${SB_TOP}/tools/packaging/common/control_files
-export _supervisorconf := /etc/contrail/supervisord_vrouter_files
-export _supervisornovaconf := /etc/contrail/supervisord_openstack_files
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
@@ -35,15 +33,6 @@ override_dh_auto_build:
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
 override_dh_auto_install: 
-	install -d -m 755 ${buildroot}/etc/init
-	install -d -m 755 ${buildroot}/etc/init.d
-	install -d -m 755 ${buildroot}${_supervisorconf}
-	# Install supervisord nova config files and directories
-	install -d -m 755 ${buildroot}${_supervisornovaconf}
-	install -D -m 755 $(_confsrcdir)/supervisor-openstack.upstart $(buildroot)/etc/init/supervisor-openstack.conf.upstart_vrouter
-	install -p -m 755 $(_confsrcdir)/nova-compute.initd.supervisord $(buildroot)/etc/init.d/nova-compute.initd.supervisord
-	install -p -m 755 $(_confsrcdir)/supervisord_openstack.conf $(buildroot)/etc/contrail/supervisord_openstack.conf.supervisord_vrouter
-	install -p -m 755 $(_confsrcdir)/nova-compute.ini $(buildroot)$(_supervisornovaconf)
 	
 override_dh_usrlocal:	
 
