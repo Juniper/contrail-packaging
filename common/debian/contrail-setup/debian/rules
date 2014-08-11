@@ -14,6 +14,7 @@ export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := $(SB_TOP)/build/debian/contrail-setup
 export builddist := $(SB_TOP)/build/debug/contrail-setup
+export _contrailopt := /opt/contrail
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
@@ -50,18 +51,41 @@ override_dh_auto_install:
 	rm -rf $(buildroot)
 	mkdir -p $(buildroot)
 	# Install all the directories
+	install -d -m 755 $(buildroot)
+	install -d -m 755 $(buildroot)/usr/bin
 	install -d -m 755 $(buildroot)/etc/contrail
-	install -d -m 755 $(buildroot)/opt/contrail
 	install -d -m 755 $(buildroot)/var/log/contrail
+	install -d -m 755 $(buildroot)$(_contrailopt)
+	install -d -m 755 $(buildroot)$(_contrailopt)/bin
+	install -d -m 755 $(buildroot)$(_contrailopt)/puppet
+	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_packages
+	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils
 	# Install files
 	install -p -m 644 $(builddist)/debs_list.txt  $(buildroot)/etc/contrail/debs_list.txt
 	install -p -m 644 $(builddist)/config_utils.tgz $(buildroot)/opt/contrail/config_utils.tgz
 	install -p -m 644 $(builddist)/dns_scripts.tgz $(buildroot)/opt/contrail/dns_scripts.tgz
+	install -p -m 644 $(SB_TOP)/build/debian/contrail_installer.tgz  $(buildroot)$(_contrailopt)/contrail_installer.tgz
 	install -D -m 755 $(SB_TOP)/controller/src/config/utils/contrail-version-deb $(buildroot)/usr/bin/contrail-version
 	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-config $(buildroot)/usr/bin/openstack-config 
 	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-status-deb $(buildroot)/usr/bin/openstack-status
 	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-db $(buildroot)/usr/bin/openstack-db 
 	install -D -m 755 $(SB_TOP)/controller/src/config/utils/contrail-status.py $(buildroot)/usr/bin/contrail-status
+	# install etc files
+	tar -cvzf $(SB_TOP)/build/contrail-puppet-manifest.tgz -C $(SB_TOP)/tools/puppet .
+	install -p -m 755 $(SB_TOP)/build/contrail-puppet-manifest.tgz $(buildroot)$(_contrailopt)/puppet/contrail-puppet-manifest.tgz
+	# install pkgs needed first
+	install -p -m 644 $(SB_TOP)/distro/third_party/ecdsa-0.10.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/ecdsa-0.10.tar.gz
+	install -p -m 644 $(SB_TOP)/distro/third_party/Fabric-1.7.0.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
+	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2 | cut -d '~' -f1` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu; fi
+	install -p -m 755 $(SB_TOP)/tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_packages/VERSION
+	install -p -m 755 $(SB_TOP)/tools/packaging/build/setup_ubuntu.sh  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
+	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_packages/sources.list
+	install -p -m 755 $(SB_TOP)/tools/packaging/build/repo_preferences  $(buildroot)$(_contrailopt)/contrail_packages/preferences
+	## need this for openstack-config for keystone specific, this needs to move away to openstack-config package
+	#install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh $(buildroot)/usr/bin/contrail-keystone-setup.sh
+	#install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-ha-keystone-setup.sh $(buildroot)/usr/bin/contrail-ha-keystone-setup.sh
+	# extract contrail_installer
+	cd $(buildroot)$(_contrailopt); tar xzvf contrail_installer.tgz; rm -rf contrail_installer.tgz
 
 
 override_dh_shlibdeps:

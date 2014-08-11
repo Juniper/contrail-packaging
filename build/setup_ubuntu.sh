@@ -50,6 +50,7 @@ DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated in
 DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-netaddr
 DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-paramiko
 DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install contrail-fabric-utils
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install contrail-setup
 
 # install ecdsa and fabric
 pip install --upgrade --no-deps --index-url='' /opt/contrail/contrail_installer/contrail_setup_utils/ecdsa-0.10.tar.gz
