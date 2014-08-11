@@ -92,15 +92,39 @@ popd
 # Setup directories
 rm -rf %{buildroot}
 install -d -m 755 %{buildroot}%{_contrailopt}
-install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils
+install -d -m 755 %{buildroot}%{_contrailopt}
+install -d -m 755 %{buildroot}%{_contrailopt}/bin
+install -d -m 755 %{buildroot}%{_contrailopt}/puppet
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
+install -d -m 755 %{buildroot}%{_contrailopt}/contrail_packages
+install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils
+
+# install files
+pushd %{_builddir}/..
+echo BUILDID=`echo %{_relstr} | cut -d "~" -f1` > %{buildroot}%{_contrailopt}/contrail_packages/VERSION
+install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh
+install -p -m 755 tools/packaging/build/README %{buildroot}%{_contrailopt}/contrail_packages/README
+install -p -m 755 tools/packaging/common/control_files/contrail_ifrename.sh %{buildroot}%{_contrailopt}/bin/getifname.sh
+if [ 0%{_sku} = 0icehouse ]; then
+install -d -m 755 %{buildroot}/usr/bin
+install -p -m 755 tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh %{buildroot}/usr/bin/contrail-keystone-setup.sh
+fi
+tar -cvzf %{_builddir}/../build/contrail-puppet-manifest.tgz -C %{_builddir}/../tools/puppet .
+install -p -m 755 %{_builddir}/../build/contrail-puppet-manifest.tgz %{buildroot}%{_contrailopt}/puppet/contrail-puppet-manifest.tgz
+popd
 
 # install etc files
 install -p -m 644 cfgm_utils.tgz  %{buildroot}%{_contrailopt}/cfgm_utils.tgz
 install -p -m 644 dns_scripts.tgz  %{buildroot}%{_contrailopt}/dns_scripts.tgz
+pushd %{_builddir}/build
+install -p -m 644 contrail_installer.tgz  %{buildroot}%{_contrailopt}/contrail_installer.tgz
+popd
 %if 0%{?rhel}
 pushd %{_builddir}/../distro/third_party
 tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/zope.interface-3.7.0.tar.gz ./zope.interface-3.7.0 
+install -p -m 644 paramiko-1.11.0.tar.gz %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz
+install -p -m 644 pycrypto-2.6.tar.gz %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz
+install -p -m 644 Fabric-1.7.0.tar.gz %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
 popd
 %endif
 
@@ -122,14 +146,24 @@ install -D -m 755 src/config/utils/contrail-status.py %{buildroot}%{_bindir}/con
 cd %{_contrailopt}
 tar xzvf cfgm_utils.tgz
 tar xzvf dns_scripts.tgz -C utils
+tar xzvf contrail_installer.tgz
 #pip-python install /opt/contrail/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz
 #pip-python install /opt/contrail/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz
 #pip-python install /opt/contrail/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
 
 %files
 %defattr(-, root, root)
+%{_contrailopt}/bin/getifname.sh
+%{_contrailopt}/contrail_packages/VERSION
+%{_contrailopt}/contrail_packages/README
+%{_contrailopt}/contrail_packages/setup.sh
 %{_contrailopt}/cfgm_utils.tgz
 %{_contrailopt}/dns_scripts.tgz
+%{_contrailopt}/contrail_installer.tgz
+%{_contrailopt}/puppet/contrail-puppet-manifest.tgz
+%{_contrailopt}/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz
+%{_contrailopt}/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
+%{_contrailopt}/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz
 %if 0%{?rhel}
 %{_contrailopt}/contrail_installer/contrail_setup_utils/zope.interface-3.7.0.tar.gz
 %endif
@@ -140,6 +174,9 @@ tar xzvf dns_scripts.tgz -C utils
 %dir %attr(0777, root, root) %{_localstatedir}/log/contrail
 %{_bindir}/contrail-version
 %{_bindir}/contrail-status
+%if "0%{_sku}" == "0icehouse"
+/usr/bin/contrail-keystone-setup.sh
+%endif
 
 %changelog
 

@@ -9,6 +9,8 @@ Package: contrail-setup
 Architecture: all
 Maintainer: swamy <swamy@juniper.net>
 Depends: tar, python-pip, python-netifaces, python-netaddr, python-crypto, curl, ifenslave-2.6, vlan
+# Replaces contrail_installer.tgz created by contrail-install-packages.
+Replaces: contrail-install-packages
 Section: contrail-setup
 Priority: extra
 Description: Contrail Setup package with scripts for provisioning
