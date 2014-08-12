@@ -58,6 +58,8 @@ install -p -m 755 %{_distropkgdir}/agent.conf  %{buildroot}/etc/contrail/rpm_age
 /opt/*
 /etc/*
 /var/*
+%dir %attr(0777, contrail, contrail) /var/log/contrail
+
 
 %post
 set -e

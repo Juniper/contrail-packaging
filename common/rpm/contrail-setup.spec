@@ -167,7 +167,7 @@ tar xzvf contrail_installer.tgz
     /etc/contrail/rpm_list.txt
 %endif
 /etc/contrail
-%dir %attr(0777, root, root) %{_localstatedir}/log/contrail
+%dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
 %{_bindir}/contrail-version
 %{_bindir}/contrail-status
 %if "0%{_sku}" == "0icehouse"

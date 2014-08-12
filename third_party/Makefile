@@ -239,7 +239,7 @@ all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools 
 else
 ifneq ($(CONTRAIL_SKU), icehouse)
 all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
-	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
+	python-boto libvirt puppet python-bitarray python-geventhttpclient \
 	python-pycassa python-thrift redis-py supervisor xmltodict ixgbe python-bottle
 else
 all: $(PREP) contrail-fabric-utils contrail-test euca2ools hiredis-py \
