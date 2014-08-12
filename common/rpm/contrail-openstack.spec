@@ -50,6 +50,10 @@ Requires: supervisor
 Contrail Package Requirements for Contrail Openstack
 
 %install
+# Setup directories
+rm -rf %{buildroot}
+install -d -m 755 %{buildroot}/%{_bindir}
+
 pushd %{_builddir}/..
 # Install supervisord config config files and directories
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files
@@ -78,12 +82,15 @@ install -D -m 755 %{_distropkgdir}/nova-scheduler.ini.centos %{buildroot}%{_sysc
 install -D -m 755 %{_distropkgdir}/nova-conductor.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/nova-conductor.ini
 install -D -m 755 %{_distropkgdir}/nova-consoleauth.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/nova-consoleauth.ini
 install -D -m 755 %{_distropkgdir}/nova-novncproxy.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/nova-novncproxy.ini
+# Install contrail openstack-status
+install -p -m 755 tools/provisioning/openstack-status %{buildroot}/%{_bindir}/openstack-status.contrail
 popd
 
 %files
 %defattr(-,root,root,-)
 %{_sysconfdir}/contrail
 %{_initddir}
+%{_bindir}
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack.conf.supervisord_openstack
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/keystone.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/glance-api.ini
@@ -95,8 +102,16 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/nova-conductor.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/nova-consoleauth.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/nova-novncproxy.ini
+%{_bindir}/openstack-status.contrail
 
 %post
+# Replace stock openstack-status with contrail openstack-status
+if [ -f %{_bindir}/openstack-status ]; then
+    mv %{_bindir}/openstack-status %{_bindir}/openstack-status.rpmsave
+fi
+mv %{_bindir}/openstack-status.contrail %{_bindir}/openstack-status
+
+# Replace stock openstack initd scripts with contrail initd scripts
 for svc in openstack-keystone openstack-nova_api openstack-nova-scheduler\
            openstack-nova-consoleauth openstack-nova-conductor\
            openstack-nova-novncproxy openstack-glance-api\
