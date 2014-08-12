@@ -24,12 +24,12 @@ License:            Commercial
 URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
-Requires: contrail-vrouter
-Requires: contrail-vrouter-utils
-Requires: contrail-vrouter-agent
-Requires: python-contrail-vrouter-api
+Requires: contrail-vrouter >= %{_verstr}-%{_relstr}
+Requires: contrail-vrouter-utils >= %{_verstr}-%{_relstr}
+Requires: contrail-vrouter-agent >= %{_verstr}-%{_relstr}
+Requires: python-contrail-vrouter-api >= %{_verstr}-%{_relstr}
 Requires: supervisor
-Requires: python-contrail
+Requires: python-contrail >= %{_verstr}-%{_relstr}
 
 %description
 contrail vrouter init packages provides init files 

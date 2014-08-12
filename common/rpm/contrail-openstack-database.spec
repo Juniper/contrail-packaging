@@ -22,9 +22,9 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-database
-Requires: contrail-setup
-Requires: contrail-nodemgr
+Requires: contrail-database >= %{_verstr}-%{_relstr}
+Requires: contrail-setup >= %{_verstr}-%{_relstr}
+Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
 Requires: zookeeper
 Requires: supervisor
 

@@ -42,10 +42,10 @@ Vendor:             Juniper Networks Inc
 Requires:	    sudo
 Requires:	    patch
 Requires:	    libcurl
-Requires:	    contrail-libs
+Requires:	    contrail-libs >= %{_verstr}-%{_relstr}
 %if 0%(if [ "%{dist}" != ".xen" ]; then echo 1; fi)
 Requires:           supervisor
-Requires:           contrail-vrouter-venv
+Requires:           contrail-vrouter-venv >= %{_verstr}-%{_relstr}
 Requires:           xmltodict
 %define _venv_root    /opt/contrail/vrouter-venv
 %define _venvtr       --prefix=%{_venv_root}

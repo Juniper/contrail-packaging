@@ -25,12 +25,12 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-control
-Requires: contrail-lib
-Requires: contrail-dns
-Requires: contrail-setup
-Requires: contrail-nodemgr
-Requires: python-contrail
+Requires: contrail-control >= %{_verstr}-%{_relstr}
+Requires: contrail-lib >= %{_verstr}-%{_relstr}
+Requires: contrail-dns >= %{_verstr}-%{_relstr}
+Requires: contrail-setup >= %{_verstr}-%{_relstr}
+Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
+Requires: python-contrail >= %{_verstr}-%{_relstr}
 
 %description
 Contrail Package Requirements for Control Node
