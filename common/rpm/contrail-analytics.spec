@@ -35,11 +35,11 @@ Vendor:             Juniper Networks Inc
 Requires:	    redis >= 2.6.13-1
 Requires:	    redis-py
 Requires:	    xmltodict
-Requires:	    contrail-libs
+Requires:	    contrail-libs >= %{_verstr}-%{_relstr}
 Requires:           python-pycassa
 Requires:           supervisor
 
-Requires:           contrail-analytics-venv
+Requires:           contrail-analytics-venv >= %{_verstr}-%{_relstr}
 %define             _venv_root    /opt/contrail/analytics-venv
 %define             _venvtr       --prefix=%{_venv_root}
 

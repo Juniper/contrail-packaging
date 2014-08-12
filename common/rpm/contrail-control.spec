@@ -30,9 +30,9 @@ License:            Commercial
 URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
-Requires:	  contrail-libs
+Requires:	  contrail-libs >= %{_verstr}-%{_relstr}
 Requires:         supervisor
-Requires:         contrail-control-venv
+Requires:         contrail-control-venv >= %{_verstr}-%{_relstr}
 Requires:         xmltodict
 %define _venv_root    /opt/contrail/control-venv
 %define _venvtr       --prefix=%{_venv_root}

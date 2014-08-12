@@ -27,7 +27,7 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-vrouter
+Requires: contrail-vrouter >= %{_verstr}-%{_relstr}
 Requires: abrt
 # abrt-addon-vmcore might be needed for centos. Add when package is available
 %if 0%{?fedora} >= 17
@@ -38,11 +38,11 @@ Requires: kernel = 3.6.6-1.fc17
 Requires: openstack-nova-compute
 Requires: openstack-utils
 Requires: python-thrift
-Requires: contrail-setup
-Requires: contrail-nova-vif
+Requires: contrail-setup >= %{_verstr}-%{_relstr}
+Requires: contrail-nova-vif >= %{_verstr}-%{_relstr}
 Requires: librabbitmq
-Requires: contrail-nodemgr
-Requires: contrail-vrouter-init
+Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
+Requires: contrail-vrouter-init >= %{_verstr}-%{_relstr}
 
 %if 0%{?rhel}
 Requires: tunctl

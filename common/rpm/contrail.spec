@@ -98,8 +98,8 @@ find . -print | sed 's;^;'"%{buildroot}%{_contrailutils}"';'| xargs install -d -
 Summary:            Contrail vRouter %{?_gitVer}
 Group:              Applications/System
 
-Requires: contrail-vrouter-agent
-Requires: contrail-lib
+Requires: contrail-vrouter-agent >= %{_verstr}-%{_relstr}
+Requires: contrail-lib >= %{_verstr}-%{_relstr}
 Requires: xmltodict
 
 %description vrouter
@@ -125,7 +125,7 @@ Summary:            Config openstack %{?_gitVer}
 
 Group:              Applications/System
 
-Requires:	    contrail-config
+Requires:	    contrail-config >= %{_verstr}-%{_relstr}
 Requires:	    python-keystoneclient
 Requires:	    python-novaclient
 
@@ -192,7 +192,7 @@ Summary:            Contrail vRouter %{?_gitVer}
 
 Group:              Applications/System
 
-Requires:           contrail-lib
+Requires:           contrail-lib >= %{_verstr}-%{_relstr}
 
 %description vrouter-agent
 Contrail Virtual Router Agent package
@@ -229,7 +229,7 @@ fi
 Summary:          Contrail Control %{?_gitVer}
 Group:            Applications/System
 
-Requires:         contrail-lib
+Requires:         contrail-lib >= %{_verstr}-%{_relstr}
 
 %description control
 Contrail Control package
@@ -293,7 +293,7 @@ Summary: Contrail Config %{?_gitVer}
 Group:              Applications/System
 
 BuildArch: noarch
-Requires: python-contrail
+Requires: python-contrail >= %{_verstr}-%{_relstr}
 Requires: python-bitarray
 Requires: python-gevent
 Requires: python-geventhttpclient
@@ -358,11 +358,11 @@ Summary:            Contrail Analytics %{?_gitVer}
 Group:              Applications/System
 
 Requires:           xmltodict
-Requires:           contrail-lib
+Requires:           contrail-lib >= %{_verstr}-%{_relstr}
 Requires:           pycassa
 Requires:	    redis-py
 Requires:	    redis >= 2.6.13-1 
-Requires:	    python-contrail
+Requires:	    python-contrail >= %{_verstr}-%{_relstr}
 Requires:	    python-psutil
 Requires:	    python-prettytable
 Requires:	    python-geventhttpclient

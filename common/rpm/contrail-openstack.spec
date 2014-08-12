@@ -21,9 +21,9 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: python-contrail
+Requires: python-contrail >= %{_verstr}-%{_relstr}
 Requires: openstack-dashboard
-Requires: contrail-openstack-dashboard
+Requires: contrail-openstack-dashboard >= %{_verstr}-%{_relstr}
 Requires: openstack-glance
 Requires: openstack-keystone
 Requires: openstack-nova
@@ -31,7 +31,7 @@ Requires: openstack-cinder
 Requires: mysql-server
 #Requires: MySQL-server
 Requires: openssl098e
-Requires: contrail-setup
+Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: memcached
 Requires: openstack-nova-novncproxy
 Requires: python-glance

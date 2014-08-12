@@ -26,7 +26,7 @@ Vendor:             Juniper Networks Inc
 
 Requires:	redis
 Requires:	supervisor
-Requires:	contrail-web-core
+Requires:	contrail-web-core >= %{_verstr}-%{_relstr}
 
 Source:		%{name}
 

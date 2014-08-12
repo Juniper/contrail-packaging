@@ -22,13 +22,13 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-config
+Requires: contrail-config >= %{_verstr}-%{_relstr}
 Requires: openstack-quantum-contrail
 Requires: python-novaclient
 Requires: python-keystoneclient >= 0.2.0
 Requires: python-psutil
 Requires: mysql-server
-Requires: contrail-setup
+Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: python-zope-interface
 %if 0%{?rhel} 
 Requires: python-importlib
@@ -40,10 +40,10 @@ Requires: java-1.7.0-openjdk
 Requires: haproxy
 Requires: rabbitmq-server
 Requires: python-bottle
-Requires: contrail-nodemgr
+Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
 Requires: irond 
-Requires: contrail-config-openstack
-Requires: python-contrail
+Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
+Requires: python-contrail >= %{_verstr}-%{_relstr}
 
 %description
 Contrail Package Requirements for Contrail Config
