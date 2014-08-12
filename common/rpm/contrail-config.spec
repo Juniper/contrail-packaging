@@ -37,7 +37,7 @@ Requires: xmltodict >= 0.1
 Requires: supervisor
 Requires: python-jsonpickle
 
-Requires: contrail-api-venv
+Requires: contrail-api-venv >= %{_verstr}-%{_relstr}
 %define _venv_root    /opt/contrail/api-venv
 %define _venvtr       --prefix=%{_venv_root}
 

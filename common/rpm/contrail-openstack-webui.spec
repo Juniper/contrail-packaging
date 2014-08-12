@@ -32,10 +32,10 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: python-contrail
-Requires: contrail-web-core
-Requires: contrail-web-controller
-Requires: contrail-setup
+Requires: python-contrail >= %{_verstr}-%{_relstr}
+Requires: contrail-web-core >= %{_verstr}-%{_relstr}
+Requires: contrail-web-controller >= %{_verstr}-%{_relstr}
+Requires: contrail-setup >= %{_verstr}-%{_relstr}
 
 %description
 Contrail Package Requirements for WebUI
