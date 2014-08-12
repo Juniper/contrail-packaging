@@ -46,6 +46,7 @@ Requires: python-contrail >= %{_verstr}-%{_relstr}
 Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
 Requires: python-bottle
 Requires: contrail-nodemgr  >= %{_verstr}-%{_relstr}
+Requires: ifmap-server
 
 %description
 Contrail Package Requirements for Contrail Config
@@ -86,6 +87,10 @@ install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 
 install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helper
 
+#ifmap-server related files
+install -p -D -m 755 %{_distropkgdir}/ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
+install -p -D -m 755 %{_distropkgdir}/ifmap.kill %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.kill
+
 pushd %{buildroot}
 
 for f in $(find . -type f -exec grep -nH "^#\!.*BUILD.*python" {} \; | grep -v 'Binary file' | cut -d: -f1); do
@@ -106,7 +111,7 @@ popd
 %if 0%{?fedora} >= 17
 /usr/lib/systemd/system/supervisor-config.service
 %endif
-%dir %attr(0777, root, root) %{_localstatedir}/log/contrail
+%dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
 %{_bindir}/ifmap_view.py
 %{_bindir}/venv-helper
 #%{_bindir}/encap.py
@@ -117,6 +122,8 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
+%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
+%{_sysconfdir}/contrail/supervisord_config_files/ifmap.kill
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then
