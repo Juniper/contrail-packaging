@@ -41,7 +41,7 @@ Requires: haproxy
 Requires: rabbitmq-server
 Requires: python-bottle
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
-Requires: irond 
+Requires: ifmap-server
 Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
 Requires: python-contrail >= %{_verstr}-%{_relstr}
 
@@ -72,6 +72,7 @@ install -p -m 755 %{_distropkgdir}/rabbitmq-server.ini %{buildroot}%{_sysconfdir
 install -p -m 755 %{_distropkgdir}/contrail-schema.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 install -p -m 755 %{_distropkgdir}/contrail-svc-monitor.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 install -p -m 755 %{_distropkgdir}/contrail-discovery-centos.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
+install -p -m 755 %{_distropkgdir}/contrail-ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/
 install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-api.kill %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.kill
 install -p -m 755 %{_distropkgdir}/contrail-config.rules %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config.rules
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
@@ -100,7 +101,7 @@ popd
 %{python_sitelib}/ncclient-*
 #/usr/share/doc/python-vnc_cfg_api_server
 %{_sysconfdir}/contrail
-%dir %attr(0777, root, root) %{_localstatedir}/log/contrail
+%dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
 %{_bindir}/ifmap_view.py
 %{_bindir}/venv-helper
 #%{_bindir}/encap.py
@@ -112,6 +113,7 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then

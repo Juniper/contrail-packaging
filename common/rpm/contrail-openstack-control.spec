@@ -53,6 +53,8 @@ install -D -m 755 %{_distropkgdir}/contrail-control.initd.supervisord %{buildroo
 #install nstall .ini files for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_control.conf %{buildroot}%{_contrailetc}/supervisord_control.conf
 install -p -m 755 %{_distropkgdir}/contrail-control.ini %{buildroot}%{_supervisordir}/contrail-control.ini
+install -p -m 755 %{_distropkgdir}/contrail-named.ini %{buildroot}%{_supervisordir}/contrail-named.ini
+install -p -m 755 %{_distropkgdir}/contrail-dns.ini %{buildroot}%{_supervisordir}/contrail-dns.ini
 
 install -D -m 644 %{_distropkgdir}/control_param %{buildroot}/etc/contrail/control_param
 install -p -m 755 %{_distropkgdir}/contrail-control.rules %{buildroot}%{_supervisordir}/contrail-control.rules
@@ -65,9 +67,11 @@ install -p -m 755 %{_distropkgdir}/contrail-control.rules %{buildroot}%{_supervi
 %{_initddir}/supervisor-control
 %{_initddir}/contrail-control
 %endif
-
+%defattr(-,contrail,contrail,-)
 %config(noreplace) /etc/contrail/control_param
 %config(noreplace) %{_supervisordir}/contrail-control.ini
+%config(noreplace) %{_supervisordir}/contrail-named.ini
+%config(noreplace) %{_supervisordir}/contrail-dns.ini
 
 %post
 (umask 007; /bin/echo "HOSTNAME=$(hostname)" >> /etc/contrail/control_param)
