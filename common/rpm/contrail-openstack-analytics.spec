@@ -26,10 +26,10 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-analytics
-Requires: contrail-setup
-Requires: contrail-nodemgr
-Requires: python-contrail
+Requires: contrail-analytics >= %{_verstr}-%{_relstr}
+Requires: contrail-setup >= %{_verstr}-%{_relstr}
+Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
+Requires: python-contrail >= %{_verstr}-%{_relstr}
 %if 0%{?rhel}
 Requires: python-importlib
 %endif
