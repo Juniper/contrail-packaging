@@ -45,9 +45,9 @@ function daemon_stop() {
         kill `cat $PID_FILE`
         rm -f $PID_FILE
     fi
-    if [ -e "/etc/contrail/supervisord_config_files/*.kill" ]
+    if [ -e "/etc/contrail/supervisord_config_files/contrail-api.kill" ]
     then
-    /usr/bin/supervisor_killall /etc/contrail/supervisord_config_files
+        /usr/bin/supervisor_killall /etc/contrail/supervisord_config_files
     fi
 }
 

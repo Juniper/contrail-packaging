@@ -66,10 +66,7 @@ $(LOCAL_PY): $(PPREP)
 
 contrail: $(PREP)
 	@echo making rpm for contrail
-	mkdir -p $(SB_TOP)/build/packages/$@
-	cp -R $(SB_TOP)/tools/packaging/common/rpm/ $(SB_TOP)/build/packages/$@/
-	cd $(SB_TOP)/build/packages/$@/
-	rpmbuild $(RPMBLDOPTS) contrail.spec $(G_TAG) $(SB_TOPDIR)
+	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/packages/rpm/contrail/contrail.spec $(G_TAG) $(SB_TOPDIR)
 
 contrail-analytics: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-analytics
@@ -275,7 +272,7 @@ else
 NEUTRON_PLUGIN = neutron-plugin-contrail
 endif
 
-all: $(PREP) contrail contrail-api-extension contrail-dns \
+all: $(PREP) contrail contrail-api-extension \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \

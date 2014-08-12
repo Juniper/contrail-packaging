@@ -65,7 +65,7 @@ install -d -m 755 %{buildroot}/lib/modules/%{_osVer}/extra/net/vrouter
 # install etc files
 pushd %{_builddir}/..
 if [ "%{?dist}" != ".xen" ]; then
-install -p -m 644 %{_distropkgdir}/agent.conf               %{buildroot}%{_contrailetc}/rpm_agent.conf
+#install -p -m 644 %{_distropkgdir}/agent.conf               %{buildroot}%{_contrailetc}/rpm_agent.conf
 
 install -p -m 755 %{_distropkgdir}/contrail_reboot          %{buildroot}%{_contrailetc}/contrail_reboot
 else
@@ -133,7 +133,7 @@ exit 0
 %if 0%(if [ "%{dist}" == ".xen" ]; then echo 1; fi)
 %{_sysconfdir}/init.d/contrail-vrouter
 %else
-%{_contrailetc}/rpm_agent.conf
+#%{_contrailetc}/rpm_agent.conf
 %{_contrailetc}/contrail_reboot
 /bin/mock_generator
 /bin/run_mock_generator
