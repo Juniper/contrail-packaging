@@ -41,7 +41,7 @@ Requires: haproxy
 Requires: rabbitmq-server
 Requires: python-bottle
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
-Requires: ifmap-server 
+Requires: ifmap-server
 Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
 Requires: python-contrail >= %{_verstr}-%{_relstr}
 
