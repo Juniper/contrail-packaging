@@ -94,7 +94,6 @@ rm -rf %{buildroot}
 install -d -m 755 %{buildroot}%{_contrailopt}
 install -d -m 755 %{buildroot}%{_contrailopt}
 install -d -m 755 %{buildroot}%{_contrailopt}/bin
-install -d -m 755 %{buildroot}%{_contrailopt}/puppet
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 install -d -m 755 %{buildroot}%{_contrailopt}/contrail_packages
 install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils
@@ -109,8 +108,6 @@ if [ 0%{_sku} = 0icehouse ]; then
 install -d -m 755 %{buildroot}/usr/bin
 install -p -m 755 tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh %{buildroot}/usr/bin/contrail-keystone-setup.sh
 fi
-tar -cvzf %{_builddir}/../build/contrail-puppet-manifest.tgz -C %{_builddir}/../tools/puppet .
-install -p -m 755 %{_builddir}/../build/contrail-puppet-manifest.tgz %{buildroot}%{_contrailopt}/puppet/contrail-puppet-manifest.tgz
 popd
 
 # install etc files
@@ -160,7 +157,6 @@ tar xzvf contrail_installer.tgz
 %{_contrailopt}/cfgm_utils.tgz
 %{_contrailopt}/dns_scripts.tgz
 %{_contrailopt}/contrail_installer.tgz
-%{_contrailopt}/puppet/contrail-puppet-manifest.tgz
 %{_contrailopt}/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz
 %{_contrailopt}/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
 %{_contrailopt}/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz
