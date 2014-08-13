@@ -1,7 +1,0 @@
-/var/log/quantum/server.log {
-    daily
-    missingok
-    compress
-    delaycompress
-    notifempty
-}
