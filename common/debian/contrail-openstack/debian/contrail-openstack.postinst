@@ -24,4 +24,5 @@ fi
 # Start mysql at boot time
 sudo update-rc.d -f mysql remove
 sudo update-rc.d mysql defaults
+sed -i 's/sleep 1/sleep 2/' /etc/init.d/mysql
 echo "Postinst for contrail-openstack done"
