@@ -49,8 +49,6 @@ install -d -m 755 %{buildroot}%{_initddir}
 #install wrapper scripts for supervisord
 pushd %{_builddir}/..
 install -p -m 755 %{_distropkgdir}/contrail-analytics.rules %{buildroot}%{_supervisordir}/contrail-analytics.rules
-install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail_collector_pre  %{buildroot}%{_bindir}/contrail_collector_pre
-install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail_qe_pre %{buildroot}%{_bindir}/contrail_qe_pre
 
 #install .ini files for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_analytics.conf %{buildroot}%{_contrailetc}/supervisord_analytics.conf
@@ -75,9 +73,6 @@ done
 
 %files
 %defattr(-, root, root)
-%{_bindir}/contrail_collector_pre
-%{_bindir}/contrail_qe_pre
-
 %config(noreplace) %{_supervisordir}/contrail-collector.ini
 %config(noreplace) %{_supervisordir}/contrail-analytics-api.ini
 %config(noreplace) %{_supervisordir}/contrail-query-engine.ini

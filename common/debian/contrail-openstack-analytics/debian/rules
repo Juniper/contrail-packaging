@@ -53,9 +53,6 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/contrail-collector.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-collector.ini
 	install -p -m 755 $(_src_config)/contrail-query-engine.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-query-engine.ini
 	install -p -m 755 $(_src_config)/contrail-analytics-api.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-analytics-api.ini
-	# install supervisord wrapper scripts
-	install -p -m 755 $(_src_config)/supervisord_wrapper_scripts/contrail_collector_pre  $(buildroot)$(_bindir)/contrail_collector_pre
-	install -p -m 755 $(_src_config)/supervisord_wrapper_scripts/contrail_qe_pre  $(buildroot)$(_bindir)/contrail_qe_pre
 
 override_dh_usrlocal:	
 

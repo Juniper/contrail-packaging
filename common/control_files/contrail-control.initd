@@ -14,8 +14,6 @@ function log_failure_msg() {
 
 LOG=/var/log/contrail-control.log
 PID_FILE=/var/run/contrail-control.pid
-ENV_FILE=/etc/contrail/control_param
-. ${ENV_FILE}
 
 function daemon_start() {
      echo  -n "Starting Contrail Control Node"

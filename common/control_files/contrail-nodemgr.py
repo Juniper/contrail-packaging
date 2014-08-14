@@ -405,7 +405,7 @@ def main(argv=sys.argv):
 	if (node_type == 'contrail-vrouter'):
 	    rule_file = "/etc/contrail/supervisord_vrouter_files/contrail-vrouter.rules"
 	if (node_type == 'contrail-database'):
-	    rule_file = "/etc/contrail/supervisord_contrail_database_files/supervisord_contrail_database.rules"
+	    rule_file = "/etc/contrail/supervisord_database_files/supervisord_contrail_database.rules"
     if rule_file is "":
         sys.stderr.write('Node manager must be invoked with a rules file\n')
         sys.stderr.flush()
@@ -557,7 +557,7 @@ def main(argv=sys.argv):
         #Read the discovery server info from the conf file 
         import ConfigParser
         from StringIO import StringIO
-        data = StringIO('\n'.join(line.strip() for line in open('/etc/contrail/contrail-nodemgr-database.conf')))
+        data = StringIO('\n'.join(line.strip() for line in open('/etc/contrail/contrail-database-nodemgr.conf')))
         Config = ConfigParser.SafeConfigParser()
         Config.readfp(data)
         if discovery_server == socket.gethostname():

@@ -17,7 +17,7 @@ PID_FILE=/var/run/supervisord_contrail_database.pid
 
 function daemon_start() {
      echo  -n "Starting Supervisor Daemon for Contrail Database Package"
-     /usr/bin/supervisord -c /etc/contrail/supervisord_contrail_database.conf
+     /usr/bin/supervisord -c /etc/contrail/supervisord_database.conf
      RETVAL=$?
      [ $RETVAL -eq 0 ] && log_success_msg || log_failure_msg
      if [ $RETVAL -ne 0 ]; then

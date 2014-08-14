@@ -37,7 +37,7 @@ override_dh_auto_install:
 	install -p -m 644 $(_confsrcdir)/supervisor-vrouter.upstart ${buildroot}/etc/init/supervisor-vrouter.conf
 	install -p -m 644 $(_confsrcdir)/core-pattern.upstart ${buildroot}/etc/init/core-pattern.conf
 	ln -sf /lib/init/upstart-job ${buildroot}/etc/init.d/supervisor-vrouter
-	install -p -m 644 $(_confsrcdir)/contrail-vrouter.initd.supervisord ${buildroot}/etc/init.d/contrail-vrouter
+	install -p -m 644 $(_confsrcdir)/contrail-vrouter.initd.supervisord ${buildroot}/etc/init.d/contrail-vrouter-agent
 	install -p -m 644 $(_confsrcdir)/supervisord_vrouter.conf ${buildroot}/etc/contrail/supervisord_vrouter.conf
 	# TODO: Remove this after spec files for other platforms are fixed.
 	perl -ni -e 's/source \/opt\/contrail\/vrouter-venv\/bin\/activate && exec python \/opt\/contrail\/vrouter-venv/\/usr/g; print $$_;' ${buildroot}/etc/contrail/supervisord_vrouter.conf
