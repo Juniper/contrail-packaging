@@ -30,7 +30,7 @@ Requires: contrail-analytics >= %{_verstr}-%{_relstr}
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
 Requires: python-contrail >= %{_verstr}-%{_relstr}
-%if 0%{?rhel}
+%if 0%{?rhel} <= 6
 Requires: python-importlib
 %endif
 

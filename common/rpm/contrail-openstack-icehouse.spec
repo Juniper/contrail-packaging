@@ -35,15 +35,15 @@ Requires: memcached
 Requires: openstack-nova-novncproxy
 Requires: python-glance
 Requires: python-glanceclient
-%if 0%{?rhel} 
-Requires: python-importlib
-%endif
 Requires: euca2ools
 Requires: m2crypto
 Requires: qpid-cpp-server
 Requires: haproxy
 Requires: rabbitmq-server
 Requires: supervisor
+%if 0%{?rhel} <= 6
+Requires: python-importlib
+%endif
 
 %description
 Contrail Package Requirements for Contrail Openstack

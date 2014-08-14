@@ -42,7 +42,7 @@ class BasePackager(Utils):
         self.fail_on_error         = kwargs.get('fail_on_error', False)
         self.make_targets_file     = self.expanduser(kwargs.get('make_targets_file', None))
         pkg_types                  = {'ubuntu': 'deb', 'centos': 'rpm', \
-                                      'redhat': 'rpm', 'fedora': 'rpm'}
+                                      'redhatenterpriselinuxserver': 'rpm', 'fedora': 'rpm'}
         self.platform              = platform.dist()[0].lower()
         self.platform              = PLATFORM[0]
         self.cache_subdir          = "".join(PLATFORM[:2]).lower().replace('.', '')

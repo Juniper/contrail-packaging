@@ -41,8 +41,13 @@ pushd %{_distrothirdpartydir}/geventhttpclient-1.0a
 
 %files
 %defattr(-,root,root,-)
-/usr/lib64/python2.6/site-packages/%{upstream_name}
-/usr/lib64/python2.6/site-packages/%{upstream_name}-%{version}-*.egg-info
+%if 0%{?rhel} >= 7
+    /usr/lib64/python2.7/site-packages/%{upstream_name}
+    /usr/lib64/python2.7/site-packages/%{upstream_name}-%{version}-*.egg-info
+%else
+    /usr/lib64/python2.6/site-packages/%{upstream_name}
+    /usr/lib64/python2.6/site-packages/%{upstream_name}-%{version}-*.egg-info
+%endif
 
 
 %changelog
