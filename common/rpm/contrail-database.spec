@@ -111,10 +111,10 @@ install -D -m 755 %{_distropkgdir}/contrail-nodemgr-database.conf %{buildroot}/e
 popd
 
 %if 0%{?rhel}
-install -D -m 755 %{_distropkgdir}/supervisord_contrail_database.initd          %{buildroot}%{_initddir}/supervisor-contrail-database
+install -D -m 755 %{_distropkgdir}/supervisord_contrail_database.initd          %{buildroot}%{_initddir}/supervisor-database
 %endif
 
-install -D -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/supervisord-contrail-database
+install -D -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/supervisor-database
 install -D -m 755 %{SOURCE2} %{buildroot}%{_sysconfdir}/contrail/supervisord_contrail_database.conf
 install -D -m 755 %{SOURCE3} %{buildroot}%{_sysconfdir}/rc.d/init.d/contrail-database
 
@@ -178,11 +178,11 @@ fi
 %{_supervisordir}/supervisord_contrail_database.rules
 /etc/contrail/contrail-nodemgr-database.conf
 %if 0%{?rhel}
-%{_initddir}/supervisor-contrail-database
+%{_initddir}/supervisor-database
 %endif
 %doc
 %{_sysconfdir}/rc.d/init.d/contrail-database
-%{_sysconfdir}/rc.d/init.d/supervisord-contrail-database
+%{_sysconfdir}/rc.d/init.d/supervisor-database
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_contrail_database.conf
 
 %changelog

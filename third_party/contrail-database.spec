@@ -33,7 +33,7 @@ Source3: contrail-database.initd
 Contrail Database package
 
 %install
-install -D -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/supervisord-contrail-database
+install -D -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/supervisor-database
 install -D -m 755 %{SOURCE2} %{buildroot}%{_sysconfdir}/contrail/supervisord_contrail_database.conf
 install -D -m 755 %{SOURCE3} %{buildroot}%{_sysconfdir}/rc.d/init.d/contrail-database
 
@@ -85,7 +85,7 @@ fi
 %defattr(-,root,root,-)
 %doc
 %{_sysconfdir}/rc.d/init.d/contrail-database
-%{_sysconfdir}/rc.d/init.d/supervisord-contrail-database
+%{_sysconfdir}/rc.d/init.d/supervisor-database
 %{_sysconfdir}/contrail/supervisord_contrail_database.conf
 
 %changelog
