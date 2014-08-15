@@ -435,7 +435,10 @@ def main(argv=sys.argv):
         if discovery_server == socket.gethostname():
             discovery_server = Config.get("DISCOVERY", "server")
             #Hack becos of Configparser and the conf file format itself
-            discovery_server = discovery_server[:discovery_server.index('#')].strip()
+            try:
+                discovery_server = discovery_server[:discovery_server.index('#')].strip()
+            except:
+                discovery_server = discovery_server.strip()
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         # ubuntu packaging is different, figure out where the generated files 
         # are installed
@@ -498,7 +501,10 @@ def main(argv=sys.argv):
         if discovery_server == socket.gethostname():
             discovery_server = Config.get("DISCOVERY", "server")
             #Hack becos of Configparser and the conf file format itself
-            discovery_server = discovery_server[:discovery_server.index('#')].strip()
+            try:
+                discovery_server = discovery_server[:discovery_server.index('#')].strip()
+            except:
+                discovery_server = discovery_server.strip()
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         sandesh_global.init_generator(module_name, socket.gethostname(), 
             node_type_name, instance_id, collector_addr, module_name, 
