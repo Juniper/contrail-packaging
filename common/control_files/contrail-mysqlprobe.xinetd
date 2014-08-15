@@ -1,26 +1,19 @@
-####### This file is managed by Puppet #######
-#
 # default: on
 # description: contrail-mysqlprobe
 # Author - Sanju Abraham
 # Juniper Networks
 service contrail-mysqlprobe
 {
+        instances       = UNLIMITED
         flags           = REUSE
         socket_type     = stream
         port            = 3337
         wait            = no
-        user            = nobody
+        user            = root
         server          = /opt/contrail/bin/contrail-galera-check.sh
         log_on_failure  += USERID
         disable         = no
         only_from       = 0.0.0.0/0
-# recommended to put the IPs that need
-# to connect exclusively (security purposes)
+        cps             = 150 15
         per_source      = UNLIMITED
-# Recently added (May 20, 2010)
-# Prevents the system from complaining
-# about having too many connections open from
-# the same IP. More info:
-# http://www.linuxfocus.org/English/November2000/article175.shtml
 }
