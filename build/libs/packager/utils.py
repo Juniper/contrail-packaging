@@ -251,13 +251,13 @@ class Utils(object):
         log.info('Create (%s) file' % tgz_name)
         self.create_tgz(tgz_name, dirname)
 
-    def parse_git_cfg_file(self, cfgfile):
-        ''' parse git config file and return a dict of git config '''
-        tmpfile = tempfile.NamedTemporaryFile()
-        with open(cfgfile, 'r') as fileid:
-            tmpfile.write('%s\n' %re.sub(r'\n\t', '\n', fileid.read()))
-            tmpfile.flush()
-        return self.parse_cfg_file(tmpfile.name)
+    def get_git_latest_commit_id(self, dirname):
+        '''execute git log in the given repo dir and return commit id'''
+        commit_id = self.exec_cmd_out('git log --format="%H" -1', wd=dirname)
+        if not commit_id:
+            return ''
+        log.debug('Commit ID: %s' % commit_id[0])
+        return commit_id[0]
         
     def parse_cfg_file(self, cfg_files, additems=None):
         ''' parse the given config files and return a dictionary

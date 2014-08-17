@@ -14,7 +14,6 @@ import operator
 import platform
 import traceback
 from lxml import etree
-from xml.etree import ElementTree
 
 #from utils import Utils
 from libs.packager.utils import Utils
@@ -112,6 +111,7 @@ class BasePackager(Utils):
                 log.error('Skipping rest of the steps for Type (%s)' % pkgtype)
                 if self.fail_on_error:
                     raise
+        self.create_manifest_with_revision()
           
     def setup_env(self):
         ''' setup basic environment necessary for packager like
@@ -306,42 +306,29 @@ class BasePackager(Utils):
             fid.write("%s\n" %"\n".join(sorted(filelist)))
             fid.flush()
 
-    def create_git_ids(self, manifest=None, filename=None, retries=5):
+    def create_manifest_with_revision(self, manifest=None, filename=None):
+        '''Create a copy of manifest file with current GIT IDs as revision'''
         if os.environ.has_key('SKIP_CREATE_GIT_IDS'):
             return
 
-        filename = filename or os.path.join(self.store, 'git_build_%s.txt' %self.id)
+        filename = filename or os.path.join(self.store, 'manifest_%s.xml' % self.id)
         manifest = manifest or os.path.join(self.git_local_repo, '.repo', 'manifest.xml')
-        ids_dict = {}
-        tree = ElementTree.parse(manifest)
-        for project in tree.findall('project'):
-            element_dict = dict(project.items())
-            parsed_element = self.parse_git_cfg_file(os.path.join(self.git_local_repo, 
-                                                                element_dict['path'], 
-                                                               '.git', 'config'))
-            url = parsed_element[r'remote "%s"' %element_dict['remote']]['url']
-            cmd = 'git ls-remote %s %s' %(url, element_dict.get('revision', 'HEAD'))
-            for retry in range(retries):
-                gitid = ''
-                try:
-                    gitid_info = self.exec_cmd_out(cmd)
-                except:
-                    log.warn('Retrieve GIT ID for URL (%s) Failed'\
-                             ' Retrying...' % cmd)
-                else:
-                    gitid = gitid_info[0].split('\t')[0]
-                    ids_dict[gitid] = url
-                    break
-                finally:
-                    if retry == retries - 1 and gitid == '':
-                        log.error('Unable to retrieve Git ID for URL (%s)' % url)
-                        log.error('Skipping...')
-                        
-        with open(filename, 'w') as file_id:
-            id_list = ['{0:<60}    {1:<}'.format(item, key) \
-                           for key, item in ids_dict.items()]
-            file_id.write('%s\n' %"\n".join(id_list))
-            file_id.flush()
+
+        with open(manifest, 'r') as fid:
+            manifest_str = fid.read()
+        parser = etree.XMLParser()
+        manifest_root = etree.fromstring(manifest_str, parser)
+        for item in range(0, len(manifest_root)):
+            if manifest_root[item].tag == 'project':
+                tag_info = dict(manifest_root[item].items())
+                repo_dir = os.path.join(self.git_local_repo, tag_info['path'])
+                commit_id = self.get_git_latest_commit_id(repo_dir)
+                manifest_root[item].attrib['revision'] = commit_id
+
+        with open(filename, 'w') as fid:
+            fid.write(etree.tostring(manifest_root, pretty_print=True))
+            fid.flush()
+
         return filename
         
     def createrepo(self, extraargs=''):
