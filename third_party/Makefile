@@ -42,7 +42,7 @@ else
 endif
 
 ifndef CONTRAIL_SKU
-  CONTRAIL_SKU := grizzly
+  CONTRAIL_SKU := havana
 endif
 
 $(PPREP):
@@ -67,47 +67,6 @@ $(LOCAL_PY): $(PPREP)
 		$(LOCAL_PY) $(PKGBLDDIR)/packaging/archives/ez_setup.py; \
 	fi
 
-ifeq ($(CONTRAIL_SKU), grizzly)
-# openstack python client packages for grizzly
-cinderclient: package-python-cinderclient
-python-cinderclient: package-python-cinderclient
-package-python-cinderclient:
-	@echo making rpm for package-python-cinderclient
-	rpmbuild $(RPMBLDOPTS) python-cinderclient.spec $(G_TAG)
-
-glanceclient: package-python-glanceclient
-python-glanceclient: package-python-glanceclient
-package-python-glanceclient:
-	@echo making rpm for package-python-glanceclient
-	rpmbuild $(RPMBLDOPTS) python-glanceclient.spec $(G_TAG)
-
-keystoneclient: package-python-keystoneclient
-python-keystoneclient: package-python-keystoneclient
-package-python-keystoneclient:
-	@echo making rpm for package-python-keystoneclient
-	rpmbuild $(RPMBLDOPTS) python-keystoneclient.spec $(G_TAG)
-
-novaclient: package-python-novaclient
-python-novaclient: package-python-novaclient
-package-python-novaclient:
-	@echo making rpm for package-python-novaclient
-	rpmbuild $(RPMBLDOPTS) python-novaclient.spec $(G_TAG)
-
-quantumclient:package-python-quantumclient
-python-quantumclient:package-python-quantumclient
-package-python-quantumclient:
-	@echo making rpm for package-python-quantumclient
-	rpmbuild $(RPMBLDOPTS) python-quantumclient.spec $(G_TAG)
-
-swiftclient: package-python-swiftclient
-python-swiftclient: package-python-swiftclient
-package-python-swiftclient:
-	@echo making rpm for package-python-swiftclient
-	rpmbuild $(RPMBLDOPTS) python-swiftclient.spec $(G_TAG)
-
-all-openstack-client: $(PREP) cinderclient glanceclient keystoneclient novaclient quantumclient \
-	swiftclient
-else
 ifneq ($(CONTRAIL_SKU), icehouse)
 neutronclient:package-python-neutronclient
 python-neutronclient:package-python-neutronclient
@@ -122,7 +81,6 @@ package-python-neutronclient:
 	rpmbuild $(RPMBLDOPTS) python-neutronclient-icehouse.spec $(G_TAG)
 endif
 all-openstack-client: $(PREP) neutronclient
-endif
 
 # Other 3rd party packages
 contrail-fabric-utils: $(PPREP)
@@ -141,10 +99,6 @@ euca2ools:
 hiredis-py: $(PREP)
 	@echo making rpm for hiredis-py
 	rpmbuild $(RPMBLDOPTS) hiredis-py.spec $(G_TAG) 
-
-ifmap-server:
-	@echo making rpm for ifmap-server
-	rpmbuild $(RPMBLDOPTS) irond.spec $(G_TAG)
 
 python-boto:
 	@echo making rpm for python-boto
@@ -226,26 +180,13 @@ supervisor: $(PREP)
 	@echo making rpm for supervisor
 	rpmbuild $(RPMBLDOPTS) supervisor.spec $(G_TAG)
 
-ifeq ($(CONTRAIL_SKU), grizzly)
-webob:
-	@echo making rpm for webob
-	cp $(THIRDPARTY_DIR)/webob/WebOb-1.2.3.tar.gz $(BUILD_BASE)/SOURCES/ && \
-	rpmbuild $(RPMBLDOPTS) python-webob.spec $(G_TAG)
-endif
-
 xmltodict: $(PREP)
 	@echo making rpm for xmltodict
 	rpmbuild $(RPMBLDOPTS) xmltodict.spec $(G_TAG)
 
-ifeq ($(CONTRAIL_SKU), grizzly)
-all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
-	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
-	python-thrift redis-py supervisor webob xmltodict ixgbe python-bottle
-else
 all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
 	python-boto libvirt puppet python-bitarray python-geventhttpclient \
 	python-pycassa python-thrift redis-py supervisor xmltodict ixgbe python-bottle
-endif
 
 clean:
 	@echo clean
