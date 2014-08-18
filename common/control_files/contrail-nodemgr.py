@@ -213,7 +213,7 @@ class EventManager:
 
     def send_database_usage(self):
         from database.sandesh.database.ttypes import \
-            DatabaseUsageInfo, DatabaseUsageStat
+            DatabaseUsageStats, DatabaseUsageInfo, DatabaseUsage
 
         (linux_dist, x, y) = platform.linux_distribution()
         if (linux_dist == 'Ubuntu'):
@@ -224,16 +224,19 @@ class EventManager:
             (disk_space_used, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2 \`/ContrailAnalytics | grep %` && echo $3 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
             (disk_space_available, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics | grep %` && echo $4  | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
             (analytics_db_size, error_value) = Popen("set `du -skL \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics` && echo $1 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
-        db_uve = DatabaseUsageInfo()
+        db_stat = DatabaseUsageStats()
+        db_info = DatabaseUsageInfo()
         try:
-            db_uve.disk_space_used = int(disk_space_used)
-            db_uve.disk_space_available = int(disk_space_available)
-            db_uve.analytics_db_size = int(analytics_db_size)
+            db_stat.disk_space_used_1k = int(disk_space_used)
+            db_stat.disk_space_available_1k = int(disk_space_available)
+            db_stat.analytics_db_size_1k = int(analytics_db_size)
         except ValueError:
             sys.stderr.write("Failed to get database usage" + "\n")
         else:
-            db_uve.name = socket.gethostname()
-            usage_stat = DatabaseUsageStat(data=db_uve)
+            db_info.name = socket.gethostname()
+            db_info.database_usage = db_stat
+            db_info.database_usage_stats = [db_stat]
+            usage_stat = DatabaseUsage(data=db_info)
             usage_stat.send()
     # end send_database_usage
 
