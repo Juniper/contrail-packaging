@@ -28,6 +28,8 @@ Requires:	redis
 Requires:	supervisor
 Requires:	contrail-web-core >= %{_verstr}-%{_relstr}
 
+Obsoletes:      contrail-webui
+
 Source:		%{name}
 
 %description
