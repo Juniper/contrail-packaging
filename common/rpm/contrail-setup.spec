@@ -52,6 +52,9 @@ Requires:	    python-crypto
 Requires:	    python-argparse
 Requires:	    gdb
 %endif
+Requires:	    python-lxml
+Requires:	    python-requests
+Requires:	    python-contrail
 
 %description
 Contrail Setup package with scripts for provisioning
