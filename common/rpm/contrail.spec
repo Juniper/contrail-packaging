@@ -154,6 +154,9 @@ Contrail Virtual Router apis package
 Summary:            Contrail Python Lib  %{?_gitVer}
 
 Group:              Applications/System
+Requires:	    python-importlib
+Requires:	    python-bottle
+Requires:	    python-gevent
 
 %description -n python-contrail
 Contrail Virtual Router utils package
