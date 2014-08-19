@@ -154,6 +154,7 @@ Contrail Virtual Router apis package
 Summary:            Contrail Python Lib  %{?_gitVer}
 
 Group:              Applications/System
+Obsoletes:          contrail-api-lib
 
 %description -n python-contrail
 Contrail Virtual Router utils package
@@ -280,6 +281,7 @@ Contrail Virtual Router NetNS package
 %package lib
 Summary:  Libraries used by the Contrail Virtual Router %{?_gitVer}
 Group:              Applications/System
+Obsoletes:          contrail-libs
 
 %description lib
 Libraries used by the Contrail Virtual Router.
