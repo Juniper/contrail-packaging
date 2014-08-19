@@ -22,13 +22,13 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-config
+Requires: contrail-config >= %{_verstr}-%{_relstr}
 Requires: openstack-quantum-contrail
 Requires: python-novaclient
 Requires: python-keystoneclient >= 0.2.0
 Requires: python-psutil
 Requires: mysql-server
-Requires: contrail-setup
+Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: python-zope-interface
 %if 0%{?rhel} 
 Requires: python-importlib
@@ -40,10 +40,10 @@ Requires: java-1.7.0-openjdk
 Requires: haproxy
 Requires: rabbitmq-server
 Requires: python-bottle
-Requires: contrail-nodemgr
-Requires: irond 
-Requires: contrail-config-openstack
-Requires: python-contrail
+Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
+Requires: ifmap-server
+Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
+Requires: python-contrail >= %{_verstr}-%{_relstr}
 
 %description
 Contrail Package Requirements for Contrail Config
@@ -59,22 +59,20 @@ pushd %{_distrothirdpartydir}/ncclient
 popd
 
 pushd %{_builddir}/..
-install -D -m 644 %{_distropkgdir}/contrail-api.conf %{buildroot}%{_sysconfdir}/contrail/contrail-api.conf
-install -D -m 644 %{_distropkgdir}/schema_transformer.conf %{buildroot}%{_sysconfdir}/contrail/schema_transformer.conf
-install -D -m 644 %{_distropkgdir}/svc_monitor.conf %{buildroot}%{_sysconfdir}/contrail/svc_monitor.conf
 install -D -m 755 %{_distropkgdir}/supervisor-config.initd %{buildroot}%{_initddir}/supervisor-config
 install -D -m 755 %{_distropkgdir}/contrail-api.initd.supervisord %{buildroot}%{_initddir}/contrail-api
 install -D -m 755 %{_distropkgdir}/rabbitmq-server.initd.supervisord %{buildroot}%{_initddir}/rabbitmq-server.initd.supervisord
 install -D -m 755 %{_distropkgdir}/contrail-discovery.initd.supervisord %{buildroot}%{_initddir}/contrail-discovery
 install -D -m 755 %{_distropkgdir}/contrail-svc-monitor.initd.supervisord %{buildroot}%{_initddir}/contrail-svc-monitor
 install -D -m 755 %{_distropkgdir}/ifmap.initd.supervisord %{buildroot}%{_initddir}/ifmap
-install -p -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
+install -D -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
 install -p -m 755 %{_distropkgdir}/contrail-api.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
 install -p -m 755 %{_distropkgdir}/rabbitmq-server.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/rabbitmq-server.ini
 install -p -m 755 %{_distropkgdir}/contrail-schema.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 install -p -m 755 %{_distropkgdir}/contrail-svc-monitor.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 install -p -m 755 %{_distropkgdir}/contrail-discovery-centos.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
+install -p -m 755 %{_distropkgdir}/contrail-ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/
 install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-api.kill %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.kill
 install -p -m 755 %{_distropkgdir}/contrail-config.rules %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config.rules
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
@@ -103,7 +101,7 @@ popd
 %{python_sitelib}/ncclient-*
 #/usr/share/doc/python-vnc_cfg_api_server
 %{_sysconfdir}/contrail
-%dir %attr(0777, root, root) %{_localstatedir}/log/contrail
+%dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
 %{_bindir}/ifmap_view.py
 %{_bindir}/venv-helper
 #%{_bindir}/encap.py
@@ -115,9 +113,7 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
-%config(noreplace) %{_sysconfdir}/contrail/contrail-api.conf
-%config(noreplace) %{_sysconfdir}/contrail/schema_transformer.conf
-%config(noreplace) %{_sysconfdir}/contrail/svc_monitor.conf
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then

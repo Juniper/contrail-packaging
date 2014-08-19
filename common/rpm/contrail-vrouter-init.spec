@@ -1,6 +1,5 @@
 %define         _contrailetc /etc/contrail
 %define         _supervisordir /etc/contrail/supervisord_vrouter_files
-%define         _supervisoropenstackdir /etc/contrail/supervisord_openstack_files
 %define         _distropkgdir tools/packaging/common/control_files
 %define 	_opt_bin /opt/contrail/bin 
 %if 0%{?_buildTag:1}
@@ -25,12 +24,12 @@ License:            Commercial
 URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
-Requires: contrail-vrouter
-Requires: contrail-vrouter-utils
-Requires: contrail-vrouter-agent
-Requires: python-contrail-vrouter-api
+Requires: contrail-vrouter >= %{_verstr}-%{_relstr}
+Requires: contrail-vrouter-utils >= %{_verstr}-%{_relstr}
+Requires: contrail-vrouter-agent >= %{_verstr}-%{_relstr}
+Requires: python-contrail-vrouter-api >= %{_verstr}-%{_relstr}
 Requires: supervisor
-Requires: python-contrail
+Requires: python-contrail >= %{_verstr}-%{_relstr}
 
 %description
 contrail vrouter init packages provides init files 
@@ -54,38 +53,16 @@ install -p -m 755 %{_distropkgdir}/if-vhost0 %{buildroot}%{_opt_bin}/if-vhost0
 install -p -m 755 %{_distropkgdir}/vrouter-functions.sh %{buildroot}%{_opt_bin}/vrouter-functions.sh
 install -p -m 755 %{_distropkgdir}/contrail_reboot  %{buildroot}/etc/contrail/contrail_reboot
 install -p -m 755 %{_distropkgdir}/agent.conf  %{buildroot}/etc/contrail/rpm_agent.conf
-# Install supervisord nova config files and directories
-install -d -m 755 %{buildroot}%{_supervisoropenstackdir}
-install -D -m 755 %{_distropkgdir}/supervisor-openstack.initd %{buildroot}/etc/rc.d/init.d/supervisor-openstack.initd_vrouter
-install -p -m 755 %{_distropkgdir}/nova-compute.initd.supervisord %{buildroot}/etc/rc.d/init.d/nova-compute
-install -p -m 755 %{_distropkgdir}/supervisord_openstack.conf %{buildroot}/etc/contrail/supervisord_openstack.conf.supervisord_vrouter
-install -p -m 755 %{_distropkgdir}/nova-compute.ini.centos %{buildroot}%{_supervisoropenstackdir}/nova-compute.ini
 
 %files
 /opt/*
 /etc/*
 /var/*
+%dir %attr(0777, contrail, contrail) /var/log/contrail
+
 
 %post
 set -e
 kver=`uname -r`
 echo "create the agent_param file..."
 /opt/contrail/bin/vnagent_param_setup.sh $kver
-# switch to supervisord
-for svc in openstack-nova_compute; do
-    if [ -e %{_initddir}/$svc ]; then
-        service $svc stop || true
-        mv %{_initddir}/$svc %{_initddir}/$svc.backup
-    fi
-done
-
-if [ ! -f %{_initddir}/supervisor-openstack ]; then
-    mv %{_initddir}/supervisor-openstack.initd_vrouter %{_initddir}/supervisor-openstack
-else
-    rm %{_initddir}/supervisor-openstack.initd_vrouter
-fi
-if [ ! -f /etc/contrail/supervisord_openstack.conf ]; then
-    mv /etc/contrail/supervisord_openstack.conf.supervisord_vrouter /etc/contrail/supervisord_openstack.conf
-else
-    rm /etc/contrail/supervisord_openstack.conf.supervisord_vrouter
-fi

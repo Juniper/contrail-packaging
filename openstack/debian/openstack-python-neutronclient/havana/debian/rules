@@ -10,11 +10,10 @@ export DH_VERBOSE=1
 
 SPEC_DIR := $(shell pwd)
 export SB_TOP := $(shell pwd | sed -re "s/(.*)\/build\/openstack\/(.*)/\1/")
-export BUILDDIR:= ${SB_TOP}/build/openstack/python-quantumclient
+export BUILDDIR:= ${SB_TOP}/build/openstack/python-neutronclient
 export _pyver := 2.7
 export python_sitelib := /usr/lib/python$(_pyver)/dist-packages
 export _sysconfdir := /etc
-export _api_venv_archv := /opt/contrail/api-venv/archive
 
 BUILDTAG =
 ifdef TAG
@@ -32,10 +31,8 @@ override_dh_auto_build:
 
 override_dh_auto_install: 
 	install -d -m 777 $(BUILDDIR)$(python_sitelib)
-	install -d -m 777 $(BUILDDIR)$(_api_venv_archv)
 	python setup.py sdist
-	cd dist; tar xvfz python-quantumclient*.tar.gz; cd python-quantumclient-*; python setup.py install --root=$(BUILDDIR)/debian/python-quantumclient --install-layout=deb
-	install -p -D -m 644 dist/python-quantumclient-*.tar.gz $(BUILDDIR)/debian/python-quantumclient/opt/contrail/api-venv/archive/python-quantumclient.tar.gz
+	cd dist; tar xvfz python-neutronclient*.tar.gz; cd python-neutronclient-*; python setup.py install --root=$(BUILDDIR)/debian/python-neutronclient --install-layout=deb
 
 get-orig-source:
 	uscan --verbose --force-download --rename --destdir=../build-area

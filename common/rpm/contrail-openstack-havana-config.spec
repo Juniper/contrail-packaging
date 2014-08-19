@@ -23,15 +23,15 @@ Vendor:             Juniper Networks Inc
 BuildArch: noarch
 
 #Requires: contrail-api-lib
-Requires: contrail-api-extension
-Requires: contrail-config
+Requires: contrail-api-extension >= %{_verstr}-%{_relstr}
+Requires: contrail-config >= %{_verstr}-%{_relstr}
 Requires: openstack-neutron
 Requires: neutron-plugin-contrail
 Requires: python-novaclient
 Requires: python-keystoneclient >= 0.2.0
 Requires: python-psutil
 Requires: mysql-server
-Requires: contrail-setup
+Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: python-zope-interface
 %if 0%{?rhel} 
 Requires: python-importlib
@@ -42,10 +42,11 @@ Requires: openstack-nova
 Requires: java-1.7.0-openjdk
 Requires: haproxy
 Requires: rabbitmq-server
-Requires: python-contrail
-Requires: contrail-config-openstack
+Requires: python-contrail >= %{_verstr}-%{_relstr}
+Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
 Requires: python-bottle
-Requires: contrail-nodemgr 
+Requires: contrail-nodemgr  >= %{_verstr}-%{_relstr}
+Requires: ifmap-server
 
 %description
 Contrail Package Requirements for Contrail Config
@@ -61,9 +62,6 @@ pushd %{_distrothirdpartydir}/ncclient
 popd
 
 pushd %{_builddir}/..
-install -D -m 644 %{_distropkgdir}/contrail-api.conf %{buildroot}%{_sysconfdir}/contrail/contrail-api.conf
-install -D -m 644 %{_distropkgdir}/schema_transformer.conf %{buildroot}%{_sysconfdir}/contrail/schema_transformer.conf
-install -D -m 644 %{_distropkgdir}/svc_monitor.conf %{buildroot}%{_sysconfdir}/contrail/svc_monitor.conf
 %if 0%{?fedora} >= 17
 install -D -m 644 %{_distropkgdir}/supervisor-config.service %{buildroot}/usr/lib/systemd/system/supervisor-config.service
 %endif
@@ -71,7 +69,7 @@ install -D -m 755 %{_distropkgdir}/supervisor-config.initd %{buildroot}%{_initdd
 install -D -m 755 %{_distropkgdir}/contrail-api.initd.supervisord %{buildroot}%{_initddir}/contrail-api
 install -D -m 755 %{_distropkgdir}/contrail-discovery.initd.supervisord %{buildroot}%{_initddir}/contrail-discovery
 install -D -m 755 %{_distropkgdir}/contrail-svc-monitor.initd.supervisord %{buildroot}%{_initddir}/contrail-svc-monitor
-install -p -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
+install -D -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
 install -p -m 755 %{_distropkgdir}/contrail-api.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
 install -p -m 755 %{_distropkgdir}/contrail-schema.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
@@ -88,6 +86,10 @@ popd
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 
 install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helper
+
+#ifmap-server related files
+install -p -D -m 755 %{_distropkgdir}/ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
+install -p -D -m 755 %{_distropkgdir}/ifmap.kill %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.kill
 
 pushd %{buildroot}
 
@@ -109,7 +111,7 @@ popd
 %if 0%{?fedora} >= 17
 /usr/lib/systemd/system/supervisor-config.service
 %endif
-%dir %attr(0777, root, root) %{_localstatedir}/log/contrail
+%dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
 %{_bindir}/ifmap_view.py
 %{_bindir}/venv-helper
 #%{_bindir}/encap.py
@@ -120,9 +122,8 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
-%config(noreplace) %{_sysconfdir}/contrail/contrail-api.conf
-%config(noreplace) %{_sysconfdir}/contrail/schema_transformer.conf
-%config(noreplace) %{_sysconfdir}/contrail/svc_monitor.conf
+%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
+%{_sysconfdir}/contrail/supervisord_config_files/ifmap.kill
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then
