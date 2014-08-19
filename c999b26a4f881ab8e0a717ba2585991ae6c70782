@@ -1,0 +1,8 @@
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Approved+1: Raj Reddy <rajreddy@juniper.net>
+Code-Review+2: Raj Reddy <rajreddy@juniper.net>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Mon, 18 Aug 2014 21:08:44 -0700
+Reviewed-on: https://review.opencontrail.org/1947
+Project: Juniper/contrail-packaging
+Branch: refs/heads/master
