@@ -42,6 +42,8 @@ Requires:	nodejs = 0.8.15-1
 Requires:	supervisor
 Requires: 	python-contrail >= %{_verstr}-%{_relstr}
 
+Obsoletes:      contrail-webui
+
 Source:		%{name}
 
 %description
