@@ -33,9 +33,6 @@ Requires: python-psutil
 Requires: mysql-server
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: python-zope-interface
-%if 0%{?rhel} 
-Requires: python-importlib
-%endif
 Requires: euca2ools
 Requires: m2crypto
 Requires: openstack-nova
@@ -47,6 +44,9 @@ Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
 Requires: python-bottle
 Requires: contrail-nodemgr  >= %{_verstr}-%{_relstr}
 Requires: ifmap-server
+%if 0%{?rhel} <= 6
+Requires: python-importlib
+%endif
 
 %description
 Contrail Package Requirements for Contrail Config

@@ -32,9 +32,11 @@ Vendor:             Juniper Networks Inc
 Requires:         contrail-lib >= %{_verstr}-%{_relstr}
 Requires:         supervisor
 Requires:         xmltodict
-Requires:	  python-importlib
 Requires:	  python-bottle
 Requires:	  python-contrail >= %{_verstr}-%{_relstr}
+%if 0%{?rhel} <= 6
+Requires:         python-importlib
+%endif
 
 %define _pyver        %( %{__python} -c "import sys; print '%s.%s' % sys.version_info[0:2]" )
 %define _pysitepkg    /lib/python%{_pyver}/site-packages
