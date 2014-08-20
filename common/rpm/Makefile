@@ -68,10 +68,6 @@ contrail: $(PREP)
 	@echo making rpm for contrail
 	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/packages/rpm/contrail/contrail.spec $(G_TAG) $(SB_TOPDIR)
 
-contrail-analytics: $(PREP) $(LOCAL_PY)
-	@echo making rpm for contrail-analytics
-	rpmbuild $(RPMBLDOPTS) contrail-analytics.spec $(G_TAG) $(RPM_PY)
-
 contrail-api-extension: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-api-extension
 	rpmbuild $(RPMBLDOPTS) contrail-api-extension.spec $(G_TAG) $(RPM_PY)
@@ -80,21 +76,9 @@ contrail-api-lib: $(PREP)
 	@echo making rpm for contrail-api-lib
 	rpmbuild $(RPMBLDOPTS) contrail-api-lib.spec $(G_TAG)
 
-contrail-config: $(PREP) $(LOCAL_PY)
-	@echo making rpm for contrail-config
-	rpmbuild $(RPMBLDOPTS) contrail-config.spec  $(G_TAG) $(RPM_PY)
-
-contrail-control: $(PREP) $(LOCAL_PY)
-	@echo making rpm for contrail-control
-	rpmbuild $(RPMBLDOPTS) contrail-control.spec $(G_TAG) $(RPM_PY)
-
 contrail-nodemgr: $(PREP)
 	@echo making rpm for contrail-nodemgr
 	rpmbuild $(RPMBLDOPTS) contrail-nodemgr.spec  $(G_TAG)
-
-contrail-dns: $(PREP)
-	@echo making rpm for contrail-dns
-	rpmbuild $(RPMBLDOPTS) contrail-dns.spec  $(G_TAG)
 
 contrail-interface-name: $(PREP)
 	@echo making rpm for contrail-interface-name
@@ -103,10 +87,6 @@ contrail-interface-name: $(PREP)
 contrail-libs: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-libs
 	rpmbuild $(RPMBLDOPTS) contrail-libs.spec $(G_TAG) $(RPM_PY)
-
-contrail-vrouter: $(PREP) $(LOCAL_PY)
-	@echo making rpm for contrail-vrouter
-	rpmbuild $(RPMBLDOPTS) contrail-vrouter.spec  $(G_TAG) $(RPM_PY)
 
 contrail-nova-vif: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-nova-vif
@@ -123,26 +103,6 @@ contrail-setup: $(PREP)
 contrail-setup-with-guest: $(PREP)
 	@echo making rpm for contrail-setup-with-guest
 	rpmbuild $(RPMBLDOPTS) contrail-setup-with-guest.spec $(G_TAG)
-
-# venv packages
-contrail-analytics-venv: $(LOCAL_PY)
-	rpmbuild $(RPMBLDOPTS) contrail-analytics-venv.spec $(G_TAG) $(RPM_PY) $(LOCAL_PY_DEF)
-
-contrail-api-venv: $(LOCAL_PY)
-	rpmbuild $(RPMBLDOPTS)  contrail-api-venv.spec $(G_TAG) $(RPM_PY) $(LOCAL_PY_DEF)
-
-contrail-control-venv: $(LOCAL_PY)
-	rpmbuild $(RPMBLDOPTS) contrail-control-venv.spec $(G_TAG) $(RPM_PY) $(LOCAL_PY_DEF)
-
-contrail-database-venv: $(LOCAL_PY)
-	rpmbuild $(RPMBLDOPTS) contrail-database-venv.spec $(G_TAG) $(RPM_PY) $(LOCAL_PY_DEF)
-
-contrail-vrouter-venv: $(LOCAL_PY)
-	rpmbuild $(RPMBLDOPTS) contrail-vrouter-venv.spec $(G_TAG) $(RPM_PY) $(LOCAL_PY_DEF)
-
-venv-packages: packaging
-packaging: contrail-api-venv contrail-analytics-venv contrail-vrouter-venv contrail-control-venv \
-	contrail-database-venv
 
 # Contrail Cloudstack stuff
 contrail-cloudstack-utils: $(PREP)
@@ -255,16 +215,9 @@ contrail-server-manager-client: $(PREP) $(LOCAL_PY)
 	cp contrail-server-manager-client.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager-client.spec $(G_TAG)
 
-ifmap-python-client: $(PREP)
-	@echo making rpm for ifmap-python-client
-	cp -a ifmap-python-client/patches/. $(BUILD_BASE)/SOURCES
-	wget -O $(BUILD_BASE)/SOURCES/master.zip  https://github.com/ITI/ifmap-python-client/archive/master.zip
-	rpmbuild $(RPMBLDOPTS) ifmap-python-client.spec $(G_TAG)
-
 contrail-vrouter-init: $(PREP)
 	@echo making rpm for contrail-vrouter-init
 	rpmbuild $(RPMBLDOPTS) contrail-vrouter-init.spec $(G_TAG)
-
 
 ifeq ($(CONTRAIL_SKU), grizzly)
 NEUTRON_PLUGIN = 
