@@ -53,6 +53,19 @@ function get_id () {
     echo `"$@" | grep ' id ' | awk '{print $4}'`
 }
 
+function is_keystone_up() {
+    for i in {1..36} {
+    do
+       keystone tenant-list
+       if [ $? == 0 ]; then
+           return 0
+       fi
+       echo "Keystone is not up, retrying in 5 secs"
+       sleep 5
+    done
+    return 1
+}
+
 function get_tenant() {
     id=$(keystone tenant-list | grep ' '$1' ' | awk '{print $2;}')
     if [ -z "$id" ]; then
@@ -62,6 +75,11 @@ function get_tenant() {
 }
 
 # Tenants
+is_keystone_up
+if [ $? != 0 ]; then
+    echo "Keystone is not up, Exiting..."
+    exit 1
+fi
 ADMIN_TENANT=$(get_tenant admin)
 SERVICE_TENANT=$(get_tenant service)
 DEMO_TENANT=$(get_tenant demo)
