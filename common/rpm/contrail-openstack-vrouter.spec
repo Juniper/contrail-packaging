@@ -97,7 +97,7 @@ install -p -m 755 %{_controllersrcdir}/vnsw/agent/uve/run_mock_generator %{build
 # patch ifup-eth
 #if [ $1 -eq 1 ]; then
 # create the agent_param file
-/etc/contrail/vnagent_param_setup.sh %{_osVer}
+#/etc/contrail/vnagent_param_setup.sh %{_osVer}
 #fi
 %endif
 
