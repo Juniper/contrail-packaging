@@ -23,7 +23,6 @@ BuildRequires: python-pip
 Requires: python-bitarray
 Requires: python-gevent
 Requires: pycassa
-Requires: python-keystone
 Requires: python-requests
 Requires: python-zope-interface
 
