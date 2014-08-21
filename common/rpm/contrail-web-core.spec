@@ -35,9 +35,9 @@ Vendor:             Juniper Networks Inc
 
 Requires:	redis
 %if %{_skuTag} == "grizzly"
-Requires:	contrail-nodejs = 0.8.15-1.e16
+Requires:	contrail-nodejs = 0.8.15-1%{?dist}
 %else
-Requires:	nodejs = 0.8.15-1.e16
+Requires:	nodejs = 0.8.15-1%{?dist}
 %endif
 Requires:	supervisor
 Requires: 	python-contrail >= %{_verstr}-%{_relstr}
