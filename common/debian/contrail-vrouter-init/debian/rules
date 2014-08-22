@@ -35,6 +35,7 @@ override_dh_auto_install:
 	install -d -m 755 ${buildroot}${_supervisorconf}
 	install -d -m 755 ${buildroot}/var/log/contrail
 	install -p -m 644 $(_confsrcdir)/supervisor-vrouter.upstart ${buildroot}/etc/init/supervisor-vrouter.conf
+	install -p -m 644 $(_confsrcdir)/core-pattern.upstart ${buildroot}/etc/init/core-pattern.conf
 	ln -sf /lib/init/upstart-job ${buildroot}/etc/init.d/supervisor-vrouter
 	install -p -m 644 $(_confsrcdir)/contrail-vrouter.initd.supervisord ${buildroot}/etc/init.d/contrail-vrouter
 	install -p -m 644 $(_confsrcdir)/supervisord_vrouter.conf ${buildroot}/etc/contrail/supervisord_vrouter.conf
