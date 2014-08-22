@@ -7,8 +7,12 @@ echo "running post install"
 
 #cp -r /etc/contrail_smgr/cobbler /etc/
 cp -r /etc/contrail_smgr/puppet /etc/
-mv /etc/cobbler/distro_signatures.json /etc/cobbler/distro_signatures.json-save
-mv /var/lib/cobbler/distro_signatures.json /var/lib/cobbler/distro_signatures.json-save
+if [ -f /etc/cobbler/distro_signatures.json ]; then
+    mv /etc/cobbler/distro_signatures.json /etc/cobbler/distro_signatures.json-save
+fi
+if [ -f /var/lib/cobbler/distro_signatures.json ]; then
+    mv /var/lib/cobbler/distro_signatures.json /var/lib/cobbler/distro_signatures.json-save
+fi
 cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /etc/cobbler/distro_signatures.json
 cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /var/lib/cobbler/distro_signatures.json
 
@@ -54,10 +58,14 @@ echo $HOST_IP
 sed -i "s/10.84.51.11/$HOST_IP/" /etc/cobbler/settings
 update-rc.d contrail-server-manager defaults
 #/sbin/chkconfig --add contrail-server-manager
-sed -i "s/module = authn_.*/module = authn_configfile/g" /etc/cobbler/modules.conf
+sed -i "s/module = authn_.*/module = authn_testing/g" /etc/cobbler/modules.conf
 
 sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
-
+sed -i "s/cobbler_username         = cobbler/cobbler_username         = testing/g" /opt/contrail/server_manager/sm-config.ini
+sed -i "s/cobbler_password         = cobbler/cobbler_password         = testing/g" /opt/contrail/server_manager/sm-config.ini
+#sed -i 's:"/var/named":"/var/cache/bind":g' /etc/cobbler/named.template
+#sed -i 's:/var/named/data:/var/cache/bind:g' /etc/cobbler/named.template
+#sed -i 's:data/named.run:named.run:g' /etc/cobbler/named.template
 service apache2 restart
 service xinetd restart
 service cobbler restart
