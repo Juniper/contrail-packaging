@@ -1,0 +1,77 @@
+#!/bin/sh -e
+
+if [ "$1" = "configure" ]; then
+    if ! getent group nova > /dev/null 2>&1; then
+        addgroup --system nova >/dev/null
+    fi
+
+    if ! getent passwd nova > /dev/null 2>&1; then
+        adduser --system --home /var/lib/nova --ingroup nova --no-create-home --shell /bin/false nova
+    fi
+
+    if [ "$(id -gn nova)"  = "nogroup" ]; then
+      usermod -g nova nova
+    fi
+
+    if [ -z "$2" ]; then
+      # New install - blanket permissions
+      chown -R nova:nova /var/lib/nova/
+    elif dpkg --compare-versions "$2" lt "2011.3-0ubuntu4"; then
+      # make sure that LXC rootfs mount points are excleuded
+      # during upgrades from previous versions
+      find /var/lib/nova/ -name 'rootfs' -prune -o \
+        -group root -a -user nova -exec chown nova:nova {} \;
+      find /var/lib/nova/ -name 'rootfs' -prune -o \
+        -group nogroup -a -user nova -exec chown nova:nova {} \;
+    elif dpkg --compare-versions "$2" lt "2012.2~f1~20120503.13935-0ubuntu1"; then
+	  # convert the root_helper to rootwrap_config
+	  sed -e "s,^root_helper=.\+,rootwrap_config=/etc/nova/rootwrap.conf," -i /etc/nova/nova.conf
+    fi	
+
+    if [ "$(id -gn nova)"  = "nogroup" ]; then
+        usermod -g nova nova
+    fi
+
+    if dpkg --compare-versions "$2" lt "2012.1~e3-0ubuntu2"; then
+      usermod -s "/bin/false" nova
+    fi
+
+    chown -R nova:nova /etc/nova
+    chown -R nova:adm /var/log/nova
+
+    if [ -z "$2" ]; then
+        # New install - blanket permissions
+        chown -R nova:nova /var/lib/nova/
+    elif dpkg --compare-versions "$2" lt "2011.3-0ubuntu4"; then
+        # Make sure the LXC rootfs mount points are excluded
+        # during upgrades from previous versions
+        find /var/lib/nova/ -name 'rootfs' -prune -o \
+           -group root -a -user nova -exec chown nova:nova {} \;
+        find /var/lib/nova/ -name 'rootfs' -prune -o \
+           -group nogroup -a -user nova -exec chown nova:nova {} \;
+    fi
+
+    chmod 0640 /etc/nova/nova.conf
+    chmod 0640 /etc/nova/policy.json
+    chmod 0640 /etc/nova/api-paste.ini
+    chmod 0750 /etc/nova
+    chmod 0750 /var/log/nova
+    chown root:root /etc/nova/rootwrap.conf
+    chown root:root /etc/nova/rootwrap.d
+    chmod 0755 /etc/nova/rootwrap.d
+
+    if ! grep -qE "^(sql_)?connection( )?=.*" /etc/nova/nova.conf || \
+         grep -qE "^(sql_)?connection.*sqlite.*" /etc/nova/nova.conf
+    then
+      su -s /bin/sh -c 'nova-manage db sync' nova
+    fi
+
+    if [ -e /var/lib/nova/nova.sqlite ]
+    then
+      chown nova:nova /var/lib/nova/nova.sqlite
+      chmod 0640 /var/lib/nova/nova.sqlite
+    fi
+
+fi
+
+#DEBHELPER#
