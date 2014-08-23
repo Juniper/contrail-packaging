@@ -1,0 +1,8 @@
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Approved+1: ted ghose <rintu@hotmail.com>
+Code-Review+2: ted ghose <rintu@hotmail.com>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Fri, 22 Aug 2014 17:57:22 -0700
+Reviewed-on: https://review.opencontrail.org/2182
+Project: Juniper/contrail-packaging
+Branch: refs/heads/R1.10
