@@ -1,0 +1,47 @@
+Description: Fixes rdb backend image size
+
+Author: Sam Morrison <sorrison@gmail.com>
+Origin: upstream, Change-Id: I9e1d89201d79ee67157c962be469d7ff3e25ee21
+Bug-Ubuntu: 1219658
+
+The original fix for bug 1219658 introduced a factor of 1024 error
+in the resulting rbd image size.
+
+=====
+
+Original Fix:
+
+Description: Fix incorrect root partition size and compatible volume name
+
+Author: Haomai Wang <haomai@unitedstack.com>
+Origin: upstream, Change-Id: I3dc8d639b066eac35d190b8d4687c41c9f4d5824
+Bug-Ubuntu: 1219658
+
+When using rbd backend, it needs to resize volume size if size presents. Else
+we will get wrong image size.
+Rbd volume always uses uuid as the main pattern of volume name, now change to
+it is necessary.
+
+---
+ nova/virt/libvirt/imagebackend.py | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/nova/virt/libvirt/imagebackend.py b/nova/virt/libvirt/imagebackend.py
+index 6511496..f66b4f2 100644
+--- a/nova/virt/libvirt/imagebackend.py
++++ b/nova/virt/libvirt/imagebackend.py
+@@ -655,10 +655,8 @@ class Rbd(Image):
+         return False
+ 
+     def _resize(self, volume_name, size):
+-        size = int(size) * units.Ki
+-
+         with RBDVolumeProxy(self, volume_name) as vol:
+-            vol.resize(size)
++            vol.resize(int(size))
+ 
+     def create_image(self, prepare_template, base, size, *args, **kwargs):
+         if self.rbd is None:
+-- 
+1.9.1
+

@@ -1,0 +1,14 @@
+diff --git a/nova/virt/libvirt/driver.py b/nova/virt/libvirt/driver.py
+index 884050e..0056cec 100644
+--- a/nova/virt/libvirt/driver.py
++++ b/nova/virt/libvirt/driver.py
+@@ -3032,7 +3032,7 @@ class LibvirtDriver(driver.ComputeDriver):
+         disk_mapping = disk_info['mapping']
+         img_meta_prop = image_meta.get('properties', {}) if image_meta else {}
+ 
+-        CONSOLE = "console=tty0 console=ttyS0"
++        CONSOLE = "console=tty0 console=ttyS0 console=ttyAMA0"
+ 
+         guest = vconfig.LibvirtConfigGuest()
+         guest.virt_type = CONF.libvirt.virt_type
+

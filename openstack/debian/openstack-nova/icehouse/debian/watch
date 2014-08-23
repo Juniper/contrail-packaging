@@ -1,0 +1,3 @@
+version=3
+opts="uversionmangle=s/\.([a-zA-Z])/~$1/;s/%7E/~/" \
+ https://launchpad.net/nova/+download https://launchpad.net/nova/.*/.*/.*/nova-(.*)\.tar\.gz
