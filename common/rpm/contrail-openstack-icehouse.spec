@@ -31,6 +31,7 @@ Requires: mysql-server
 #Requires: MySQL-server
 Requires: openssl098e
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
+Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: memcached
 Requires: openstack-nova-novncproxy
 Requires: python-glance
