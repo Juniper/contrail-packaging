@@ -391,6 +391,7 @@ Contrail Analytics package
 %{_bindir}/contrail-logs
 %{_bindir}/contrail-flows
 %{_bindir}/contrail-stats
+/usr/share/doc/contrail-analytics-api
 
 %post analytics
 set -e
