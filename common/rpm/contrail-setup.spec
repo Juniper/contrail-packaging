@@ -52,9 +52,6 @@ Requires:	    python-crypto
 Requires:	    python-argparse
 Requires:	    gdb
 %endif
-Requires:	    python-lxml
-Requires:	    python-requests
-Requires:	    python-contrail
 
 %description
 Contrail Setup package with scripts for provisioning
@@ -136,12 +133,6 @@ else
 fi
 #install -p -m 644 %{_builddir}/../tools/packaging/common/rpm/rpm_list.txt  %{buildroot}/etc/contrail/rpm_list.txt
 
-# install bin files
-install -D -m 755 src/config/utils/contrail-version %{buildroot}%{_bindir}/contrail-version
-install -D -m 755 src/config/utils/contrail-status.py %{buildroot}%{_bindir}/contrail-status
-install -D -m 755 src/config/utils/contrail %{buildroot}%{_bindir}/contrail
-
-
 %post
 
 cd %{_contrailopt}
@@ -172,9 +163,6 @@ tar xzvf contrail_installer.tgz
 %endif
 /etc/contrail
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
-%{_bindir}/contrail-version
-%{_bindir}/contrail-status
-%{_bindir}/contrail
 %if "0%{_sku}" == "0icehouse"
 /usr/bin/contrail-keystone-setup.sh
 %endif

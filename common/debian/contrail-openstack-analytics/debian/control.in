@@ -8,5 +8,5 @@ Build-Depends:
 Package: contrail-openstack-analytics
 Architecture: all
 Maintainer: rrugge <rrugge@juniper.net>
-Depends: supervisor, python-contrail, contrail-analytics, contrail-setup, contrail-nodemgr
+Depends: supervisor, python-contrail, contrail-analytics, contrail-setup, contrail-utils, contrail-nodemgr
 Description: Contrail Openstack Analytics composite debian package
