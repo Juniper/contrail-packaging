@@ -102,6 +102,7 @@ Requires: wget
 Requires: sendmail
 Requires: dpkg
 Requires: dpkg-devel
+Requires: syslinux
 
 %description
 A Server manager description
