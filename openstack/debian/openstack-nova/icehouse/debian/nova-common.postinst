@@ -26,7 +26,7 @@ if [ "$1" = "configure" ]; then
     elif dpkg --compare-versions "$2" lt "2012.2~f1~20120503.13935-0ubuntu1"; then
 	  # convert the root_helper to rootwrap_config
 	  sed -e "s,^root_helper=.\+,rootwrap_config=/etc/nova/rootwrap.conf," -i /etc/nova/nova.conf
-    fi	
+    fi
 
     if [ "$(id -gn nova)"  = "nogroup" ]; then
         usermod -g nova nova
