@@ -15,10 +15,7 @@ Depends: tar,
     python-crypto,
     curl,
     ifenslave-2.6,
-    vlan,
-    python-lxml,
-    python-requests,
-    python-contrail
+    vlan
 # Replaces contrail_installer.tgz created by contrail-install-packages.
 Replaces: contrail-install-packages
 Section: contrail-setup

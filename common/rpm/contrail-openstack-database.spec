@@ -24,6 +24,7 @@ BuildArch: noarch
 
 Requires: contrail-database >= %{_verstr}-%{_relstr}
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
+Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
 Requires: zookeeper
 Requires: supervisor

@@ -39,6 +39,7 @@ Requires: openstack-nova-compute
 Requires: openstack-utils
 Requires: python-thrift
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
+Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: contrail-nova-vif >= %{_verstr}-%{_relstr}
 Requires: librabbitmq
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}

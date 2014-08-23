@@ -84,6 +84,11 @@ popd
 pushd %{_sbtop}/build/noarch/nova_contrail_vif
 python setup.py install --root=%{buildroot}
 popd
+
+# Install contrail utilities
+install -D -m 755 %{_sbtop}/controller/src/config/utils/contrail-version %{buildroot}%{_bindir}/contrail-version
+install -D -m 755 %{_sbtop}/controller/src/config/utils/contrail-status.py %{buildroot}%{_bindir}/contrail-status
+
 #Needed for vrouter-dkms
 install -d -m 755 %{buildroot}/usr/src/vrouter-%{_verstr}
 pushd %{buildroot}/usr/src/vrouter
@@ -479,3 +484,17 @@ Contrail Nova Vif driver package
 %defattr(-,root,root,-)
 %{python_sitelib}/nova_contrail_vif*
 
+%package utils
+Summary:          Contrail utility sctipts.
+Group:              Applications/System
+
+Requires: python-lxml
+Requires: python-requests
+Requires: python-contrail >= %{_verstr}-%{_relstr}
+
+%description utils
+Contrail utility sctipts package
+
+%files utils
+%{_bindir}/contrail-version
+%{_bindir}/contrail-status
