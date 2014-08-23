@@ -1,0 +1,19 @@
+#!/bin/bash
+#---------------------
+# Testing nova-compute
+#---------------------
+set -e
+DAEMONS=('nova-compute-kvm' 'nova-compute-lxc' 'nova-compute-qemu')
+
+for daemon in "${DAEMONS[@]}"; do
+    apt-get install -y nova-compute $daemon 2>&1 > /dev/null
+
+    if pidof -x nova-compute > /dev/null; then
+        echo "OK"
+    else
+        echo "ERROR: NOVA-COMPUTE IS NOT RUNNING"
+        exit 1
+    fi
+
+    apt-get remove -y $daemon nova-compute 2>&1 > /dev/null
+done

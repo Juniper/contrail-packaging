@@ -1,0 +1,8 @@
+/var/log/nova/nova-consoleauth.log {
+    daily
+    copytruncate
+    missingok
+    compress
+    delaycompress
+    notifempty
+}

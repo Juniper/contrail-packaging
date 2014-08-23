@@ -1,0 +1,35 @@
+Description: Update run_tests.sh to show results and default the concurrency to 1.
+Author: Chuck Short <zulcss@ubuntu.com>
+Forwarded: Not needed.
+diff --git a/run_tests.sh b/run_tests.sh
+index 1fecc4c..84537cb 100755
+--- a/run_tests.sh
++++ b/run_tests.sh
+@@ -86,7 +86,7 @@ no_pep8=0
+ coverage=0
+ debug=0
+ update=0
+-concurrency=0
++concurrency=4
+ 
+ LANG=en_US.UTF-8
+ LANGUAGE=en_US:en
+@@ -137,14 +137,7 @@ function run_tests {
+     ${wrapper} python setup.py egg_info
+   fi
+   echo "Running \`${wrapper} $TESTRTESTS\`"
+-  if ${wrapper} which subunit-2to1 2>&1 > /dev/null
+-  then
+-    # subunit-2to1 is present, testr subunit stream should be in version 2
+-    # format. Convert to version one before colorizing.
+-    bash -c "${wrapper} $TESTRTESTS | ${wrapper} subunit-2to1 | ${wrapper} tools/colorizer.py"
+-  else
+-    bash -c "${wrapper} $TESTRTESTS | ${wrapper} tools/colorizer.py"
+-  fi
++  bash -c "${wrapper} $TESTRTESTS | ${wrapper} subunit2pyunit"
+   RESULT=$?
+   set -e
+ 
+-- 
+1.9.0
+
