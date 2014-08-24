@@ -48,6 +48,8 @@ override_dh_auto_install:
 
 	mkdir -p ${buildroot}/etc/init
 	install -p -m 644 $(_src_config)/storage-stats.upstart ${buildroot}/etc/init/contrail-storage-stats.conf
+	mkdir -p ${buildroot}/usr/bin
+	install -p -m 644 $(_src_config)/led-flash.sh ${buildroot}/usr/bin/led-flash.sh
 	mkdir -p ${buildroot}$(_sysconfdir)/contrail
 	install -p -m 644 $(SB_TOP)/controller/src/storage/stats-daemon/stats-daemon.conf ${buildroot}$(_sysconfdir)/contrail/contrail-storage-nodemgr.conf
 	mkdir -p ${buildroot}$(_bindir)
