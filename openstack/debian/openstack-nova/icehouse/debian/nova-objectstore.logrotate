@@ -6,5 +6,5 @@
     endscript
     compress
     delaycompress
-    notifempty 
+    notifempty
 }
