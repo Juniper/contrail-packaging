@@ -1,0 +1,8 @@
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Approved+1: Michael Nishimoto <mnishimoto@juniper.net>
+Code-Review+2: Michael Nishimoto <mnishimoto@juniper.net>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Mon, 25 Aug 2014 14:09:26 -0700
+Reviewed-on: https://review.opencontrail.org/2227
+Project: Juniper/contrail-packaging
+Branch: refs/heads/R1.10
