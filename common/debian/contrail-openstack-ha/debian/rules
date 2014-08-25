@@ -46,6 +46,7 @@ override_dh_auto_install:
 	install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-bootstrap-galera.sh $(buildroot)/opt/contrail/bin/contrail-bootstrap-galera.sh
 	install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-galera-check.sh $(buildroot)/opt/contrail/bin/contrail-galera-check.sh
 	install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-cmon-monitor.sh $(buildroot)/opt/contrail/bin/contrail-cmon-monitor.sh
+	install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-rmq-monitor.sh $(buildroot)/opt/contrail/bin/contrail-rmq-monitor.sh
 	install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-ha-check.sh $(buildroot)/opt/contrail/bin/contrail-ha-check.sh
 	install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-token-clean.sh $(buildroot)/opt/contrail/bin/contrail-token-clean.sh
 	install -p -m 644 $(SB_TOP)/distro/third_party/cmon-1.2.6-357-64bit-glibc23-mc70.tar.gz $(buildroot)/usr/local
