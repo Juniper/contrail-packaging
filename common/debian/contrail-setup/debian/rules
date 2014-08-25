@@ -69,6 +69,7 @@ override_dh_auto_install:
 	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-status-deb $(buildroot)/usr/bin/openstack-status
 	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-db $(buildroot)/usr/bin/openstack-db 
 	install -D -m 755 $(SB_TOP)/controller/src/config/utils/contrail-status.py $(buildroot)/usr/bin/contrail-status
+	install -D -m 755 $(SB_TOP)/controller/src/config/utils/contrail $(buildroot)/usr/bin/contrail
 	# install pkgs needed first
 	install -p -m 644 $(SB_TOP)/distro/third_party/ecdsa-0.10.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/ecdsa-0.10.tar.gz
 	install -p -m 644 $(SB_TOP)/distro/third_party/Fabric-1.7.0.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz

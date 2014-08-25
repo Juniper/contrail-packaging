@@ -139,6 +139,7 @@ fi
 # install bin files
 install -D -m 755 src/config/utils/contrail-version %{buildroot}%{_bindir}/contrail-version
 install -D -m 755 src/config/utils/contrail-status.py %{buildroot}%{_bindir}/contrail-status
+install -D -m 755 src/config/utils/contrail %{buildroot}%{_bindir}/contrail
 
 
 %post
@@ -173,6 +174,7 @@ tar xzvf contrail_installer.tgz
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
 %{_bindir}/contrail-version
 %{_bindir}/contrail-status
+%{_bindir}/contrail
 %if "0%{_sku}" == "0icehouse"
 /usr/bin/contrail-keystone-setup.sh
 %endif
