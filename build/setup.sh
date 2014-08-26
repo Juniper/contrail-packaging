@@ -22,6 +22,10 @@ cp /opt/contrail/contrail_packages/helpers/* /opt/contrail/bin/
 # Remove existing python-crypto-2.0.1 rpm.
 yum -y --disablerepo=* remove python-crypto-2.0.1
 
+# Remove contrail-fabric-utils
+# Workaround to fix bug(https://bugs.launchpad.net/juniperopenstack/+bug/1361452)
+yum -y --disablerepo=* remove contrail-fabric-utils
+
 #Install basic packages 
 yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-setup contrail-fabric-utils python-pip
 pip-python install /opt/contrail/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz
