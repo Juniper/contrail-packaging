@@ -29,6 +29,7 @@ Requires: python-keystoneclient >= 0.2.0
 Requires: python-psutil
 Requires: mysql-server
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
+Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: python-zope-interface
 Requires: euca2ools
 Requires: m2crypto

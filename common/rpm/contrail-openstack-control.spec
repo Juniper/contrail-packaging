@@ -29,6 +29,7 @@ Requires: contrail-control >= %{_verstr}-%{_relstr}
 Requires: contrail-lib >= %{_verstr}-%{_relstr}
 Requires: contrail-dns >= %{_verstr}-%{_relstr}
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
+Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
 Requires: python-contrail >= %{_verstr}-%{_relstr}
 
