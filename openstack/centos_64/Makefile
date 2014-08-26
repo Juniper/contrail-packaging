@@ -31,7 +31,7 @@ endif
 G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
 
 ifndef CONTRAIL_SKU
-  CONTRAIL_SKU := grizzly
+  CONTRAIL_SKU := havana
 endif
 
 $(PPREP):
@@ -57,89 +57,7 @@ $(LOCAL_PY): $(PPREP)
 	fi
 
 # Openstack packages
-auth: django-openstack-auth
-python-django-openstack-auth: django-openstack-auth
-django-openstack-auth: $(PREP)
-	@echo making rpm for django-openstack-auth
-	cd $(OPENSTACK_PKGDIR)/centos_64/django-openstack-auth && \
-	cp `grep '^Source[0-9]\+:' django-openstack-auth.spec|cut -d: -f2` $(BUILD_BASE)/SOURCES/ 
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb django-openstack-auth/django-openstack-auth.spec $(G_TAG)
-
-ifeq ($(CONTRAIL_SKU), grizzly)
-cinder: package-cinder
-openstack-cinder-doc: package-cinder
-python-cinder: package-cinder
-package-cinder: $(PREP)
-	@echo making rpm for package-cinder
-	cd $(OPENSTACK_PKGDIR)/centos_64/cinder && \
-	cp `grep '^Source[0-9]\+:' openstack-cinder.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/ 
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb cinder/openstack-cinder.spec $(G_TAG)
-
-glance: package-glance
-python-glance: package-glance
-openstack-glance-doc: package-glance
-package-glance: $(PREP)
-	@echo making rpm for package-glance
-	cd $(OPENSTACK_PKGDIR)/centos_64/glance && \
-	cp `grep '^Source[0-9]\+:' package-glance.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/ 
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb glance/package-glance.spec $(G_TAG)
-
-horizon: package-horizon
-openstack-dashboard: package-horizon
-package-horizon: $(PREP)
-	@echo making rpm for package-horizon
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb horizon/openstack-horizon.spec $(G_TAG)
-
-keystone: package-keystone
-python-keystone: package-keystone
-package-keystone: $(PREP)
-	@echo making rpm for package-keystone
-	cd $(OPENSTACK_PKGDIR)/centos_64/keystone && \
-	cp `grep '^Source[0-9]\+:' package-keystone.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/ 
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb keystone/package-keystone.spec $(G_TAG)
-
-contrail-openstack-dashboard: $(PREP)
-	@echo making rpm for package-horizon
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DASH_PLUGIN_BLDDIR)' \
-	-bb horizon-plugin/openstack-horizon-plugin.spec $(G_TAG)
-
-nova: package-nova
-openstack-nova-cert: package-nova
-openstack-nova-objectstore: package-nova
-openstack-nova-scheduler: package-nova
-openstack-nova-api: package-nova
-python-nova: package-nova
-openstack-nova-compute: package-nova
-openstack-nova-console: package-nova
-openstack-nova-common: package-nova
-openstack-nova-doc: package-nova
-package-nova: $(PREP)
-	@echo making rpm for package-nova
-	cd $(OPENSTACK_PKGDIR)/centos_64/nova && \
-	cp `grep '^Source[0-9]\+:' openstack-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/ 
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb nova/openstack-nova.spec $(G_TAG)
-
-quantum: package-quantum
-python-quantum: package-quantum
-openstack-quantum-contrail: package-quantum
-openstack-quantum-contrail: package-quantum
-package-quantum: $(PREP)
-	@echo making rpm for package-quantum
-	cd $(OPENSTACK_PKGDIR)/centos_64/quantum && \
-	cp `grep '^Source[0-9]\+:' openstack-quantum.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/ 
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb quantum/openstack-quantum.spec $(G_TAG)
-
-
-all: $(PREP) auth cinder glance horizon keystone nova quantum contrail-openstack-dashboard
-else
-ifneq ($(CONTRAIL_SKU), icehouse)
+ifeq ($(CONTRAIL_SKU), havana)
 nova: package-nova
 openstack-nova-cert: package-nova
 openstack-nova-objectstore: package-nova
@@ -187,7 +105,6 @@ contrail-openstack-dashboard: $(PREP)
 all: $(PREP) package-nova package-neutron horizon contrail-openstack-dashboard
 else
 all: $(PREP)
-endif
 endif
 
 clean:
