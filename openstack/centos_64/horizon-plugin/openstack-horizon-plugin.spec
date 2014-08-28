@@ -5,13 +5,10 @@
 %define         _relstr      %(date -u +%y%m%d%H%M)
 %endif
 
-%define _epochstr 1
-
 %{echo: "Building release %{_relstr}\n"}
 
 
 Name:       contrail-openstack-dashboard
-Epoch:      %{_epochstr}
 Version:    2013.1.4
 Release:    %{_relstr}
 Summary:    Horizon Plugin for Contrail Neutron implementation %{?_gitVer}
