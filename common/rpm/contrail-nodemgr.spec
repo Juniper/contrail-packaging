@@ -31,9 +31,9 @@ Vendor:             Juniper Networks Inc
 
 Requires:         contrail-lib >= %{_verstr}-%{_relstr}
 Requires:         supervisor
-Requires:         xmltodict
+Requires:         xmltodict >= 0.7.0
 Requires:	  python-importlib
-Requires:	  python-bottle
+Requires:	  python-bottle >= 0.11.6
 Requires:	  python-contrail >= %{_verstr}-%{_relstr}
 
 %define _pyver        %( %{__python} -c "import sys; print '%s.%s' % sys.version_info[0:2]" )

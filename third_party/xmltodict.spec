@@ -1,15 +1,11 @@
 %define         _distrothirdpartydir distro/third_party
 
-%if 0%{?_buildTag:1}
-%define         _relstr      %{_buildTag}
-%else
-%define         _relstr      %(date -u +%y%m%d%H%M)
-%endif
+%define         _relstr     0contrail 
 %{echo: "Building release %{_relstr}\n"}
 
 Summary: xmltodict %{?_gitVer}
 Name: xmltodict 
-Version: 0.1
+Version: 0.7.0
 Release: %{_relstr}%{?dist}
 
 Group:              Applications/System
@@ -20,9 +16,9 @@ Vendor:             Juniper Networks Inc
 BuildArch: noarch
 
 BuildRequires: python-pip
-Requires: python-bitarray
+Requires: python-bitarray >= 0.8.0
 Requires: python-gevent
-Requires: pycassa
+Requires: python-pycassa
 Requires: python-requests
 Requires: python-zope-interface
 

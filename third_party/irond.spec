@@ -1,9 +1,5 @@
 Summary: IFMap server %{?_gitVer}
-%if 0%{?_buildTag:1}
-%define         _relstr      %{_buildTag}
-%else
-%define         _relstr      %(date -u +%y%m%d%H%M)
-%endif
+%define         _relstr     2contrail
 %{echo: "Building release %{_relstr}\n"}
 
 Name: irond

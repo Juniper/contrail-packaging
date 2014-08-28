@@ -40,7 +40,7 @@ Requires: python-glanceclient
 %if 0%{?rhel} 
 Requires: python-importlib
 %endif
-Requires: euca2ools
+Requires: euca2ools >= 1.0-2contrail
 Requires: m2crypto
 Requires: qpid-cpp-server
 Requires: haproxy

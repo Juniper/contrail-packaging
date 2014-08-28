@@ -25,6 +25,11 @@ BuildArch: noarch
 Requires: contrail-config >= %{_verstr}-%{_relstr}
 Requires: openstack-quantum-contrail
 Requires: python-novaclient
+%if %{_skuTag} == "havana"
+Requires: python-neutronclient >= 2.3.0-2contrail
+%else
+Requires: python-neutronclient >= 2.3.4-2contrail
+%endif
 Requires: python-keystoneclient >= 0.2.0
 Requires: python-psutil
 Requires: mysql-server
@@ -34,15 +39,15 @@ Requires: python-zope-interface
 %if 0%{?rhel} 
 Requires: python-importlib
 %endif
-Requires: euca2ools
+Requires: euca2ools >= 1.0-2contrail
 Requires: m2crypto
 Requires: openstack-nova
 Requires: java-1.7.0-openjdk
 Requires: haproxy
 Requires: rabbitmq-server
-Requires: python-bottle
+Requires: python-bottle >= 0.11.6
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
-Requires: irond 
+Requires: irond >= 1.0-2contrail 
 Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
 Requires: python-contrail >= %{_verstr}-%{_relstr}
 

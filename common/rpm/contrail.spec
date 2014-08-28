@@ -105,7 +105,7 @@ Group:              Applications/System
 
 Requires: contrail-vrouter-agent >= %{_verstr}-%{_relstr}
 Requires: contrail-lib >= %{_verstr}-%{_relstr}
-Requires: xmltodict
+Requires: xmltodict >= 0.7.0
 
 %description vrouter
 vrouter kernel module
@@ -160,7 +160,7 @@ Summary:            Contrail Python Lib  %{?_gitVer}
 
 Group:              Applications/System
 Requires:	    python-importlib
-Requires:	    python-bottle
+Requires:	    python-bottle >= 0.11.6
 Requires:	    python-gevent
 
 Obsoletes:          contrail-api-lib
@@ -306,18 +306,18 @@ Group:              Applications/System
 
 BuildArch: noarch
 Requires: python-contrail >= %{_verstr}-%{_relstr}
-Requires: python-bitarray
+Requires: python-bitarray >= 0.8.0
 Requires: python-gevent
-Requires: python-geventhttpclient
+Requires: python-geventhttpclient 
 Requires: python-lxml
-Requires: pycassa
-Requires: python-thrift
+Requires: python-pycassa
+Requires: python-thrift >= 0.9.1
 Requires: python-keystone
 Requires: python-psutil
 Requires: python-requests
 Requires: python-zope-interface
-Requires: irond
-Requires: xmltodict >= 0.1
+Requires: irond >= 1.0-2contrail
+Requires: xmltodict >= 0.7.0
 Requires: python-jsonpickle
 Requires: python-amqp
 
@@ -369,10 +369,10 @@ fi
 Summary:            Contrail Analytics %{?_gitVer}
 Group:              Applications/System
 
-Requires:           xmltodict
+Requires:           xmltodict >= 0.7.0
 Requires:           contrail-lib >= %{_verstr}-%{_relstr}
-Requires:           pycassa
-Requires:	    redis-py
+Requires:           python-pycassa
+Requires:	    redis-py > 0.1-2contrail
 Requires:	    redis >= 2.6.13-1 
 Requires:	    python-contrail >= %{_verstr}-%{_relstr}
 Requires:	    python-psutil

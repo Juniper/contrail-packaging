@@ -357,7 +357,7 @@ Requires:         python-iso8601
 Requires:         python-netaddr
 Requires:         python-lxml
 Requires:         python-anyjson
-Requires:         python-boto
+Requires:         python-boto >= 2.12.0-2contrail
 Requires:         python-cheetah
 Requires:         python-ldap
 Requires:         python-stevedore

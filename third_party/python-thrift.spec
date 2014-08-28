@@ -2,11 +2,7 @@
 
 %define         _distrothirdpartydir distro/third_party
 
-%if 0%{?_buildTag:1}
-%define         _relstr      %{_buildTag}
-%else
-%define         _relstr      %(date -u +%y%m%d%H%M)
-%endif
+%define         _relstr      0contrail
 
 %if 0%(grep -c XenServer /etc/redhat-release)
 %define dist .xen
