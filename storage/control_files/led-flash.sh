@@ -100,6 +100,7 @@ function precondition_checks()
   command -v smartctl > /dev/null
   if [ $? != '0' ]; then
     echo "Install smartmontools to support smartctl"
+    echo "command: apt-get install smartmontools"
     exit 1
   fi
 
@@ -107,6 +108,11 @@ function precondition_checks()
   command -v sas2ircu > /dev/null
   if [ $? != '0' ]; then
     echo "Install sas2ircu utility"
+    echo "Steps:"
+    echo "1. Add this line: \"deb http://hwraid.le-vert.net/ubuntu precise" \
+         "main\" in /etc/apt/sources.list"
+    echo "2. apt-get update"
+    echo "3. apt-get install sas2ircu"
     exit 1
   fi
 }
