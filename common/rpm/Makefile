@@ -12,6 +12,7 @@ LOCAL_PY            := $(LOCAL_PY_PTH)/bin/python
 LOCAL_PY_BLD        := $(BUILD_BASE)/BUILDROOT/Python-2.7.5
 LOCAL_PY_DEF        := --define "_python_path $(LOCAL_PY_PTH)"
 DISTRO_PACKAGING    := $(CPLANE_GIT_ROOT)/../distro/python-venv-packaging
+THIRDPARTY_DIR      := $(CPLANE_GIT_ROOT)/../third_party
 RPM_PY              := --define "__python $(LOCAL_PY)"
 DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu" /etc/issue)
 RPMBLDOPTS          := --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' -bb
@@ -34,6 +35,12 @@ ifdef FILE_LIST
  G_TAG += --define "_fileList $(FILE_LIST)"
 endif
 G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
+
+ifdef  TAG
+ TOOLS_VERSION := $(CPLANE_SRC_VER)-$(TAG)
+else
+ TOOLS_VERSION := $(CPLANE_SRC_VER)
+endif
 
 ifdef CONTRAIL_SKU
 else
@@ -268,6 +275,14 @@ contrail-vrouter-init: $(PREP)
 	@echo making rpm for contrail-vrouter-init
 	rpmbuild $(RPMBLDOPTS) contrail-vrouter-init.spec $(G_TAG)
 
+contrail-fabric-utils: $(PPREP)
+	@echo making rpm for contrail-fabric-utils
+	rpmbuild $(RPMBLDOPTS) fabric-utils.spec $(G_TAG)
+	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-fabric-utils-$(TOOLS_VERSION).tgz fabric-utils
+
+contrail-test:
+	@echo making tgz for contrail-test
+	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz contrail-test
 
 ifeq ($(CONTRAIL_SKU), grizzly)
 NEUTRON_PLUGIN = 
@@ -280,7 +295,7 @@ all: $(PREP) contrail contrail-api-extension contrail-dns \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
        ${NEUTRON_PLUGIN} contrail-server-manager contrail-server-manager-client \
-       contrail-vrouter-init 
+       contrail-vrouter-init contrail-fabric-utils contrail-test
 
 clean:
 	@echo clean
