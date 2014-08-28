@@ -11,6 +11,12 @@
 %else
 %define         _verstr      1
 %endif
+%if 0%{?_skuTag:1}
+%define         _sku     %{_skuTag}
+%else
+%define         _sku      None
+%endif
+
 Release:	    %{_relstr}%{?dist}
 Summary: Contrail Openstack Config %{?_gitVer}
 Name: contrail-openstack-config
@@ -39,7 +45,11 @@ Requires: python-importlib
 %endif
 Requires: euca2ools
 Requires: m2crypto
+%if %{_sku} == "icehouse"
 Requires: openstack-nova
+%else
+Requires: openstack-nova >= 2013.2-%{_verstr}-%{_relstr}
+%endif
 Requires: java-1.7.0-openjdk
 Requires: haproxy
 Requires: rabbitmq-server

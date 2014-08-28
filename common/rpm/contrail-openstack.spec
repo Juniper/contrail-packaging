@@ -26,7 +26,7 @@ Requires: openstack-dashboard
 Requires: contrail-openstack-dashboard >= %{_verstr}-%{_relstr}
 Requires: openstack-glance
 Requires: openstack-keystone
-Requires: openstack-nova
+Requires: openstack-nova = 2013.2-%{_verstr}-%{_relstr}
 Requires: openstack-cinder
 Requires: mysql-server
 #Requires: MySQL-server
@@ -34,7 +34,7 @@ Requires: openssl098e
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: memcached
-Requires: openstack-nova-novncproxy
+Requires: openstack-nova-novncproxy = 2013.2-%{_verstr}-%{_relstr}
 Requires: python-glance
 Requires: python-glanceclient
 %if 0%{?rhel} 
