@@ -132,6 +132,10 @@ cp -r %{_contrailetc}/puppet /etc/
 cp -r %{_contrailetc}/kickstarts /var/www/html/
 cp %{_contrailetc}/sendmail.cf /etc/mail/
 
+# Saving and replacing default NTP configuration (Server Manager node acts as NTP Server for Cluster)
+mv /etc/ntp.conf /etc/ntp.conf.default
+cp %{_contrailetc}/ntp.conf /etc/ntp.conf
+
 cp /usr/bin/server_manager/dhcp.template /etc/cobbler/
 cp -r /usr/bin/server_manager/kickstarts /var/www/html/
 mkdir -p /var/www/html/contrail
@@ -214,7 +218,7 @@ cp -r %{_contrail_smgr_src}cobbler %{buildroot}%{_contrailetc}
 cp -r %{_contrail_smgr_src}kickstarts %{buildroot}%{_contrailetc}
 cp %{_contrail_smgr_src}contrail-server-manager.start %{buildroot}%{_sbinusr}contrail-server-manager
 cp %{_contrail_smgr_src}utils/sendmail.cf %{buildroot}%{_contrailetc}
-
+cp %{_contrail_smgr_src}ntp.conf %{buildroot}%{_contrailetc}
 #install -p -m 755 %{_contrail_smgr_src}cobbler/dhcp.template %{buildroot}%{_bindir}%{_contrail_smgr}
 #install -p -m 755 %{_contrail_smgr_src}cobbler/settings %{buildroot}%{_bindir}%{_contrail_smgr}
 
