@@ -14,16 +14,16 @@ end script
 
 script
     supervisord --nodaemon -c /etc/contrail/supervisord_webui.conf || true
-    echo "supervisor-webui failed. lsof -i :9008..."
-    lsof -i :9008 || true
-    pid=`lsof -Fp -i :9008 | cut -d'p' -f2` || true
+    echo "supervisor-webui start failed...."
+    (lsof | grep -i supervisord_webui.sock) || true
+    pid=`lsof | grep -i supervisord_webui.sock | cut -d' ' -f3` || true
     if [ "x$pid" != "x" ]; then
         ps uw -p $pid
     fi
 end script
 
 pre-stop script
-    supervisorctl -s http://localhost:9008 stop all
-    supervisorctl -s http://localhost:9008 shutdown
+    supervisorctl -s unix:///tmp/supervisord_webui.sock stop all
+    supervisorctl -s unix:///tmp/supervisord_webui.sock shutdown
     /usr/bin/supervisor_killall /etc/contrail/supervisord_webui_files
 end script

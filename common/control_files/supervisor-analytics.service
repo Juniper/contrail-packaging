@@ -5,7 +5,7 @@ After=syslog.target network.target
 [Service]
 Restart=always
 ExecStart=/usr/bin/supervisord -n -c /etc/contrail/supervisord_analytics.conf
-ExecStopPre=/usr/bin/supervisorctl -s http://localhost:9002 stop all
+ExecStopPre=/usr/bin/supervisorctl -s unix:///tmp/supervisord_analytics.sock stop all
 ExecStopPost=/usr/bin/supervisor_killall /etc/contrail/supervisord_analytics_files
 LimitCORE=infinity
 LimitNOFILE=4096
