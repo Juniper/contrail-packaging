@@ -61,7 +61,7 @@ install -p -m 755 %{_distropkgdir}/contrail-control.rules %{buildroot}%{_supervi
 %files
 %defattr(-,root,root,-)
 %{_supervisordir}
-%config(noreplace) %{_contrailetc}/supervisord_control.conf
+%{_contrailetc}/supervisord_control.conf
 %if 0%{?rhel}
 %{_initddir}/supervisor-control
 %{_initddir}/contrail-control
