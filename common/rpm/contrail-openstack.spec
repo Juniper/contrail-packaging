@@ -79,6 +79,7 @@ install -D -m 755 %{_distropkgdir}/glance-registry.ini.centos %{buildroot}%{_sys
 install -D -m 755 %{_distropkgdir}/cinder-api.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/cinder-api.ini
 install -D -m 755 %{_distropkgdir}/cinder-scheduler.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/cinder-scheduler.ini
 install -D -m 755 %{_distropkgdir}/nova-api.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/nova-api.ini
+install -D -m 755 %{_distropkgdir}/nova-cert.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/nova-cert.ini
 install -D -m 755 %{_distropkgdir}/nova-scheduler.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/nova-scheduler.ini
 install -D -m 755 %{_distropkgdir}/nova-conductor.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/nova-conductor.ini
 install -D -m 755 %{_distropkgdir}/nova-consoleauth.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/nova-consoleauth.ini
@@ -99,6 +100,7 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/cinder-api.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/cinder-scheduler.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/nova-api.ini
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/nova-cert.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/nova-scheduler.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/nova-conductor.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/nova-consoleauth.ini
@@ -113,11 +115,11 @@ fi
 mv %{_bindir}/openstack-status.contrail %{_bindir}/openstack-status
 
 # Replace stock openstack initd scripts with contrail initd scripts
-for svc in openstack-keystone openstack-nova_api openstack-nova-scheduler\
+for svc in openstack-keystone openstack-nova-api openstack-nova-scheduler\
            openstack-nova-consoleauth openstack-nova-conductor\
            openstack-nova-novncproxy openstack-glance-api\
            openstack-glance-registry openstack-cinder-api\
-           openstack-cinder-scheduler; do
+           openstack-cinder-scheduler openstack-nova-cert; do
     if [ -f %{_initddir}/$svc ]; then
         service $svc stop || true
         mv %{_initddir}/$svc %{_initddir}/$svc.backup
