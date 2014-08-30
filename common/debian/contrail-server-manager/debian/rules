@@ -86,6 +86,7 @@ override_dh_auto_install:
 	cp -r $(src_path)/contrail-server-manager.u $(build_root)/etc/init.d/contrail-server-manager
 	cp -r $(src_path)/contrail-server-manager.start  $(build_root)/usr/sbin/contrail-server-manager
 	cp -r $(src_path)/utils/sendmail.cf $(build_root)/etc/contrail_smgr/
+	cp -r $(src_path)/ntp.conf $(build_root)/etc/contrail_smgr/
 	
 	cp -r $(src_path)/puppet  $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/repos/contrail-centos-repo $(build_root)/etc/contrail_smgr/

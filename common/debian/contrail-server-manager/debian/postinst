@@ -30,6 +30,10 @@ mkdir -p /var/www/html/contrail
 mkdir -p /etc/mail/
 cp /etc/contrail_smgr/sendmail.cf /etc/mail/
 
+# Saving and replacing default NTP configuration (Server Manager node acts as NTP Server for Cluster)
+mv /etc/ntp.conf /etc/ntp.conf.default
+cp /etc/contrail_smgr/ntp.conf /etc/ntp.conf
+
 #cp /usr/bin/server_manager/dhcp.template /etc/cobbler/
 #cp -r /usr/bin/server_manager/kickstarts /var/www/html/
 mkdir -p /var/www/html/contrail
