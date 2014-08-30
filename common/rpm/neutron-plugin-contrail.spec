@@ -21,6 +21,8 @@ License:            Commercial
 URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
+Requires:	    python-simplejson >= 3.5.3
+
 BuildArch: noarch
 
 %description

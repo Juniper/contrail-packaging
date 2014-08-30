@@ -112,7 +112,7 @@ popd
 #%{_bindir}/encap.py
 %{_initddir}
 #%{_venv_root}/bin
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config.conf
+%{_sysconfdir}/contrail/supervisord_config.conf
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/rabbitmq-server.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini

@@ -88,7 +88,7 @@ done
 %{_initddir}/contrail-collector
 %{_initddir}/contrail-query-engine
 %{_initddir}/contrail-analytics-api
-%config(noreplace) %{_contrailetc}/supervisord_analytics.conf
+%{_contrailetc}/supervisord_analytics.conf
 
 %changelog
 * Tue Aug  6 2013 <ndramesh@juniper.net>
