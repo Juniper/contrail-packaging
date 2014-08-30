@@ -33,6 +33,8 @@ import json
 import time
 import datetime
 import platform
+import select
+import gevent
 
 from supervisor import childutils
 
@@ -47,6 +49,24 @@ from subprocess import Popen, PIPE
 def usage():
     print doc
     sys.exit(255)
+
+class EventListenerProtocolNodeMgr(childutils.EventListenerProtocol):
+    def wait(self, stdin=sys.stdin, stdout=sys.stdout):
+        self.ready(stdout)
+        while 1:
+            gevent.sleep(1)
+            if select.select([sys.stdin,],[],[], 1)[0]:
+                line = stdin.readline()
+                if line is not None:
+                    sys.stderr.write("wokeup and found a line\n")
+                    break
+                else:
+                    sys.stderr.write("wokeup from select just like that\n")
+        headers = childutils.get_headers(line)
+        payload = stdin.read(int(headers['len']))
+        return headers, payload
+
+listener_nodemgr = EventListenerProtocolNodeMgr()
 
 class process_stat:
     def __init__(self):
@@ -247,7 +267,7 @@ class EventManager:
             gevent.sleep(1)
             # we explicitly use self.stdin, self.stdout, and self.stderr
             # instead of sys.* so we can unit test this code
-            headers, payload = childutils.listener.wait(self.stdin, self.stdout)
+            headers, payload = listener_nodemgr.wait(self.stdin, self.stdout)
 
             #self.stderr.write("headers:\n" + str(headers) + '\n')
             #self.stderr.write("payload:\n" + str(payload) + '\n')
@@ -349,7 +369,7 @@ class EventManager:
                     self.send_process_state_db(sandeshconn)
                 prev_current_time = int(time.time())
 
-            childutils.listener.ok(self.stdout)
+            listener_nodemgr.ok(self.stdout)
 
 def main(argv=sys.argv):
 # Parse Arguments
