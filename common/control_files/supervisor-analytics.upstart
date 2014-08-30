@@ -14,16 +14,16 @@ end script
 
 script
     supervisord --nodaemon -c /etc/contrail/supervisord_analytics.conf || true
-    echo "supervisor-analytics start failed. lsof -i :9002..."
-    lsof -i :9002 || true
-    pid=`lsof -Fp -i :9002 | cut -d'p' -f2` || true
+    echo "supervisor-analytics start failed...."
+    (lsof | grep -i supervisord_analytics.sock) || true
+    pid=`lsof | grep -i supervisord_analytics.sock | cut -d' ' -f3` || true
     if [ "x$pid" != "x" ]; then
         ps uw -p $pid
     fi
 end script
 
 pre-stop script
-    supervisorctl -s http://localhost:9002 stop all
-    supervisorctl -s http://localhost:9002 shutdown
+    supervisorctl -s unix:///tmp/supervisord_analytics.sock stop all
+    supervisorctl -s unix:///tmp/supervisord_analytics.sock shutdown
     /usr/bin/supervisor_killall /etc/contrail/supervisord_analytics_files
 end script
