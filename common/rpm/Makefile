@@ -182,10 +182,14 @@ ifeq ($(CONTRAIL_SKU), grizzly)
 contrail-openstack-config: $(PREP)
 	@echo making rpm for contrail-openstack-config
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-config.spec $(G_TAG)
-else
+else ifeq ($(CONTRAIL_SKU), havana)
 contrail-openstack-config: $(PREP)
 	@echo making rpm for contrail-openstack-config
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-config.spec $(G_TAG)
+else
+contrail-openstack-config: $(PREP)
+	@echo making rpm for contrail-openstack-config
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse-config.spec $(G_TAG)
 endif
 
 contrail-openstack-control: $(PREP)
@@ -196,9 +200,15 @@ contrail-openstack-database: $(PREP)
 	@echo making rpm for contrail-openstack-database
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-database.spec $(G_TAG)
 
+ifeq ($(CONTRAIL_SKU), havana)
+contrail-openstack-vrouter: $(PREP)
+	@echo making rpm for contrail-openstack-vrouter
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-vrouter.spec  $(G_TAG)
+else
 contrail-openstack-vrouter: $(PREP)
 	@echo making rpm for contrail-openstack-vrouter
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-vrouter.spec  $(G_TAG)
+endif
 
 contrail-openstack-webui: $(PREP)
 	@echo making rpm for contrail-openstack-webui

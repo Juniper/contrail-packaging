@@ -25,8 +25,8 @@ BuildArch: noarch
 #Requires: contrail-api-lib
 Requires: contrail-api-extension >= %{_verstr}-%{_relstr}
 Requires: contrail-config >= %{_verstr}-%{_relstr}
-Requires: openstack-neutron = 2013.2-%{_verstr}.%{_relstr}
-Requires: openstack-nova = 2013.2-%{_verstr}.%{_relstr}
+Requires: openstack-neutron
+Requires: openstack-nova
 Requires: neutron-plugin-contrail
 Requires: python-novaclient
 Requires: python-keystoneclient >= 0.2.0
