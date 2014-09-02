@@ -35,7 +35,7 @@ Requires: abrt-addon-vmcore
 Requires: kexec-tools
 Requires: kernel = 3.6.6-1.fc17
 %endif
-Requires: openstack-nova-compute
+Requires: openstack-nova-compute = 2013.2-%{_verstr}.%{_relstr}
 Requires: python-kombu >= 1.4.1
 Requires: openstack-utils
 Requires: python-thrift >= 0.9.1
