@@ -1,10 +1,6 @@
 %define         _distrothirdpartydir distro/third_party
 
-%if 0%{?_buildTag:1}
-%define         _relstr      %{_buildTag}
-%else
-%define         _relstr      %(date -u +%y%m%d%H%M)
-%endif
+%define         _relstr      2contrail
 %{echo: "Building release %{_relstr}\n"}
 %if 0%(grep -c Xen /etc/redhat-release)
 %define		dist	.xen
@@ -23,7 +19,7 @@ Vendor:             Juniper Networks Inc
 BuildArch: noarch
 
 BuildRequires: python-pip
-Requires: python-bitarray
+Requires: python-bitarray >= 0.8.0
 Requires: python-gevent
 Requires: python-keystone
 Requires: python-requests

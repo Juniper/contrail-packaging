@@ -37,7 +37,7 @@ Requires: kernel = 3.6.6-1.fc17
 %endif
 Requires: openstack-nova-compute
 Requires: openstack-utils
-Requires: python-thrift
+Requires: python-thrift >= 0.9.1
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: contrail-nova-vif >= %{_verstr}-%{_relstr}

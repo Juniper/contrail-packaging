@@ -1,17 +1,13 @@
 #
 # This is 2.3.0 havana
 #
-%if 0%{?_buildTag:1}
-%define         _relstr      %{_buildTag}
-%else
-%define         _relstr      %(date -u +%y%m%d%H%M)
-%endif
+%define         _relstr     2contrail 
 %{echo: "Building release %{_relstr}\n"}
 
 Name:       python-neutronclient
 Version:    2.3.0
 Epoch:      2
-Release:    1%{_relstr}
+Release:    %{_relstr}
 Summary:    Python API and CLI for OpenStack Neutron
 
 Group:      Development/Languages
