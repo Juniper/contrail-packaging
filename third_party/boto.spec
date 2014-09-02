@@ -1,11 +1,7 @@
 # view contents of rpm file: rpm -qlp <filename>.rpm
 
 %define         _contrailopt /opt/contrail
-%if 0%{?_buildTag:1}
-%define         _relstr      %{_buildTag}
-%else
-%define         _relstr      %(date -u +%y%m%d%H%M)
-%endif
+%define         _relstr     2contrail 
 %{echo: "Building release %{_relstr}\n"}
 Name:           python-boto		
 Version:	2.12.0
