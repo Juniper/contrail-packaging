@@ -67,22 +67,6 @@ $(LOCAL_PY): $(PPREP)
 		$(LOCAL_PY) $(PKGBLDDIR)/packaging/archives/ez_setup.py; \
 	fi
 
-ifneq ($(CONTRAIL_SKU), icehouse)
-neutronclient:package-python-neutronclient
-python-neutronclient:package-python-neutronclient
-package-python-neutronclient:
-	@echo making rpm for package-python-neutronclient
-	rpmbuild $(RPMBLDOPTS) python-neutronclient.spec $(G_TAG)
-else
-neutronclient:package-python-neutronclient
-python-neutronclient:package-python-neutronclient
-package-python-neutronclient:
-	@echo making rpm for package-python-neutronclient
-	rpmbuild $(RPMBLDOPTS) python-neutronclient-icehouse.spec $(G_TAG)
-endif
-all-openstack-client: $(PREP) neutronclient
-
-# Other 3rd party packages
 contrail-fabric-utils: $(PPREP)
 	@echo making rpm for contrail-fabric-utils
 	rpmbuild $(RPMBLDOPTS) fabric-utils.spec $(G_TAG)
@@ -91,23 +75,6 @@ contrail-fabric-utils: $(PPREP)
 contrail-test:
 	@echo making tgz for contrail-test
 	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz contrail-test
-
-euca2ools:
-	@echo making rpm for euca2ools
-	rpmbuild $(RPMBLDOPTS) euca2ools.spec $(G_TAG)
-
-hiredis-py: $(PREP)
-	@echo making rpm for hiredis-py
-	rpmbuild $(RPMBLDOPTS) hiredis-py.spec $(G_TAG) 
-
-python-boto:
-	@echo making rpm for python-boto
-	rpmbuild $(RPMBLDOPTS) boto.spec $(G_TAG)
-
-python-bottle:
-	@echo making rpm for python-bottle
-	cp $(DISTRO_SRCDIR)/bottle-0.11.6.tar.gz  $(BUILD_BASE)/SOURCES/ && \
-	rpmbuild --define '_topdir $(BUILD_BASE)' -bb python-bottle.spec $(G_TAG)
 
 libvirt-client: libvirt
 libvirt-devel: libvirt
@@ -156,37 +123,12 @@ puppet: $(PREP)
 	@echo making rpm for puppet
 	rpmbuild $(RPMBLDOPTS) puppet.spec $(G_TAG)
 
-python-bitarray: $(PREP) 
-	@echo making rpm for python-bitarray
-	rpmbuild $(RPMBLDOPTS) python-bitarray.spec $(G_TAG) 
-
-python-geventhttpclient: $(PREP)
-	@echo making rpm for python-geventhttpclient
-	rpmbuild $(RPMBLDOPTS) python-geventhttpclient.spec $(G_TAG)
-
-python-pycassa: $(PREP)
-	@echo making rpm for python-pycassa
-	rpmbuild $(RPMBLDOPTS) python-pycassa.spec $(G_TAG) 
-
-python-thrift: $(PREP)
-	@echo making rpm for python-thrift
-	rpmbuild $(RPMBLDOPTS) python-thrift.spec $(G_TAG)
-
-redis-py: $(PREP) 
-	@echo making rpm for redis-py
-	rpmbuild $(RPMBLDOPTS) redis-py.spec $(G_TAG)
-
 supervisor: $(PREP)
 	@echo making rpm for supervisor
 	rpmbuild $(RPMBLDOPTS) supervisor.spec $(G_TAG)
 
-xmltodict: $(PREP)
-	@echo making rpm for xmltodict
-	rpmbuild $(RPMBLDOPTS) xmltodict.spec $(G_TAG)
-
-all: $(PREP) all-openstack-client contrail-fabric-utils contrail-test euca2ools hiredis-py \
-	python-boto libvirt puppet python-bitarray python-geventhttpclient \
-	python-pycassa python-thrift redis-py supervisor xmltodict ixgbe python-bottle
+all: $(PREP) contrail-fabric-utils contrail-test \
+	libvirt puppet supervisor ixgbe
 
 clean:
 	@echo clean
