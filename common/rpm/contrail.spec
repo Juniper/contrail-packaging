@@ -320,6 +320,7 @@ Requires: irond >= 1.0-2contrail
 Requires: xmltodict >= 0.7.0
 Requires: python-jsonpickle
 Requires: python-amqp
+Requires: python-kombu >= 1.4.1
 
 %description config
 Contrail Config package
