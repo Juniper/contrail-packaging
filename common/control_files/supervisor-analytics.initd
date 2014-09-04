@@ -27,11 +27,11 @@ function daemon_start() {
      [ $RETVAL -eq 0 ] && log_success_msg || log_failure_msg
 
      if [ $RETVAL -ne 0 ]; then
-        echo "supervisor-analytics start on port 9002 failed. checking lsof.."
-        lsof -i :9002
+        echo "supervisor-analytics start failed. checking lsof.."
+        lsof | grep -i supervisord_analytics.sock
         if [ $? -eq 0 ]; then
-            echo "Another program listening on 9002"
-            pid=`lsof -Fp -i :9002 | cut -f2 -d'p'`
+            echo "Another program listening on same socket"
+            pid=`lsof | grep -i supervisord_analytics.sock | cut -d' ' -f3`
             if [ "x$pid" != "x" ] ; then
                 ps uw -p $pid
             fi
@@ -40,8 +40,8 @@ function daemon_start() {
 }
 
 function daemon_stop() {
-    /usr/bin/supervisorctl -s http://localhost:9002 stop all
-    /usr/bin/supervisorctl -s http://localhost:9002 shutdown
+    /usr/bin/supervisorctl -s unix:///tmp/supervisord_analytics.sock stop all
+    /usr/bin/supervisorctl -s unix:///tmp/supervisord_analytics.sock shutdown
     if [ -f $PID_FILE ]; then
         kill `cat $PID_FILE`
         rm -f $PID_FILE

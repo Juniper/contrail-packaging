@@ -27,16 +27,16 @@ end script
 
 script
     supervisord --nodaemon -c /etc/contrail/supervisord_openstack.conf || true
-    echo "supervisor-keystone start failed. lsof -i :9010..."
-    lsof -i :9010 || true
-    pid=`lsof -Fp -i :9010 | cut -d'p' -f2` || true
+    echo "supervisor-openstack start failed...."
+    (lsof | grep -i supervisord_openstack.sock) || true
+    pid=`lsof | grep -i supervisord_openstack.sock | cut -d' ' -f3` || true
     if [ "x$pid" != "x" ]; then
         ps uw -p $pid
     fi
 end script
 
 pre-stop script
-    supervisorctl -s http://localhost:9010 stop all
-    supervisorctl -s http://localhost:9010 shutdown
+    supervisorctl -s unix:///tmp/supervisord_openstack.sock stop all
+    supervisorctl -s unix:///tmp/supervisord_openstack.sock shutdown
     /usr/bin/supervisor_killall /etc/contrail/supervisord_openstack_files
 end script
