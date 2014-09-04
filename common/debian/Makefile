@@ -3,6 +3,8 @@ SB_TOP := $(PWD:/tools/packaging/common/debian=)
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
+SERIES=$(shell lsb_release -c -s)
+
 # Skip unit-tests for building packages
 export BUILD_ONLY := TRUE
 
@@ -93,6 +95,9 @@ package-contrail: debian-contrail
 	$(eval PACKAGE := contrail)
 	@echo "Building package $(PACKAGE)"
 	sed -i 's/VERSION/$(VERSION)/g' $(SB_TOP)/build/packages/$(PACKAGE)/debian/changelog
+	sed -i 's/SERIES/$(SERIES)/g' build/packages/$(PACKAGE)/debian/changelog
+# TODO: add BUILDDEP_SERIES after https://review.opencontrail.org/#/c/2640/
+	sed -i '/BUILDDEP_SERIES/d' build/packages/$(PACKAGE)/debian/control
 	(cd $(SB_TOP)/build/packages/$(PACKAGE); dpkg-buildpackage -uc -us -b -rfakeroot)
 	chmod u+x $(SB_TOP)/build/packages/contrail/debian/rules.modules
 	$(foreach kver, $(KERNEL_VERSIONS), \
