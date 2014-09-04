@@ -18,7 +18,7 @@ def parse_args(args):
                         action='store',
                         dest='dist',
                         metavar='Distribution',
-                        default="".join(platform_dist[0:2]).replace('.', ''),
+                        default="".join(platform_dist[0:2]).replace('.', '').replace(' ', ''),
                         help='Specify Distribution, eg: ubuntu, centos, fedora')
     parser.add_argument('-s', '--sku',
                         action='store',
