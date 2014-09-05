@@ -121,9 +121,13 @@ class ContrailArchive(object):
         os.chdir (self.opt.archive_path + "/artifacts")
 
         for files in glob.iglob("contrail-install*"):
+            newfilename = self.opt.arch_type + files.split('~')[-1]
+            newfilename = "~".join([files.split('~')[0], newfilename])
             command = "cp " + files + " .."
             execute(command, ignore_errors=False)
             command = "rm " + files
+            execute(command, ignore_errors=False)
+            command = "ln -s %s %s" % (os.path.join('..', files), newfilename)
             execute(command, ignore_errors=False)
 
         for files in glob.iglob("*.iso"):
