@@ -1,12 +1,12 @@
 #
 # This is 2.3.0 havana
 #
-%define         _relstr     2contrail 
+%define         _relstr     3contrail
 %{echo: "Building release %{_relstr}\n"}
 
 Name:       python-neutronclient
 Version:    2.3.0
-Epoch:      2
+#Epoch:      2
 Release:    %{_relstr}
 Summary:    Python API and CLI for OpenStack Neutron
 
@@ -35,14 +35,15 @@ Requires: python-cliff >= 1.0
 Requires: python-prettytable >= 0.6
 Requires: python-setuptools
 Requires: python-simplejson
+Requires: python-pbr
 
 %description
 Client library and command line utility for interacting with Openstack
 Neutron's API.
 
 %prep
-pushd %{_builddir}/..
-pushd third_party/python-neutronclient
+pushd %{_builddir}
+pushd python-neutronclient
 #%setup -q -n %{name}-%{version}
 #%patch0001 -p1
 # We provide version like this in order to remove runtime dep on pbr.
@@ -50,16 +51,15 @@ pushd third_party/python-neutronclient
 sed -i 's/Babel>=0.9.6/Babel/' requirements.txt
 
 %build
-pushd %{_builddir}/..
-pushd third_party/python-neutronclient
+pushd %{_builddir}
+pushd python-neutronclient
 %{__python} setup.py build
 
 %install
-pushd %{_builddir}/..
-pushd third_party/python-neutronclient
+pushd %{_builddir}
+pushd python-neutronclient
 %{__python} setup.py install -O1 --skip-build --root %{buildroot} %{?_venvtr}
 %{__python} setup.py sdist
-install -p -D -m 644 dist/python-neutronclient-*.tar.gz %{buildroot}/opt/contrail/api-venv/archive/python-neutronclient.tar.gz
 
 # Install other needed files
 # rhbz 888939#c7: bash-completion is not in RHEL
@@ -77,9 +77,12 @@ rm -rf %{buildroot}%{python_sitelib}/neutronclient/tests
 %{python_sitelib}/neutronclient
 %{python_sitelib}/*.egg-info
 %{_sysconfdir}/profile.d/neutron.sh
-/opt/contrail/api-venv/archive/python-neutronclient.tar.gz
+#/opt/contrail/api-venv/archive/python-neutronclient.tar.gz
 
 %changelog
+* Tue Sep 09 2014 Atul Moghe <amoghe@juniper.net> - 2.3.0-3contrail
+- Fixed python-pbr dependency issue.
+
 * Mon Sep 09 2013 Jakub Ruzicka <jruzicka@redhat.com> - 2.3.0-1
 - Update to upstream 2.3.0.
 

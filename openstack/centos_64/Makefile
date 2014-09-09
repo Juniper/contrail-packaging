@@ -102,6 +102,13 @@ contrail-openstack-dashboard: $(PREP)
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DASH_PLUGIN_BLDDIR)' \
 	-bb horizon-plugin/havana/openstack-horizon-plugin.spec $(G_TAG)
 
+neutronclient:package-python-neutronclient
+python-neutronclient:package-python-neutronclient
+package-python-neutronclient:
+	@echo making rpm for package-python-neutronclient
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
+	-bb neutronclient/havana/python-neutronclient.spec $(G_TAG)
+
 all: $(PREP) package-nova package-neutron horizon contrail-openstack-dashboard
 else
 all: $(PREP)
