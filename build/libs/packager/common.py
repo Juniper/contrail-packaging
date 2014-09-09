@@ -91,8 +91,12 @@ class BasePackager(Utils):
                 self.contrail_pkgs = contrail_pkgs_dict[pkgtype]
                 self.meta_pkg = pkgtype
                 self.pkglist_file = os.path.join(self.store_log_dir,
-                                             '%s_%s_list.txt' % (
-                                             self.meta_pkg, self.pkg_type))
+                                      '%s_%s_%s_list.txt' % (
+                                      self.meta_pkg, self.id, self.pkg_type))
+                self.pkglist_thirdparty = os.path.join(self.store_log_dir,
+                                          '%s_%s_%s_thirdparty.txt' % (
+                                          self.meta_pkg, self.id,
+                                          self.pkg_type))
                 self.default_targets = filter(lambda pkg: pkg.endswith('-default-target'),
                                           self.contrail_pkgs.keys()) 
                 if base_pkgs_dict.has_key(pkgtype):
@@ -282,6 +286,7 @@ class BasePackager(Utils):
 
     def create_pkg_list_file(self):
         pkglist = []
+        thirdparties = []
         for target in self.contrail_pkgs.keys():
             packages = self.contrail_pkgs[target]['pkgs']
             packages = [packages] if type(packages) is str else packages
@@ -289,7 +294,15 @@ class BasePackager(Utils):
         with open(self.pkglist_file, 'w') as fid:
             fid.write("%s\n" %"\n".join(sorted(pkglist)))
             fid.flush()
-        log.info('Packages list file (%s) is created' %self.pkglist_file)
+        for key, pkg_info in self.depends_pkgs.items():
+            if pkg_info['file'].count('contrail') == 0:
+                thirdparties.append('%s, %s' % (pkg_info['md5'], pkg_info['file']))
+        with open(self.pkglist_thirdparty, 'w') as fid:
+            fid.write('MD5, ThirdParty_Package\n')
+            fid.write('\n'.join(thirdparties))
+        log.info('Packages list file (%s) is created' % self.pkglist_file)
+        log.info('Packages thirdparty list file (%s) '
+                 'is created' % self.pkglist_thirdparty)
 
     def create_log(self):
         filelist = []
