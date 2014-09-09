@@ -71,12 +71,12 @@ openstack-nova-doc: package-nova
 package-nova: $(PREP)
 	@echo making havana rpm for package-nova
 	echo $(OPENSTACK_PKGDIR)
-	cd $(OPENSTACK_PKGDIR)/centos_64/nova && \
-	cp `grep '^Source[0-9]\+:' openstack-havana-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
-	cd $(OPENSTACK_PKGDIR)/centos_64/nova && \
-	cp `grep '^Patch[0-9]\+:' openstack-havana-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
+	cd $(OPENSTACK_PKGDIR)/centos_64/nova/havana && \
+	cp `grep '^Source[0-9]\+:' openstack-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
+	cd $(OPENSTACK_PKGDIR)/centos_64/nova/havana && \
+	cp `grep '^Patch[0-9]\+:' openstack-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb nova/openstack-havana-nova.spec $(G_TAG)
+	-bb nova/havana/openstack-nova.spec $(G_TAG)
 
 neutron: package-neutron
 python-neutron: package-neutron
@@ -85,22 +85,22 @@ openstack-neutron-contrail: package-neutron
 package-neutron: $(PREP)
 	@echo making rpm for package-neutron for havana
 	echo $(OPENSTACK_PKGDIR)
-	cd $(OPENSTACK_PKGDIR)/centos_64/neutron && \
+	cd $(OPENSTACK_PKGDIR)/centos_64/neutron/havana && \
 	cp `grep '^Source[0-9]\+:' openstack-neutron.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb neutron/openstack-neutron.spec $(G_TAG)
+	-bb neutron/havana/openstack-neutron.spec $(G_TAG)
 
 horizon: package-horizon
 openstack-dashboard: package-horizon
 package-horizon: $(PREP)
 	@echo making rpm for package-horizon
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb horizon/openstack-horizon-havana.spec $(G_TAG)
+	-bb horizon/havana/openstack-horizon.spec $(G_TAG)
 
 contrail-openstack-dashboard: $(PREP)
 	@echo making rpm for package-horizon
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DASH_PLUGIN_BLDDIR)' \
-	-bb horizon-plugin/openstack-horizon-plugin-havana.spec $(G_TAG)
+	-bb horizon-plugin/havana/openstack-horizon-plugin.spec $(G_TAG)
 
 all: $(PREP) package-nova package-neutron horizon contrail-openstack-dashboard
 else
