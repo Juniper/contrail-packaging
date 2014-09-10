@@ -1,0 +1,11 @@
+- hosts: contrail-centos
+  user: root
+  tasks:
+    - copy: src=../../auto/RPMS/apache-ivy-2.3.0-bin-with-deps.tar.gz dest=/opt
+    - command: tar xzf /opt/apache-ivy-2.3.0-bin-with-deps.tar.gz --directory /opt
+    - copy: src=../../auto/repo dest=/usr/local/bin
+    - command: chmod a+x /usr/local/bin/repo  
+ 
+      tags:
+         - special-repos
+

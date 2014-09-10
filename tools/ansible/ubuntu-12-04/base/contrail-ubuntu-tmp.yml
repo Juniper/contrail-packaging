@@ -1,0 +1,11 @@
+##
+# Ansible playbook for installing contrail build needed packages on server on Ubuntu 12.04.3 LTS.
+#
+
+
+- hosts: contrail-ubuntu
+  user: root
+  tasks:
+    ##
+    - apt: pkg=linux-headers-3.11.0-22 state=present force=yes
+    - apt: pkg=linux-headers-3.11.0-22-generic state=present force=yes

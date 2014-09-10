@@ -1,0 +1,17 @@
+##
+# Ansible playbook for installing contrail build needed packages on server on Ubuntu 12.04.3 LTS.
+#
+
+
+- hosts: contrail-ubuntu
+  user: root
+  tasks:
+    ##
+    - apt: pkg=javahelper state=present
+    - apt: pkg=quilt state=present
+    - apt: pkg=liblog4j1.2-java state=present
+    - apt: pkg=libhttpcore-java state=present
+    - apt: pkg=libcommons-codec-java state=present
+    - apt: pkg=ruby-ronn state=present
+    - apt: pkg=module-assistant state=present
+    - apt: pkg=default-jdk state=present

@@ -1,0 +1,55 @@
+- hosts: contrail
+  user: root
+  tasks:
+    - yum: name=wget state=installed
+    - yum: name=libselinux-python state=installed
+    - yum: name="devtoolset-1.1-gcc"  state=installed
+    - yum: name="devtoolset-1.1-gcc-c++"  state=installed
+    - yum: name="gcc-c++" state=installed
+    - yum: name=sshpass state=installed
+    - yum: name=ntp state=installed
+    - yum: name=ntpdate state=installed
+    - yum: name=ntp-doc state=installed
+    - yum: name=rpcbind state=installed
+    - yum: name=nfs-utils state=installed
+
+    - script: ../../auto/nodejs-wget.sh
+#    - copy: src=../../auto/RPMS/cc-65.repo dest=/etc/yum.repos.d/cc-65.repo
+    - copy: src=../../auto/gitcommits.tgz dest=/tmp
+
+    - service: name=ntpd enabled=yes
+    - service: name=ntpdate enabled=yes
+    - service: name=ntpd  state=started
+    - copy: src=/mnt/ssd-tools/bin/contrail-build dest=/usr/local/bin/contrail-build
+    - copy: src=/mnt/ssd-tools/bin/contrail-create-buildarchive dest=/usr/local/bin/contrail-create-buildarchive
+    - copy: src=/mnt/ssd-tools/bin/contrail-manipulate-manifest dest=/usr/local/bin/contrail-manipulate-manifest
+    - copy: src=/mnt/ssd-tools/bin/create-base-manifest dest=/usr/local/bin/create-base-manifest
+    - copy: src=/mnt/ssd-tools/bin/create-config dest=/usr/local/bin/create-config
+    - copy: src=/mnt/ssd-tools/bin/fix-manifest.py dest=/usr/local/bin/fix-manifest.py
+    - copy: src=/mnt/ssd-tools/bin/merge-manifest dest=/usr/local/bin/merge-manifest
+    - command: mkdir /tmp/cache creates=/tmp/cache
+    - command: mkdir /tmp/cache/root creates=/tmp/cache/root
+    - copy: src=../../auto/CACHE/cache.tar dest=/tmp/cache/root/cache.tar
+    - command: tar -xvf cache.tar chdir=/tmp/cache/root
+    - command: chmod +x /usr/local/bin/contrail-build
+    - command: chmod +x /usr/local/bin/contrail-create-buildarchive
+    - command: chmod +x /usr/local/bin/contrail-manipulate-manifest
+    - command: chmod +x /usr/local/bin/create-base-manifest
+    - command: chmod +x /usr/local/bin/create-config
+    - command: chmod +x /usr/local/bin/fix-manifest.py
+    - command: chmod +x /usr/local/bin/merge-manifest
+    - command: mkdir /volume creates=/volume
+    - command: mkdir /volume/contrail creates=/volume/contrail
+    - service: name=rpcbind state=started
+    - service: name=nfs state=started
+    - mount: name=/volume/contrail src=svl-engdata1vs1.juniper.net:/contrail/contrail fstype=nfs state=mounted  
+    - command: mount -a
+    - command: mkdir /volume/junosv-storage01 creates=/volume/junosv-storage01
+    - command: ln -s /volume/contrail /volume/junosv-storage01/contrail
+    - command: mkdir /cs-shared creates=/cs-shared
+    - command: mkdir /cs-shared/builder creates=/cs-shared/builder
+    - command: ln -s /volume/contrail/distro-packages/build cache
+    - script: ../../python2-7-3-altinstall.sh
+    - yum: name=protobuf state=installed
+    - yum: name=protobuf-compiler state=installed
+    - yum: name=protobuf-devel state=installed

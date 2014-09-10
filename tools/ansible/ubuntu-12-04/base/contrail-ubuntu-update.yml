@@ -1,0 +1,36 @@
+##
+# Ansible playbook for installing contrail build needed packages on server on Ubuntu 12.04.3 LTS.
+#
+
+
+- hosts: contrail
+  user: ubuntu
+  tasks:
+    ##
+    - apt: pkg=javahelper state=present force=yes
+    - apt: pkg=quilt state=present force=yes
+    - apt: pkg=liblog4j1.2-java state=present force=yes
+    - apt: pkg=libhttpcore-java state=present force=yes
+    - apt: pkg=libcommons-codec-java state=present force=yes
+    - apt: pkg=ruby-ronn state=present force=yes
+    - apt: pkg=module-assistant state=present force=yes
+    - apt: pkg=default-jdk state=present force=yes
+    - apt: pkg=libprotobuf7 state=present force=yes
+    - apt: pkg=libprotoc7 state=present force=yes
+    - apt: pkg=protobuf-compiler state=present force=yes
+    - apt: pkg=libprotobuf-lite7 state=present force=yes
+    - apt: pkg=libprotobuf-dev state=present force=yes
+    - apt: pkg=linux-headers-3.11.0-22 state=present force=yes
+    - apt: pkg=linux-headers-3.11.0-22-generic state=present force=yes
+
+    - apt: pkg=libcurl4-openssl-dev state=present force=yes
+    - apt: pkg=libboost-dev state=present force=yes
+    - apt: pkg=google-mock state=present force=yes
+    - apt: pkg=libgoogle-perftools-dev state=present force=yes
+    - apt: pkg=libgtest-dev state=present force=yes
+    - apt: pkg=libhiredis-dev state=present force=yes
+    - apt: pkg=liblog4cplus-dev state=present force=yes
+    - apt: pkg=libtbb-dev state=present force=yes
+    - apt: pkg=libicu-dev state=present force=yes
+    - apt: pkg=libxml2-dev state=present force=yes
+

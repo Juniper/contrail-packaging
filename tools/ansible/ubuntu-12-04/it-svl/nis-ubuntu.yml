@@ -1,9 +1,9 @@
 
 - hosts: contrail
-  user: root
+  user: ubuntu
   tasks:
-    - apt: pkg=nis state=present
-    - apt: pkg=autofs state=present
+    - apt: pkg=nis state=present force=yes
+    - apt: pkg=autofs state=present force=yes
     - service: name=autofs enabled=yes
     - service: name=ypbind enabled=yes
 

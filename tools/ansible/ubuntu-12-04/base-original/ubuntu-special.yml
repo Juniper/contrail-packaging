@@ -5,7 +5,7 @@
 
 
 - hosts: contrail 
-  user: ubuntu
+  user: root
   tasks:
     ##
     # Apt package installation of required software.
@@ -47,11 +47,11 @@
       with_items:
         - alien
         - librpm2
-        - librpmbuild2
-        - librpmio2
+        - llibrpmbuild2
+        - libprimio2
         - librpmsign0
-#        - python-renderpm
-#        - python-rpm
+        - python-rednermv 
+        - python-rpm
         - rpm
         - rpm-common
         - rpm2cpio

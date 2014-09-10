@@ -1,0 +1,38 @@
+
+- hosts: contrail-centos
+  user: root
+  tasks:
+    # - yum: name=sshpass state=installed
+    - script: ../../auto/nodejs-wget.sh
+    - mount: name=/mnt src=svl-engdata1vs1:/contrail/contrail fstype=nfs state=mounted  
+    - copy: src=../../auto/gitcommits.tgz dest=/tmp
+
+    - service: name=ntpd enabled=yes
+    - service: name=ntpdate enabled=yes
+    - service: name=ntpd  state=started
+    - copy: src=/mnt/ssd-tools/bin/contrail-build dest=/usr/local/bin/contrail-build
+    - copy: src=/mnt/ssd-tools/bin/contrail-create-buildarchive dest=/usr/local/bin/contrail-create-buildarchive
+    - copy: src=/mnt/ssd-tools/bin/contrail-manipulate-manifest dest=/usr/local/bin/contrail-manipulate-manifest
+    - copy: src=/mnt/ssd-tools/bin/create-base-manifest dest=/usr/local/bin/create-base-manifest
+    - copy: src=/mnt/ssd-tools/bin/create-config dest=/usr/local/bin/create-config
+    - copy: src=/mnt/ssd-tools/bin/fix-manifest.py dest=/usr/local/bin/fix-manifest.py
+    - copy: src=/mnt/ssd-tools/bin/merge-manifest dest=/usr/local/bin/merge-manifest
+    - command: mkdir /tmp/cache creates=/tmp/cache
+    - command: mkdir /tmp/cache/root creates=/tmp/cache/root
+    - copy: src=../../auto/CACHE/cache.tar dest=/tmp/cache/root/cache.tar
+    - command: tar -xvf cache.tar chdir=/tmp/cache/root
+    - command: chmod +x /usr/local/bin/contrail-build
+    - command: chmod +x /usr/local/bin/contrail-create-buildarchive
+    - command: chmod +x /usr/local/bin/contrail-manipulate-manifest
+    - command: chmod +x /usr/local/bin/create-base-manifest
+    - command: chmod +x /usr/local/bin/create-config
+    - command: chmod +x /usr/local/bin/fix-manifest.py
+    - command: chmod +x /usr/local/bin/merge-manifest
+    # - command: mkdir /volume/contrail creates=/volume/contrail
+    # - command: mount -a
+    # - command: mkdir /volume/junosv-storage01 creates=/volume/junosv-storage01
+    # - command: ln -s /volume/contrail /volume/junosv-storage01/contrail
+    - command: mkdir /cs-shared creates=/cs-shared
+    - command: mkdir /cs-shared/builder creates=/cs-shared/builder
+    - command: ln -s /volume/contrail/distro-packages/build cache
+    - script: ../../auto/python2-7-3-altinstall.sh

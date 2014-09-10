@@ -1,0 +1,68 @@
+- hosts: contrail
+  user: root
+  tasks:
+    ##
+    # Apt package installation of required software.
+    #
+    - apt: update_cache=yes
+    - apt: pkg=libc6-dev state=present
+    - apt: pkg=libcurl4-openssl-dev state=present
+    - apt: pkg=build-essential state=present
+    - apt: pkg=libnuma-dev state=present
+    - apt: pkg=libpcap0.8-dev state=present
+    - apt: pkg=libpolkit-gobject-1-dev state=present
+    - apt: pkg=uuid-dev state=present
+    - apt: pkg=libparted0-dev state=present
+    - apt: pkg=libgcrypt11-dev state=present
+
+    - name: Install some more .deb packages 
+      command: dpkg --install ~/dwnld-packages/libxenstore3.0_4.1.5-0ubuntu0.12.04.3_amd64.deb
+
+
+- hosts: contrail
+  user: root
+  tasks:
+    ##
+    # Apt package installation of required software.
+    #
+    - apt: update_cache=yes
+    - apt: pkg=libxen-dev state=present
+    - apt: pkg=libsasl2-dev state=present
+    - apt: pkg=libbz2-dev state=present
+    - apt: pkg=g++ state=present
+    - apt: pkg=libncurses5-dev state=present
+    - apt: pkg=libgnutls-dev state=present
+    - apt: pkg=libtool state=present
+    - apt: pkg=libssl-dev state=present
+    - apt: pkg=libcppunit-1.12-1 state=present
+
+    - name: Install some more .deb packages 
+      command: dpkg --install ~/dwnld-packages/libcppunit-dev_1.12.1-4_amd64.deb
+
+- hosts: contrail
+  user: root
+  tasks:
+    ##
+    # Apt package installation of required software.
+    #
+    - apt: update_cache=yes
+    - apt: pkg=libmount1 state=present
+
+    - name: Install some more .deb packages 
+      command: dpkg --install ~/dwnld-packages/git-man_1.7.9.5-1_all.deb
+      command: dpkg --install ~/dwnld-packages/git_1.7.9.5-1_amd64.deb
+      command: dpkg --install ~/dwnld-packages/python2.7-minimal_2.7.3-0ubuntu3.5_amd64.deb
+      command: dpkg --install ~/dwnld-packages/python2.7_2.7.3-0ubuntu3.5_amd64.deb
+      command: dpkg --install ~/dwnld-packages/libpython2.7_2.7.3-0ubuntu3.5_amd64.deb
+      command: dpkg --install ~/dwnld-packages/libexpat1_2.0.1-7.2ubuntu1.1_amd64.deb
+
+- hosts: contrail
+  user: root
+  tasks:
+    ##
+    # Apt package installation of required software.
+    #
+    - apt: update_cache=yes
+    - apt: pkg=python-all-dev state=present
+    - apt: pkg=python-dev state=present
+

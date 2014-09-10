@@ -1,0 +1,177 @@
+##
+# Ansible playbook for installing contrail build needed packages on server on Ubuntu 12.04.3 LTS.
+#
+
+
+- hosts: contrail 
+  user: ubuntu
+  tasks:
+    ##
+    # Apt package installation of required software.
+    #
+    # - script: ../../auto/RPMS/fix-apt.sh
+    - copy: src=../../auto/RPMS/sources.list dest=/etc/apt/sources.list
+    - command: mkdir ~/dwnld-packages creates=~/dwnld-packages
+    - command: wget -O ~/dwnld-packages/libc-bin_2.15-0ubuntu10.5_amd64.deb http://contrail-ec-build05.juniper.net/install_repo/ubuntu12.04/binary/libc-bin_2.15-0ubuntu10.5_amd64.deb
+    - command: wget -O ~/dwnld-packages/libc6_2.15-0ubuntu10.5_amd64.deb http://contrail-ec-build05.juniper.net/install_repo/ubuntu12.04/binary/libc6_2.15-0ubuntu10.5_amd64.deb
+    - command: wget -O ~/dwnld-packages/libxenstore3.0_4.1.5-0ubuntu0.12.04.3_amd64.deb http://contrail-ec-build05.juniper.net/install_repo/ubuntu12.04/binary/libxenstore3.0_4.1.5-0ubuntu0.12.04.3_amd64.deb
+    - command: wget -O ~/dwnld-packages/libcppunit-dev_1.12.1-4_amd64.deb http://contrail-ec-build05.juniper.net/install_repo/ubuntu12.04/binary/libcppunit-dev_1.12.1-4_amd64.deb
+    - command: wget -O ~/dwnld-packages/git-man_1.7.9.5-1_all.deb http://contrail-ec-build05.juniper.net/install_repo/ubuntu12.04/binary/git-man_1.7.9.5-1_all.deb
+    - command: wget -O ~/dwnld-packages/git_1.7.9.5-1_amd64.deb http://contrail-ec-build05.juniper.net/install_repo/ubuntu12.04/binary/git_1.7.9.5-1_amd64.deb
+    - command: wget -O ~/dwnld-packages/libpython2.7_2.7.3-0ubuntu3.5_amd64.deb http://contrail-ec-build05.juniper.net/install_repo/ubuntu12.04/binary/libpython2.7_2.7.3-0ubuntu3.5_amd64.deb
+    - command: wget -O ~/dwnld-packages/python2.7_2.7.3-0ubuntu3.5_amd64.deb http://contrail-ec-build05.juniper.net/install_repo/ubuntu12.04/binary/python2.7_2.7.3-0ubuntu3.5_amd64.deb
+    - command: wget -O ~/dwnld-packages/python2.7-dev_2.7.3-0ubuntu3.5_amd64.deb http://contrail-ec-build05.juniper.net/install_repo/ubuntu12.04/binary/python2.7-dev_2.7.3-0ubuntu3.5_amd64.deb
+    - command: wget -O ~/dwnld-packages/python2.7-minimal_2.7.3-0ubuntu3.5_amd64.deb http://contrail-ec-build05.juniper.net/install_repo/ubuntu12.04/binary/python2.7-minimal_2.7.3-0ubuntu3.5_amd64.deb
+    - command: wget -O ~/dwnld-packages/libexpat1_2.0.1-7.2ubuntu1.1_amd64.deb http://contrail-ec-build05.juniper.net/install_repo/ubuntu12.04/binary/libexpat1_2.0.1-7.2ubuntu1.1_amd64.deb
+    - apt: update_cache=yes
+    - apt: pkg=xml-core state=present force=yes
+    - apt: pkg=python-lxml state=present force=yes
+    - apt: pkg=python-setuptools state=present force=yes
+    - apt: pkg=python-sphinx state=present force=yes
+    - apt: pkg=python-pycurl state=present force=yes
+    - apt_repository: repo='deb http://extras.ubuntu.com/ubuntu precise main' state=present
+    - apt_repository: repo='deb-src http://extras.ubuntu.com/ubuntu precise main' state=present
+    - apt: pkg=automake state=present force=yes
+    - apt: pkg=bison state=present force=yes
+    - apt: pkg=devscripts state=present force=yes
+    - apt: pkg=fakeroot state=present force=yes
+    - apt: pkg=libevent-dev state=present force=yes
+    - apt: pkg=libxml2-dev state=present force=yes
+    - apt: pkg=libxslt1-dev state=present force=yes
+    - apt: pkg=nfs-common state=present force=yes
+    - apt: pkg=scons state=present force=yes
+    - apt: pkg=sysv-rc-conf state=present force=yes
+    - apt: pkg=xml-core state=present force=yes
+    - apt: pkg=scons state=present force=yes
+    - apt: pkg=gcc state=present force=yes
+    - apt: pkg=flex state=present force=yes
+    - apt: pkg=bison state=present force=yes
+    - apt: pkg=make state=present force=yes
+    - apt: pkg=automake state=present force=yes
+    - apt: pkg=fakeroot state=present force=yes
+    - apt: pkg=dh-make state=present force=yes
+    - apt: pkg=fabric state=present force=yes
+    - apt: pkg=ant state=present force=yes
+    - apt: pkg=openjdk-6-jdk state=present force=yes
+    - apt: pkg=alien state=present force=yes
+    - apt: pkg=python-eventlet state=present force=yes
+    - apt: pkg=python-paste state=present force=yes
+    - apt: pkg=pkg-config state=present force=yes
+    - apt: pkg=python-lxml state=present force=yes
+    - apt: pkg=python-pip state=present force=yes
+    - apt: pkg=python-setuptools state=present force=yes
+    - apt: pkg=python-sphinx state=present force=yes
+    - apt: pkg=pkg-config state=present force=yes
+    - apt: pkg=python-pip state=present force=yes
+    - apt: pkg=python-virtualenv state=present force=yes
+    - apt: pkg=curl state=present force=yes
+    - apt: pkg=debhelper state=present force=yes
+    - apt: pkg=cdbs state=present force=yes
+    - apt: pkg=libreadline-dev  state=present force=yes
+    - apt: pkg=libavahi-client-dev  state=present force=yes
+    - apt: pkg=open-iscsi-utils  state=present force=yes
+    - apt: pkg=libdevmapper-dev  state=present force=yes
+    - apt: pkg=libudev-dev  state=present force=yes
+    - apt: pkg=libpciaccess-dev  state=present force=yes
+    - apt: pkg=policykit-1 state=present force=yes
+    - apt: pkg=libcap-ng-dev  state=present force=yes
+    - apt: pkg=libnl-3-dev  state=present force=yes
+    - apt: pkg=libyajl-dev  state=present force=yes
+    - apt: pkg=radvd  state=present force=yes
+    - apt: pkg=python-software-properties state=present force=yes
+    - apt: pkg=libxml2-utils  state=present force=yes
+    - apt: pkg=libapparmor-dev state=present force=yes
+    - apt: pkg=linux-headers-3.2.0-51  state=present force=yes
+    - apt: pkg=linux-headers-3.2.0-58 state=present force=yes
+    - apt: pkg=linux-headers-3.2.0-51-generic  state=present force=yes
+    - apt: pkg=linux-headers-3.2.0-58-generic state=present force=yes
+    - apt: pkg=linux-headers-3.8.0-35 state=present force=yes
+    - apt: pkg=linux-headers-3.8.0-35-generic state=present force=yes
+    - apt: pkg=linux-headers-3.8.0-31 state=present force=yes
+    - apt: pkg=linux-headers-3.8.0-31-generic state=present force=yes
+    - apt: pkg=linux-headers-3.13.0-24  state=present force=yes
+    - apt: pkg=linux-headers-3.13.0-24-generic state=present force=yes
+    - apt: pkg=linux-headers-3.13.0-34 state=present force=yes
+    - apt: pkg=linux-headers-3.13.0-34-generic state=present force=yes
+    - apt: pkg=dnsmasq-base state=present force=yes
+    - command: dpkg --install ~/dwnld-packages/libc-bin_2.15-0ubuntu10.5_amd64.deb
+    - command: dpkg --install ~/dwnld-packages/libc6_2.15-0ubuntu10.5_amd64.deb
+    - apt: pkg=libc6-dev state=present force=yes
+    - apt: pkg=libcurl4-openssl-dev state=present force=yes
+    - apt: pkg=build-essential state=present force=yes
+    - apt: pkg=libnuma-dev state=present force=yes
+    - apt: pkg=libpcap0.8-dev state=present force=yes
+    - apt: pkg=libpolkit-gobject-1-dev state=present force=yes
+    - apt: pkg=uuid-dev state=present force=yes
+    - apt: pkg=libparted0-dev state=present force=yes
+    - apt: pkg=libgcrypt11-dev state=present force=yes
+    - command: dpkg --install ~/dwnld-packages/libxenstore3.0_4.1.5-0ubuntu0.12.04.3_amd64.deb
+    - apt: pkg=libxen-dev state=present force=yes
+    - apt: pkg=libsasl2-dev state=present force=yes
+    - apt: pkg=libbz2-dev state=present force=yes
+    - apt: pkg=g++ state=present force=yes
+    - apt: pkg=libncurses5-dev state=present force=yes
+    - apt: pkg=libgnutls-dev state=present force=yes
+    - apt: pkg=libtool state=present force=yes
+    - apt: pkg=libssl-dev state=present force=yes
+    - apt: pkg=libcppunit-1.12-1 state=present force=yes
+    - command: dpkg --install ~/dwnld-packages/libcppunit-dev_1.12.1-4_amd64.deb
+    - apt: pkg=libmount1 state=present force=yes
+    - command: dpkg --install ~/dwnld-packages/git-man_1.7.9.5-1_all.deb
+    - command: dpkg --install ~/dwnld-packages/git_1.7.9.5-1_amd64.deb
+    - command: dpkg --install ~/dwnld-packages/python2.7-minimal_2.7.3-0ubuntu3.5_amd64.deb
+    - command: dpkg --install ~/dwnld-packages/python2.7_2.7.3-0ubuntu3.5_amd64.deb
+    - command: dpkg --install ~/dwnld-packages/libpython2.7_2.7.3-0ubuntu3.5_amd64.deb
+    - command: dpkg --install ~/dwnld-packages/libexpat1_2.0.1-7.2ubuntu1.1_amd64.deb
+    - apt: pkg=python-all-dev state=present force=yes
+    - apt: pkg=python-dev state=present force=yes
+    - apt: pkg=sshpass state=present force=yes
+
+    
+    ##
+    # Run the wget commands needed.
+    #
+
+    - name: Run wget commands
+      command: wget -O /usr/local/bin/repo http://contrail-ec-build05.juniper.net/contrail-vmconfig/repo
+
+    - script: ../../auto/nodejs.sh
+ 
+    ##
+    # Set permissions under /bin.
+    #
+    - name: set permissions
+      file: path=/usr/local/bin/repo  mode=0755 
+
+    ##
+    # Setup the directory structure and links we need
+    - lineinfile: "dest=/etc/fstab regexp=^svl-eng009-cf1.juniper.net:/vol/junosv02/junosv-storage01 line='svl-eng009-cf1.juniper.net:/vol/junosv02/junosv-storage01 /mnt nfs defaults 1 1'"
+    - lineinfile: "dest=/etc/fstab regexp=^svl-engdata1vs1.juniper.net:/contrail/contrail line='svl-engdata1vs1.juniper.net:/contrail/contrail /volume/contrail nfs defaults 1 1'"
+    - copy: src=../../auto/gitcommits.tgz dest=/tmp
+    - script: ../../auto/link.sh 
+
+    ##
+    # Copy the contrail build tools
+    - copy: src=/mnt/ssd-tools/bin/contrail-build dest=/usr/local/bin/contrail-build
+    - copy: src=/mnt/ssd-tools/bin/contrail-create-buildarchive dest=/usr/local/bin/contrail-create-buildarchive
+    - copy: src=/mnt/ssd-tools/bin/contrail-manipulate-manifest dest=/usr/local/bin/contrail-manipulate-manifest
+    - copy: src=/mnt/ssd-tools/bin/create-base-manifest dest=/usr/local/bin/create-base-manifest
+    - copy: src=/mnt/ssd-tools/bin/create-config dest=/usr/local/bin/create-config
+    - copy: src=/mnt/ssd-tools/bin/fix-manifest.py dest=/usr/local/bin/fix-manifest.py
+    - copy: src=/mnt/ssd-tools/bin/merge-manifest dest=/usr/local/bin/merge-manifest
+    - command: mkdir /tmp/cache creates=/tmp/cache
+    - command: mkdir /tmp/cache/root creates=/tmp/cache/root
+    - copy: src=../../auto/CACHE/cache.tar dest=/tmp/cache/root/cache.tar
+    - command: mkdir /volume creates=/volume
+    - command: tar -xvf cache.tar chdir=/tmp/cache/root 
+    - command: chmod +x /usr/local/bin/contrail-build
+    - command: chmod +x /usr/local/bin/contrail-create-buildarchive
+    - command: chmod +x /usr/local/bin/contrail-manipulate-manifest
+    - command: chmod +x /usr/local/bin/create-base-manifest
+    - command: chmod +x /usr/local/bin/create-config
+    - command: chmod +x /usr/local/bin/fix-manifest.py
+    - command: chmod +x /usr/local/bin/merge-manifest
+    - command: mkdir /volume/contrail creates=/volume/contrail
+    - command: mount -a 
+    - command: mkdir /volume/junosv-storage01 creates=/volume/junosv-storage01
+    - command: ln -s /volume/contrail /volume/junosv-storage01/contrail   
