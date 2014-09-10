@@ -109,7 +109,7 @@ contrail-openstack-dashboard: $(PREP)
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DASH_PLUGIN_BLDDIR)' \
 	-bb horizon-plugin/havana/openstack-horizon-plugin.spec $(G_TAG)
 
-all: $(PREP) package-nova package-neutron horizon contrail-openstack-dashboard
+all: $(PREP) horizon contrail-openstack-dashboard
 else
 all: $(PREP)
 endif
