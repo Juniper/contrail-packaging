@@ -123,12 +123,8 @@ puppet: $(PREP)
 	@echo making rpm for puppet
 	rpmbuild $(RPMBLDOPTS) puppet.spec $(G_TAG)
 
-supervisor: $(PREP)
-	@echo making rpm for supervisor
-	rpmbuild $(RPMBLDOPTS) supervisor.spec $(G_TAG)
-
 all: $(PREP) contrail-fabric-utils contrail-test \
-	libvirt puppet supervisor ixgbe
+	libvirt puppet ixgbe
 
 clean:
 	@echo clean
