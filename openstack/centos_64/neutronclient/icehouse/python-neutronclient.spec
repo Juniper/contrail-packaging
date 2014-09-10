@@ -1,12 +1,12 @@
 #
 # This is 2.3.4 icehouse
 #
-%define         _relstr      2contrail
+%define         _relstr      3contrail
 %{echo: "Building release %{_relstr}\n"}
 
 Name:       python-neutronclient
 Version:    2.3.4
-Epoch:      2
+#Epoch:      2
 Release:    %{_relstr}
 Summary:    Python API and CLI for OpenStack Neutron
 
@@ -29,24 +29,25 @@ Requires: python-cliff >= 1.0
 Requires: python-prettytable >= 0.6
 Requires: python-setuptools
 Requires: python-simplejson
+Requires: python-pbr
 
 %description
 Client library and command line utility for interacting with Openstack
 Neutron's API.
 
 %prep
-pushd %{_builddir}/..
-pushd third_party/python-neutronclient
+pushd %{_builddir}
+pushd python-neutronclient
 sed -i 's/Babel>=0.9.6/Babel/' requirements.txt
 
 %build
-pushd %{_builddir}/..
-pushd third_party/python-neutronclient
+pushd %{_builddir}
+pushd python-neutronclient
 %{__python} setup.py build
 
 %install
-pushd %{_builddir}/..
-pushd third_party/python-neutronclient
+pushd %{_builddir}
+pushd python-neutronclient
 %{__python} setup.py install -O1 --skip-build --root %{buildroot} %{?_venvtr}
 %{__python} setup.py sdist
 
@@ -67,6 +68,9 @@ rm -rf %{buildroot}%{python_sitelib}/neutronclient/tests
 %{_sysconfdir}/profile.d/neutron.sh
 
 %changelog
+* Tue Sep 9 2014 Atul Moghe <amoghe@juniper.net> 2.3.4-3contrail
+- Added 3contrail, added python-pbr dependency
+
 * Tue Aug 12 2014 Atul Moghe <amoghe@juniper.net> 2.3.4-1
 - Added epoch for contrail/juniper
 
