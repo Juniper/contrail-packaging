@@ -13,7 +13,10 @@ export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export src_path := $(SB_TOP)/tools/contrail-server-manager/src/
 export build_root := $(SB_TOP)/build/debian/contrail-server-manager/
-
+#python_version := $(PYTHONPATH=$(PYTHONPATH):$(build_root)/../tools/packaging/tools/scripts/ python -c "import sys; print '%s.%s' % sys.version_info[0:2]")
+#python_dir := python$(python_version)
+python_version=$(shell python -c "import sys; print '%s.%s' % sys.version_info[0:2]")
+python_dir=python$(python_version)
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
@@ -22,6 +25,26 @@ BUILDTAG = $(SRC_VER)-$(TAG)
 else
 BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
+
+ifdef OS_VER
+os_ver := $(echo $(_osVer) | sed 's,[-|.],,g')
+else
+os_ver := $(shell PYTHONPATH=$(PYTHONPATH):$(src_path)/../../../tools/packaging/tools/scripts/ python -c "import package_utils; print package_utils.get_platform()")
+endif
+
+ifdef PKG_FILE
+pkg_file :=  $(_pkgFile)
+else
+pkg_file := $(src_path)/../../../tools/packaging/tools/scripts/server-manager-thirdparty
+endif
+
+
+ifdef PKG_DIRS
+pkg_sources := $(_pkgDirs)
+else
+pkg_sources := /cs-shared/builder/cache/$(os_ver)/server-manager/
+endif
+
 
 %:
 	dh $@ --tmpdir=${build_root} --destdir=${SB_TOP}/build/debian
@@ -39,24 +62,40 @@ override_dh_auto_install:
 	install -d -m 754 $(build_root)/etc/init.d/
 	install -d -m 754 $(build_root)/etc/contrail_smgr/
 	install -d -m 754 $(build_root)/usr/sbin/
-	
+	install -d -m 755 $(build_root)/usr/lib/$(python_dir)/dist-packages/cobbler/modules/
 	# Copy/install files
 	cp -r $(src_path)/server_mgr_main.py $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/server_mgr_db.py  $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/server_mgr_cobbler.py  $(build_root)/opt/contrail/server_manager/
+	cp -r $(src_path)/server_mgr_status.py  $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/server_mgr_puppet.py  $(build_root)/opt/contrail/server_manager/
+	cp -r $(src_path)/server_mgr_exception.py  $(build_root)/opt/contrail/server_manager/
+	cp -r $(src_path)/server_mgr_logger.py  $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/smgr_dhcp_event.py  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/smgr_config.ini  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/client  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/contrail_smgrd.start  $(build_root)/usr/sbin/contrail_smgrd
+	cp -r $(src_path)/server_mgr_defaults.py $(build_root)/opt/contrail/server_manager/
+	cp -r $(src_path)/vmware/esxi_contrailvm.py $(build_root)/opt/contrail/server_manager/
+	
 	cp -r $(src_path)/third_party/bottle.py  $(build_root)/opt/contrail/server_manager/
-	cp $(src_path)/contrail_smgrd.u  $(build_root)/etc/init.d/contrail_smgrd
+	cp -r $(src_path)/utils/send_mail.py $(build_root)/opt/contrail/server_manager/
+	cp -r $(src_path)/third_party/server_post_install.py $(build_root)/usr/lib/$(python_dir)/dist-packages/cobbler/modules/
+	cp -r $(src_path)/third_party/server_pre_install.py $(build_root)/usr/lib/$(python_dir)/dist-packages/cobbler/modules/
+	
+	cp -r $(src_path)/sm-config.ini  $(build_root)/opt/contrail/server_manager/
+	cp -r $(src_path)/tags.ini  $(build_root)/etc/contrail_smgr/
+	cp -r $(src_path)/logger.conf $(build_root)/opt/contrail/server_manager/
+	cp -r $(src_path)/contrail-server-manager.u $(build_root)/etc/init.d/contrail-server-manager
+	cp -r $(src_path)/contrail-server-manager.start  $(build_root)/usr/sbin/contrail-server-manager
+	cp -r $(src_path)/utils/sendmail.cf $(build_root)/etc/contrail_smgr/
+	cp -r $(src_path)/ntp.conf $(build_root)/etc/contrail_smgr/
+	
 	cp -r $(src_path)/puppet  $(build_root)/etc/contrail_smgr/
-	#cp -r $(src_path)/repos/contrail-ubuntu-repo  $(SB_TOP)/$(build_root)/etc/contrail_smgr/
+	cp -r $(src_path)/repos/contrail-centos-repo $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/cobbler  $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/kickstarts  $(build_root)/etc/contrail_smgr/
-	cp -r $(src_path)/client/smgr_client_config.ini  $(build_root)/etc/contrail_smgr/
-
+	
+	$(src_path)/../../../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file $(pkg_file) \
+ --destination-dir $(build_root)/var/www/html/thirdparty_packages \
+ --source-dirs $(pkg_sources) || (echo "Copying Built packages failed"; exit 1)
 
 override_dh_shlibdeps: 
 

@@ -102,6 +102,7 @@ Requires: wget
 Requires: sendmail
 Requires: dpkg
 Requires: dpkg-devel
+Requires: syslinux
 
 %description
 A Server manager description
@@ -131,11 +132,13 @@ cp -r %{_contrailetc}/puppet /etc/
 cp -r %{_contrailetc}/kickstarts /var/www/html/
 cp %{_contrailetc}/sendmail.cf /etc/mail/
 
+# Saving and replacing default NTP configuration (Server Manager node acts as NTP Server for Cluster)
+mv /etc/ntp.conf /etc/ntp.conf.default
+cp %{_contrailetc}/ntp.conf /etc/ntp.conf
+
 cp /usr/bin/server_manager/dhcp.template /etc/cobbler/
 cp -r /usr/bin/server_manager/kickstarts /var/www/html/
 mkdir -p /var/www/html/contrail
-
-dpkg-scanpackages /var/www/html/thirdparty_packages | gzip -9c > /var/www/html/thirdparty_packages/Packages.gz
 
 cp -u /etc/puppet/puppet_init_rd /var/www/cobbler/aux/puppet
 easy_install argparse
@@ -156,14 +159,14 @@ service postfix stop
 service sendmail restart
 
 sed -i "s/10.84.51.11/$HOST_IP/" /etc/cobbler/settings
-/sbin/chkconfig --add contrail_smgrd
-sed -i "s/authn_denyall/authn_testing/g" /etc/cobbler/modules.conf
-sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/smgr_config.ini
+/sbin/chkconfig --add contrail-server-manager
+sed -i "s/module = authn_.*/module = authn_configfile/g" /etc/cobbler/modules.conf
+sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
 
 
 chkconfig httpd on
 chkconfig puppetmaster on
-chkconfig contrail_smgrd on
+chkconfig contrail-server-manager on
 chkconfig puppet on
 
 %preun
@@ -194,11 +197,13 @@ cp %{_contrail_smgr_src}server_mgr_cobbler.py %{buildroot}%{_contrailopt}%{_cont
 cp %{_contrail_smgr_src}server_mgr_puppet.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}server_mgr_exception.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}server_mgr_logger.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
+cp %{_contrail_smgr_src}server_mgr_status.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}smgr_dhcp_event.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}server_mgr_defaults.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 
 cp %{_contrail_smgr_src}utils/send_mail.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
-cp %{_contrail_smgr_src}smgr_config.ini %{buildroot}%{_contrailopt}%{_contrail_smgr}
+cp %{_contrail_smgr_src}sm-config.ini %{buildroot}%{_contrailopt}%{_contrail_smgr}
+cp %{_contrail_smgr_src}tags.ini %{buildroot}%{_contrailetc}
 cp %{_contrail_smgr_src}logger.conf %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}%{_vmware}esxi_contrailvm.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 
@@ -206,14 +211,14 @@ cp %{_contrail_smgr_src}%{_vmware}esxi_contrailvm.py %{buildroot}%{_contrailopt}
 cp %{_contrail_smgr_src}third_party/bottle.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 
 
-cp %{_contrail_smgr_src}contrail_smgrd %{buildroot}%{_initdetc}
+cp %{_contrail_smgr_src}contrail-server-manager %{buildroot}%{_initdetc}
 cp -r %{_contrail_smgr_src}/puppet %{buildroot}%{_contrailetc}
 cp -r %{_contrail_smgr_src}repos/contrail-centos-repo %{buildroot}%{_contrailetc}
 cp -r %{_contrail_smgr_src}cobbler %{buildroot}%{_contrailetc}
 cp -r %{_contrail_smgr_src}kickstarts %{buildroot}%{_contrailetc}
-cp %{_contrail_smgr_src}contrail_smgrd.start %{buildroot}%{_sbinusr}contrail_smgrd
+cp %{_contrail_smgr_src}contrail-server-manager.start %{buildroot}%{_sbinusr}contrail-server-manager
 cp %{_contrail_smgr_src}utils/sendmail.cf %{buildroot}%{_contrailetc}
-
+cp %{_contrail_smgr_src}ntp.conf %{buildroot}%{_contrailetc}
 #install -p -m 755 %{_contrail_smgr_src}cobbler/dhcp.template %{buildroot}%{_bindir}%{_contrail_smgr}
 #install -p -m 755 %{_contrail_smgr_src}cobbler/settings %{buildroot}%{_bindir}%{_contrail_smgr}
 
@@ -233,12 +238,13 @@ rm -rf %{buildroot}
 #%config(noreplace) %{_sysconfdir}/%{name}/%{name}.conf
 %{_contrailopt}/*
 /usr/sbin/*
-/etc/init.d/contrail_smgrd
+/etc/init.d/contrail-server-manager
 %{_contrailetc}/*
 #/etc/cobbler/dhcp.template
 #/etc/cobbler/dhcp.template
 #/etc/puppet/*
 %{_pysitepkg}/cobbler/modules/*
+/var/www/html/thirdparty_packages
 /var/www/html/thirdparty_packages/*
 %changelog
 * Thu Nov 29 2013  Thilak Raj S <tsurendra@juniper.net> 1.0-1
