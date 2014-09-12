@@ -1,9 +1,5 @@
 %global with_doc %{!?_without_doc:1}%{?_without_doc:0}
-%if 0%{?_buildTag:1}
-%define         _relstr      %{_buildTag}
-%else
-%define         _relstr      %(date -u +%y%m%d%H%M)
-%endif
+%define         _relstr      2contrail
 %{echo: "Building release %{_relstr}\n"}
 
 
