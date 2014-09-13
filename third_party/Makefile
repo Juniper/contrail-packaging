@@ -90,7 +90,8 @@ libvirt:
 		cd libvirt-0.9.12 && ./configure --localstatedir=/var && \
 		$(MAKE) $(MFLAGS) dist && \
 		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(PKGBLDDIR)' -ta libvirt-0.9.12.tar.gz ; \
-	else if [ "$(DISTRO)" == "CentOS" ]  && [ "$(DISTRO_VER)" == "6.4" ]; then \
+	else if [ "$(DISTRO)" == "CentOS" ] ; then \
+            if [ "$(DISTRO_VER)" == "6.4" ] ; then \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt-0.10.2-18.el6.src.rpm $(BUILD_BASE)/SOURCES/ && \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.patch  $(BUILD_BASE)/SOURCES/ && \
 		cd $(BUILD_BASE)/SOURCES && \
@@ -106,6 +107,22 @@ libvirt:
 		cd $(THIRDPARTY_DIR) && \
 		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
 		-ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
+            else if [ "$(DISTRO_VER)" == "6.5" ] ; then \
+                cp $(THIRDPARTY_DIR)/libvirt/libvirt-0.10.2-29.el6.src.rpm $(BUILD_BASE)/SOURCES/ && \
+                cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos65.patch  $(BUILD_BASE)/SOURCES/libvirt.centos.patch && \
+                cd $(BUILD_BASE)/SOURCES && \
+                rpm --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+                -i libvirt-0.10.2-29.el6.src.rpm && \
+                cd $(BUILD_BASE)/SPECS && \
+                rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+                -bp libvirt.spec && \
+                cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos65.spec.patch  $(BUILD_BASE)/SPECS/ && \
+                patch -p0 -i $(THIRDPARTY_DIR)/libvirt/libvirt.centos65.spec.patch && \
+                cd $(THIRDPARTY_DIR) && \
+                rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+                -ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
+        fi \
+	fi \
 	fi \
 	fi
 
