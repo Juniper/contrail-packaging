@@ -189,17 +189,11 @@ contrail-openstack-icehouse-clean:
 	rm -rf ${BUILDDIR}
 
 contrail-openstack-dashboard-deb:
-	if [ '${CONTRAIL_SKU}' != 'icehouse' ]; then \
-		$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard) \
-		mkdir -p ${BUILDDIR}/debian; \
-		cp -R ${SB_TOP}/contrail-horizon/* ${BUILDDIR}; \
-		if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
-			(cp -R contrail-openstack-dashboard/debian/havana/* ${BUILDDIR}/debian); \
-		else \
-			(cp -R contrail-openstack-dashboard/debian/grizzly/* ${BUILDDIR}/debian); \
-		fi; \
-		(cd ${BUILDDIR}; fakeroot debian/rules binary); \
-	fi
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard) \
+	mkdir -p ${BUILDDIR}/debian;
+	cp -R ${SB_TOP}/contrail-horizon/* ${BUILDDIR};
+	(cp -R contrail-openstack-dashboard/debian/${CONTRAIL_SKU}/* ${BUILDDIR}/debian);
+	(cd ${BUILDDIR}; fakeroot debian/rules binary);
 
 contrail-openstack-dashboard-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
