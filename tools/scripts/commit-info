@@ -68,7 +68,7 @@ function get_git_ids_4_manifest() {
     [ "x$3" = "x" ] && usage
     [ ! -f $2 -o ! -f $3 ] && echo && echo "File not found!" && echo && exit 1
     #GetGitCommitIds=`/ecbuilds/utils/getgitcommits.py $2 $3`
-    GetGitCommitIds=`/users/vmahuli/getgitcommits.py $2 $3`
+    GetGitCommitIds=`/cs-shared/commit-info/getgitcommits.py $2 $3`
 }
 
 function get_git_ids() {
