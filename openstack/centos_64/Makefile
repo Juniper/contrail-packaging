@@ -186,7 +186,12 @@ contrail-openstack-dashboard: $(PREP)
 
 all: $(PREP) package-nova package-neutron horizon contrail-openstack-dashboard
 else
-all: $(PREP)
+contrail-openstack-dashboard: $(PREP)
+	@echo making rpm for package-horizon
+	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DASH_PLUGIN_BLDDIR)' \
+	-bb horizon-plugin/openstack-horizon-plugin-icehouse.spec $(G_TAG)
+
+all: $(PREP) contrail-openstack-dashboard
 endif
 endif
 

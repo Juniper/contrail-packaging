@@ -23,6 +23,7 @@ BuildArch: noarch
 
 Requires: python-contrail >= %{_verstr}-%{_relstr}
 Requires: openstack-dashboard
+Requires: contrail-openstack-dashboard >= 2014.1.2-%{_verstr}.%{_relstr}
 Requires: openstack-glance
 Requires: openstack-keystone
 Requires: openstack-nova
