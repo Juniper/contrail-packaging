@@ -9,7 +9,7 @@ manifest_file="$WORKSPACE/.repo/manifest.xml"
 build_loc="/github-build"
 
 if [ -L $manifest_file ]; then
-    repos=`cat $manifest_file | grep "remote=\"github" | grep -v refs | awk -F "path\=" '/path/ {print $2}' | sed -e 's/\"//g' | sed -e 's/\/>//' | sed -e 's/>//'`
+    repos=`cat $manifest_file | grep "remote=\"github" | grep -v refs | awk -F "path=" '/path/ {print $2}' | sed -e 's/\"//g' | sed -e 's/\/>//' | sed -e 's/>//'`
 fi
 
 usage ()
@@ -42,9 +42,8 @@ function parse_arguments() {
     build2=`echo $build | cut -d ',' -f2`
     [ $build1 = $build2 ] && build2="LATEST"
  
-    #sbver=`cat $manifest_file | awk -F "revision\=" '/revision/ {print $2}' | grep vrouter | cut -d ' ' -f1 | sed -e 's/\"//g'`
-    sbver=`cat $manifest_file | grep branch | awk -F "value\=" '/value/ {print $2}' | cut -d ' ' -f1 | sed -e 's/\"//g'`
-    [ "x$sbver" != "xmainline" ] && sbver="R$sbver"
+    sbver=`cat $manifest_file | awk -F "revision=" '/revision/ {print $2}' | grep vrouter | cut -d ' ' -f1 | sed -e 's/\"//g'`
+    [ "x$sbver" = "x" ] && sbver="mainline"
     if [ "x$sbver" != "x$release" ]; then
         echo
         echo "Release version field is incorrect!"
@@ -68,7 +67,8 @@ function get_git_ids_4_manifest() {
     [ "x$2" = "x" ] && usage
     [ "x$3" = "x" ] && usage
     [ ! -f $2 -o ! -f $3 ] && echo && echo "File not found!" && echo && exit 1
-    GetGitCommitIds=`/ecbuilds/utils/getgitcommits.py $2 $3`
+    #GetGitCommitIds=`/ecbuilds/utils/getgitcommits.py $2 $3`
+    GetGitCommitIds=`/users/vmahuli/getgitcommits.py $2 $3`
 }
 
 function get_git_ids() {
@@ -83,7 +83,7 @@ function get_git_ids() {
         exit 1
     fi
 
-    GetGitCommitIds=`/ecbuilds/utils/getgitcommits.py $build_loc/$release/$build1/$os/$sku/manifest.xml $build_loc/$release/$build2/$os/$sku/manifest.xml`
+    GetGitCommitIds=`/users/vmahuli/getgitcommits.py $build_loc/$release/$build1/$os/$sku/manifest.xml $build_loc/$release/$build2/$os/$sku/manifest.xml`
 }
 
 function parse_commit_ids() {
