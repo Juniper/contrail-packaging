@@ -1,9 +1,23 @@
 #!/usr/bin/env bash
 #set -x
 
-#export WORKSPACE="/ecbuilds/PipeLine/sb"
+#################################################################################
+#                                                                               #
+#                      Vinay Mahuli                                             #
+#                      August 2014                                              #
+#                      commit-info                                              #
+#                                                                               #
+#       This script is used to get the list of changes submitted to github      #
+#       for various repos.                                                      #
+#                                                                               #
+#       Dependency: getgitcommits.py                                            #
+#                                                                               #
+#       Output: This is a wrapper script which gives code diffs as output and   #
+#               also writes it to commit-info.log file                          #
+#                                                                               #
+#################################################################################
+
 export WORKSPACE="$PWD"
-#repos="controller vrouter tools/generateds tools/sandesh tools/packaging tools/packages tools/provisioning contrail-web-storage contrail-web-controller contrail-web-core contrail-webui-third-party third_party/fabric-utils third_party/contrail-test tools/contrail-server-manager tools/puppet openstack/neutron_plugin contrail-horizon contrail-web-ui tools/build third_party openstack/nova_contrail_vif distro distro/openstack/neutron"
 manifest_file="$WORKSPACE/.repo/manifest.xml"
 #build_loc="/volume/contrail"
 build_loc="/github-build"
