@@ -1,0 +1,45 @@
+#!/bin/tcsh -f
+
+if ($#argv != 1) then
+   echo "Usage: add-tag <repo-list-file> \n"
+   echo "<repo-list-file> should have 1 or more lines in following format:"
+   echo "      <repo name> <git id> <branch name> <ci-yes | ci-no> "
+   echo "Example: "
+   echo "contrail-controller d895222063d9b53ea25e6e3274450695a2b5fd3c R1.06 ci-yes" 
+   echo "contrail-web-core d1db2ea92124d63fc2f2e4ad0dc1cfe98c08e425 R1.06 ci-no"
+   exit 0
+endif
+
+set tagmsg="Contrail release 1.10"
+set tag="v1.10"
+set file=$argv[1]
+
+foreach f ( "`cat $file`" )
+   set dir=`echo "$f" | awk '{print $1}'`
+   set ver=`echo "$f" | awk '{print $2}'`
+   set branch=`echo "$f" | awk '{print $3}'`
+   set yesno=`echo "$f" | awk '{print $4}'`
+   echo ">>> Working on:  $f, $dir, $ver, $branch"
+   echo ">>> Cloning $dir ..."
+   git clone git@github.com:Juniper/$dir
+   cd $dir
+   echo ">>> Checkout branch $branch ... "
+   git checkout $branch
+   git branch
+
+   if ($yesno == "ci-yes") then
+       git review -s
+       set org="gerrit"
+   else
+       set org="origin"
+   endif
+
+   echo ">>> Tagging repo $dir with $tag at version $ver"
+   git tag  -a $tag -m "'$tagmsg'" $ver
+   git show $tag 
+   echo ">>> Pushing $tag to $org"
+   git push $org $tag
+
+   cd -
+   echo "----- \n\n"
+end
