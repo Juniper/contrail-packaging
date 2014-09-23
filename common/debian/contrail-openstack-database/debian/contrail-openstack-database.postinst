@@ -1,7 +1,9 @@
 #!/bin/sh
 
-echo "Running Postinst for contrail-database"
-sudo service cassandra stop
-sudo rm -rf /var/lib/cassandra/
-sudo rm -rf /etc/init.d/cassandra
-echo "Postinst for contrail-database done"
+if [ "$1" = "configure" -a -z "$2" ]; then
+    echo "Running Postinst for contrail-openstack-database install.."
+    sudo service cassandra stop
+    sudo rm -rf /var/lib/cassandra
+    sudo rm -rf /etc/init.d/cassandra
+fi
+echo "Postinst for contrail-openstack-database done"
