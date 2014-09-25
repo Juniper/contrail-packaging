@@ -1,3 +1,9 @@
+neutron (2:2013.2~rc3-0ubuntu1.2contrail) saucy; urgency=low
+
+  * Added 2contaril in contrail pacakges
+
+ --  Atul Moghe <amoghe@juniper.net>  Tue, 23 Sept 2014 15:37:02 -0400
+
 neutron (2:2013.2~rc3-0ubuntu1) saucy; urgency=low
 
   * Update epoch to 2 for Contrail

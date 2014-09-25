@@ -1,3 +1,9 @@
+nova (1:2014.1.1-0ubuntu2.2contrail) trusty; urgency=high
+
+  * Added 2contrail in contrail pacakge.
+
+ -- Atul Moge <amoghe@juniper.net>  Wed, 24 Sept 2014 12:56:15 -0300
+
 nova (1:2014.1.1-0ubuntu2) trusty; urgency=high
 
   * Cherry picked two fixes from upstream.
