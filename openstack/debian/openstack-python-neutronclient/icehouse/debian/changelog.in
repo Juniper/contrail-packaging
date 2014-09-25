@@ -1,3 +1,9 @@
+python-neutronclient (2:2.3.4-0ubuntu1.2contrail) trusty; urgency=low
+
+  * Added 2contrail for contrail package
+
+ -- Atul Moghe <amoghe@juniper.net>  Wed, 25 Sept 2014 16:33:40 -0400
+
 python-neutronclient (2:2.3.4-0ubuntu1) trusty; urgency=low
 
   * Update epoch to 2 for Contrail

@@ -1,3 +1,9 @@
+nova (2:2013.2.1-0ubuntu1.2contrail) saucy-proposed; urgency=low
+
+  * Added 2contrail in contrail pacakge
+
+ -- Atul Moghe <amoghe@juniper.net>  Tue, 23 Sept 2014 10:12:27 +0100
+
 nova (2:2013.2.1-0ubuntu1) saucy-proposed; urgency=low
 
   * Set epoch to 2 for Contrail
