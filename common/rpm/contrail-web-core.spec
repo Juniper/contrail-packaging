@@ -40,7 +40,6 @@ Requires:	contrail-nodejs = 0.8.15-1%{?dist}
 Requires:	nodejs = 0.8.15-1%{?dist}
 %endif
 Requires:	supervisor
-Requires: 	python-contrail >= %{_verstr}-%{_relstr}
 
 Obsoletes:      contrail-webui
 
