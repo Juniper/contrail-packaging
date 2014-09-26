@@ -27,7 +27,7 @@ Requires: contrail-api-extension >= %{_verstr}-%{_relstr}
 Requires: contrail-config >= %{_verstr}-%{_relstr}
 Requires: openstack-neutron
 Requires: openstack-nova
-Requires: neutron-plugin-contrail
+Requires: neutron-plugin-contrail >= %{_verstr}-%{_relstr}
 Requires: python-novaclient
 Requires: python-keystoneclient >= 0.2.0
 Requires: python-psutil
