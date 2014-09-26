@@ -26,7 +26,7 @@ BuildArch: noarch
 Requires: contrail-api-extension >= %{_verstr}-%{_relstr}
 Requires: contrail-config >= %{_verstr}-%{_relstr}
 Requires: openstack-neutron
-Requires: neutron-plugin-contrail
+Requires: neutron-plugin-contrail >= %{_verstr}-%{_relstr}
 Requires: python-novaclient
 Requires: python-keystoneclient >= 0.2.0
 Requires: python-psutil
@@ -39,6 +39,7 @@ Requires: m2crypto
 Requires: openstack-nova
 Requires: java-1.7.0-openjdk
 Requires: haproxy
+Requires: keepalived
 Requires: rabbitmq-server
 Requires: python-contrail >= %{_verstr}-%{_relstr}
 Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}

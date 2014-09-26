@@ -44,6 +44,7 @@ Requires: m2crypto
 Requires: openstack-nova
 Requires: java-1.7.0-openjdk
 Requires: haproxy
+Requires: keepalived
 Requires: rabbitmq-server
 Requires: python-bottle >= 0.11.6
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
