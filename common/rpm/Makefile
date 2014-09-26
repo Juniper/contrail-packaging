@@ -193,6 +193,12 @@ contrail-web-controller:
 	cp contrail-web-controller.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-web-controller.spec $(G_TAG)
 
+contrail-web-server-manager: $(PREP)
+	@echo making rpm for contrail-web-server-manager
+	cd $(CPLANE_GIT_ROOT)/../contrail-web-core && make package REPO=$(CPLANE_GIT_ROOT)/../contrail-web-server-manager,serverManager
+	cp contrail-web-server-manager.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-web-server-manager.spec $(G_TAG)
+
 contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
 	rpmbuild $(RPMBLDOPTS) contrail-install-packages.spec  $(G_TAG)
@@ -230,7 +236,7 @@ all: $(PREP) contrail contrail-api-extension \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
        ${NEUTRON_PLUGIN} contrail-server-manager contrail-server-manager-client \
-       contrail-vrouter-init 
+       contrail-vrouter-init contrail-web-server-manager
 
 clean:
 	@echo clean
