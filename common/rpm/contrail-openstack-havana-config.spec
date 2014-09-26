@@ -68,12 +68,14 @@ pushd %{_builddir}/..
 install -D -m 644 %{_distropkgdir}/supervisor-config.service %{buildroot}/usr/lib/systemd/system/supervisor-config.service
 %endif
 install -D -m 755 %{_distropkgdir}/supervisor-config.initd %{buildroot}%{_initddir}/supervisor-config
+install -D -m 755 %{_distropkgdir}/rabbitmq-server.initd.supervisord %{buildroot}%{_initddir}/rabbitmq-server.initd.supervisord
 install -D -m 755 %{_distropkgdir}/contrail-api.initd.supervisord %{buildroot}%{_initddir}/contrail-api
 install -D -m 755 %{_distropkgdir}/contrail-discovery.initd.supervisord %{buildroot}%{_initddir}/contrail-discovery
 install -D -m 755 %{_distropkgdir}/contrail-svc-monitor.initd.supervisord %{buildroot}%{_initddir}/contrail-svc-monitor
 install -D -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
 install -p -m 755 %{_distropkgdir}/contrail-api.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
+install -p -m 755 %{_distropkgdir}/rabbitmq-server.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/rabbitmq-server.ini
 install -p -m 755 %{_distropkgdir}/contrail-schema.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 install -p -m 755 %{_distropkgdir}/contrail-svc-monitor.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 install -p -m 755 %{_distropkgdir}/contrail-discovery.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
@@ -121,6 +123,7 @@ popd
 #%{_venv_root}/bin
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config.conf
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/rabbitmq-server.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
@@ -131,6 +134,17 @@ popd
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then
    /bin/systemctl daemon-reload > /dev/null
 fi
+for svc in rabbitmq-server; do
+    if [ -f %{_initddir}/$svc ]; then
+        service $svc stop || true
+        mv %{_initddir}/$svc %{_initddir}/$svc.backup
+        cp %{_initddir}/$svc.initd.supervisord %{_initddir}/$svc
+    elif [ -f /usr/lib/systemd/system/$svc.service ]; then
+        service $svc stop || true
+        mv /usr/lib/systemd/system/$svc.service /usr/lib/systemd/system/$svc.service_backup
+        cp %{_initddir}/$svc.initd.supervisord %{_initddir}/$svc
+    fi
+done
 
 %changelog
 * Tue Aug  6 2013 <ndramesh@juniper.net>
