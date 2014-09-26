@@ -19,7 +19,7 @@ Depends:
  python-keystoneclient,
  contrail-setup,
  contrail-utils,
- haproxy,
+ haproxy (>=1.5.4-1ppa1~precise),
  euca2ools,
  rabbitmq-server,
  python-qpid,
