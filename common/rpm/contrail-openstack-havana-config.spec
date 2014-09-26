@@ -42,6 +42,7 @@ Requires: euca2ools
 Requires: m2crypto
 Requires: java-1.7.0-openjdk
 Requires: haproxy
+Requires: keepalived
 Requires: rabbitmq-server
 Requires: python-contrail >= %{_verstr}-%{_relstr}
 Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
