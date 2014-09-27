@@ -94,6 +94,7 @@ ln -s %{_libdir}/node_modules %{buildroot}%{_contrailwebsrc}/node_modules
 rm %{buildroot}%{_contrailwebsrc}/config/config.global.js
 cp -p %{_config}/config.global.js %{buildroot}%{_contrailetc}/
 ln -s %{_contrailetc}/config.global.js %{buildroot}%{_contrailwebsrc}/config/config.global.js
+perl -pi -e '{ s/opencontrail-logo/juniper-networks-logo/g; }' %{buildroot}%{_contrailetc}/config.global.js
 
 #install .ini files for supervisord
 install -d -m 755 %{buildroot}%{_supervisordir}
