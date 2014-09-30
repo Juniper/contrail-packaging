@@ -52,7 +52,9 @@ Requires:	    python-crypto
 Requires:	    python-argparse
 Requires:	    gdb
 %endif
-
+%if 0%{?rhel} > 6
+Requires:           net-tools
+%endif
 %description
 Contrail Setup package with scripts for provisioning
 
