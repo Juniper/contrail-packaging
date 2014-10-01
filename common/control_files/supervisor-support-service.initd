@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # chkconfig: 2345 99 01
-# description: Supervisord instance for Contrail Config Package
+# description: Supervisord instance for Contrail Support Services
 
 ulimit -c unlimited
 . /etc/init.d/functions
@@ -13,7 +13,7 @@ function log_failure_msg() {
     failure
 }
 
-PID_FILE=/var/run/supervisord-config.pid
+PID_FILE=/var/run/supervisord-support-service.pid
 
 function daemon_start() {
      echo  -n "Starting Supervisor Daemon for Contrail Config Package"
@@ -22,15 +22,15 @@ function daemon_start() {
      ulimit -d unlimited
      ulimit -v unlimited
      ulimit -n 4096
-     /usr/bin/supervisord -c /etc/contrail/supervisord_config.conf 
+     /usr/bin/supervisord -c /etc/contrail/supervisord_support_service.conf 
      RETVAL=$?
      [ $RETVAL -eq 0 ] && log_success_msg || log_failure_msg
      if [ $RETVAL -ne 0 ]; then
-        echo "supervisor-config start on port 9004 failed. checking lsof.."
-        lsof -i :9004
+        echo "supervisor-config start on port 9011 failed. checking lsof.."
+        lsof -i :9011
         if [ $? -eq 0 ]; then
-            echo "Another program listening on 9004"
-            pid=`lsof -Fp -i :9004 | cut -f2 -d'p'`
+            echo "Another program listening on 9011"
+            pid=`lsof -Fp -i :9011 | cut -f2 -d'p'`
             if [ "x$pid" != "x" ] ; then
                 ps uw -p $pid
             fi
@@ -39,15 +39,15 @@ function daemon_start() {
 }
 
 function daemon_stop() {
-    /usr/bin/supervisorctl -s http://localhost:9004 stop all
-    /usr/bin/supervisorctl -s http://localhost:9004 shutdown
+    /usr/bin/supervisorctl -s http://localhost:9011 stop all
+    /usr/bin/supervisorctl -s http://localhost:9011 shutdown
     if [ -f $PID_FILE ]; then
         kill `cat $PID_FILE`
         rm -f $PID_FILE
     fi
-    if [ -e "/etc/contrail/supervisord_config_files/*.kill" ]
+    if [ -e "/etc/contrail/supervisord_support_service_files/*.kill" ]
     then
-    /usr/bin/supervisor_killall /etc/contrail/supervisord_config_files
+    /usr/bin/supervisor_killall /etc/contrail/supervisord_support_service_files
     fi
 }
 
