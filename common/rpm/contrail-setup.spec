@@ -101,7 +101,6 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_
 # install files
 pushd %{_builddir}/..
 echo BUILDID=`echo %{_relstr} | cut -d "~" -f1` > %{buildroot}%{_contrailopt}/contrail_packages/VERSION
-install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh
 install -p -m 755 tools/packaging/build/README %{buildroot}%{_contrailopt}/contrail_packages/README
 install -p -m 755 tools/packaging/common/control_files/contrail_ifrename.sh %{buildroot}%{_contrailopt}/bin/getifname.sh
 if [ 0%{_sku} = 0icehouse ]; then
@@ -148,7 +147,6 @@ tar xzvf contrail_installer.tgz
 %{_contrailopt}/bin/getifname.sh
 %{_contrailopt}/contrail_packages/VERSION
 %{_contrailopt}/contrail_packages/README
-%{_contrailopt}/contrail_packages/setup.sh
 %{_contrailopt}/cfgm_utils.tgz
 %{_contrailopt}/dns_scripts.tgz
 %{_contrailopt}/contrail_installer.tgz

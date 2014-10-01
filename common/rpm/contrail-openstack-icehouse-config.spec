@@ -80,6 +80,12 @@ install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-api.kill
 install -p -m 755 %{_distropkgdir}/contrail-config.rules %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config.rules
 install -D -m 755 %{_distropkgdir}/contrail-schema.initd.supervisord %{buildroot}%{_initddir}/contrail-schema
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
+
+install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service_files
+install -D -m 755 %{_distropkgdir}/supervisor-support-service.initd %{buildroot}%{_initddir}/supervisor-support-service
+install -D -m 755 %{_distropkgdir}/supervisord_support_service.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service.conf
+install -D -m 755 %{_distropkgdir}/rabbitmq-server.initd.supervisord %{buildroot}%{_initddir}/rabbitmq-server.initd.supervisord
+install -p -m 755 %{_distropkgdir}/rabbitmq-server.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service_files/rabbitmq-server.ini
 pushd %{_builddir}
 install -D -m 755 src/config/schema-transformer/ifmap_view.py %{buildroot}%{_bindir}/ifmap_view.py
 #install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py

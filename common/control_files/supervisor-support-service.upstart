@@ -1,0 +1,30 @@
+description     "Supervisord for Support Service"
+
+start on runlevel [2345]
+stop on runlevel [016]
+limit core unlimited unlimited
+
+pre-start script
+    ulimit -s unlimited
+    ulimit -c unlimited
+    ulimit -d unlimited
+    ulimit -v unlimited
+    ulimit -n 4096
+end script
+
+#exec /usr/bin/supervisord --nodaemon -c /etc/contrail/supervisord_support_service.conf
+script
+    supervisord --nodaemon -c /etc/contrail/supervisord_support_service.conf || true
+    echo "supervisor-config start failed. lsof -i :9011..."
+    lsof -i :9011 || true
+    pid=`lsof -Fp -i :9011 | cut -d'p' -f2` || true
+    if [ "x$pid" != "x" ]; then
+        ps uw -p $pid
+    fi
+end script
+
+pre-stop script
+    supervisorctl -s http://localhost:9011 stop all
+    supervisorctl -s http://localhost:9011 shutdown
+    /usr/bin/supervisor_killall /etc/contrail/supervisord_support_service_files
+end script
