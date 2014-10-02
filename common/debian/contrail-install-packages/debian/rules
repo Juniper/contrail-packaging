@@ -29,6 +29,11 @@ TGZ_FILE = $(FILE_LIST)
 endif
 
 
+ifeq ($(CONTRAIL_SKU),juno)
+	SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu_juno.sh
+else
+	SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu.sh
+endif  
 %:
 	dh $@
 
@@ -45,7 +50,7 @@ override_dh_auto_install:
 	# Install files
 	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2 | cut -d '~' -f1` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu; fi
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_packages/VERSION
-	install -p -m 755 $(SB_TOP)/tools/packaging/build/setup_ubuntu.sh  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
+	install -p -m 755 $(SETUP_FILE)  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_packages/sources.list
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/repo_preferences  $(buildroot)$(_contrailopt)/contrail_packages/preferences
 	# install puppet manifests
