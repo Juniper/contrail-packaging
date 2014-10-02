@@ -20,10 +20,14 @@ else
     CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 endif
 
+ifeq ($(CONTRAIL_SKU),juno)
+    CONTRAIL_OPENSTACK := contrail-openstack-juno-deb
+else
 ifeq ($(CONTRAIL_SKU),icehouse)
     CONTRAIL_OPENSTACK := contrail-openstack-icehouse-deb
 else
     CONTRAIL_OPENSTACK := contrail-openstack-deb
+endif
 endif
 
 KVERS ?= $(shell uname -r)
@@ -179,21 +183,23 @@ python-boto-clean:
 	rm -rf ${BUILDDIR}/debian
 
 contrail-openstack-icehouse-deb:
+contrail-openstack-juno-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
 	rm -rf ${BUILDDIR}
 	mkdir -p ${BUILDDIR}/debian
 	cp -R contrail-openstack/debian ${BUILDDIR}
-	cp ${BUILDDIR}/debian/control.icehouse ${BUILDDIR}/debian/control
-	cp ${BUILDDIR}/debian/rules.icehouse ${BUILDDIR}/debian/rules
+	cp ${BUILDDIR}/debian/control.${CONTRAIL_SKU} ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.${CONTRAIL_SKU} ${BUILDDIR}/debian/rules
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 contrail-openstack-icehouse-clean:
+contrail-openstack-juno-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
 	rm -rf ${BUILDDIR}
 
 contrail-openstack-dashboard-deb:
-	if [ '${CONTRAIL_SKU}' != 'icehouse' ]; then \
+	if [ '${CONTRAIL_SKU}' = 'havna' ]; then \
 		$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard) \
 		mkdir -p ${BUILDDIR}/debian; \
 		cp -R ${SB_TOP}/contrail-horizon/* ${BUILDDIR}; \
@@ -210,7 +216,7 @@ contrail-openstack-dashboard-clean:
 	rm -rf ${BUILDDIR}
 
 contrail-ostack-dashboard-deb:
-	if [ '${CONTRAIL_SKU}' != 'icehouse' ]; then \
+	if [ '${CONTRAIL_SKU}' = 'havana' ]; then \
 		$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-ostack-dashboard) \
 		mkdir -p ${BUILDDIR}/debian; \
 		cp -R ${SB_TOP}/distro/openstack/horizon/* ${BUILDDIR}; \
