@@ -180,8 +180,6 @@ contrail-web-core:
 	cp ../control_files/contrail-webui-middleware.initd.supervisord $(BUILD_SRC)/
 	cp ../control_files/contrail-webui.ini $(BUILD_SRC)/
 	cp ../control_files/contrail-webui-middleware.ini $(BUILD_SRC)/
-	cp ../control_files/supervisord_wrapper_scripts/contrail-webui.kill $(BUILD_SRC)/
-	cp ../control_files/supervisord_wrapper_scripts/contrail-webui-middleware.kill $(BUILD_SRC)/
 	cp ../control_files/redis-webui.conf $(BUILD_SRC)/
 	cp ../control_files/redis-webui.ini $(BUILD_SRC)/
 	cp ../control_files/redis-webui.initd.supervisord $(BUILD_SRC)/

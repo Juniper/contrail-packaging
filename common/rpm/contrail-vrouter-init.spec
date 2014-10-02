@@ -40,10 +40,7 @@ install -d -m 755 %{buildroot}%{_supervisordir}
 install -d -m 755 %{buildroot}/etc/rc.d/init.d
 install -d -m 777 %{buildroot}/var/log/contrail
 pushd %{_builddir}/..
-install -p -m 755 %{_distropkgdir}/supervisord_vrouter.conf %{buildroot}%{_contrailetc}/supervisord_vrouter.conf
-install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-vrouter.kill %{buildroot}%{_supervisordir}/contrail-vrouter.kill
-install -p -m 644 %{_distropkgdir}/contrail-vrouter.initd.supervisord %{buildroot}/etc/rc.d/init.d/contrail-vrouter
-install -p -m 644 %{_distropkgdir}/contrail-vrouter-agent.ini %{buildroot}%{_supervisordir}
+install -p -m 644 %{_distropkgdir}/contrail-nodemgr-vrouter.ini %{buildroot}%{_supervisordir}
 install -p -m 644 %{_distropkgdir}/contrail-vrouter.rules %{buildroot}%{_supervisordir}
 install -p -m 755 %{_distropkgdir}/vnagent_ExecStartPre.sh  %{buildroot}%{_contrailetc}/vnagent_ExecStartPre.sh
 install -p -m 755 %{_distropkgdir}/vnagent_ExecStartPost.sh %{buildroot}%{_contrailetc}/vnagent_ExecStartPost.sh

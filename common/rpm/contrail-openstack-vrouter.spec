@@ -67,18 +67,12 @@ install -d -m 755 %{buildroot}/lib/modules/%{_osVer}/extra/net/vrouter
 pushd %{_builddir}/..
 if [ "%{?dist}" != ".xen" ]; then
 install -p -m 755 %{_distropkgdir}/contrail_reboot          %{buildroot}%{_contrailetc}/contrail_reboot
-else
-install -D -m 755 %{_distropkgdir}/contrail-vrouter     %{buildroot}/etc/init.d/contrail-vrouter-agent
 fi
 
 %if 0%{?fedora} >= 17
-install -D -m 755 %{_distropkgdir}/supervisor-vrouter.initd %{buildroot}/etc/init.d/supervisor-vrouter
-install -p -m 755 %{_distropkgdir}/contrail-vrouter.initd.supervisord %{buildroot}/etc/init.d/contrail-vrouter-agent
 %endif
 
 %if 0%{?rhel}
-install -D -m 755 %{_distropkgdir}/supervisor-vrouter.initd %{buildroot}/etc/init.d/supervisor-vrouter
-install -p -m 755 %{_distropkgdir}/contrail-vrouter.initd.supervisord %{buildroot}/etc/init.d/contrail-vrouter-agent
 %endif
 
 # install .ini files for supervisord
@@ -137,12 +131,8 @@ exit 0
 /bin/run_mock_generator
 %endif
 %if 0%{?rhel}
-/etc/init.d/contrail-vrouter-agent
-/etc/init.d/supervisor-vrouter
 %endif
 %if 0%{?fedora} >= 17
-/etc/init.d/contrail-vrouter-agent
-/etc/init.d/supervisor-vrouter
 %endif
 
 %if  "%{dist}" == ".xen"
