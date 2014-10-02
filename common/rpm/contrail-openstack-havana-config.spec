@@ -64,36 +64,18 @@ pushd %{_distrothirdpartydir}/ncclient
 popd
 
 pushd %{_builddir}/..
-%if 0%{?fedora} >= 17
-install -D -m 644 %{_distropkgdir}/supervisor-config.service %{buildroot}/usr/lib/systemd/system/supervisor-config.service
-%endif
-install -D -m 755 %{_distropkgdir}/supervisor-config.initd %{buildroot}%{_initddir}/supervisor-config
 install -D -m 755 %{_distropkgdir}/rabbitmq-server.initd.supervisord %{buildroot}%{_initddir}/rabbitmq-server.initd.supervisord
-install -D -m 755 %{_distropkgdir}/contrail-api.initd.supervisord %{buildroot}%{_initddir}/contrail-api
-install -D -m 755 %{_distropkgdir}/contrail-discovery.initd.supervisord %{buildroot}%{_initddir}/contrail-discovery
-install -D -m 755 %{_distropkgdir}/contrail-svc-monitor.initd.supervisord %{buildroot}%{_initddir}/contrail-svc-monitor
-install -D -m 755 %{_distropkgdir}/supervisord_config.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_config.conf
+install -D -m 755 %{_distropkgdir}/ifmap.initd.supervisord %{buildroot}%{_initddir}/ifmap
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
-install -p -m 755 %{_distropkgdir}/contrail-api.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
 install -p -m 755 %{_distropkgdir}/rabbitmq-server.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/rabbitmq-server.ini
-install -p -m 755 %{_distropkgdir}/contrail-schema.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
-install -p -m 755 %{_distropkgdir}/contrail-svc-monitor.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
-install -p -m 755 %{_distropkgdir}/contrail-discovery.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
-install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-api.kill %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-api.kill
-install -p -m 755 %{_distropkgdir}/contrail-config.rules %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config.rules
-install -D -m 755 %{_distropkgdir}/contrail-schema.initd.supervisord %{buildroot}%{_initddir}/contrail-schema
+install -p -m 755 %{_distropkgdir}/ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
+install -p -m 755 %{_distropkgdir}/contrail-nodemgr-config.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-nodemgr-config.ini
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
 pushd %{_builddir}
 install -D -m 755 src/config/schema-transformer/ifmap_view.py %{buildroot}%{_bindir}/ifmap_view.py
 #install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py
 popd
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
-
-install -D -m 755 %{_distropkgdir}/venv-helper %{buildroot}%{_bindir}/venv-helper
-
-#ifmap-server related files
-install -p -D -m 755 %{_distropkgdir}/ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
-install -p -D -m 755 %{_distropkgdir}/ifmap.kill %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.kill
 
 pushd %{buildroot}
 
@@ -112,23 +94,12 @@ popd
 %{python_sitelib}/ncclient-*
 #/usr/share/doc/python-vnc_cfg_api_server
 %{_sysconfdir}/contrail
-%if 0%{?fedora} >= 17
-/usr/lib/systemd/system/supervisor-config.service
-%endif
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
 %{_bindir}/ifmap_view.py
-%{_bindir}/venv-helper
 #%{_bindir}/encap.py
 %{_initddir}
-#%{_venv_root}/bin
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config.conf
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-api.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/rabbitmq-server.ini
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-schema.ini
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-svc-monitor.ini
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-discovery.ini
-%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
-%{_sysconfdir}/contrail/supervisord_config_files/ifmap.kill
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-nodemgr-config.ini
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then

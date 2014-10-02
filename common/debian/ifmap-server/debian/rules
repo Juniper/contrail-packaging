@@ -66,9 +66,7 @@ override_dh_auto_install:
 	install -p -D -m 644 lib/commons-codec-1.5.jar  $(DESTDIR)/usr/share/irond/lib/commons-codec.jar
 	install -p -D -m 644 lib/log4j-1.2.16.jar $(DESTDIR)/usr/share/irond/lib/log4j.jar
 	install -p -D -m 644 ifmap.ini $(DESTDIR)/etc/irond/ifmap.ini
-	install -p -D -m 644 ifmap.kill $(DESTDIR)/etc/irond/ifmap.kill
 	install -p -D -m 644 ifmap.ini $(DESTDIR)/etc/contrail/supervisord_config_files/ifmap.ini
-	install -p -D -m 644 ifmap.kill $(DESTDIR)/etc/contrail/supervisord_config_files/ifmap.kill
 	install -p -D -m 755 ifmap.initd.supervisord $(DESTDIR)/etc/init.d/ifmap
 
 override_dh_usrlocal:	
