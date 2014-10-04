@@ -48,21 +48,8 @@ install -d -m 755 %{buildroot}%{_initddir}
 
 #install wrapper scripts for supervisord
 pushd %{_builddir}/..
-install -p -m 755 %{_distropkgdir}/contrail-analytics.rules %{buildroot}%{_supervisordir}/contrail-analytics.rules
-
 #install .ini files for supervisord
-install -p -m 755 %{_distropkgdir}/supervisord_analytics.conf %{buildroot}%{_contrailetc}/supervisord_analytics.conf
-install -p -m 755 %{_distropkgdir}/contrail-collector.ini %{buildroot}%{_supervisordir}/contrail-collector.ini
-install -p -m 755 %{_distropkgdir}/contrail-analytics-api.ini %{buildroot}%{_supervisordir}/contrail-analytics-api.ini
-install -p -m 755 %{_distropkgdir}/contrail-query-engine.ini %{buildroot}%{_supervisordir}/contrail-query-engine.ini
-
-%if 0%{?rhel}
-install -p -m 755 %{_distropkgdir}/supervisor-analytics.initd          %{buildroot}%{_initddir}/supervisor-analytics
-%endif
-install -p -m 755 %{_distropkgdir}/contrail-collector.initd.supervisord          %{buildroot}%{_initddir}/contrail-collector
-install -p -m 755 %{_distropkgdir}/contrail-qe.initd.supervisord          %{buildroot}%{_initddir}/contrail-query-engine
-install -p -m 755 %{_distropkgdir}/contrail-opserver.initd.supervisord          %{buildroot}%{_initddir}/contrail-analytics-api
-
+install -p -m 755 %{_distropkgdir}/contrail-nodemgr-analytics.ini %{buildroot}%{_supervisordir}/contrail-nodemgr-analytics.ini
 
 for f in $(find %{buildroot} -type f -exec grep -l '^#!%{__python}' {} \; ); do
     sed 's/^#!.*python/#!\/usr\/bin\/python/g' $f > ${f}.b
@@ -73,19 +60,8 @@ done
 
 %files
 %defattr(-, root, root)
-%config(noreplace) %{_supervisordir}/contrail-collector.ini
-%config(noreplace) %{_supervisordir}/contrail-analytics-api.ini
-%config(noreplace) %{_supervisordir}/contrail-query-engine.ini
-%{_supervisordir}/contrail-analytics.rules
-%if 0%{?rhel}
-%{_initddir}/supervisor-analytics
-%endif
-%{_initddir}/contrail-collector
-%{_initddir}/contrail-query-engine
-%{_initddir}/contrail-analytics-api
-%config(noreplace) %{_contrailetc}/supervisord_analytics.conf
+%config(noreplace) %{_supervisordir}/contrail-nodemgr-analytics.ini
 
 %changelog
 * Tue Aug  6 2013 <ndramesh@juniper.net>
 * Initial build.
-

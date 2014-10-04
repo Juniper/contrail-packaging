@@ -41,27 +41,12 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_sysconfdir)
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files
-	# Install upstart, supervisord ini, conf and rules files
-	install -D -m 755 $(_src_config)/supervisor-config.upstart $(buildroot)$(_initdir)/supervisor-config.conf 
-	install -p -m 755 $(_src_config)/contrail-api.initd.supervisord $(buildroot)$(_initddir)/contrail-api
-	install -p -m 755 $(_src_config)/contrail-discovery.initd.supervisord $(buildroot)$(_initddir)/contrail-discovery
-	install -p -m 755 $(_src_config)/contrail-schema.initd.supervisord $(buildroot)$(_initddir)/contrail-schema
-	install -p -m 755 $(_src_config)/contrail-svc-monitor.initd.supervisord $(buildroot)$(_initddir)/contrail-svc-monitor
-	install -p -m 755 $(_src_config)/ifmap.initd.supervisord $(buildroot)$(_initddir)/ifmap
-	install -p -m 755 $(_src_config)/supervisord_config.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_config.conf
-	perl -ni -e 's/source \/opt\/contrail\/api-venv\/bin\/activate && exec python \/opt\/contrail\/api-venv/\/usr/g; print $$_;' $(buildroot)$(_sysconfdir)/contrail/supervisord_config.conf
-	install -p -m 755 $(_src_config)/contrail-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-api.ini
-	install -p -m 755 $(_src_config)/contrail-schema.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-schema.ini
-	install -p -m 755 $(_src_config)/contrail-svc-monitor.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-svc-monitor.ini
-	install -p -m 755 $(_src_config)/contrail-discovery.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-discovery.ini
-	install -p -m 755 $(_src_config)/supervisord_wrapper_scripts/contrail-api.kill $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-api.kill
-	install -p -m 755 $(_src_config)/contrail-config.rules $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-config.rules
-	install -D -m 644 $(_src_config)/supervisor-config.service $(buildroot)/usr/lib/systemd/system/supervisor-config.service
-	install -p -D -m 644 $(_src_config)/ifmap.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/ifmap.ini
-	install -p -D -m 644 $(_src_config)/ifmap.kill $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/ifmap.kill
 	# Install upstart, supervisord ini for rabbitmq-server
 	install -p -m 755 $(_src_config)/rabbitmq-server.initd.supervisord $(buildroot)$(_initddir)/rabbitmq-server.initd.supervisord
+	install -p -m 755 $(_src_config)/ifmap.initd.supervisord $(buildroot)$(_initddir)/ifmap
 	install -p -m 755 $(_src_config)/rabbitmq-server.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/rabbitmq-server.ini
+	install -p -m 755 $(_src_config)/ifmap.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/ifmap.ini
+	install -p -m 755 $(_src_config)/contrail-nodemgr-config.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-nodemgr-config.ini
 override_dh_usrlocal:	
 
 

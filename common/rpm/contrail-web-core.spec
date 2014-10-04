@@ -106,8 +106,6 @@ install -p -m 755 %{_distropkgdir}/contrail-webui-middleware.ini %{buildroot}%{_
 perl -pi -e '{ s/node webServerStart.js/nodejs-contrail webServerStart.js/g; }' %{buildroot}%{_supervisordir}/contrail-webui.ini
 perl -pi -e '{ s/node jobServerStart.js/nodejs-contrail jobServerStart.js/g; }' %{buildroot}%{_supervisordir}/contrail-webui-middleware.ini
 %endif
-install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-webui.kill %{buildroot}%{_supervisordir}/contrail-webui.kill
-install -p -m 755 %{_distropkgdir}/supervisord_wrapper_scripts/contrail-webui-middleware.kill %{buildroot}%{_supervisordir}/contrail-webui-middleware.kill
 install -p -m 755 %{_distropkgdir}/redis-webui.ini %{buildroot}%{_supervisordir}/redis-webui.ini
 
 %clean

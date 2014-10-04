@@ -44,15 +44,7 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_analytics_files
 	# install supervisord ini, upstart, conf and rules files
-	install -p -m 755 $(_src_config)/supervisor-analytics.upstart $(buildroot)$(_initdir)/supervisor-analytics.conf
-	install -p -m 755 $(_src_config)/contrail-collector.initd.supervisord $(buildroot)$(_initddir)/contrail-collector
-	install -p -m 755 $(_src_config)/contrail-qe.initd.supervisord $(buildroot)$(_initddir)/contrail-query-engine
-	install -p -m 755 $(_src_config)/contrail-opserver.initd.supervisord $(buildroot)$(_initddir)/contrail-analytics-api
-	install -p -m 755 $(_src_config)/supervisord_analytics.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_analytics.conf
-	install -p -m 755 $(_src_config)/contrail-analytics.rules $(buildroot)$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-analytics.rules
-	install -p -m 755 $(_src_config)/contrail-collector.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-collector.ini
-	install -p -m 755 $(_src_config)/contrail-query-engine.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-query-engine.ini
-	install -p -m 755 $(_src_config)/contrail-analytics-api.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-analytics-api.ini
+	install -p -m 755 $(_src_config)/contrail-nodemgr-analytics.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-nodemgr-analytics.ini
 
 override_dh_usrlocal:	
 
