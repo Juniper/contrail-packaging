@@ -15,6 +15,10 @@ if [ -f /var/lib/cobbler/distro_signatures.json ]; then
 fi
 cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /etc/cobbler/distro_signatures.json
 cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /var/lib/cobbler/distro_signatures.json
+cd /etc/contrail_smgr/contrail-centos-repo
+createrepo .
+cd /etc/contrail_smgr/contrail-redhat-repo
+createrepo .
 
 # Copy cobbler boot.cfg template file for esxi5.5
 cp -f /etc/contrail_smgr/cobbler/bootcfg_esxi55.template /etc/cobbler/pxe
