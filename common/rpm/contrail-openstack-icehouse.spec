@@ -45,6 +45,14 @@ Requires: supervisor
 %if 0%{?rhel} <= 6
 Requires: python-importlib
 %endif
+%if 0%{?rhel} <= 6
+Requires: contrail-heat >= %{_verstr}-%{_relstr}
+Requires: openstack-heat-api
+Requires: openstack-heat-common
+Requires: openstack-heat-engine
+Requires: crudini
+Requires: openstack-utils
+%endif
 
 %description
 Contrail Package Requirements for Contrail Openstack
@@ -71,6 +79,8 @@ install -D -m 755 %{_distropkgdir}/glance-api.initd.supervisord %{buildroot}%{_i
 install -D -m 755 %{_distropkgdir}/glance-registry.initd.supervisord %{buildroot}%{_initddir}/glance-registry
 install -D -m 755 %{_distropkgdir}/cinder-api.initd.supervisord %{buildroot}%{_initddir}/cinder-api
 install -D -m 755 %{_distropkgdir}/cinder-scheduler.initd.supervisord %{buildroot}%{_initddir}/cinder-scheduler
+install -D -m 755 %{_distropkgdir}/heat-api.initd.supervisord %{buildroot}%{_initddir}/heat-api
+install -D -m 755 %{_distropkgdir}/heat-engine.initd.supervisord %{buildroot}%{_initddir}/heat-engine
 # Install supervisord config files
 install -D -m 755 %{_distropkgdir}/keystone.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/keystone.ini
 install -D -m 755 %{_distropkgdir}/glance-api.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/glance-api.ini
@@ -84,6 +94,8 @@ install -D -m 755 %{_distropkgdir}/nova-consoleauth.ini.centos %{buildroot}%{_sy
 install -D -m 755 %{_distropkgdir}/nova-novncproxy.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/nova-novncproxy.ini
 # Install contrail openstack-status
 install -p -m 755 tools/provisioning/openstack-status %{buildroot}/%{_bindir}/openstack-status.contrail
+install -D -m 755 %{_distropkgdir}/heat-api.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/heat-api.ini
+install -D -m 755 %{_distropkgdir}/heat-engine.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/heat-engine.ini
 popd
 
 %files
@@ -103,6 +115,8 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/nova-consoleauth.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/nova-novncproxy.ini
 %{_bindir}/openstack-status.contrail
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/heat-api.ini
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/heat-engine.ini
 
 %post
 # Replace stock openstack-status with contrail openstack-status
@@ -116,6 +130,7 @@ for svc in openstack-keystone openstack-nova-api openstack-nova-scheduler\
            openstack-nova-consoleauth openstack-nova-conductor\
            openstack-nova-novncproxy openstack-glance-api\
            openstack-glance-registry openstack-cinder-api\
+           openstack-heat-api openstack-heat-engine\
            openstack-cinder-scheduler; do
     if [ -f %{_initddir}/$svc ]; then
         service $svc stop || true

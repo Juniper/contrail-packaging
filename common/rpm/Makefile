@@ -96,6 +96,10 @@ neutron-plugin-contrail: $(PREP) $(LOCAL_PY)
 	@echo making rpm for neutron-plugin-plugin
 	rpmbuild $(RPMBLDOPTS) neutron-plugin-contrail.spec $(G_TAG)
 
+contrail-heat: $(PREP)
+	@echo making rpm for contrail-heat
+	rpmbuild $(RPMBLDOPTS) contrail-heat.spec $(G_TAG)
+
 contrail-setup: $(PREP)
 	@echo making rpm for contrail-setup
 	rpmbuild $(RPMBLDOPTS) contrail-setup.spec $(G_TAG)
@@ -228,13 +232,18 @@ NEUTRON_PLUGIN =
 else
 NEUTRON_PLUGIN = neutron-plugin-contrail
 endif
+ifeq ($(CONTRAIL_SKU), icehouse)
+CONTRAIL_HEAT = contrail-heat
+else
+CONTRAIL_HEAT = 
+endif
 
 all: $(PREP) contrail contrail-api-extension \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
        ${NEUTRON_PLUGIN} contrail-server-manager contrail-server-manager-client \
-       contrail-vrouter-init contrail-web-server-manager
+       contrail-vrouter-init contrail-web-server-manager ${CONTRAIL_HEAT}
 
 clean:
 	@echo clean
