@@ -184,9 +184,6 @@ contrail-web-core:
 	cp ../control_files/contrail-webui-middleware.initd.supervisord $(BUILD_SRC)/
 	cp ../control_files/contrail-webui.ini $(BUILD_SRC)/
 	cp ../control_files/contrail-webui-middleware.ini $(BUILD_SRC)/
-	cp ../control_files/redis-webui.conf $(BUILD_SRC)/
-	cp ../control_files/redis-webui.ini $(BUILD_SRC)/
-	cp ../control_files/redis-webui.initd.supervisord $(BUILD_SRC)/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-web-core.spec $(G_TAG)
 
 contrail-web-controller:

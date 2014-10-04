@@ -67,6 +67,5 @@ override_dh_auto_install:
 	perl -pi -e '{ s/opencontrail-logo/juniper-networks-logo/g; }' $(buildroot)/$(_contrailetc)/config.global.js
 	ln -s $(_contrailetc)/config.global.js $(buildroot)/$(_contrailwebsrc)/config/config.global.js
 
-	install -p -m 644 $(_distropkgdir)/redis-webui.conf $(buildroot)/$(_contrailetc)/redis-webui.conf
 
 override_dh_shlibdeps:

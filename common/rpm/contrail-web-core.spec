@@ -84,7 +84,6 @@ cp -p %{_distropkgdir}/supervisor-webui.service  %{buildroot}%{_servicedir}/supe
 install -p -m 755 %{_distropkgdir}/supervisor-webui.initd %{buildroot}%{_initddir}/supervisor-webui
 install -p -m 755 %{_distropkgdir}/contrail-webui.initd.supervisord          %{buildroot}%{_initddir}/contrail-webui
 install -p -m 755 %{_distropkgdir}/contrail-webui-middleware.initd.supervisord %{buildroot}%{_initddir}/contrail-webui-middleware
-install -p -m 755 %{_distropkgdir}/redis-webui.initd.supervisord          %{buildroot}%{_initddir}/redis-webui
 %endif
 cp -p %{_distropkgdir}/contrailWebServer.sh %{buildroot}%{_contrailwebsrc}/
 cp -p %{_distropkgdir}/contrailWebMiddleware.sh %{buildroot}%{_contrailwebsrc}/
@@ -99,14 +98,12 @@ ln -s %{_contrailetc}/config.global.js %{buildroot}%{_contrailwebsrc}/config/con
 #install .ini files for supervisord
 install -d -m 755 %{buildroot}%{_supervisordir}
 install -p -m 755 %{_distropkgdir}/supervisord_webui.conf %{buildroot}%{_contrailetc}/supervisord_webui.conf
-install -p -m 755 %{_distropkgdir}/redis-webui.conf %{buildroot}%{_contrailetc}/redis-webui.conf
 install -p -m 755 %{_distropkgdir}/contrail-webui.ini %{buildroot}%{_supervisordir}/contrail-webui.ini
 install -p -m 755 %{_distropkgdir}/contrail-webui-middleware.ini %{buildroot}%{_supervisordir}/contrail-webui-middleware.ini
 %if %{_skuTag} == "grizzly"
 perl -pi -e '{ s/node webServerStart.js/nodejs-contrail webServerStart.js/g; }' %{buildroot}%{_supervisordir}/contrail-webui.ini
 perl -pi -e '{ s/node jobServerStart.js/nodejs-contrail jobServerStart.js/g; }' %{buildroot}%{_supervisordir}/contrail-webui-middleware.ini
 %endif
-install -p -m 755 %{_distropkgdir}/redis-webui.ini %{buildroot}%{_supervisordir}/redis-webui.ini
 
 %clean
 rm -rf %{buildroot}
@@ -129,7 +126,6 @@ rm -rf %{_specdir}/contrail-webui.spec
 %config(noreplace) %{_contrailetc}/config.global.js
 %config(noreplace) %{_supervisordir}/*
 %config(noreplace) %{_contrailetc}/supervisord_webui.conf
-%config(noreplace) %{_contrailetc}/redis-webui.conf
 
 %post
 %if 0%{?rhel}

@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-# chkconfig: 2345 99 01
-# description: Juniper Redis WebUI
-
-supervisorctl -s unix:///tmp/supervisord_webui.sock  ${1} `basename ${0}`
