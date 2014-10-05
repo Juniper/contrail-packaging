@@ -32,7 +32,7 @@ class BasePackager(Utils):
         self.contrail_pkg_files    = self.expanduser(kwargs['contrail_package_file'])
         self.id                    = kwargs.get('build_id', 999)
         self.sku                   = kwargs.get('sku', 'grizzly')
-        self.branch                = kwargs.get('branch', None)
+        self.branch                = kwargs.get('branch', 9.9)
         self.store                 = self.expanduser(kwargs['store_dir'])
         self.abs_pkg_dirs          = self.expanduser(kwargs['absolute_package_dir'])
         self.cache_base_dir        = self.expanduser(kwargs['cache_base_dir'])
@@ -43,9 +43,8 @@ class BasePackager(Utils):
         self.make_targets_file     = self.expanduser(kwargs.get('make_targets_file', None))
         pkg_types                  = {'ubuntu': 'deb', 'centos': 'rpm', \
                                       'redhatenterpriselinuxserver': 'rpm', 'fedora': 'rpm'}
-        self.platform              = platform.dist()[0].lower()
-        self.platform              = PLATFORM[0]
-        self.cache_subdir          = "".join(PLATFORM[:2]).lower().replace('.', '')
+        self.platform              = PLATFORM['default'][0]
+        self.cache_subdir          = PLATFORM['formatted']
         self.pkg_type              = pkg_types[self.platform]
         self.store_log_dir         = os.path.join(self.store, 'package_info')
         self.artifacts_dir         = os.path.join(self.git_local_repo, 'build', 'artifacts')
@@ -122,11 +121,6 @@ class BasePackager(Utils):
             updating config data structures, creating dirs,
             copying package files..etc
         '''
-        
-        # update branch and build tag and tgz name
-        # Temporarily override user input for branch
-        self.branch = self.exec_cmd_out('cat %s/controller/src/base/version.info' 
-                                             %self.git_local_repo)[0]
         
         # update repo dir with store dir prefix and get repo list
         self.update_repoinfo(self.base_pkgs, self.depends_pkgs,
