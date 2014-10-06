@@ -1,0 +1,16 @@
+package, md5
+augeas-libs-1.1.0-12.el7.x86_64.rpm, d5e1b65634cb67c24089ac0a645214bd
+facter-1.7.6-2.1.el7sat.x86_64.rpm, 275885f600ae6e9410ae4226c20200b0
+libselinux-ruby-2.2.2-6.el7.x86_64.rpm, 49ff0a3ac470ec513af3c49ea156539e
+libyaml-0.1.4-10.el7.x86_64.rpm, f3977984e5292aeb92807865ef88f1c2
+net-tools-2.0-0.17.20131004git.el7.x86_64.rpm, 2841b0d94da0fa3d11f0693cd16c1cc0
+puppet-2.7.20-1308300027.noarch.rpm, b5ec84fd8669b7a46b681a70d4a27964
+puppet-server-2.7.20-1308300027.noarch.rpm, 189c85ff497cfcf117be3b3db9966e09
+ruby-2.0.0.353-20.el7.x86_64.rpm, 63fdfda7ce70086cc5488d61c68fb858
+ruby-augeas-0.5.0-1.el7.x86_64.rpm, cd6fd34c980f7f0bba7a08a6d49aa327
+rubygem-bigdecimal-1.2.0-20.el7.x86_64.rpm, 6f0a2e924c31294bbcd007a757d2865d
+rubygem-io-console-0.4.2-20.el7.x86_64.rpm, ba8a8d73a6dcec8d9a035999b6c96719
+rubygem-json-1.7.7-20.el7.x86_64.rpm, 87483e5373851253c6da8764e3e90cff
+rubygem-psych-2.0.0-20.el7.x86_64.rpm, e330b225898bad6580d7c39e8c6b606e
+ruby-libs-2.0.0.353-20.el7.x86_64.rpm, 428f1addf6517c189b4cfbd743b662db
+ruby-shadow-1.4.1-21.el7.x86_64.rpm, ea4ce71b6900376ce33e30ea5c4f370f
