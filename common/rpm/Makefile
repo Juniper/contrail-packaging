@@ -294,6 +294,10 @@ contrail-test:
 	@echo making tgz for contrail-test
 	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz contrail-test
 
+contrail-monitoring: $(PREP)
+	@echo making rpm for contrail-monitoring
+	rpmbuild $(RPMBLDOPTS) contrail-monitoring.spec $(G_TAG)
+
 ifeq ($(CONTRAIL_SKU), grizzly)
 NEUTRON_PLUGIN = 
 else
@@ -305,7 +309,8 @@ all: $(PREP) contrail contrail-api-extension contrail-dns \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
        ${NEUTRON_PLUGIN} contrail-server-manager contrail-server-manager-client \
-       contrail-vrouter-init contrail-fabric-utils contrail-test
+       contrail-vrouter-init contrail-fabric-utils contrail-test \
+       contrail-monitoring
 
 clean:
 	@echo clean
