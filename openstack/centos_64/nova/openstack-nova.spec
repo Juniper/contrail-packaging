@@ -49,7 +49,6 @@ Source23:         nova-polkit.rules
 Source22:         nova-ifc-template
 Source24:         nova-sudoers
 Source30:	  contrail-server-setup.sh
-Source31:	  contrail-keystone-setup.sh
 Source32:	  contrail-server-cleanup.sh
 
 #
@@ -507,7 +506,6 @@ install -p -D -m 755 %{SOURCE26} %{buildroot}%{_initddir}/openstack-nova-conduct
 %endif
 # contrail scripts
 install -p -D -m 755 %{SOURCE30} %{buildroot}%{_bindir}/contrail-server-setup.sh
-install -p -D -m 755 %{SOURCE31} %{buildroot}%{_bindir}/contrail-keystone-setup.sh
 install -p -D -m 755 %{SOURCE32} %{buildroot}%{_bindir}/contrail-server-cleanup.sh
 
 # Install sudoers
@@ -749,7 +747,6 @@ fi
 %doc nova/LICENSE
 %{_bindir}/nova-all
 %{_bindir}/contrail-server-setup.sh
-%{_bindir}/contrail-keystone-setup.sh
 %{_bindir}/contrail-server-cleanup.sh
 
 %files common
