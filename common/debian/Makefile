@@ -189,6 +189,9 @@ contrail-openstack-icehouse-deb:
 	rm -rf ${BUILDDIR}
 	mkdir -p ${BUILDDIR}/debian
 	cp -R contrail-openstack/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; [ -f debian/control.icehouse.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+	  --version $(VERSION) --file debian/control.icehouse.in ) || echo no control.icehouse.in
 	cp ${BUILDDIR}/debian/control.icehouse ${BUILDDIR}/debian/control
 	cp ${BUILDDIR}/debian/rules.icehouse ${BUILDDIR}/debian/rules
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
@@ -203,6 +206,9 @@ contrail-openstack-juno-deb:
 	rm -rf ${BUILDDIR}
 	mkdir -p ${BUILDDIR}/debian
 	cp -R contrail-openstack/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; [ -f debian/control.juno.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+	  --version $(VERSION) --file debian/control.juno.in ) || echo no control.juno.in
 	cp ${BUILDDIR}/debian/control.juno ${BUILDDIR}/debian/control
 	cp ${BUILDDIR}/debian/rules.juno ${BUILDDIR}/debian/rules
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
