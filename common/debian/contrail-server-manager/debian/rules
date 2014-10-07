@@ -38,6 +38,17 @@ else
 pkg_file := $(src_path)/../../../tools/packaging/tools/scripts/server-manager-thirdparty
 endif
 
+ifdef CENTOS_PKT_FILE
+centos_pkg_file := $(_centosPkgFile)
+else
+centos_pkg_file := $(src_path)/../../../tools/packaging/tools/scripts/server-manager-centos
+endif
+
+ifdef REDHAT_PKT_FILE
+redhat_pkg_file := $(_redhatPkgFile)
+else
+redhat_pkg_file := $(src_path)/../../../tools/packaging/tools/scripts/server-manager-redhat
+endif
 
 ifdef PKG_DIRS
 pkg_sources := $(_pkgDirs)
@@ -61,6 +72,8 @@ override_dh_auto_install:
 	install -d -m 755 $(build_root)/opt/contrail/server_manager/
 	install -d -m 754 $(build_root)/etc/init.d/
 	install -d -m 754 $(build_root)/etc/contrail_smgr/
+	install -d -m 754 $(build_root)/etc/contrail_smgr/contrail-centos-repo/
+	install -d -m 754 $(build_root)/etc/contrail_smgr/contrail-redhat-repo/
 	install -d -m 754 $(build_root)/usr/sbin/
 	install -d -m 755 $(build_root)/usr/lib/$(python_dir)/dist-packages/cobbler/modules/
 	# Copy/install files
@@ -89,13 +102,20 @@ override_dh_auto_install:
 	cp -r $(src_path)/ntp.conf $(build_root)/etc/contrail_smgr/
 	
 	cp -r $(src_path)/puppet  $(build_root)/etc/contrail_smgr/
-	cp -r $(src_path)/repos/contrail-centos-repo $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/cobbler  $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/kickstarts  $(build_root)/etc/contrail_smgr/
 	
 	$(src_path)/../../../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file $(pkg_file) \
  --destination-dir $(build_root)/var/www/html/thirdparty_packages \
  --source-dirs $(pkg_sources) || (echo "Copying Built packages failed"; exit 1)
+
+	$(src_path)/../../../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file $(centos_pkg_file) \
+ --destination-dir $(build_root)/etc/contrail_smgr/contrail-centos-repo \
+ --source-dirs $(pkg_sources) || (echo "Copying Built centos packages failed"; exit 1)
+
+	$(src_path)/../../../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file $(redhat_pkg_file) \
+ --destination-dir $(build_root)/etc/contrail_smgr/contrail-redhat-repo \
+ --source-dirs $(pkg_sources) || (echo "Copying Built redhat packages failed"; exit 1)
 
 override_dh_shlibdeps: 
 

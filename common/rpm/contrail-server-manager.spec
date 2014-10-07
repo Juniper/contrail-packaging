@@ -37,6 +37,17 @@
 %define _pkg_file  %{_builddir}/../tools/packaging/tools/scripts/server-manager-thirdparty
 %endif
 
+%if 0%{?_centospkgFile:1}
+%define _centos_pkg_file  %{_centospkgFile}
+%else
+%define _centos_pkg_file  %{_builddir}/../tools/packaging/tools/scripts/server-manager-centos
+%endif
+
+%if 0%{?_redhatpkgFile:1}
+%define _redhat_pkg_file  %{_redhatpkgFile}
+%else
+%define _redhat_pkg_file  %{_builddir}/../tools/packaging/tools/scripts/server-manager-redhat
+%endif
 
 %if 0%{?_pkgDirs:1}
 %define _pkg_sources  %{_pkgDirs}
@@ -147,6 +158,13 @@ easy_install pycrypto
 easy_install ordereddict
 
 mkdir -p %{_contrailetc}/images/
+
+cd %{_contrailetc}/contrail-centos-repo
+createrepo .
+
+cd %{_contrailetc}/contrail-redhat-repo
+createrepo .
+
 service httpd start
 service xinetd restart
 service sqlite start
@@ -185,6 +203,8 @@ install -d -m 755 %{buildroot}%{_contrailopt}
 install -d -m 755 %{buildroot}%{_contrailetc}
 install -d -m 755 %{buildroot}%{_initdetc}
 install -d -m 755 %{buildroot}%{_contrailopt}%{_contrail_smgr}
+install -d -m 755 %{buildroot}%{_contrailetc}/contrail-centos-repo
+install -d -m 755 %{buildroot}%{_contrailetc}/contrail-redhat-repo
 #install -d -m 755 %{buildroot}%{_cobbleretc}
 #install -d -m 755 %{buildroot}%{_puppetetc}
 
@@ -213,7 +233,7 @@ cp %{_contrail_smgr_src}third_party/bottle.py %{buildroot}%{_contrailopt}%{_cont
 
 cp %{_contrail_smgr_src}contrail-server-manager %{buildroot}%{_initdetc}
 cp -r %{_contrail_smgr_src}/puppet %{buildroot}%{_contrailetc}
-cp -r %{_contrail_smgr_src}repos/contrail-centos-repo %{buildroot}%{_contrailetc}
+#cp -r %{_contrail_smgr_src}repos/contrail-centos-repo %{buildroot}%{_contrailetc}
 cp -r %{_contrail_smgr_src}cobbler %{buildroot}%{_contrailetc}
 cp -r %{_contrail_smgr_src}kickstarts %{buildroot}%{_contrailetc}
 cp %{_contrail_smgr_src}contrail-server-manager.start %{buildroot}%{_sbinusr}contrail-server-manager
@@ -229,6 +249,14 @@ cp %{_contrail_smgr_src}third_party/server_pre_install.py %{buildroot}%{_pysitep
 %{_builddir}/../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file %{_pkg_file} \
  --destination-dir %{buildroot}/var/www/html/thirdparty_packages \
  --source-dirs %{_pkg_sources} || (echo "Copying Built packages failed"; exit 1)
+
+%{_builddir}/../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file %{_centos_pkg_file} \
+ --destination-dir %{buildroot}%{_contrailetc}/contrail-centos-repo \
+ --source-dirs %{_pkg_sources} || (echo "Copying Built centos packages failed"; exit 1)
+
+%{_builddir}/../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file %{_redhat_pkg_file} \
+ --destination-dir %{buildroot}%{_contrailetc}/contrail-redhat-repo \
+ --source-dirs %{_pkg_sources} || (echo "Copying Built redhat packages failed"; exit 1)
 
 %clean
 rm -rf %{buildroot}
