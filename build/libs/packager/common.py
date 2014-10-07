@@ -190,31 +190,6 @@ class BasePackager(Utils):
                    target == self.meta_pkg:
                     continue
                 self.contrail_pkgs[target]['builtloc'] = self.contrail_pkg_dirs
-
-            # pick up or create contrail_installer.tgz 
-            if not ('contrail-setup' in [tgt.strip('-deb') for tgt in self.targets] or
-                    'contrail-default-target' in self.targets):
-                if self.platform == 'ubuntu':
-                    builddir = os.path.join(self.git_local_repo, 'build', 'debian')
-                else:
-                    builddir = os.path.join(self.git_local_repo, 'controller', 'build')
-                self.create_dir(builddir)
-                files = self.get_file_list(self.contrail_pkg_dirs, 'contrail_installer.tgz')
-                installer_tgz = self.get_latest_file(files)
-                if installer_tgz:
-                    if os.path.dirname(installer_tgz) == builddir:
-                        log.debug('Installer TGZ (%s) is already present '
-                                  ' in build dir (%s)' % (
-                                  installer_tgz, builddir))
-                    else:
-                        log.info('Copying %s to %s' %(installer_tgz, builddir))
-                        shutil.copy(installer_tgz, builddir)
-                else:
-                    installer_script = os.path.join(self.git_local_repo, 'tools',
-                                                     'provisioning', 'create_installer.py')
-                    log.info('Creating contrail_installer.tgz...')
-                    self.exec_cmd(installer_script, wd=builddir)
-                    
         else:
             self.targets = self.targets or self.default_targets
                     

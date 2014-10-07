@@ -61,8 +61,8 @@ install -m 755 %{_distrocloudstackprovdir}/README.md   %{buildroot}%{_cloudstack
 install -m 755 %{_distrocloudstackprovdir}/setup_files/* %{buildroot}%{_cloudstackutils}/setup_files/
 
 #Install some other helper scripts in this directory
-install -m 755 %{_distroprovdir}/contrail_setup_utils/collector-server-setup.sh  %{buildroot}%{_cloudstackutils}
-install -m 755 %{_distroprovdir}/contrail_setup_utils/webui-server-setup.sh      %{buildroot}%{_cloudstackutils}
+install -m 755 %{_distroprovdir}/contrail_provisioning/collector/scripts/collector-server-setup.sh %{buildroot}%{_cloudstackutils}
+install -m 755 %{_distroprovdir}/contrail_provisioning/webui/scripts/webui-server-setup.sh %{buildroot}%{_cloudstackutils}
 
 # Install the template files necessary for cloudstack
 install -d -m 755 %{buildroot}%{_cloudstackutils}/config_templates/

@@ -1,6 +1,0 @@
-contrail-provisioning-tools (BUILDTAG) ijohnson; urgency=low
-
-  [ijohnson]
-  * debian/changelog: changelog
-
- -- ijohnson <ijohnson@juniper.net>  Thu, 29 May 2014 17:00:11 +0800

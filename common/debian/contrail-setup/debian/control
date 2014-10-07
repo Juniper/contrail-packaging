@@ -16,7 +16,7 @@ Depends: tar,
     curl,
     ifenslave-2.6,
     vlan
-# Replaces contrail_installer.tgz created by contrail-install-packages.
+# Replaces some files in /opt/contrail/contrail_packages/ created by contrail-install-packages.
 Replaces: contrail-install-packages
 Section: contrail-setup
 Priority: extra

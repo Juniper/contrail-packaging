@@ -87,7 +87,7 @@ install -D -m 755 %{_distropkgdir}/nova-conductor.ini.centos %{buildroot}%{_sysc
 install -D -m 755 %{_distropkgdir}/nova-consoleauth.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/nova-consoleauth.ini
 install -D -m 755 %{_distropkgdir}/nova-novncproxy.ini.centos %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files/nova-novncproxy.ini
 # Install contrail openstack-status
-install -p -m 755 tools/provisioning/openstack-status %{buildroot}/%{_bindir}/openstack-status.contrail
+install -p -m 755 tools/provisioning/tools/openstack-status %{buildroot}/%{_bindir}/openstack-status.contrail
 popd
 
 %files
