@@ -189,7 +189,7 @@ contrail-openstack-icehouse-deb:
 	rm -rf ${BUILDDIR}
 	mkdir -p ${BUILDDIR}/debian
 	cp -R contrail-openstack/debian ${BUILDDIR}
-	cp ${BUILDDIR}/debian/control.icehouse ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/control.icehouse.in ${BUILDDIR}/debian/control.in
 	cp ${BUILDDIR}/debian/rules.icehouse ${BUILDDIR}/debian/rules
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
@@ -203,7 +203,7 @@ contrail-openstack-juno-deb:
 	rm -rf ${BUILDDIR}
 	mkdir -p ${BUILDDIR}/debian
 	cp -R contrail-openstack/debian ${BUILDDIR}
-	cp ${BUILDDIR}/debian/control.juno ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/control.juno.in ${BUILDDIR}/debian/control.in
 	cp ${BUILDDIR}/debian/rules.juno ${BUILDDIR}/debian/rules
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
