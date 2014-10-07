@@ -51,7 +51,6 @@ Source22:         nova-ifc-template
 Source24:         nova-sudoers
 Source30:         openstack-nova-novncproxy.sysconfig
 Source31:         contrail-server-setup.sh
-Source32:         contrail-keystone-setup.sh
 Source33:         contrail-server-cleanup.sh
 Source34:         nova_havana.conf
 
@@ -601,7 +600,6 @@ install -p -D -m 755 %{SOURCE29} %{buildroot}%{_initddir}/openstack-nova-novncpr
 %endif
 # contrail scripts
 install -p -D -m 755 %{SOURCE31} %{buildroot}%{_bindir}/contrail-server-setup.sh
-install -p -D -m 755 %{SOURCE32} %{buildroot}%{_bindir}/contrail-keystone-setup.sh
 install -p -D -m 755 %{SOURCE33} %{buildroot}%{_bindir}/contrail-server-cleanup.sh
 
 # Install sudoers
@@ -853,7 +851,6 @@ fi
 %doc nova/LICENSE
 %{_bindir}/nova-all
 %{_bindir}/contrail-server-setup.sh
-%{_bindir}/contrail-keystone-setup.sh
 %{_bindir}/contrail-server-cleanup.sh
 
 %files common
