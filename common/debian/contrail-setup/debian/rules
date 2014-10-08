@@ -68,7 +68,7 @@ override_dh_auto_install:
 	install -p -m 644 $(builddist)/dns_scripts.tgz $(buildroot)/opt/contrail/dns_scripts.tgz
 	(cd $(SB_TOP)/tools/provisioning/ && tar zxf dist/ContrailProvisioning-0.1dev.tar.gz)
 	(cd $(SB_TOP)/tools/provisioning/ContrailProvisioning-0.1dev && ${__python} setup.py install --root=${buildroot} --install-scripts ${_contrailopt}/bin/)
-	install -D -m 755 $(SB_TOP)/tools/provisioning/contrail_provisioning/openstack/scripts/openstack-status-deb $(buildroot)/usr/bin/openstack-status
+	install -D -m 755 $(SB_TOP)/tools/provisioning/tools/openstack-status-deb $(buildroot)/usr/bin/openstack-status
 	# install pkgs needed first
 	install -p -m 644 $(SB_TOP)/distro/third_party/ecdsa-0.10.tar.gz $(buildroot)$(_contrailopt)/python_packages/ecdsa-0.10.tar.gz
 	install -p -m 644 $(SB_TOP)/distro/third_party/Fabric-1.7.0.tar.gz $(buildroot)$(_contrailopt)/python_packages/Fabric-1.7.0.tar.gz
