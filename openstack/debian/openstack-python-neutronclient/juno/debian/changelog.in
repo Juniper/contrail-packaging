@@ -1,0 +1,227 @@
+python-neutronclient (1:2.3.8-0ubuntu1~cloud0.2contrail) trusty-juno; urgency=medium
+
+  * Added 2contrail for contrail pacakge
+
+ -- -- Atul Moghe <amoghe@juniper.net>  Thue, 7 Oct 2014 16:33:40 -0400
+
+python-neutronclient (1:2.3.8-0ubuntu1~cloud0) trusty-juno; urgency=medium
+
+  * New upstream release for the Ubuntu Cloud Archive.
+
+ -- Openstack Ubuntu Testing Bot <openstack-testing-bot@ubuntu.com>  Fri, 19 Sep 2014 03:10:30 -0400
+
+python-neutronclient (1:2.3.8-0ubuntu1) utopic; urgency=medium
+
+  * New upstream release. 
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 18 Sep 2014 09:52:19 -0400
+
+python-neutronclient (1:2.3.7-0ubuntu1) utopic; urgency=medium
+
+  * New upstream release.
+  * debian/control: Add python-httpretty and python-oslosphinx.
+  * debian/control: Add python-requests-mock, python-testscenarios,
+    python-prettytable, python-oslotest
+
+ -- Chuck Short <zulcss@ubuntu.com>  Mon, 08 Sep 2014 08:51:07 -0400
+
+python-neutronclient (1:2.3.5-0ubuntu1) utopic; urgency=medium
+
+  [ Corey Bryant ]
+  * debian/control: Set minimum version for python-prettytable dependency
+    (LP: #1292661).
+
+  [ Chuck Short ]
+  * debian/control: Open up juno release
+  * debian/control:
+    - Dropped python-d2to1, python-httplib2, python-prettytable,
+      python-nose, and python-pyparsing dependencies.
+    - Added python-requests, python-netaddr dependencies
+    - Added python-keystoneclient.
+    - Add python-mox3.
+    - Add python-hacking
+
+  [ Liam Young ]
+  * debian/control:
+    - Merged in deps from requirements.txt
+    - Added httplib2 & python-mox back as src dep as 2.3.5 unit tests depend  on it
+  * New upstream release.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 24 Jul 2014 13:07:16 -0400
+
+python-neutronclient (1:2.3.4-0ubuntu1) trusty; urgency=medium
+
+  * New upstream point release:
+    - [02baef4] Fix get_auth_info() for pre-authenticated clients
+      (LP: #1280941). 
+
+ -- James Page <james.page@ubuntu.com>  Thu, 13 Mar 2014 11:02:06 +0000
+
+python-neutronclient (1:2.3.3-0ubuntu1) trusty; urgency=medium
+
+  * New upstream release.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Tue, 21 Jan 2014 11:34:34 -0500
+
+python-neutronclient (1:2.3.1-0ubuntu1) trusty; urgency=low
+
+  * New upstream release.
+  * debian/control: open icehouse release.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 14 Nov 2013 14:00:50 -0500
+
+python-neutronclient (1:2.3.0-0ubuntu1) saucy; urgency=low
+
+  * New upstream release.
+  * debian/control: Add python-six as a build dependency.
+  * debian/control: Add python-babel as a build dependency.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 06 Sep 2013 16:33:40 -0400
+
+python-neutronclient (1:2.2.4-0ubuntu2) saucy; urgency=low
+
+  * d/tests: Update tests for quantum->neutron rename. 
+
+ -- James Page <james.page@ubuntu.com>  Thu, 18 Jul 2013 17:45:25 +0100
+
+python-neutronclient (1:2.2.4-0ubuntu1) saucy; urgency=low
+
+  [ Chuck Short ]
+  * Renamed to python-neutronclient.
+    + Updated debian/control to rename python-quantumclient to 
+      python-neutronclient.
+    + Updated debian/copyright.
+    + debian/control: Add Breaks/Replaces python-quantumclient and
+      transitional package.
+  * debian/rules, debian/control: Run testsuite with testrepository.
+  * debian/control: Add python-pbr and python-d2to1.
+  * debian/docs: Renamed README to README.rst.
+  * debian/copyright: Cleaned up, fix lintian warnings.
+  * debian/control: Dropped quantum-client.
+
+  [ Adam Gandelman ]
+  * debian/control: Bump python-cliff min. requirement to 1.3.2 as per
+    tools/pip-requires.
+  * debian/control: Set version minimum 1.5.6 on python-pyparsing depends.
+
+  [ Yolanda Robla ]
+  * debian/tests: added autopkg tests
+
+  [ James Page ]
+  * New upstream release.
+  * d/control: Update VCS fields for new branch locations.
+  * d/install: Enable bash completion for neutron command.
+  * d/rules: Execute tests in parallel.
+  * d/control: Drop BD on pep8, no longer required.
+
+ -- James Page <james.page@ubuntu.com>  Thu, 18 Jul 2013 17:20:32 +0100
+
+python-quantumclient (1:2.2.0-0ubuntu1) raring; urgency=low
+
+  [ Adam Gandelman ]
+  * debian/control: Set version minimum for python-cliff (>= 1.3.1). 
+
+  [ James Page ]
+  * New upstream point release to support OpenStack Grizzly. 
+
+ -- James Page <james.page@ubuntu.com>  Fri, 15 Mar 2013 09:15:00 +0000
+
+python-quantumclient (1:2.1.2-0ubuntu1) raring; urgency=low
+
+  [ Adam Gandelman ]
+  * debian/control: Drop 'Provides: ${python:Provides}'.
+
+  [ Chuck Short ]
+  * New upstream release.
+  * debian/control: Add python-testtools and python-fixtures as build
+    deps.
+  * debian/patches/override_cliff_version.patch: Dropped, no longer needed.
+  * debian/control: Add python-iso8601 build-depends.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 07 Mar 2013 11:14:49 -0600
+
+python-quantumclient (1:2.1-0ubuntu1) quantal; urgency=low
+
+  [ Adam Gandelman ]
+  * debian/control: Add python-pyparsing.
+  * debain/patches/override_cliff_version.patch:  Remove version constraint
+    on cliff >= 1.2.1 (Ubuntu 12.10 is shipping 1.1.2).
+
+  [ Soren Hansen ]
+  * Update debian/watch to account for symbolically named tarballs and
+    use newer URL.
+  * Fix Launchpad URLs in debian/watch.
+  * Add cliff-tablib build-dependency to fix test suite failure.
+
+  [ Chuck Short ]
+  * New upstream release
+  * debian/watch: Add pypi sources as well
+
+ -- Chuck Short <zulcss@ubuntu.com>  Tue, 18 Sep 2012 18:59:16 -0500
+
+python-quantumclient (1:2.0-0ubuntu2) quantal; urgency=low
+
+  * debian/control: Set Provides: ${python:Provides}. (LP: #1042468)
+  * debian/control: Update maintainer, add missing Depends.
+
+ -- Adam Gandelman <adamg@canonical.com>  Mon, 27 Aug 2012 15:53:54 -0700
+
+python-quantumclient (1:2.0-0ubuntu1) quantal; urgency=low
+
+  * New upstream version.
+  * debian/control: Update build dependencies.
+  * debian/rules: Enable testsuite.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 16 Aug 2012 12:45:43 -0500
+
+python-quantumclient (1:0.1.0.1-0ubuntu1) quantal; urgency=low
+
+  * New upstream release.
+  * debian/watch: Updateed
+
+ -- Chuck Short <zulcss@ubuntu.com>  Fri, 06 Jul 2012 12:50:42 -0400
+
+python-quantumclient (2012.1-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 05 Apr 2012 11:12:30 -0400
+
+python-quantumclient (2012.1~rc2-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Tue, 03 Apr 2012 20:47:00 -0400
+
+python-quantumclient (2012.1~rc1-0ubuntu2) precise; urgency=low
+
+  * debian/patches/fix-namespace.patch: Fix namespace conflict.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 22 Mar 2012 11:15:53 -0400
+
+python-quantumclient (2012.1~rc1-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+  * Dropped quantum-common stuff since it conflicts with quantum
+    proper.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Tue, 20 Mar 2012 13:39:58 -0400
+
+python-quantumclient (2012.1~rc1~20120315.22-0ubuntu1) precise; urgency=low
+
+  * New upstream release.
+  * debian/watch: Fix typos
+
+ -- Adam Gandelman <adamg@canonical.com>  Fri, 16 Mar 2012 12:00:02 -0700
+
+python-quantumclient (2012.1~e3~20120125.r8-0ubuntu2) precise; urgency=low
+
+  * Fix lintian errors.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Wed, 01 Feb 2012 10:48:03 -0500
+
+python-quantumclient (2012.1~e3~20120125.r8-0ubuntu1) precise; urgency=low
+
+  * Initial release.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Wed, 01 Feb 2012 10:20:24 -0500

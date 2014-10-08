@@ -1,0 +1,2 @@
+tools/neutron.bash_completion etc/bash_completion.d/
+usr/lib/python*
