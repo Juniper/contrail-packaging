@@ -17,6 +17,8 @@ export builddist := $(SB_TOP)/build/debug/contrail-setup
 export _contrailopt := /opt/contrail
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+export _pyver := 2.7
+export python_sitelib := /usr/local/lib/python${_pyver}/dist-packages
 
 __python ?= /usr/bin/python
 
@@ -41,8 +43,9 @@ override_dh_auto_build:
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 	rm -rf $(builddist)
 	mkdir -p $(builddist)
-	python $(SB_TOP)/tools/provisioning/create_installer.py
-	mv contrail_installer.tgz $(SB_TOP)/build/debian/contrail_installer.tgz
+	rm -rf $(SB_TOP)/tools/provisioning/ContrailProvisioning.egg-info
+	rm -rf $(SB_TOP)/tools/provisioning/ContrailProvisioning-0.1dev
+	(cd $(SB_TOP)/tools/provisioning/ && ${__python} setup.py sdist)
 	(cd $(SB_TOP)/controller/src/config && tar cvfz $(builddist)/config_utils.tgz utils)
 	(cd $(SB_TOP)/controller/src/dns/scripts && tar cvfz $(builddist)/dns_scripts.tgz *)
 	if [ -z $(DEB_LIST_FILE) ]; then (cd $(SB_TOP) && python $(SB_TOP)/tools/packaging/build/create_pkg_list_file.py --sku $(CONTRAIL_SKU) $(builddist)/debs_list.txt); else (cp $(DEB_LIST_FILE) $(builddist)/debs_list.txt); fi
@@ -58,28 +61,23 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_contrailopt)
 	install -d -m 755 $(buildroot)$(_contrailopt)/bin
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_packages
-	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils
+	install -d -m 755 $(buildroot)$(_contrailopt)/python_packages
 	# Install files
 	install -p -m 644 $(builddist)/debs_list.txt  $(buildroot)/etc/contrail/debs_list.txt
 	install -p -m 644 $(builddist)/config_utils.tgz $(buildroot)/opt/contrail/config_utils.tgz
 	install -p -m 644 $(builddist)/dns_scripts.tgz $(buildroot)/opt/contrail/dns_scripts.tgz
-	install -p -m 644 $(SB_TOP)/build/debian/contrail_installer.tgz  $(buildroot)$(_contrailopt)/contrail_installer.tgz
-	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-config $(buildroot)/usr/bin/openstack-config 
-	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-status-deb $(buildroot)/usr/bin/openstack-status
-	install -D -m 755 $(SB_TOP)/tools/provisioning/openstack-db $(buildroot)/usr/bin/openstack-db 
+	(cd $(SB_TOP)/tools/provisioning/ && tar zxf dist/ContrailProvisioning-0.1dev.tar.gz)
+	(cd $(SB_TOP)/tools/provisioning/ContrailProvisioning-0.1dev && ${__python} setup.py install --root=${buildroot} --install-scripts ${_contrailopt}/bin/)
+	install -D -m 755 $(SB_TOP)/tools/provisioning/contrail_provisioning/openstack/scripts/openstack-status-deb $(buildroot)/usr/bin/openstack-status
 	# install pkgs needed first
-	install -p -m 644 $(SB_TOP)/distro/third_party/ecdsa-0.10.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/ecdsa-0.10.tar.gz
-	install -p -m 644 $(SB_TOP)/distro/third_party/Fabric-1.7.0.tar.gz $(buildroot)$(_contrailopt)/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
+	install -p -m 644 $(SB_TOP)/distro/third_party/ecdsa-0.10.tar.gz $(buildroot)$(_contrailopt)/python_packages/ecdsa-0.10.tar.gz
+	install -p -m 644 $(SB_TOP)/distro/third_party/Fabric-1.7.0.tar.gz $(buildroot)$(_contrailopt)/python_packages/Fabric-1.7.0.tar.gz
 	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2 | cut -d '~' -f1` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu; fi
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_packages/VERSION
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/setup_ubuntu.sh  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_packages/sources.list
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/repo_preferences  $(buildroot)$(_contrailopt)/contrail_packages/preferences
-	## need this for openstack-config for keystone specific, this needs to move away to openstack-config package
-	#install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh $(buildroot)/usr/bin/contrail-keystone-setup.sh
-	#install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-ha-keystone-setup.sh $(buildroot)/usr/bin/contrail-ha-keystone-setup.sh
-	# extract contrail_installer
-	cd $(buildroot)$(_contrailopt); tar xzvf contrail_installer.tgz; rm -rf contrail_installer.tgz
 
+override_dh_usrlocal:	
 
 override_dh_shlibdeps:

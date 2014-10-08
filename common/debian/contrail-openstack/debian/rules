@@ -44,7 +44,6 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_sysconfdir)
 	install -d -m 755 $(buildroot)$(_mysqllogdir)
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
-	install -p -m 755 $(SB_TOP)/tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh $(buildroot)/usr/bin/contrail-keystone-setup.sh
 	# Install supervisord config config files and directories
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files
 	install -D -m 755 $(_src_config)/supervisor-openstack.upstart $(buildroot)$(_initdir)/supervisor-openstack.conf.upstart_openstack

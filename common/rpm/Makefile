@@ -104,10 +104,6 @@ contrail-setup: $(PREP)
 	@echo making rpm for contrail-setup
 	rpmbuild $(RPMBLDOPTS) contrail-setup.spec $(G_TAG)
 
-contrail-setup-with-guest: $(PREP)
-	@echo making rpm for contrail-setup-with-guest
-	rpmbuild $(RPMBLDOPTS) contrail-setup-with-guest.spec $(G_TAG)
-
 # Contrail Cloudstack stuff
 contrail-cloudstack-utils: $(PREP)
 	@echo making rpm for contrail-cloudstack-utils

@@ -1,3 +1,5 @@
 cd /opt/contrail
 tar xzvf config_utils.tgz
 tar xzvf dns_scripts.tgz -C utils
+
+ln -sbf /opt/contrail/bin/* /usr/bin/

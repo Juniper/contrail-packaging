@@ -76,9 +76,10 @@ fi
 
 
 %build
-#%{__python} tools/provisioning/create_installer.py --embed_vrouter 
-pushd %{_builddir}/build
-%{__python} %{_provdir}/create_installer.py
+pushd %{_provdir}
+rm -rf ContrailProvisioning.egg-info
+rm -rf ContrailProvisioning-0.1dev
+%{__python} setup.py sdist
 popd
 
 pushd src/config
@@ -98,32 +99,29 @@ install -d -m 755 %{buildroot}%{_contrailopt}
 install -d -m 755 %{buildroot}%{_contrailopt}/bin
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 install -d -m 755 %{buildroot}%{_contrailopt}/contrail_packages
-install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils
+install -d -m 755 %{buildroot}%{_contrailopt}/python_packages
 
 # install files
 pushd %{_builddir}/..
 echo BUILDID=`echo %{_relstr} | cut -d "~" -f1` > %{buildroot}%{_contrailopt}/contrail_packages/VERSION
-install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh
 install -p -m 755 tools/packaging/build/README %{buildroot}%{_contrailopt}/contrail_packages/README
 install -p -m 755 tools/packaging/common/control_files/contrail_ifrename.sh %{buildroot}%{_contrailopt}/bin/getifname.sh
-if [ 0%{_sku} = 0icehouse ]; then
-install -d -m 755 %{buildroot}/usr/bin
-install -p -m 755 tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh %{buildroot}/usr/bin/contrail-keystone-setup.sh
-fi
 popd
 
 # install etc files
 install -p -m 644 cfgm_utils.tgz  %{buildroot}%{_contrailopt}/cfgm_utils.tgz
 install -p -m 644 dns_scripts.tgz  %{buildroot}%{_contrailopt}/dns_scripts.tgz
-pushd %{_builddir}/build
-install -p -m 644 contrail_installer.tgz  %{buildroot}%{_contrailopt}/contrail_installer.tgz
+pushd %{_provdir}
+tar zxf dist/ContrailProvisioning-0.1dev.tar.gz
+cd ContrailProvisioning-0.1dev
+%{__python} setup.py install --root=%{buildroot} --install-scripts %{_contrailopt}/bin/
 popd
 %if 0%{?rhel}
 pushd %{_builddir}/../distro/third_party
-tar cvzf %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/zope.interface-3.7.0.tar.gz ./zope.interface-3.7.0 
-install -p -m 644 paramiko-1.11.0.tar.gz %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz
-install -p -m 644 pycrypto-2.6.tar.gz %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz
-install -p -m 644 Fabric-1.7.0.tar.gz %{buildroot}%{_contrailopt}/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
+tar cvzf %{buildroot}%{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz ./zope.interface-3.7.0 
+install -p -m 644 paramiko-1.11.0.tar.gz %{buildroot}%{_contrailopt}/python_packages/paramiko-1.11.0.tar.gz
+install -p -m 644 pycrypto-2.6.tar.gz %{buildroot}%{_contrailopt}/python_packages/pycrypto-2.6.tar.gz
+install -p -m 644 Fabric-1.7.0.tar.gz %{buildroot}%{_contrailopt}/python_packages/Fabric-1.7.0.tar.gz
 popd
 %endif
 
@@ -136,38 +134,32 @@ fi
 #install -p -m 644 %{_builddir}/../tools/packaging/common/rpm/rpm_list.txt  %{buildroot}/etc/contrail/rpm_list.txt
 
 %post
-
 cd %{_contrailopt}
 tar xzvf cfgm_utils.tgz
 tar xzvf dns_scripts.tgz -C utils
-tar xzvf contrail_installer.tgz
-#pip-python install /opt/contrail/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz
-#pip-python install /opt/contrail/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz
-#pip-python install /opt/contrail/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
+rm %{_contrailopt}/bin/openstack-db %{_contrailopt}/bin/openstack-config
+ln -sbf %{_contrailopt}/bin/* %{_bindir}
 
 %files
 %defattr(-, root, root)
-%{_contrailopt}/bin/getifname.sh
+%{_contrailopt}/bin
 %{_contrailopt}/contrail_packages/VERSION
 %{_contrailopt}/contrail_packages/README
-%{_contrailopt}/contrail_packages/setup.sh
 %{_contrailopt}/cfgm_utils.tgz
 %{_contrailopt}/dns_scripts.tgz
-%{_contrailopt}/contrail_installer.tgz
-%{_contrailopt}/contrail_installer/contrail_setup_utils/paramiko-1.11.0.tar.gz
-%{_contrailopt}/contrail_installer/contrail_setup_utils/Fabric-1.7.0.tar.gz
-%{_contrailopt}/contrail_installer/contrail_setup_utils/pycrypto-2.6.tar.gz
+%{_contrailopt}/python_packages/paramiko-1.11.0.tar.gz
+%{_contrailopt}/python_packages/Fabric-1.7.0.tar.gz
+%{_contrailopt}/python_packages/pycrypto-2.6.tar.gz
+%{python_sitelib}/ContrailProvisioning-*.egg-info
+%{python_sitelib}/contrail_provisioning
 %if 0%{?rhel}
-%{_contrailopt}/contrail_installer/contrail_setup_utils/zope.interface-3.7.0.tar.gz
+%{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz
 %endif
 %if 0%{?_fileList:1}
     /etc/contrail/rpm_list.txt
 %endif
 /etc/contrail
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
-%if "0%{_sku}" == "0icehouse"
-/usr/bin/contrail-keystone-setup.sh
-%endif
 
 %changelog
 
