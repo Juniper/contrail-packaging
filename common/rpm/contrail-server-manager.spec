@@ -150,6 +150,7 @@ cp %{_contrailetc}/ntp.conf /etc/ntp.conf
 cp /usr/bin/server_manager/dhcp.template /etc/cobbler/
 cp -r /usr/bin/server_manager/kickstarts /var/www/html/
 mkdir -p /var/www/html/contrail
+mkdir -p /var/log/contrail-server-manager/
 
 cp -u /etc/puppet/puppet_init_rd /var/www/cobbler/aux/puppet
 easy_install argparse
