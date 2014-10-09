@@ -91,6 +91,7 @@ popd
 
 # Setup directories
 rm -rf %{buildroot}
+install -d -m 755 %{buildroot}/usr/bin
 install -d -m 755 %{buildroot}%{_contrailopt}
 install -d -m 755 %{buildroot}%{_contrailopt}
 install -d -m 755 %{buildroot}%{_contrailopt}/bin
@@ -103,10 +104,7 @@ pushd %{_builddir}/..
 echo BUILDID=`echo %{_relstr} | cut -d "~" -f1` > %{buildroot}%{_contrailopt}/contrail_packages/VERSION
 install -p -m 755 tools/packaging/build/README %{buildroot}%{_contrailopt}/contrail_packages/README
 install -p -m 755 tools/packaging/common/control_files/contrail_ifrename.sh %{buildroot}%{_contrailopt}/bin/getifname.sh
-if [ 0%{_sku} = 0icehouse ]; then
-install -d -m 755 %{buildroot}/usr/bin
 install -p -m 755 tools/provisioning/contrail_setup_utils/contrail-keystone-setup.sh %{buildroot}/usr/bin/contrail-keystone-setup.sh
-fi
 popd
 
 # install etc files
