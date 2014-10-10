@@ -3,6 +3,7 @@
 %define         _contrailopt /opt/contrail
 %define         _distropkgdir tools/packaging/common/control_files
 %define         _provdir      %{_builddir}/../tools/provisioning
+%define         _is_centos65  %(grep -c 6.5 /etc/issue)
 
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
@@ -51,6 +52,9 @@ Requires:	    python-crypto
 %if 0%{?rhel}
 Requires:	    python-argparse
 Requires:	    gdb
+%endif
+%if 0%{?_is_centos65} == 1
+Requires:           kexec-tools
 %endif
 
 %description
