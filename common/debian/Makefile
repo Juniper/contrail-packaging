@@ -48,6 +48,7 @@ PACKAGES = \
         contrail-vrouter-init-deb \
 	contrail-web-core-deb \
 	contrail-web-controller-deb \
+	contrail-web-server-manager-deb \
 	contrail-nodemgr-deb \
 	contrail-setup-deb \
 	$(CONTRAIL_OPENSTACK) \
