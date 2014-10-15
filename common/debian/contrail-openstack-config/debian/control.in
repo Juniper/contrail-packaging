@@ -28,5 +28,5 @@ Depends:
  ifmap-server,
  ifmap-python-client,
  contrail-config-openstack,
- keepalived
+ keepalived (>=1.2.13-1)
 Description: Contrail Openstack Config composite debian package
