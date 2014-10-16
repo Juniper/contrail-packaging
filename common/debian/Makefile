@@ -219,13 +219,13 @@ contrail-openstack-juno-clean:
 	rm -rf ${BUILDDIR}
 
 contrail-openstack-dashboard-deb:
-	if [ '${CONTRAIL_SKU}' = 'havana' ]; then \
-		$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard) \
-		mkdir -p ${BUILDDIR}/debian; \
-		cp -R ${SB_TOP}/contrail-horizon/* ${BUILDDIR}; \
-		(cp -R contrail-openstack-dashboard/debian/havana/* ${BUILDDIR}/debian); \
-		(cd ${BUILDDIR}; fakeroot debian/rules binary); \
-	fi
+ifneq ($(CONTRAIL_SKU),juno)
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard) \
+	mkdir -p ${BUILDDIR}/debian;
+	cp -R ${SB_TOP}/contrail-horizon/* ${BUILDDIR};
+	(cp -R contrail-openstack-dashboard/debian/${CONTRAIL_SKU}/* ${BUILDDIR}/debian);
+	(cd ${BUILDDIR}; fakeroot debian/rules binary);
+endif
 
 contrail-openstack-dashboard-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
