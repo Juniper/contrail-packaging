@@ -425,7 +425,7 @@ def main(argv=sys.argv):
 	if (node_type == 'contrail-vrouter'):
 	    rule_file = "/etc/contrail/supervisord_vrouter_files/contrail-vrouter.rules"
 	if (node_type == 'contrail-database'):
-	    rule_file = "/etc/contrail/supervisord_database_files/supervisord_contrail_database.rules"
+	    rule_file = "/etc/contrail/supervisord_database_files/contrail-database.rules"
     if rule_file is "":
         sys.stderr.write('Node manager must be invoked with a rules file\n')
         sys.stderr.flush()

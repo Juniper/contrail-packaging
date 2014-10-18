@@ -107,7 +107,7 @@ install -d -m 755 %{buildroot}%{_supervisordir}
 install -d -m 755 %{buildroot}%{_initddir}
 pushd %{_builddir}/..
 install -D -m 755 %{_distropkgdir}/contrail-nodemgr-database.ini %{buildroot}%{_supervisordir}/contrail-nodemgr-database.ini
-install -D -m 755 %{_distropkgdir}/supervisord_contrail_database.rules %{buildroot}%{_supervisordir}/supervisord_contrail_database.rules
+install -D -m 755 %{_distropkgdir}/contrail-database.rules %{buildroot}%{_supervisordir}/contrail-database.rules
 install -D -m 755 %{_distropkgdir}/contrail-database-nodemgr.conf %{buildroot}/etc/contrail/contrail-database-nodemgr.conf
 popd
 
@@ -176,7 +176,7 @@ fi
 %files
 %defattr(-,root,root,-)
 %{_venv_root}
-%{_supervisordir}/supervisord_contrail_database.rules
+%{_supervisordir}/contrail-database.rules
 %{_supervisordir}/contrail-nodemgr-database.ini
 /etc/contrail/contrail-database-nodemgr.conf
 %if 0%{?rhel}
