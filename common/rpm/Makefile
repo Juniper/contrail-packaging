@@ -211,6 +211,11 @@ contrail-server-manager: $(PREP) $(LOCAL_PY)
 	cp contrail-server-manager.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager.spec $(G_TAG)
 
+contrail-server-manager-installer: $(PREP) $(LOCAL_PY)
+	@echo making rpm for contrail-server-manager-installer
+	cp contrail-server-manager-installer.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager-installer.spec $(G_TAG)
+
 contrail-server-manager-client: $(PREP) $(LOCAL_PY)
 	@echo making rom for contrail-server-manager-client
 	cp contrail-server-manager-client.spec $(BUILD_BASE)/SPECS/
@@ -238,6 +243,7 @@ all: $(PREP) contrail contrail-api-extension \
        ${NEUTRON_PLUGIN} contrail-server-manager contrail-server-manager-client \
        contrail-vrouter-init contrail-web-server-manager ${CONTRAIL_HEAT}
 
+server-manager-all: contrail-server-manager
 clean:
 	@echo clean
 
