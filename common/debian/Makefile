@@ -61,8 +61,6 @@ PACKAGES = \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
 	contrail-test-deb \
-	euca2ools-deb \
-	python-boto-deb \
 	libvirt-deb \
 	contrail-openstack-dashboard-deb \
 	contrail-ostack-dashboard-deb \
@@ -163,26 +161,6 @@ contrail-test-deb:
 contrail-test-clean:
 	$(eval TGZ_FILE=$(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz)
 	rm -rf ${TGZ_FILE}
-
-euca2ools-deb:
-	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
-	cp -R euca2ools/debian ${BUILDDIR}/debian
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-euca2ools-clean:
-	$(eval BUILDDIR=${SB_TOP}/third_party/euca2ools)
-	rm -rf ${BUILDDIR}/debian
-
-python-boto-deb:
-	$(eval BUILDDIR=${SB_TOP}/third_party/python-boto)
-	cp -R python-boto/debian ${BUILDDIR}/debian
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-python-boto-clean:
-	$(eval BUILDDIR=${SB_TOP}/third_party/python-boto)
-	rm -rf ${BUILDDIR}/debian
 
 contrail-openstack-icehouse-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
