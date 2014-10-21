@@ -198,6 +198,10 @@ contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
 	rpmbuild $(RPMBLDOPTS) contrail-install-packages.spec  $(G_TAG)
 
+contrail-thirdparty-packages: $(PREP)
+	@echo making rpm for contrail-thirdparty-packages
+	rpmbuild $(RPMBLDOPTS) contrail-thirdparty-packages.spec  $(G_TAG)
+
 contrail-database: $(PREP) $(LOCAL_PY)
 	@echo making rpm for contrail-database
 	cp contrail-database.spec $(BUILD_BASE)/SPECS/
