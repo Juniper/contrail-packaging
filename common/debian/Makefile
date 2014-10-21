@@ -26,6 +26,7 @@ endif
 
 ifeq ($(CONTRAIL_SKU),icehouse)
     CONTRAIL_OPENSTACK := contrail-openstack-icehouse-deb
+    CONTRAIL_HEAT := contrail-heat-deb
 endif
 
 ifeq ($(CONTRAIL_SKU),havana)
@@ -68,6 +69,7 @@ PACKAGES = \
 	contrail-ostack-dashboard-deb \
 	contrail-server-manager-deb \
 	contrail-server-manager-client-deb \
+	$(CONTRAIL_HEAT) \
 	neutron-plugin-contrail-deb
 
 all: ${PACKAGES}
@@ -298,6 +300,19 @@ neutron-plugin-contrail-clean:
 		$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail) \
 		rm -rf ${BUILDDIR}; \
 	fi
+
+contrail-heat-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-heat) \
+	mkdir -p ${BUILDDIR}; \
+	cp -R ${SB_TOP}/openstack/contrail-heat/* ${BUILDDIR}; \
+	cp -R ${SB_TOP}/tools/packages/debian/contrail-heat/debian ${BUILDDIR}/debian; \
+	sed -i 's/VERSION/$(VERSION)/g' ${BUILDDIR}/debian/changelog; \
+	(cd ${BUILDDIR}; fakeroot debian/rules clean); \
+	(cd ${BUILDDIR}; fakeroot debian/rules binary);
+
+contrail-heat-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-heat) \
+	rm -rf ${BUILDDIR};
 
 contrail-vrouter-deb: contrail-libs-deb
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-vrouter)
