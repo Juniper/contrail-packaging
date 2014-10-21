@@ -90,9 +90,6 @@ debian-%:
 	cp -R $(SB_TOP)/tools/packages/debian/$(PACKAGE)/debian $(SB_TOP)/build/packages/$(PACKAGE)
 	chmod u+x $(SB_TOP)/build/packages/$(PACKAGE)/debian/rules
 	rm -f $(SB_TOP)/build/packages/$(PACKAGE)/debian/ifmap-server.upstart
-	([ -f $(SB_TOP)/tools/packaging/common/control_files/contrail-vrouter-agent.supervisor-vrouter.upstart.juniper ] \
-		&& cp -f $(SB_TOP)/tools/packaging/common/control_files/contrail-vrouter-agent.supervisor-vrouter.upstart.juniper \
-		$(SB_TOP)/build/packages/$(PACKAGE)/debian/contrail-vrouter-agent.supervisor-vrouter.upstart) || true
 
 clean-%:
 	$(eval PACKAGE := $(patsubst clean-%,%,$@))
