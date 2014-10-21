@@ -23,7 +23,6 @@ Vendor:             Juniper Networks Inc
 BuildArch: noarch
 
 #Requires: contrail-api-lib
-Requires: contrail-api-extension >= %{_verstr}-%{_relstr}
 Requires: contrail-config >= %{_verstr}-%{_relstr}
 Requires: openstack-neutron
 Requires: neutron-plugin-contrail >= %{_verstr}-%{_relstr}

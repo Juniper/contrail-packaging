@@ -240,7 +240,7 @@ else
 CONTRAIL_HEAT = 
 endif
 
-all: $(PREP) contrail contrail-api-extension \
+all: $(PREP) contrail \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
