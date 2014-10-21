@@ -1,6 +1,0 @@
-python-boto (1:2.12.0) stable; urgency=low
-
-   * Contrail extenstion support for AWS
-
- -- Rudra Rugge <rrugge@juniper.net>  Wed, 5 Feb 2014 10:51:56 -0400
-
