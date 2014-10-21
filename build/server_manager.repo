@@ -1,0 +1,6 @@
+[server_manager_repo]
+name=server_manager_repo
+baseurl=file:///opt/contrail/contrail_server_manager/packages
+enabled=1
+priority=1
+gpgcheck=0

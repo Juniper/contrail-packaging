@@ -1,0 +1,17 @@
+Contrail Server Manager Installer
+-----------------------------------
+
+This package holds contrail-server-manager and other related packages and dependend third-party packages.
+
+Installs
+/opt/contrail/contrail_server_manager/README    - This file
+/opt/contrail/contrail_server_manager/setup.sh  - Contains instructions to install contrail-server-manager and related packages
+/opt/contrail/contrail_server_manager/packages  - Contains contrail-server-manager and related packages
+/etc/yum.repos.d/server_manager.repo            - Local yum repo (server_manager_repo) pointing to /opt/contrail/contrail_server_manager/packages
+
+# To Remove
+Removing this package will remove all packages under /opt/contrail/contrail_server_manager/packages.
+Also remove the local yum repo server_manager_repo
+Command:
+yum -y --disablerepo=* erase contrail-server-manager-installer
+
