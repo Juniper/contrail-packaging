@@ -53,7 +53,11 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_packages
 # install files
 pushd %{_builddir}/..
 echo BUILDID=`echo %{_relstr} | cut -d "~" -f1` > %{buildroot}%{_contrailopt}/contrail_packages/VERSION
-install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh
+if [ "%{?dist}" == ".el7" ]; then \
+install -p -m 755 tools/packaging/build/rpm_anyrepo_setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh ;\
+else \
+install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh ;\
+fi
 install -p -m 755 tools/packaging/build/README %{buildroot}%{_contrailopt}/contrail_packages/README
 # Install puppet manifests
 tar -cvzf %{_builddir}/../build/contrail-puppet-manifest.tgz -C %{_builddir}/../tools/puppet .
