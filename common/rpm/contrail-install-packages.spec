@@ -46,12 +46,17 @@ Contrail Installer Packages - Container of Contrail RPMs
 
 # Setup directories
 rm -rf %{buildroot}
+install -d -m 755 %{buildroot}/etc/
+install -d -m 755 %{buildroot}/etc/yum.repos.d/
 install -d -m 755 %{buildroot}%{_contrailopt}
+install -d -m 755 %{buildroot}%{_contrailopt}/bin
+install -d -m 755 %{buildroot}%{_contrailopt}/contrail_install_repo
 install -d -m 755 %{buildroot}%{_contrailopt}/puppet
 install -d -m 755 %{buildroot}%{_contrailopt}/contrail_packages
 
 # install files
 pushd %{_builddir}/..
+install -p -m 755 tools/packaging/build/contrail-install.repo %{buildroot}/etc/yum.repos.d/contrail-install.repo
 echo BUILDID=`echo %{_relstr} | cut -d "~" -f1` > %{buildroot}%{_contrailopt}/contrail_packages/VERSION
 if [ "%{?dist}" == ".el7" ]; then \
 install -p -m 755 tools/packaging/build/rpm_anyrepo_setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh ;\
@@ -63,17 +68,26 @@ install -p -m 755 tools/packaging/build/README %{buildroot}%{_contrailopt}/contr
 tar -cvzf %{_builddir}/../build/contrail-puppet-manifest.tgz -C %{_builddir}/../tools/puppet .
 install -p -m 755 %{_builddir}/../build/contrail-puppet-manifest.tgz %{buildroot}%{_contrailopt}/puppet/contrail-puppet-manifest.tgz
 
-if [ -f %{_flist} ]; then echo "Using TGZ FILE = %{_flist}"; install -p -m 644 %{_flist} %{buildroot}%{_contrailopt}/contrail_packages/contrail_rpms.tgz; else echo "ERROR: TGZ file containing all rpms is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
+if [ -f %{_flist} ]; then \
+echo "Using TGZ FILE = %{_flist}"; \
+tar xzf %{_flist} -C %{buildroot}%{_contrailopt}/contrail_install_repo/; \
+else \
+echo "ERROR: TGZ file containing all rpms is not supplied or not present"; \
+echo "Supply Argument: FILE_LIST=<TGZ FILE>"; \
+exit 1; \
+fi
 
 %post
 
 %files
 %defattr(-, root, root)
-%{_contrailopt}/contrail_packages/VERSION
-%{_contrailopt}/contrail_packages/README
-%{_contrailopt}/contrail_packages/setup.sh
-%{_contrailopt}/contrail_packages/contrail_rpms.tgz
-%{_contrailopt}/puppet/contrail-puppet-manifest.tgz
+%{_contrailopt}/bin/
+%{_contrailopt}/contrail_packages/
+%{_contrailopt}/contrail_install_repo/
+%{_contrailopt}/puppet/
+/etc/yum.repos.d/contrail-install.repo
+
 
 %changelog
-
+* Tue Oct 21 2014 Nagendra Chandran <npchandran@juniper.net>
+- Removed tgz handling and creating contrain_install_repo during package installation
