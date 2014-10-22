@@ -31,14 +31,6 @@ pushd %{_builddir}/../openstack/contrail-heat
 %{__python} setup.py install --root=%{buildroot}
 popd
 
-install -d -m 755 %{buildroot}/usr/lib/heat/resources
-install -d -m 755 %{buildroot}/usr/lib/heat/template
-for s in resources template ; do
-    for f in %{_builddir}/../openstack/contrail-heat/contrail_heat/$s/* ; do
-	install -p -m 755 $f %{buildroot}/usr/lib/heat/$s
-    done
-done
-
 %files
 %defattr(-,root,root,-)
 %{python_sitelib}/contrail_heat*
