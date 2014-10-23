@@ -1,4 +1,4 @@
-horizon (1:2013.2.1-0ubuntu1) saucy-proposed; urgency=low
+horizon (1:2013.2.1-0ubuntu1.2contrail) saucy-proposed; urgency=low
 
   * Resynchronize with stable/havana (9668e80) (LP: #1262788):
     - [d97bba1] precision of floating point metering stats is discarded
