@@ -1,4 +1,4 @@
-contrail-openstack-dashboard (2014.1.2-0ubuntu1) quantal; urgency=low
+contrail-openstack-dashboard (BUILDTAG) quantal; urgency=low
 
   * Initial release.
 
