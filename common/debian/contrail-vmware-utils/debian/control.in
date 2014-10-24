@@ -1,0 +1,14 @@
+Source: contrail-vmware-utils
+Maintainer: kirand <kirand@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends:
+
+Package: contrail-vmware-utils
+Architecture: all
+Maintainer: kirand <kirand@juniper.net>
+Depends: python-pyvmomi
+Section: contrail-vmware-utils
+Priority: extra
+Description: Contrail Vmware utils debian package
