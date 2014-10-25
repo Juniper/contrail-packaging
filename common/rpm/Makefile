@@ -229,6 +229,10 @@ contrail-vrouter-init: $(PREP)
 	@echo making rpm for contrail-vrouter-init
 	rpmbuild $(RPMBLDOPTS) contrail-vrouter-init.spec $(G_TAG)
 
+contrail-server-manager-monitoring: $(PREP)
+	@echo making rpm for contrail-server-manager-monitoring
+	rpmbuild $(RPMBLDOPTS) contrail-server-manager-monitoring.spec $(G_TAG)
+
 ifeq ($(CONTRAIL_SKU), grizzly)
 NEUTRON_PLUGIN = 
 else
@@ -245,7 +249,7 @@ all: $(PREP) contrail \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
        ${NEUTRON_PLUGIN} contrail-server-manager contrail-server-manager-client \
-       contrail-vrouter-init contrail-web-server-manager ${CONTRAIL_HEAT}
+       contrail-vrouter-init contrail-web-server-manager contrail-server-manager-monitoring ${CONTRAIL_HEAT}
 
 server-manager-all: contrail-server-manager
 clean:
