@@ -9,6 +9,7 @@
 export DH_VERBOSE=1
 SPEC_DIR := $(shell pwd)
 export SB_TOP := $(shell pwd | sed -re "s/\/build\/debian\/contrail-install-packages//g")
+export DISTRIB_RELEASE = $(shell grep -Po "DISTRIB_RELEASE=\K.*" /etc/lsb-release)
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := $(SB_TOP)/build/debian/contrail-install-packages/debian/contrail-install-packages
@@ -29,11 +30,18 @@ TGZ_FILE = $(FILE_LIST)
 endif
 
 
+ifeq ($(DISTRIB_RELEASE),14.04)
+SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu1404.sh
+endif
+
 ifeq ($(CONTRAIL_SKU),juno)
-	SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu_juno.sh
-else
-	SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu.sh
+SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu_juno.sh
+endif
+
+ifndef SETUP_FILE
+SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu.sh
 endif  
+
 %:
 	dh $@
 
