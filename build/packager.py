@@ -270,7 +270,7 @@ class PackagerArgParser(Utils):
         aparser.add_argument('--post-job', '-j',
                              action='store',
                              default=None,
-                             help='Script to execute after Packaging is complete')
+                             help='Script to execute after Packaging is successfully complete')
         aparser.add_argument('--populate-defaults',
                              action='store_true',
                              help='Populates packager arguments with default values\
@@ -322,11 +322,11 @@ def main():
             log.info('Reprinting ALL ERRORS...')
             log.reprint_errors()
             log.error('View detailed logs at (%s)' % args.cliargs['logfile'])
-        duration = datetime.datetime.now() - start
-        log.info('Execution Duration: %s' %str(duration))
-        if args.cliargs['post_job']:
+        elif args.cliargs['post_job']:
             log.info('Running Post Job')
             packer.exec_cmd(args.cliargs['post_job'])
+        duration = datetime.datetime.now() - start
+        log.info('Execution Duration: %s' %str(duration))
     log.info('Packaging Complete!')
 
 
