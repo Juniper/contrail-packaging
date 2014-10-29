@@ -99,8 +99,8 @@ Requires: sqlite
 Requires: cobbler
 Requires: cobbler-web
 Requires:fence-agents
-Requires: puppet = 3.7.1-1.el6
-Requires: puppet-server = 3.7.1-1.el6
+Requires: puppet = 3.7.2-1.el6
+Requires: puppet-server = 3.7.2-1.el6
 Requires: python-devel
 Requires: python-pip
 Requires: dhcp
