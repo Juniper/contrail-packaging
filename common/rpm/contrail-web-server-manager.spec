@@ -24,7 +24,7 @@ License:            Commercial
 URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
-Requires:	supervisor
+Requires:	supervisor >= 3.0-9.2
 Requires:	contrail-web-core >= %{_verstr}-%{_relstr}
 
 
