@@ -25,23 +25,23 @@ function daemon_start() {
      ulimit -n 4096
      /usr/bin/supervisord -c /etc/contrail/supervisord_openstack.conf 
      RETVAL=$?
-     [ $RETVAL -eq 0 ] && log_success_msg || log_failure_msg
      if [ $RETVAL -ne 0 ]; then
-        echo "supervisor-openstack start on port 9010 failed. checking lsof.."
-        lsof -i :9010
+        echo "supervisor-openstack start failed. checking lsof.."
+        lsof | grep -i supervisord_openstack.sock
         if [ $? -eq 0 ]; then
-            echo "Another program listening on 9010"
-            pid=`lsof -Fp -i :9010 | cut -f2 -d'p'`
+            echo "Another program listening on same socket"
+            pid=`lsof | grep -i supervisord_openstack.sock | cut -d' ' -f3`
             if [ "x$pid" != "x" ] ; then
                 ps uw -p $pid
             fi
         fi
      fi
+
 }
 
 function daemon_stop() {
-    /usr/bin/supervisorctl -s http://localhost:9010 stop all
-    /usr/bin/supervisorctl -s http://localhost:9010 shutdown
+    /usr/bin/supervisorctl -s unix:///tmp/supervisord_openstack.sock stop all
+    /usr/bin/supervisorctl -s unix:///tmp/supervisord_openstack.sock shutdown
     if [ -f $PID_FILE ]; then
         kill `cat $PID_FILE`
         rm -f $PID_FILE

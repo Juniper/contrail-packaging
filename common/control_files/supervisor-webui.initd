@@ -24,23 +24,23 @@ function daemon_start() {
      ulimit -n 4096
      /usr/bin/supervisord -c /etc/contrail/supervisord_webui.conf
      RETVAL=$?
-     [ $RETVAL -eq 0 ] && log_success_msg || log_failure_msg
      if [ $RETVAL -ne 0 ]; then
-        echo "supervisor-analytics start on port 9008 failed. checking lsof.."
-        lsof -i :9008
+        echo "supervisor-webui start failed. checking lsof.."
+        lsof | grep -i supervisord_webui.sock
         if [ $? -eq 0 ]; then
-            echo "Another program listening on 9008"
-            pid=`lsof -Fp -i :9008 | cut -f2 -d'p'`
+            echo "Another program listening on same socket"
+            pid=`lsof | grep -i supervisord_webui.sock | cut -d' ' -f3`
             if [ "x$pid" != "x" ] ; then
                 ps uw -p $pid
             fi
         fi
      fi
+
 }
 
 function daemon_stop() {
-    /usr/bin/supervisorctl -s http://localhost:9008 stop all
-    /usr/bin/supervisorctl -s http://localhost:9008 shutdown
+    /usr/bin/supervisorctl -s unix:///tmp/supervisord_webui.sock stop all
+    /usr/bin/supervisorctl -s unix:///tmp/supervisord_webui.sock shutdown
     if [ -f $PID_FILE ]; then
         kill `cat $PID_FILE`
         rm -f $PID_FILE

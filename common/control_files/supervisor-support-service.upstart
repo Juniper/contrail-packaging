@@ -15,16 +15,16 @@ end script
 #exec /usr/bin/supervisord --nodaemon -c /etc/contrail/supervisord_support_service.conf
 script
     supervisord --nodaemon -c /etc/contrail/supervisord_support_service.conf || true
-    echo "supervisor-config start failed. lsof -i :9011..."
-    lsof -i :9011 || true
-    pid=`lsof -Fp -i :9011 | cut -d'p' -f2` || true
+    echo "supervisor-support-service start failed...."
+    (lsof | grep -i supervisord_support_service.sock) || true
+    pid=`lsof | grep -i supervisord_support_service.sock | cut -d' ' -f3` || true
     if [ "x$pid" != "x" ]; then
         ps uw -p $pid
     fi
 end script
 
 pre-stop script
-    supervisorctl -s http://localhost:9011 stop all
-    supervisorctl -s http://localhost:9011 shutdown
+    supervisorctl -s unix:///tmp/supervisord_support_service.sock  stop all
+    supervisorctl -s unix:///tmp/supervisord_support_service.sock  shutdown
     /usr/bin/supervisor_killall /etc/contrail/supervisord_support_service_files
 end script

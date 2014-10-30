@@ -15,9 +15,9 @@ end script
 
 script
     supervisord --nodaemon -c /etc/contrail/supervisord_vrouter.conf || true
-    echo "supervisor-vrouter  failed. lsof -i :9005..."
-    lsof -i :9005 || true
-    pid=`lsof -Fp -i :9005 | cut -d'p' -f2` || true
+    echo "supervisor-vrouter start failed...."
+    (lsof | grep -i supervisord_vrouter.sock) || true
+    pid=`lsof | grep -i supervisord_vrouter.sock | cut -d' ' -f3` || true
     if [ "x$pid" != "x" ]; then
         ps uw -p $pid
     fi
@@ -28,8 +28,8 @@ post-start script
 end script
 
 pre-stop script
-    supervisorctl -s http://localhost:9005 stop all
-    supervisorctl -s http://localhost:9005 shutdown
+    supervisorctl -s unix:///tmp/supervisord_vrouter.sock stop all
+    supervisorctl -s unix:///tmp/supervisord_vrouter.sock shutdown
     /usr/bin/supervisor_killall /etc/contrail/supervisord_vrouter_files
     /opt/contrail/bin/vrouter-pre-stop.sh
 end script

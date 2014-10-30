@@ -21,21 +21,22 @@ function daemon_start() {
      RETVAL=$?
      [ $RETVAL -eq 0 ] && log_success_msg || log_failure_msg
      if [ $RETVAL -ne 0 ]; then
-        echo "supervisor-database start on port 9007 failed. checking lsof.."
-        lsof -i :9007
+        echo "supervisor-database start failed. checking lsof.."
+        lsof | grep -i supervisord_database.sock
         if [ $? -eq 0 ]; then
-            echo "Another program listening on 9007"
-            pid=`lsof -Fp -i :9007 | cut -f2 -d'p'`
+            echo "Another program listening on same socket"
+            pid=`lsof | grep -i supervisord_database.sock | cut -d' ' -f3`
             if [ "x$pid" != "x" ] ; then
                 ps uw -p $pid
             fi
         fi
      fi
+
 }
 
 function daemon_stop() {
-    /usr/bin/supervisorctl -s http://localhost:9007 stop all
-    /usr/bin/supervisorctl -s http://localhost:9007 shutdown
+    /usr/bin/supervisorctl -s unix:///tmp/supervisord_database.sock stop all
+    /usr/bin/supervisorctl -s unix:///tmp/supervisord_database.sock shutdown
     if [ -f $PID_FILE ]; then
         kill `cat $PID_FILE`
         rm -f $PID_FILE
