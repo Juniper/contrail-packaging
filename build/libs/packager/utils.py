@@ -37,12 +37,18 @@ class Utils(object):
         return absdirs[0] if len(absdirs) == 1 else absdirs
 
     @staticmethod
-    def get_platform_info():
+    def get_platform_info(os_version=None):
         '''Retrieve Platform Info and customize it'''
-        platform_info = platform.linux_distribution()
-        platform_info = map(str.lower, platform_info)
-        platform_info = [pinfo.replace(' ', '') for pinfo in platform_info]
-        return platform_info
+        platform_dict = {}
+        if not os_version:
+            platform_dict['default'] = map(str.lower, platform.linux_distribution())
+            platform_dict['default'] = [pinfo.replace(' ', '') for pinfo in platform_dict['default']]
+        else:
+            version = ''.join(re.findall('\d+', os_version))
+            os_type = ''.join(re.findall('[^\d|^.|^\s]*', str(os_version).lower()))
+            platform_dict['default'] = [os_type, version]
+        platform_dict['formatted'] = ''.join(platform_dict['default'][:2]).replace('.', '')
+        return platform_dict
 
     @staticmethod
     def create_dir(dirname, recreate=False):

@@ -23,8 +23,6 @@ SCRIPTDIR = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 # Import packager based on distribution
 sys.path.append(os.path.abspath(os.path.join(SCRIPTDIR, 'libs', 'packager')))
-PLATFORM = Utils.get_platform_info()
-packager = __import__('%s_packager' % PLATFORM[0])
 
 log = logging.getLogger("pkg")
 
@@ -59,7 +57,6 @@ class PackagerArgParser(Utils):
         return dirnames
 
     def set_cli_defaults(self):
-        dist_dir = "".join(PLATFORM[:2]).replace('.', '')
         timestamp = time.strftime('%m%d%y%H%M%S')
         logname = 'packager_{id}_%s.log' %timestamp
         pkg_file_dir = os.path.join(SCRIPTDIR, 'package_configs')
@@ -81,9 +78,9 @@ class PackagerArgParser(Utils):
             'store_dir'             : os.path.join(git_local_repo, 'build'),
             'absolute_package_dir'  : None,
             'contrail_package_dir'  : None,
-            'base_package_file'     : [os.path.join(pkg_file_dir, dist_dir, '{skuname}', base_pkg_file)],
-            'depends_package_file'  : [os.path.join(pkg_file_dir, dist_dir, '{skuname}', deps_pkg_file)],
-            'contrail_package_file' : [os.path.join(pkg_file_dir, dist_dir, '{skuname}', cont_pkg_file)],
+            'base_package_file'     : [os.path.join(pkg_file_dir, '{dist_dir}', '{skuname}', base_pkg_file)],
+            'depends_package_file'  : [os.path.join(pkg_file_dir, '{dist_dir}', '{skuname}', deps_pkg_file)],
+            'contrail_package_file' : [os.path.join(pkg_file_dir, '{dist_dir}', '{skuname}', cont_pkg_file)],
             'make_targets'          : [],
             'make_targets_file'     : None,
             'loglevel'              : 'DEBUG',
@@ -91,6 +88,8 @@ class PackagerArgParser(Utils):
             'log_config'            : os.path.join(SCRIPTDIR, 'logger', 'logging.cfg'),
             'git_local_repo'        : git_local_repo,
             'cache_base_dir'        : [cache_base_dir],
+            'fail_on_error'         : False,
+            'post_job'              : None,
         }
   
     def get_config_file_args(self):
@@ -132,17 +131,26 @@ class PackagerArgParser(Utils):
                                   defaults={'loglevel': self.defaults['loglevel'], 
                                             'logfile': ns_cliargs.logfile})
 
-        # update sku in package files
-        ns_cliargs.base_package_file = [base_file.format(skuname=ns_cliargs.sku) for \
-                                        base_file in Utils.get_as_list(ns_cliargs.base_package_file)]
-        ns_cliargs.base_package_file = self.get_files_by_pattern(ns_cliargs.base_package_file, True)
+        # set default branch
+        if ns_cliargs.branch is None:
+            output = os.popen('cat %s/controller/src/base/version.info'
+                                             % ns_cliargs.git_local_repo)
+            ns_cliargs.branch = output.read().strip()
 
-        ns_cliargs.depends_package_file = [deps_file.format(skuname=ns_cliargs.sku) for \
-                                           deps_file in Utils.get_as_list(ns_cliargs.depends_package_file)]
+        # update sku in package files
+        ns_cliargs.base_package_file = [base_file.format(skuname=ns_cliargs.sku,
+                                       dist_dir=ns_cliargs.os_version) for \
+                                           base_file in Utils.get_as_list(ns_cliargs.base_package_file)]
+        ns_cliargs.base_package_file = self.get_files_by_pattern(ns_cliargs.base_package_file, False)
+
+        ns_cliargs.depends_package_file = [deps_file.format(skuname=ns_cliargs.sku,
+                                          dist_dir=ns_cliargs.os_version) for \
+                                              deps_file in Utils.get_as_list(ns_cliargs.depends_package_file)]
         ns_cliargs.depends_package_file = self.get_files_by_pattern(ns_cliargs.depends_package_file, True)
 
-        ns_cliargs.contrail_package_file = [cont_file.format(skuname=ns_cliargs.sku) for \
-                                            cont_file in Utils.get_as_list(ns_cliargs.contrail_package_file)]
+        ns_cliargs.contrail_package_file = [cont_file.format(skuname=ns_cliargs.sku,
+                                               dist_dir=ns_cliargs.os_version) for \
+                                               cont_file in Utils.get_as_list(ns_cliargs.contrail_package_file)]
         ns_cliargs.contrail_package_file = self.get_files_by_pattern(ns_cliargs.contrail_package_file, True)
 
         # validate file and dir exists
@@ -157,7 +165,16 @@ class PackagerArgParser(Utils):
 
         # convert namespace as a dict
         self.cliargs = dict(ns_cliargs._get_kwargs())
-
+        if self.cliargs['populate_defaults']:
+            log.info('Arguments from config file')
+            log.info(self.cliargs['config'])
+            self.banner(self.get_config_file_args())
+            log.info('Populated Arguments: ')
+            new_args = dict([('--%s' % key.replace('_', '-'), value) for key, value in self.cliargs.items()])
+            new_args['--build-id'] = '%s (random number)' % new_args['--build-id']
+            new_args['--logfile'] = '%s (based on build-id and timestamp)' % new_args['--logfile']
+            self.banner(new_args)
+            sys.exit(0)
 
     def define_args(self):
         ''' Define arguments for packager script '''
@@ -168,8 +185,18 @@ class PackagerArgParser(Utils):
                              help='Config File for the Packager')
         file_ns, rargs = cparser.parse_known_args(self.unparsed_args)
         self.cfg_file = file_ns.config
-        aparser = argparse.ArgumentParser(parents=[cparser],
-                                          formatter_class=argparse.RawDescriptionHelpFormatter,
+
+        os_parser = argparse.ArgumentParser(add_help=False)
+        platform_info = Utils.get_platform_info()
+        os_parser.add_argument('--os-version', '-O',
+                             action='store',
+                             default=platform_info['formatted'],
+                             help='Specify OS Type and Version. \
+                                   eg: centos64, ubuntu1204, redhatlinuxenterprise70')
+        file_ns, rargs = os_parser.parse_known_args(self.unparsed_args)
+
+        aparser = argparse.ArgumentParser(parents=[cparser, os_parser],
+                                          formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                                           description=self.desc)
         aparser.add_argument('--version', '-v',
                              action='version',
@@ -177,18 +204,23 @@ class PackagerArgParser(Utils):
                              help='Print version and exit')
         aparser.add_argument('--build-id', '-i',
                              action='store',
+                             default='Random number from 1000-9999',
                              help='Build ID of the new packages')
         aparser.add_argument('--sku',
                              action='store',
+                             default='Derived from manifest sku',
                              help='Specify Openstack release')
         aparser.add_argument('--branch',
                              action='store',
+                             default='from sandbox/controller/src/base/version.info',
                              help='Specify GIT branch name')
         aparser.add_argument('--store-dir', '-s',
                              action='store',
+                             default='sandbox/build/',
                              help='Directory Location to which new packages be saved')
         aparser.add_argument('--cache-base-dir', '-C',
                              action='store',
+                             default='/cs-shared/builder/cache',
                              nargs='+',
                              help='Base directory location where OS and third\
                                    party packages are available.\
@@ -197,38 +229,52 @@ class PackagerArgParser(Utils):
                                    /cs-shared/builder/cache/centos64/grizzly/')
         aparser.add_argument('--absolute-package-dir', '-a',
                              action='store',
+                             default=None,
                              nargs='+',
                              help='Absolute Directory Location where OS and third\
                                    party packages are available')
         aparser.add_argument('--contrail-package-dir', '-P',
                              action='store',
+                             default=None,
                              nargs='+',
                              help='Directory Location where pre-maked Contrail packages\
                                    are available')
         aparser.add_argument('--base-package-file', '-b',
                              action='store',
+                             default='sandbox/tools/packaging/build/package_configs/<os>/<sku>/base*_packages.cfg',
                              nargs='+',
                              help='Config files specifying base packages info')
         aparser.add_argument('--depends-package-file', '-d',
                              action='store',
+                             default='sandbox/tools/packaging/build/package_configs/<os>/<sku>/depends*_packages.cfg',
                              nargs='+',
                              help='Config files specifying dependant pacakges info')
         aparser.add_argument('--contrail-package-file', '-f',
                              action='store',
+                             default='sandbox/tools/packaging/build/package_configs/<os>/<sku>/contrail*_packages.cfg',
                              nargs='+',
                              help='Config files specifying Contrail packages info')
         aparser.add_argument('--make-targets', '-t',
                              action='store',
+                             default=None,
                              nargs='+',
                              help='List of Contrail make targets to build')
         aparser.add_argument('--make-targets-file', '-T',
                              action='store',
+                             default=None,
                              help='Line seperated text file containing list of \
                                    make targets')
         aparser.add_argument('--fail-on-error', '-e',
                              action='store_true',
-                             default=False,
                              help='Aborts Packager from continuing when make fails')
+        aparser.add_argument('--post-job', '-j',
+                             action='store',
+                             default=None,
+                             help='Script to execute after Packaging is successfully complete')
+        aparser.add_argument('--populate-defaults',
+                             action='store_true',
+                             help='Populates packager arguments with default values\
+                                   and prints')
         aparser.parse_args(self.unparsed_args)
         self.parser = aparser
 
@@ -252,6 +298,8 @@ def main():
     start = datetime.datetime.now()
 
     # Packager
+    platform_info = Utils.get_platform_info(args.cliargs['os_version'])
+    packager = __import__('%s_packager' % platform_info['default'][0])
     packer = packager.Packager(**args.cliargs)
 
     # Build
@@ -274,6 +322,9 @@ def main():
             log.info('Reprinting ALL ERRORS...')
             log.reprint_errors()
             log.error('View detailed logs at (%s)' % args.cliargs['logfile'])
+        elif args.cliargs['post_job']:
+            log.info('Running Post Job')
+            packer.exec_cmd(args.cliargs['post_job'])
         duration = datetime.datetime.now() - start
         log.info('Execution Duration: %s' %str(duration))
     log.info('Packaging Complete!')
@@ -283,4 +334,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
