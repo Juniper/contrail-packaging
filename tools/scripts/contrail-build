@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/bin/python
+#!/usr/local/bin/python2.7
 """
 Copyright (c) 2013, Juniper Networks, Inc.
 All rights reserved.
@@ -31,9 +31,9 @@ class ContrailBuild(object):
         if self.opt.manifest_file:
             manifest_real_path = os.path.realpath(self.opt.manifest_file)
 
-        require_arch = ["centos64_os", "ubuntu-12-04", "xen6.2SP1_os"]
+        require_arch = ["centos64_os", "ubuntu-12-04", "xen6.2SP1_os", "centos65", "redhat70", "ubuntu-14-04" ]
         if not self.opt.arch_type in require_arch:
-            print 'Error: Only centos64_os, ubuntu-12-04, and xen6.2.SP1 are currently supported'
+            print 'Error: Only centos64_os, ubuntu-12-04, centos65, redhat70, ubuntu-14-04, and xen6.2.SP1 are currently supported'
             sys.exit(1)
 
         """ Make sure we are in sandbox """
@@ -216,6 +216,9 @@ def execute(command, output, ignore_errors=False):
         output.write(line)
         output.flush()
         data += line
+        if not NOPRINT:
+            print line.strip()
+
 
     rc = pipe.wait()
     cwd = os.getcwd()
@@ -245,7 +248,7 @@ def search_file(filename, search_path):
 
 def parse_options(args):
     """ Parse command line arguments """
-    parser = argparse.ArgumentParser(description='Contrail build wrapper script - version 1.04')
+    parser = argparse.ArgumentParser(description='Contrail build wrapper script - version 1.07')
 
     parser.add_argument('-v', '--verbose', dest='debug', action='store_true',
                         help='Enable verbose mode')
