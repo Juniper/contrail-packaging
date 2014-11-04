@@ -1,0 +1,6 @@
+dpdk-kernel-modules-dkms (1.7) stable; urgency=low
+
+  * Automatically packaged by DKMS.
+
+ -- Dynamic Kernel Modules Support Team <pkg-dkms-maint@lists.alioth.debian.org>  Tue, 04 Nov 2014 04:10:20 -0500
+
