@@ -57,6 +57,8 @@ function create_virtual_gateway() {
    done
 }
 
+modprobe igb_uio
+modprobe rte_kni
 /opt/contrail/bin/dpdk_nic_bind.py --force --bind=igb_uio $dev
 echo "$(date): Value $vgw_subnet_ip" &>> $LOG
 if [ $vgw_subnet_ip != __VGW_SUBNET_IP__ ] 

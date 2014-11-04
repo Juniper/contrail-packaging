@@ -75,7 +75,8 @@ PACKAGES = \
 	contrail-server-manager-installer-deb \
 	$(CONTRAIL_HEAT) \
 	neutron-plugin-contrail-deb \
-	contrail-vmware-utils-deb
+	contrail-vmware-utils-deb \
+	dpdk-kernel-modules-dkms-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
