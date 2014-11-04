@@ -24,8 +24,7 @@ BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 %:
-	dh $@ --destdir=${SB_TOP}/build/debian
-	dh $@  --with python2
+	dh $@ --destdir=${SB_TOP}/build/debian --with python2
 
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
