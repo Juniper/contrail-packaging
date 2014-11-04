@@ -165,17 +165,13 @@ redis-py: $(PREP)
 	@echo making rpm for redis-py
 	rpmbuild $(RPMBLDOPTS) redis-py.spec $(G_TAG)
 
-supervisor: $(PREP)
-	@echo making rpm for supervisor
-	rpmbuild $(RPMBLDOPTS) supervisor.spec $(G_TAG)
-
 xmltodict: $(PREP)
 	@echo making rpm for xmltodict
 	rpmbuild $(RPMBLDOPTS) xmltodict.spec $(G_TAG)
 
 all: $(PREP) all-openstack-client euca2ools hiredis-py \
 	ifmap-server python-boto libvirt puppet python-bitarray python-geventhttpclient \
-	python-pycassa python-thrift redis-py supervisor xmltodict ixgbe python-bottle
+	python-pycassa python-thrift redis-py xmltodict ixgbe python-bottle
 
 clean:
 	@echo clean
