@@ -52,13 +52,11 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_packages
 
 # install files
 pushd %{_builddir}/..
-echo BUILDID=`echo %{_relstr} | cut -d "~" -f1` > %{buildroot}%{_contrailopt}/contrail_packages/VERSION
 if [ "%{?dist}" == ".el7" ]; then \
 install -p -m 755 tools/packaging/build/rpm_anyrepo_setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh ;\
 else \
 install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh ;\
 fi
-install -p -m 755 tools/packaging/build/README %{buildroot}%{_contrailopt}/contrail_packages/README
 # Install puppet manifests
 tar -cvzf %{_builddir}/../build/contrail-puppet-manifest.tgz -C %{_builddir}/../tools/puppet .
 install -p -m 755 %{_builddir}/../build/contrail-puppet-manifest.tgz %{buildroot}%{_contrailopt}/puppet/contrail-puppet-manifest.tgz
@@ -69,8 +67,6 @@ if [ -f %{_flist} ]; then echo "Using TGZ FILE = %{_flist}"; install -p -m 644 %
 
 %files
 %defattr(-, root, root)
-%{_contrailopt}/contrail_packages/VERSION
-%{_contrailopt}/contrail_packages/README
 %{_contrailopt}/contrail_packages/setup.sh
 %{_contrailopt}/contrail_packages/contrail_rpms.tgz
 %{_contrailopt}/puppet/contrail-puppet-manifest.tgz
