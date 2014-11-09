@@ -91,6 +91,7 @@ pushd %{_builddir}/..
 # install bin files
 install -p -m 755 build/third_party/bind/bin/named/named  %{buildroot}%{_bindir}/named
 install -p -m 755 build/third_party/bind/bin/rndc/rndc    %{buildroot}%{_bindir}/rndc
+install -p -m 755 build/third_party/bind/bin/confgen/rndc-confgen %{buildroot}%{_bindir}/rndc-confgen
 install -p -m 755 build/debug/dns/dnsd                    %{buildroot}%{_bindir}/dnsd
 
 # install etc files
@@ -133,6 +134,7 @@ exit 0
 %defattr(-, root, root)
 %{_bindir}/named
 %{_bindir}/rndc
+%{_bindir}/rndc-confgen
 %{_bindir}/dnsd
 %{_contraildns}
 %{_namedlogdir}

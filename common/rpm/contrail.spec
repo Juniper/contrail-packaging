@@ -469,6 +469,7 @@ fi
 %defattr(-, root, root)
 %{_bindir}/named
 %{_bindir}/rndc
+%{_bindir}/rndc-confgen
 %{_bindir}/dnsd
 %{_contraildns}
 %{_contraildns}/named.conf
