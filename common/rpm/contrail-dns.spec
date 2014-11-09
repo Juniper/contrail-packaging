@@ -91,11 +91,13 @@ pushd %{_builddir}/..
 # install bin files
 install -p -m 755 build/third_party/bind/bin/named/named  %{buildroot}%{_bindir}/named
 install -p -m 755 build/third_party/bind/bin/rndc/rndc    %{buildroot}%{_bindir}/rndc
+install -p -m 755 build/third_party/bind/bin/confgen/rndc-confgen    %{buildroot}%{_bindir}/rndc-confgen
 install -p -m 755 build/debug/dns/dnsd                    %{buildroot}%{_bindir}/dnsd
 
 # install etc files
 install -p -m 644 %{_distropkgdir}/rndc.conf                %{buildroot}%{_contraildns}/rndc.conf
 install -p -m 644 %{_distropkgdir}/named.conf               %{buildroot}%{_contraildns}/named.conf
+install -p -m 644 %build/third_party/bind/COPYRIGHT         %{buildroot}%{_contraildns}/COPYRIGHT
 %if 0%{?rhel}
 install -p -m 755 %{_distropkgdir}/contrail-dns.initd.supervisord %{buildroot}%{_initddir}/contrail-dns
 install -p -m 755 %{_distropkgdir}/contrail-named.initd.supervisord %{buildroot}%{_initddir}/contrail-named
@@ -133,12 +135,14 @@ exit 0
 %defattr(-, root, root)
 %{_bindir}/named
 %{_bindir}/rndc
+%{_bindir}/rndc-confgen
 %{_bindir}/dnsd
 %{_contraildns}
 %{_namedlogdir}
 
 %{_contraildns}/named.conf
 %{_contraildns}/rndc.conf
+%{_contraildns}/COPYRIGHT
 %{_supervisordir}/contrail-named.ini
 %{_supervisordir}/contrail-dns.ini
 %if 0%{?rhel}
