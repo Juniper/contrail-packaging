@@ -469,11 +469,13 @@ fi
 %defattr(-, root, root)
 %{_bindir}/named
 %{_bindir}/rndc
+%{_bindir}/rndc-confgen
 %{_bindir}/dnsd
 %{_contraildns}
 %{_contraildns}/named.conf
 %{_contraildns}/rndc.conf
 %{_contraildns}/dns.conf
+%{_contraildns}/COPYRIGHT
 
 %package nova-vif 
 Summary:            Contrail nova vif driver %{?_gitVer}
