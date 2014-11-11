@@ -178,10 +178,16 @@ service puppet start
 service postfix stop
 service sendmail restart
 
-sed -i "s/10.84.51.11/$HOST_IP/" /etc/cobbler/settings
+# Set IP address in cobbler settings file
+sed -i "s/__\$IPADDRESS__/$HOST_IP/" /etc/cobbler/settings
 /sbin/chkconfig --add contrail-server-manager
 sed -i "s/module = authn_.*/module = authn_configfile/g" /etc/cobbler/modules.conf
-sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
+
+# Set IP address in server manager configuration file.
+sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
+
+# Set IP Address in smgr_dhcp_event.py DHCP hook.
+sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/smgr_dhcp_event.py
 
 
 chkconfig httpd on
