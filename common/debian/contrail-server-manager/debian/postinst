@@ -97,8 +97,6 @@ service sendmail restart
 #chkconfig puppetmaster on
 #chkconfig contrail_smgrd on
 
-
-
 update-rc.d apache2 defaults
 update-rc.d xinetd defaults
 update-rc.d cobbler defaults
