@@ -224,6 +224,7 @@ cp %{_contrail_smgr_src}smgr_dhcp_event.py %{buildroot}%{_contrailopt}%{_contrai
 cp %{_contrail_smgr_src}server_mgr_defaults.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}server_mgr_err.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}contrail_defaults.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
+cp %{_contrail_smgr_src}server_mgr_mon_base_plugin.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 
 cp %{_contrail_smgr_src}utils/send_mail.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}sm-config.ini %{buildroot}%{_contrailopt}%{_contrail_smgr}
