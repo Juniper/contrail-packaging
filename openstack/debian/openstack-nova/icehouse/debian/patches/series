@@ -4,5 +4,4 @@ skip_ipv6_test.patch
 arm-console-patch.patch
 update-run-tests.patch
 libvirt-Handle-unsupported-host-capabilities.patch
-libvirt-convert-cpu-features-attribute-from-list-to-.patch
-Fixes-rdb-backend-image-size.patch
+cells-json-store.patch

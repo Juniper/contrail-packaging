@@ -1,8 +1,131 @@
-nova (1:2014.1.1-0ubuntu2.2contrail) trusty; urgency=high
+nova (1:2014.1.3-0ubuntu1~cloud0.2contrail) trusty; urgency=high
 
   * Added 2contrail in contrail pacakge.
 
- -- Atul Moge <amoghe@juniper.net>  Wed, 24 Sept 2014 12:56:15 -0300
+ -- Atul Moge <amoghe@juniper.net>  Thu, 06 Nov 2014 12:56:15 -0300
+
+nova (1:2014.1.3-0ubuntu1~cloud0) precise-icehouse; urgency=medium
+
+  * New upstream release for the Ubuntu Cloud Archive.
+
+ -- Openstack Ubuntu Testing Bot <openstack-testing-bot@ubuntu.com>  Tue, 21 Oct 2014 03:09:40 -0400
+
+nova (1:2014.1.3-0ubuntu1) trusty; urgency=medium
+
+  [ Liam Young ]
+  * d/p/cells-json-store.patch: Fix issue with nova-cells failing when using
+    JSON file to store cell information (LP: #1314677).
+
+  [ Corey Bryant ]
+  * Resynchronize with stable/icehouse (a058646) (LP: #1377136):
+    - [1a95c95] Adds tests for Hyper-V VM Utils
+    - [bb47d55] Removes unnecessary instructions in test_hypervapi
+    - [4f41d37] Fixes a Hyper-V list_instances localization issue
+    - [9015410] Adds list_instance_uuids to the Hyper-V driver
+    - [3371ad8] Add _wrap_db_error() support to Session.commit()
+    - [dfb0e0f] Neutron: Atomic update of instance info cache
+    - [bce481c] Ensure info cache updates don't overwhelm cells
+    - [f58d95c] Sync process and str utils from oslo
+    - [4e6371b] remove test_multiprocess_api
+    - [7e09173] Fixes Hyper-V agent force_hyperv_utils_v1 flag issue
+    - [7523ab4] Fix attaching config drive issue on Hyper-V when migrate instances
+    - [74e0ba7] Fix live-migration failure in FC multipath case
+    - [b61aa4d] libvirt: Save device_path in connection_info when booting from volume
+    - [f93b8ee] Made unassigned networks visible in flat networking
+    - [82cc3be] Do not fail cell's instance deletion, if it's missing info_cache
+    - [d72c0a4] Fixes Hyper-V boot from volume root device issue
+    - [0d3dad7] Fixes Hyper-V resize down exception
+    - [5d5970a] db: Add @_retry_on_deadlock to service_update()
+    - [9596f52] Add Hyper-V driver in the "compute_driver" option description
+    - [4a8d6ca] Block sqlalchemy migrate 0.9.2 as it breaks all of nova
+    - [311ab57] Move the error check for "brctl addif"
+    - [df09c2a] Fix rootwrap for non openstack.org iqn's
+    - [1613cd99] Fix instance boot when Ceph is used for ephemeral storage
+    - [4bc680f] Make floatingip-ip-delete atomic with neutron
+    - [0d69163] Fix race condition with vif plugging in finish migrate
+    - [520aa4c] libvirt: Use VIR_DOMAIN_AFFECT_LIVE for paused instances
+    - [3c34e37] add repr for event objects
+    - [1b7ab22] make lifecycle event logs more clear
+    - [e1d6e18] Catch missing Glance image attrs with None
+    - [b591389] Update block_device_info to contain swap and ephemeral disks
+    - [2155188] Adds get_instance_disk_info to compute drivers
+    - [87f842d] Fixes Hyper-V vm state issue
+    - [1106ef2] Fix expected error details from jsonschema
+    - [e5e6bc7] Include next link when default limit is reached
+    - [526853e] Fix FloatingIP.save() passing FixedIP object to sqlalchemy
+    - [4e1e217] Read deleted instances during lifecycle events
+    - [d8b9ba5] Add a retry_on_deadlock to reservations_expire
+    - [b53adea] Add expire reservations in backport position.
+    - [e874ee2] Fixes Hyper-V SCSI slot selection
+    - [471e644] VMware: do not cache image when root_gb is 0
+    - [825cfe4] Fix _parse_datetime in simple tenant usage extension
+    - [073ee06] Avoid traceback logs from simple tenant usage extension
+    - [9447203] replace NovaException with VirtualInterfaceCreate when neutron fails
+    - [6b7cb1a] libvirt: convert cpu features attribute from list to a set
+    - [7ca83e8] Delete image when backup operation failed on snapshot step
+    - [82a13b3] VM in rescue state must have a restricted set of actions
+    - [e7d2087] shelve doesn't work on nova-cells environment
+    - [aeb71a8] libvirt: return the correct instance path while cleanup_resize
+    - [cce6d22] Fix nova image-show with queued image
+    - [aff80d5] _translate_from_glance() can cause an unnecessary HTTP request
+    - [a058646] Loosen import_exceptions to cover all of gettextutils
+  * d/p/libvirt-convert-cpu-features-attribute-from-list-to-.patch: Dropped.
+    Code has been fixed upstream.
+  * d/p/libvirt-Handle-unsupported-host-capabilities.patch: Rebased.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Mon, 06 Oct 2014 09:24:45 -0400
+
+nova (1:2014.1.2-0ubuntu1) trusty; urgency=medium
+
+  [ Corey Bryant ]
+  * Resynchronize with stable/icehouse (c545075) (LP: #1354159):
+    - [1408081] Mask block_device_info auth_password in virt driver debug logs
+    - [8d7de91] VMware: Add check for datacenter with no datastore
+    - [0d9419f] Fixes hyper-v volume attach when host is AD member
+    - [1469c8e] Prevent clean-up of migrating instances on compute init
+    - [0617601] VMware: use default values in get_info() when properties are missing
+    - [c8df2ac] Set python hash seed to 0 in tox.ini
+    - [7de0132] Do not pass instances without host to compute API
+    - [811cab7] Do not process events for instances without host
+    - [0e1580e] Attach/detach interface to paused instance with affect live flag
+    - [397de7b] Turn periodic tasks off in all unit tests
+    - [9f59ca7] Avoid possible timing attack in metadata api
+    - [72cc37d] Handle service creation race by service workers
+    - [af7ba1c] Fixes rbd backend image size
+    - [a8b52c0] VMware: Fix race in spawn() when resizing cached image
+    - [132d5a2] Avoid re-adding iptables rules for instances that have disappeared
+    - [0142324] VMware: Fix fake raising the wrong exception in _remove_file
+    - [b08f62a] Fix security group list when not defined for an instance
+    - [f598864] libvirt: Make nwfilter driver use right filterref
+    - [da777f1] Make sure domain exists before referencing it
+    - [8d260a8] Scheduler: enable scheduler hint to pass the group name
+    - [4c551d9] Instance groups: add method get_by_hint
+    - [9f5d2a6] Avoid referencing stale instance/network_info dicts in firewall
+    - [e43c43e] Neutronv2 api does not support neutron without port quota
+    - [120ecf3] Fix the wrong dest of 'vlan' option and add new 'vlan_start' option
+    - [f864329] Use default rpc_response_timeout in unit tests
+    - [4aeefa7] Network: ensure that ports are 'unset' when instance is deleted
+    - [a365897] Save connection info in libvirt after volume connect
+    - [d1c5736] Cleanup allocating networks when InstanceNotFound is raised
+    - [2f40191] Failure during termination should always leave state as error()
+    - [485f25d] Use no_timer_check with soft-qemu
+    - [0994254] Use correct project/user for quotas
+    - [4c6b0f7] Revert "Remove broken quota-classes API"
+    - [96212b1] libvirt: Refresh volume connection_info after volume snapshot
+    - [c104f2f] Set the volume access mode during volume attach
+    - [c754305] VCDriver - Ignore host in Maintenance mode in stats update
+    - [4820dbb] VMware: Fix memory leaks caused by caches
+    - [0252c87] Include pending task in log message on skip sync_power_state
+    - [9095bcf] Fixes Hyper-V iSCSI target login method
+    - [17e71f7] VMware: prevent image snapshot if no root disk defined
+    - [c545075] versions API: ignore request with a body
+  * d/p/fix-requirements.patch: Refreshed.
+  * d/p/Fixes-rdb-backend-image-size.patch: Dropped. Fixed upstream in 2014.1.2.
+
+  [ James Page ]
+  * d/watch: Point to tarballs.openstack.org for release artifacts.
+
+ -- Corey Bryant <corey.bryant@canonical.com>  Thu, 07 Aug 2014 17:16:50 -0400
 
 nova (1:2014.1.1-0ubuntu2) trusty; urgency=high
 

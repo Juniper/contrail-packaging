@@ -1,13 +1,16 @@
-diff --git a/requirements.txt b/requirements.txt
-index dd1c1af..93f27b3 100644
+Description: Disable websockify and set min version of six.
+Author: Corey Bryant <corey.bryant@canonical.com>
+Forwarded: Not needed.
 --- a/requirements.txt
 +++ b/requirements.txt
-@@ -27,7 +27,6 @@ python-glanceclient>=0.9.0
+@@ -25,9 +25,8 @@
+ python-neutronclient>=2.3.4,<3
+ python-glanceclient>=0.9.0
  python-keystoneclient>=0.7.0
- six>=1.5.2
+-six>=1.6.0
++six>=1.5.2
  stevedore>=0.14
 -websockify>=0.5.1,<0.6
  wsgiref>=0.1.2
  oslo.config>=1.2.0
  oslo.rootwrap
-

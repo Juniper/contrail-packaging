@@ -103,7 +103,6 @@ Depends:
  python-suds,
  python-webob (>= 1.2.3),
  sudo,
- websockify,
  ${misc:Depends},
  ${python:Depends}
 Suggests: python-ldap

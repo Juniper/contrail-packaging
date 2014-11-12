@@ -11,7 +11,7 @@ index 1fecc4c..84537cb 100755
  update=0
 -concurrency=0
 +concurrency=4
-
+ 
  LANG=en_US.UTF-8
  LANGUAGE=en_US:en
 @@ -137,14 +137,7 @@ function run_tests {
@@ -29,7 +29,7 @@ index 1fecc4c..84537cb 100755
 +  bash -c "${wrapper} $TESTRTESTS | ${wrapper} subunit2pyunit"
    RESULT=$?
    set -e
-
---
+ 
+-- 
 1.9.0
 
