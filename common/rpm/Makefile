@@ -248,10 +248,10 @@ all: $(PREP) contrail \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
-       ${NEUTRON_PLUGIN} contrail-server-manager contrail-server-manager-client \
-       contrail-vrouter-init contrail-web-server-manager contrail-server-manager-monitoring ${CONTRAIL_HEAT}
+       ${NEUTRON_PLUGIN} \
+       contrail-vrouter-init ${CONTRAIL_HEAT}
 
-server-manager-all: contrail-server-manager
+server-manager-all: contrail-server-manager contrail-server-manager-monitoring contrail-server-manager-client contrail-web-server-manager
 clean:
 	@echo clean
 

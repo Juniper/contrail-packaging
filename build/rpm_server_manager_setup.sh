@@ -2,10 +2,11 @@
 
 SM=""
 WEBUI=""
-CLIENT=""
+SMCLIENT=""
 HOSTIP=""
+SMMON=""
 LOCALHOSTIP=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp' | awk 'NR==1'`
- 
+
 function usage()
 {
     echo "Usage"
@@ -15,7 +16,9 @@ function usage()
     echo "\t--sm=$SM"
     echo "\t--webui=$WEBUI"
     echo "\t--sm-client=$SMCLIENT"
+    echo "\t--sm-mon=$SMMON"
     echo "\t--hostip=$HOSTIP"
+    echo "\t--all"
     echo ""
 }
 
@@ -34,8 +37,31 @@ while [ "$1" != "" ]; do
             usage
             exit
             ;;
+        --all)
+            output="$(find packages/ -name "contrail-*.rpm")"
+            printf "%s\n" "${output}" >> temp.txt
+            while read line;
+            do
+              if [[ "$line" == *client* ]];
+              then
+                SMCLIENT=$line
+              elif [[ "$line" == *monitoring* ]];
+              then
+                SMMON=$line
+              elif [[ "$line" == *web-server-manager* ]];
+              then
+                WEBUI=$line
+              elif [[ "$line" != *client*  &&  "$line" != *monitoring*  &&  "$line" != *web* ]];
+              then
+                SM=$line
+              fi
+            done < temp.txt
+            ;;
         --sm)
             SM=$VALUE
+            ;;
+        --sm-mon)
+            SMMON=$VALUE
             ;;
         --webui)
             WEBUI=$VALUE
@@ -66,7 +92,7 @@ if [ "$SM" != ""  -o  "$WEBUI" != "" ]; then
 fi
 
 if [ "$SM" != "" ]; then
-  echo "SM is $SM" 
+  echo "SM is $SM"
   # convert https to http, since was not able to get the repos
   sed -i 's/https:/http:/g' /etc/yum.repos.d/epel.repo
   yum -y install $PKGS/puppetlabs-release-el-6.noarch.rpm
@@ -112,7 +138,7 @@ if [ "$WEBUI" != "" ]; then
 
   # start webui
   mkdir -p /var/log/contrail/
-  service supervisor-webui restart 
+  service supervisor-webui restart
 fi
 
 if [ "$SMCLIENT" != "" ]; then
@@ -122,4 +148,9 @@ if [ "$SMCLIENT" != "" ]; then
      HOSTIP=$LOCALHOSTIP
   fi
   sed -i "s/listen_ip_addr = .*/listen_ip_addr = $HOSTIP/g" /opt/contrail/server_manager/client/sm-client-config.ini
+fi
+
+if [ "$SMMON" != "" ]; then
+  echo "SMMON is $SMMON"
+  yum -y install $SMMON
 fi

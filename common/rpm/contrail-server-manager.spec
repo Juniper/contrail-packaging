@@ -115,6 +115,7 @@ Requires: sendmail
 Requires: dpkg
 Requires: dpkg-devel
 Requires: syslinux
+Requires: python-gevent
 
 %description
 A Server manager description
@@ -189,6 +190,8 @@ sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
 # Set IP Address in smgr_dhcp_event.py DHCP hook.
 sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/smgr_dhcp_event.py
 
+cd /var/www/html/thirdparty_packages
+dpkg-scanpackages . | gzip -9c > Packages.gz
 
 chkconfig httpd on
 chkconfig puppetmaster on
@@ -230,6 +233,7 @@ cp %{_contrail_smgr_src}smgr_dhcp_event.py %{buildroot}%{_contrailopt}%{_contrai
 cp %{_contrail_smgr_src}server_mgr_defaults.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}server_mgr_err.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}contrail_defaults.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
+cp %{_contrail_smgr_src}server_mgr_mon_base_plugin.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 
 cp %{_contrail_smgr_src}utils/send_mail.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}sm-config.ini %{buildroot}%{_contrailopt}%{_contrail_smgr}
