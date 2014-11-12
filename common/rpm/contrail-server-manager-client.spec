@@ -58,7 +58,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 #BuildRequires:
 Requires: python >= 2.6.6
-
+Requires: python-xmltodict
 %description
 A Client for Server manager
 
