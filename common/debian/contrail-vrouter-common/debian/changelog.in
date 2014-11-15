@@ -1,0 +1,6 @@
+contrail-vrouter-common (BUILDTAG) ijohnson; urgency=low
+
+  [ijohnson]
+  * debian/changelog: changelog
+
+ -- ijohnson <ijohnon@juniper.net>  Fri, 14 Nov 2014 8:00:11 +0800
