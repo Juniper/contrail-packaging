@@ -92,7 +92,6 @@ SOURCE0 : %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 #BuildRequires:
-Requires: puppetlabs-release
 Requires: python >= 2.6.6
 Requires: httpd
 Requires: sqlite
