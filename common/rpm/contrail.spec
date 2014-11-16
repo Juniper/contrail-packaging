@@ -451,9 +451,9 @@ if [ "$1" = "configure" ]; then
     usermod -g contrail contrail
   fi
 
-  mkdir -p /var/log/named
-  chown -R contrail:adm /var/log/named
-  chmod 0750 /var/log/named
+  mkdir -p /var/log/contrail
+  chown -R contrail:adm /var/log/contrail
+  chmod 0750 /var/log/contrail
   chown -R contrail. /etc/contrail/dns
   chmod 0750 /etc/contrail/dns
 
@@ -467,13 +467,13 @@ fi
 
 %files dns 
 %defattr(-, root, root)
-%{_bindir}/named
-%{_bindir}/rndc
-%{_bindir}/rndc-confgen
-%{_bindir}/dnsd
+%{_bindir}/contrail-named
+%{_bindir}/contrail-rndc
+%{_bindir}/contrail-rndc-confgen
+%{_bindir}/contrail-dns
 %{_contraildns}
-%{_contraildns}/named.conf
-%{_contraildns}/rndc.conf
+%{_contraildns}/contrail-named.conf
+%{_contraildns}/contrail-rndc.conf
 %{_contraildns}/dns.conf
 %{_contraildns}/COPYRIGHT
 
