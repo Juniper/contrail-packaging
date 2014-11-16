@@ -57,7 +57,7 @@ fi
 #pushd $BUILD_DIR
 scons  -U --target=%{_target_cpu}  src/dns
 if [ $? -ne 0 ] ; then
-    echo " Dnsd build failed"
+    echo "contrail-dns build failed"
     exit -1
 fi
 
@@ -89,10 +89,10 @@ install -d -m 755 %{buildroot}%{_namedlogdir}
 # ND - how to get here ??
 pushd %{_builddir}/..
 # install bin files
-install -p -m 755 build/third_party/bind/bin/named/named  %{buildroot}%{_bindir}/named
-install -p -m 755 build/third_party/bind/bin/rndc/rndc    %{buildroot}%{_bindir}/rndc
-install -p -m 755 build/third_party/bind/bin/confgen/rndc-confgen    %{buildroot}%{_bindir}/rndc-confgen
-install -p -m 755 build/debug/dns/dnsd                    %{buildroot}%{_bindir}/dnsd
+install -p -m 755 build/third_party/bind/bin/named/contrail-named  %{buildroot}%{_bindir}/contrail-named
+install -p -m 755 build/third_party/bind/bin/rndc/contrail-rndc    %{buildroot}%{_bindir}/contrail-rndc
+install -p -m 755 build/third_party/bind/bin/confgen/contrail-rndc-confgen    %{buildroot}%{_bindir}/contrail-rndc-confgen
+install -p -m 755 build/debug/dns/contrail-dns            %{buildroot}%{_bindir}/contrail-dns
 
 # install etc files
 install -p -m 644 %{_distropkgdir}/rndc.conf                %{buildroot}%{_contraildns}/rndc.conf
@@ -133,10 +133,10 @@ exit 0
 
 %files
 %defattr(-, root, root)
-%{_bindir}/named
-%{_bindir}/rndc
-%{_bindir}/rndc-confgen
-%{_bindir}/dnsd
+%{_bindir}/contrail-named
+%{_bindir}/contrail-rndc
+%{_bindir}/contrail-rndc-confgen
+%{_bindir}/contrail-dns
 %{_contraildns}
 %{_namedlogdir}
 
