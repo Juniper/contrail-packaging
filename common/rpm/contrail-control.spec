@@ -96,7 +96,7 @@ install -D -m 755 %{_distropkgdir}/contrail-control.initd.supervisord %{buildroo
 install -d -m 755 %{buildroot}%{_bindir}
 install -p -m 755 build/debug/control-node/contrail-control %{buildroot}%{_bindir}/contrail-control
 install -D -m 644 controller/src/control-node/contrail-control.conf %{buildroot}/%{_contrailetc}/contrail-control.conf
-install -D -m 644 controller/src/dns/dns.conf %{buildroot}/%{_contrailetc}/dns.conf
+install -D -m 644 controller/src/dns/contrail-dns.conf %{buildroot}/%{_contrailetc}/contrail-dns.conf
 
 #install .ini files for supervisord
 install -p -m 755 %{_distropkgdir}/supervisord_control.conf %{buildroot}%{_contrailetc}/supervisord_control.conf
@@ -131,7 +131,7 @@ pushd build/python_dist
 
 %config(noreplace) /etc/contrail/control_param
 %config(noreplace) %{_contrailetc}/contrail-control.conf
-%config(noreplace) %{_contrailetc}/dns.conf
+%config(noreplace) %{_contrailetc}/contrail-dns.conf
 %config(noreplace) %{_supervisordir}/contrail-control.ini
 
 %post

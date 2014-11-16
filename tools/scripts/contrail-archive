@@ -147,7 +147,7 @@ class ContrailArchive(object):
         os.mkdir ("binaries")
         os.chdir ("binaries")
         os.symlink ("../sandbox/build/debug/control-node/contrail-control", "contrail-control")
-        os.symlink ("../sandbox/build/debug/dns/dnsd", "dnsd")
+        os.symlink ("../sandbox/build/debug/dns/contrail-dns", "contrail-dns")
         os.symlink ("../sandbox/build/debug/query_engine/contrail-query-engine", "contrail-query-engine")
         os.symlink ("../sandbox/build/debug/analytics/contrail-collector", "contrail-collector")
         os.symlink ("../sandbox/build/debug/vnsw/agent/contrail/contrail-vrouter-agent", "contrail-vrouter-agent")
