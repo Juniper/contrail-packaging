@@ -1,0 +1,5 @@
+contrail-server-manager-monitoring (BUILDTAG) UNRELEASED; urgency=low
+
+  * Initial release. (Closes: #XXXXXX)
+
+ -- Shreya Kunjir <shreyak@ubuntu-build02>  Fri, 14 Nov 2014 17:01:24 -0800
