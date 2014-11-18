@@ -66,6 +66,9 @@ override_dh_auto_install:
 	cp -p $(_config)/config.global.js $(buildroot)/$(_contrailetc)/
 	perl -pi -e '{ s/opencontrail-logo/juniper-networks-logo/g; }' $(buildroot)/$(_contrailetc)/config.global.js
 	ln -s $(_contrailetc)/config.global.js $(buildroot)/$(_contrailwebsrc)/config/config.global.js
+	rm -rf $(buildroot)/$(_contrailwebsrc)/config/userAuth.js
+	cp -p $(_config)/userAuth.js $(buildroot)/$(_contrailetc)/contrail-webui-userauth.js
+	ln -s $(_contrailetc)/contrail-webui-userauth.js $(buildroot)/$(_contrailwebsrc)/config/userAuth.js
 
 
 override_dh_shlibdeps:

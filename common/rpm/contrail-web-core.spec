@@ -95,6 +95,9 @@ rm %{buildroot}%{_contrailwebsrc}/config/config.global.js
 cp -p %{_config}/config.global.js %{buildroot}%{_contrailetc}/
 ln -s %{_contrailetc}/config.global.js %{buildroot}%{_contrailwebsrc}/config/config.global.js
 perl -pi -e '{ s/opencontrail-logo/juniper-networks-logo/g; }' %{buildroot}%{_contrailetc}/config.global.js
+rm %{buildroot}%{_contrailwebsrc}/config/userAuth.js
+cp -p %{_config}/userAuth.js %{buildroot}%{_contrailetc}/contrail-webui-userauth.js
+ln -s %{_contrailetc}/contrail-webui-userauth.js %{buildroot}%{_contrailwebsrc}/config/userAuth.js
 
 #install .ini files for supervisord
 install -d -m 755 %{buildroot}%{_supervisordir}
@@ -125,6 +128,7 @@ rm -rf %{_specdir}/contrail-webui.spec
 %endif
 %{_libdir}/*
 %config(noreplace) %{_contrailetc}/config.global.js
+%config(noreplace) %{_contrailetc}/contrail-webui-userauth.js
 %config(noreplace) %{_supervisordir}/*
 %config(noreplace) %{_contrailetc}/supervisord_webui.conf
 
