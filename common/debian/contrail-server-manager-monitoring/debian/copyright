@@ -1,0 +1,6 @@
+Name:     contrail-server-manager-monitoring
+Maintainer: shreyak <shreyak@juniper.net>
+License:  Commercial
+Files: *
+Copyright (c) 2014 Juniper Networks, Inc. All rights reserved.
+
