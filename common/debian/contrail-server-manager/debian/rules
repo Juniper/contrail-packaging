@@ -96,6 +96,7 @@ override_dh_auto_install:
 	cp -r $(src_path)/third_party/server_pre_install.py $(build_root)/usr/lib/$(python_dir)/dist-packages/cobbler/modules/
 	
 	cp -r $(src_path)/sm-config.ini  $(build_root)/opt/contrail/server_manager/
+	cp -r $(src_path)/sm-defaults.ini  $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/tags.ini  $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/logger.conf $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/contrail-server-manager.u $(build_root)/etc/init.d/contrail-server-manager

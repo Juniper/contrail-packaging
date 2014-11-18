@@ -236,6 +236,7 @@ cp %{_contrail_smgr_src}server_mgr_mon_base_plugin.py %{buildroot}%{_contrailopt
 
 cp %{_contrail_smgr_src}utils/send_mail.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}sm-config.ini %{buildroot}%{_contrailopt}%{_contrail_smgr}
+cp %{_contrail_smgr_src}sm-defaults.ini %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}tags.ini %{buildroot}%{_contrailetc}
 cp %{_contrail_smgr_src}logger.conf %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}%{_vmware}esxi_contrailvm.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
