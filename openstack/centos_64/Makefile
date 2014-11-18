@@ -6,14 +6,10 @@ PKGING_DISTDIR      := $(PKGING_GIT_ROOT)/packaging/common/rpm
 CPLANE_SRC_VER      := $(shell cat $(CPLANE_GIT_ROOT)/src/base/version.info)
 BUILD_BASE          := $(CPLANE_GIT_ROOT)/build/package-build
 PKGBLDDIR           := $(BUILD_BASE)/BUILD
-LOCAL_PY_PTH        := $(BUILD_BASE)/BUILD/python2.7
-LOCAL_PY            := $(LOCAL_PY_PTH)/bin/python
-LOCAL_PY_BLD        := $(BUILD_BASE)/BUILDROOT/Python-2.7.5
 DISTRO_PACKAGING    := $(CPLANE_GIT_ROOT)/../distro/python-venv-packaging
 OPENSTACK_PKGDIR    := $(CPLANE_GIT_ROOT)/../tools/packaging/openstack
 DISTRO_BLDDIR       := $(CPLANE_GIT_ROOT)/../distro/openstack
 DASH_PLUGIN_BLDDIR  := $(CPLANE_GIT_ROOT)/../contrail-horizon
-RPM_PY              := --define "__python $(LOCAL_PY)"
 DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu" /etc/issue)
 PREP = prep
 PPREP = pprep
@@ -42,19 +38,6 @@ $(PREP): $(PPREP)
 	@echo some $(PREP) work ...
 	@echo CPLANE_GIT_ROOT = $(CPLANE_GIT_ROOT)
 	mkdir -p $(BUILD_BASE)/{BUILD,RPMS,SOURCES,SPECS,SRPMS,TOOLS}
-
-localpy: $(LOCAL_PY)
-$(LOCAL_PY): $(PPREP)
-	@echo Compiling python
-	if [ ! -d $(PKGBLDDIR)/packaging ]; then mkdir $(PKGBLDDIR)/packaging && \
-		cd $(PKGBLDDIR)/packaging && cp -ar $(DISTRO_PACKAGING)/archives .; \
-	fi 
-	if [ ! -f $(LOCAL_PY) ]; then mkdir  -p $$( dirname $(LOCAL_PY_BLD) ) && \
-		tar xjvf $(DISTRO_PACKAGING)/archives/Python-2.7.5.tar.bz2 \
-		-C $$( dirname $(LOCAL_PY_BLD) ) && cd $(LOCAL_PY_BLD) && \
-		./configure --prefix=$(LOCAL_PY_PTH) && make install &&  \
-		$(LOCAL_PY) $(PKGBLDDIR)/packaging/archives/ez_setup.py; \
-	fi
 
 neutronclient:package-python-neutronclient
 python-neutronclient:package-python-neutronclient
