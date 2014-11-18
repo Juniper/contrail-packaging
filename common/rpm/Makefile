@@ -7,12 +7,7 @@ CPLANE_SRC_VER      := $(shell cat $(CPLANE_GIT_ROOT)/src/base/version.info)
 BUILD_BASE          := $(CPLANE_GIT_ROOT)/build/package-build
 BUILD_SRC           := $(BUILD_BASE)/SOURCES
 PKGBLDDIR           := $(BUILD_BASE)/BUILD
-LOCAL_PY_PTH        := $(BUILD_BASE)/BUILD/python2.7
-LOCAL_PY            := $(LOCAL_PY_PTH)/bin/python
-LOCAL_PY_BLD        := $(BUILD_BASE)/BUILDROOT/Python-2.7.5
-LOCAL_PY_DEF        := --define "_python_path $(LOCAL_PY_PTH)"
 DISTRO_PACKAGING    := $(CPLANE_GIT_ROOT)/../distro/python-venv-packaging
-RPM_PY              := --define "__python $(LOCAL_PY)"
 DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu" /etc/issue)
 RPMBLDOPTS          := --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' -bb
 SB_TOP              := $(CPLANE_GIT_ROOT)/..
@@ -51,26 +46,13 @@ $(PREP): $(PPREP)
 	@echo CPLANE_GIT_ROOT = $(CPLANE_GIT_ROOT)
 	mkdir -p $(BUILD_BASE)/{BUILD,RPMS,SOURCES,SPECS,SRPMS,TOOLS}
 
-localpy: $(LOCAL_PY)
-$(LOCAL_PY): $(PPREP)
-	@echo Compiling python
-	if [ ! -d $(PKGBLDDIR)/packaging ]; then mkdir $(PKGBLDDIR)/packaging && \
-		cd $(PKGBLDDIR)/packaging && cp -ar $(DISTRO_PACKAGING)/archives .; \
-	fi 
-	if [ ! -f $(LOCAL_PY) ]; then mkdir  -p $$( dirname $(LOCAL_PY_BLD) ) && \
-		tar xjvf $(DISTRO_PACKAGING)/archives/Python-2.7.5.tar.bz2 \
-		-C $$( dirname $(LOCAL_PY_BLD) ) && cd $(LOCAL_PY_BLD) && \
-		./configure --prefix=$(LOCAL_PY_PTH) && make install &&  \
-		$(LOCAL_PY) $(PKGBLDDIR)/packaging/archives/ez_setup.py; \
-	fi
-
 contrail: $(PREP)
 	@echo making rpm for contrail
 	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/packages/rpm/contrail/contrail.spec $(G_TAG) $(SB_TOPDIR)
 
-contrail-api-extension: $(PREP) $(LOCAL_PY)
+contrail-api-extension: $(PREP)
 	@echo making rpm for contrail-api-extension
-	rpmbuild $(RPMBLDOPTS) contrail-api-extension.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) contrail-api-extension.spec $(G_TAG)
 
 contrail-api-lib: $(PREP)
 	@echo making rpm for contrail-api-lib
@@ -84,15 +66,15 @@ contrail-interface-name: $(PREP)
 	@echo making rpm for contrail-interface-name
 	rpmbuild $(RPMBLDOPTS) contrail-interface-name.spec  $(G_TAG)
 
-contrail-libs: $(PREP) $(LOCAL_PY)
+contrail-libs: $(PREP)
 	@echo making rpm for contrail-libs
-	rpmbuild $(RPMBLDOPTS) contrail-libs.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) contrail-libs.spec $(G_TAG)
 
-contrail-nova-vif: $(PREP) $(LOCAL_PY)
+contrail-nova-vif: $(PREP)
 	@echo making rpm for contrail-nova-vif
 	rpmbuild $(RPMBLDOPTS) contrail-nova-vif.spec $(G_TAG)
 
-neutron-plugin-contrail: $(PREP) $(LOCAL_PY)
+neutron-plugin-contrail: $(PREP)
 	@echo making rpm for neutron-plugin-plugin
 	rpmbuild $(RPMBLDOPTS) neutron-plugin-contrail.spec $(G_TAG)
 
@@ -154,10 +136,10 @@ contrail-openstack-webui: $(PREP)
 	@echo making rpm for contrail-openstack-webui
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-webui.spec $(G_TAG)
 
-contrail-openstack-storage: $(PREP) $(LOCAL_PY)
+contrail-openstack-storage: $(PREP)
 	@echo making rpm for contrail-openstack-storage
 	if [ "$(DISTRO)" == "CentOS" ]; then \
-		rpmbuild $(RPMBLDOPTS) contrail-openstack-storage.spec $(G_TAG) $(RPM_PY); \
+		rpmbuild $(RPMBLDOPTS) contrail-openstack-storage.spec $(G_TAG); \
 	fi
 
 contrail-openstack-all: contrail-openstack contrail-openstack-analytics contrail-openstack-config \
@@ -202,25 +184,25 @@ contrail-thirdparty-packages: $(PREP)
 	@echo making rpm for contrail-thirdparty-packages
 	rpmbuild $(RPMBLDOPTS) contrail-thirdparty-packages.spec  $(G_TAG)
 
-contrail-database: $(PREP) $(LOCAL_PY)
+contrail-database: $(PREP)
 	@echo making rpm for contrail-database
 	cp contrail-database.spec $(BUILD_BASE)/SPECS/
 	cp ../control_files/contrail-database.initd $(BUILD_SRC)/
 	cp ../control_files/supervisord_database.conf $(BUILD_SRC)/
 	cp ../control_files/supervisord_contrail_database.initd $(BUILD_SRC)/
-	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-database.spec $(G_TAG) $(RPM_PY)
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-database.spec $(G_TAG)
 
-contrail-server-manager: $(PREP) $(LOCAL_PY)
+contrail-server-manager: $(PREP)
 	@echo making rpm for contrail-server-manager
 	cp contrail-server-manager.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager.spec $(G_TAG)
 
-contrail-server-manager-installer: $(PREP) $(LOCAL_PY)
+contrail-server-manager-installer: $(PREP)
 	@echo making rpm for contrail-server-manager-installer
 	cp contrail-server-manager-installer.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager-installer.spec $(G_TAG)
 
-contrail-server-manager-client: $(PREP) $(LOCAL_PY)
+contrail-server-manager-client: $(PREP)
 	@echo making rom for contrail-server-manager-client
 	cp contrail-server-manager-client.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager-client.spec $(G_TAG)
