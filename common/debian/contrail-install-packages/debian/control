@@ -9,6 +9,7 @@ Package: contrail-install-packages
 Architecture: all
 Maintainer: amoghe <amoghe@juniper.net>
 Depends:
+Replaces: contrail-setup
 Section: contrail-install-packages
 Priority: extra
 Description: Contrail Installer Packages - Container of debian packages 
