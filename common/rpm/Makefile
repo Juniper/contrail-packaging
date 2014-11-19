@@ -211,6 +211,10 @@ contrail-vrouter-init: $(PREP)
 	@echo making rpm for contrail-vrouter-init
 	rpmbuild $(RPMBLDOPTS) contrail-vrouter-init.spec $(G_TAG)
 
+contrail-vrouter-common: $(PREP)
+	@echo making rpm for contrail-vrouter-common
+	rpmbuild $(RPMBLDOPTS) contrail-vrouter-common.spec $(G_TAG)
+
 contrail-server-manager-monitoring: $(PREP)
 	@echo making rpm for contrail-server-manager-monitoring
 	rpmbuild $(RPMBLDOPTS) contrail-server-manager-monitoring.spec $(G_TAG)
@@ -230,8 +234,8 @@ all: $(PREP) contrail \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
-       ${NEUTRON_PLUGIN} \
-       contrail-vrouter-init ${CONTRAIL_HEAT}
+       ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT}\
+       contrail-vrouter-init contrail-vrouter-common
 
 server-manager-all: contrail-server-manager contrail-server-manager-monitoring contrail-server-manager-client contrail-web-server-manager
 clean:

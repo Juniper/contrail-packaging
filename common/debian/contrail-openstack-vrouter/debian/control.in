@@ -8,8 +8,5 @@ Build-Depends:
 Package: contrail-openstack-vrouter
 Architecture: all
 Maintainer: amoghe <amoghe@juniper.net>
-Depends: contrail-nodemgr, contrail-setup, contrail-utils, contrail-vrouter-init, nova-compute, python-iniparse, python-novaclient, contrail-nova-vif, librabbitmq0, linux-crashdump,
-    contrail-vrouter, nfs-kernel-server
-# To replace the supervisord files created by old contrail-vrouter package during updrade.
-Replaces: contrail-vrouter
+Depends: contrail-vrouter-common, nova-compute, python-novaclient, librabbitmq0, nfs-kernel-server
 Description: Contrail Openstack vRouter composite debian package
