@@ -10,6 +10,7 @@ export DH_VERBOSE=1
 
 export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+export src_path := $(SB_TOP)/tools/contrail-server-manager/src/
 export buildroot := ${SB_TOP}/build/debian/contrail-server-manager-monitoring
 export _python_dist := ${SB_TOP}/build/python_dist
 export _bindir := /usr/bin
@@ -35,6 +36,8 @@ override_dh_auto_build:
 override_dh_auto_install:
 	mkdir -p ${_python_dist}
 	install -d -m 755 $(buildroot)$(_bindir)
+	install -d -m 755 $(buildroot)/opt/contrail/server_manager/
 	scons -U install_contrail_sm_monitoring --root=${buildroot}
-
+	cp -r $(src_path)/server_mgr_ipmi_monitoring.py $(buildroot)/opt/contrail/server_manager/
+	cp -r $(src_path)/sm-monitoring-config.ini $(buildroot)/opt/contrail/server_manager/
 override_dh_shlibdeps:
