@@ -10,8 +10,10 @@ HOST_IP=`echo $HOST_IP_LIST | cut -d',' -f1`
 echo $HOST_IP
 easy_install argparse
 easy_install pycurl
+easy_install pip
+pip install xmltodict
 
-if [-e /usr/bin/server-manager ]; then
+if [ -e /usr/bin/server-manager ]; then
 	unlink /usr/bin/server-manager
 fi
 
