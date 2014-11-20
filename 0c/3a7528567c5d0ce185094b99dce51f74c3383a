@@ -1,0 +1,9 @@
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Approved+1: Rudra Rugge <rrugge@juniper.net>
+Code-Review+2: Rudra Rugge <rrugge@juniper.net>
+Code-Review+1: Karl Klashinsky <klash@juniper.net>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Thu, 20 Nov 2014 12:32:31 -0800
+Reviewed-on: https://review.opencontrail.org/4804
+Project: Juniper/contrail-packaging
+Branch: refs/heads/master
