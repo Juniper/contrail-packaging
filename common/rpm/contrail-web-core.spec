@@ -95,6 +95,7 @@ rm %{buildroot}%{_contrailwebsrc}/config/config.global.js
 cp -p %{_config}/config.global.js %{buildroot}%{_contrailetc}/
 ln -s %{_contrailetc}/config.global.js %{buildroot}%{_contrailwebsrc}/config/config.global.js
 perl -pi -e '{ s/opencontrail-logo/juniper-networks-logo/g; }' %{buildroot}%{_contrailetc}/config.global.js
+perl -pi -e '{ s/opencontrail-favicon/juniper-networks-favicon/g; }' %{buildroot}%{_contrailetc}/config.global.js
 rm %{buildroot}%{_contrailwebsrc}/config/userAuth.js
 cp -p %{_config}/userAuth.js %{buildroot}%{_contrailetc}/contrail-webui-userauth.js
 ln -s %{_contrailetc}/contrail-webui-userauth.js %{buildroot}%{_contrailwebsrc}/config/userAuth.js
