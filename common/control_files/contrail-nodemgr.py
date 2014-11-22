@@ -93,6 +93,8 @@ class EventManager:
         self.max_old_cores = 3
         self.max_new_cores = 1
         self.node_type = node_type
+        self.other_core_file_list = []
+        self.last_modified_time = 0
         if (node_type == 'contrail-vrouter'):
             os_nova_comp = process_stat()
             (os_nova_comp_state, error_value) = Popen("openstack-status | grep openstack-nova-compute | cut -d ':' -f2", shell=True, stdout=PIPE).communicate()
@@ -220,6 +222,7 @@ class EventManager:
             process_info.last_stop_time = pstat.stop_time
             process_info.last_exit_time = pstat.exit_time
             process_info.core_file_list = pstat.core_file_list
+            process_info.other_core_file_list = self.other_core_file_list
             process_infos.append(process_info)
 
         # send node UVE
@@ -259,6 +262,18 @@ class EventManager:
             usage_stat = DatabaseUsage(data=db_info)
             usage_stat.send()
     # end send_database_usage
+
+    def send_other_core(self, sandeshconn):
+        ls_command_option = "ls /var/crashes"
+        (corename, stderr) = Popen(ls_command_option.split(), stdout=PIPE).communicate()
+        stat_command_option = "stat --printf=%Y /var/crashes/"
+        modified_time = Popen(stat_command_option.split(), stdout=PIPE).communicate()
+        if modified_time[0] == self.last_modified_time:
+            return
+        self.last_modified_time = modified_time[0]
+        self.other_core_file_list = corename.split('\n')[0:-1]
+        self.send_process_state_db(sandeshconn)
+    # end send_other_core
 
     def runforever(self, sandeshconn, test=False):
     #sys.stderr.write(str(self.rules_data['Rules'])+'\n')
@@ -314,6 +329,8 @@ class EventManager:
             
             # do periodic events
             if headers['eventname'].startswith("TICK_60"):
+                # send other core file
+                self.send_other_core(sandeshconn)
                 # check for openstack nova compute status
                 if (self.node_type == "contrail-vrouter"):
                     os_nova_comp = self.process_state_db['openstack-nova-compute']
