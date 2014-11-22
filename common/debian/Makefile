@@ -68,6 +68,7 @@ PACKAGES = \
 	contrail-server-manager-deb \
 	contrail-server-manager-client-deb \
 	contrail-server-manager-monitoring-deb \
+	contrail-server-manager-installer-deb \
 	$(CONTRAIL_HEAT) \
 	neutron-plugin-contrail-deb \
 	contrail-vmware-utils-deb

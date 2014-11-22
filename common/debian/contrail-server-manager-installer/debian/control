@@ -1,0 +1,14 @@
+Source: contrail-server-manager-installer
+Maintainer: nitishk <nitishk@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends: debhelper (>= 8)
+
+Package: contrail-server-manager-installer
+Architecture: all
+Maintainer: nitishk <nitishk@juniper.net>
+Depends:
+Section: contrail-server-manager-installer
+Priority: extra
+Description: Contrail Server Manager Installer Packages - Wrapper Package for Server Manager and Related Debian Packages
