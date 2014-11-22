@@ -93,6 +93,8 @@ class EventManager:
         self.max_old_cores = 3
         self.max_new_cores = 1
         self.node_type = node_type
+        self.all_core_file_list = []
+        self.core_dir_modified_time = 0
         if (node_type == 'contrail-vrouter'):
             os_nova_comp = process_stat()
             (os_nova_comp_state, error_value) = Popen("openstack-status | grep openstack-nova-compute | cut -d ':' -f2", shell=True, stdout=PIPE).communicate()
@@ -226,6 +228,7 @@ class EventManager:
         node_status = NodeStatus()
         node_status.name = socket.gethostname()
         node_status.process_info = process_infos
+        node_status.all_core_file_list = self.all_core_file_list
         node_status_uve = NodeStatusUVE(data = node_status)
         sys.stderr.write('Sending UVE:' + str(node_status_uve))
         node_status_uve.send()
@@ -259,6 +262,17 @@ class EventManager:
             usage_stat = DatabaseUsage(data=db_info)
             usage_stat.send()
     # end send_database_usage
+
+    def send_all_core_file(self, sandeshconn):
+        stat_command_option = "stat --printf=%Y /var/crashes"
+        modified_time = Popen(stat_command_option.split(), stdout=PIPE).communicate()
+        if modified_time[0] == self.core_dir_modified_time:
+            return
+        self.core_dir_modified_time = modified_time[0]
+        ls_command_option = "ls /var/crashes"
+        (corename, stderr) = Popen(ls_command_option.split(), stdout=PIPE).communicate()
+        self.all_core_file_list = corename.split('\n')[0:-1]
+        self.send_process_state_db(sandeshconn)
 
     def runforever(self, sandeshconn, test=False):
     #sys.stderr.write(str(self.rules_data['Rules'])+'\n')
@@ -314,6 +328,8 @@ class EventManager:
             
             # do periodic events
             if headers['eventname'].startswith("TICK_60"):
+                # send other core file
+                self.send_all_core_file(sandeshconn)
                 # check for openstack nova compute status
                 if (self.node_type == "contrail-vrouter"):
                     os_nova_comp = self.process_state_db['openstack-nova-compute']
