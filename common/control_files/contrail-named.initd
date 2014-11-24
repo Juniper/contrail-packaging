@@ -12,8 +12,8 @@ function log_failure_msg() {
     failure
 }
 
-PID_FILE=/etc/contrail/dns/named.pid
-CONF_FILE=/etc/contrail/dns/named.conf
+PID_FILE=/etc/contrail/dns/contrail-named.pid
+CONF_FILE=/etc/contrail/dns/contrail-named.conf
 
 function daemon_start() {
     if [ ! -f ${CONF_FILE} ]; then
@@ -21,7 +21,7 @@ function daemon_start() {
 	exit 1
     fi
      echo  -n "Starting Contrail Named"
-     nohup /usr/bin/named -c ${CONF_FILE} 2>&1 &
+     nohup /usr/bin/contrail-named -c ${CONF_FILE} 2>&1 &
      RETVAL=$?
      [ $RETVAL -eq 0 ] && success || failure
      echo
@@ -35,14 +35,14 @@ function daemon_stop() {
 }
 
 daemon_status() {
-    status -p $PID_FILE named
+    status -p $PID_FILE contrail-named
     declare -f -F status > /dev/null
     if [ "$?" = "0" ]; then
-        status -p $PID_FILE named
+        status -p $PID_FILE contrail-named
     else
         declare -f -F status_of_proc > /dev/null
         if [ "$?" = "0" ]; then
-            status_of_proc -p $PID_FILE named named
+            status_of_proc -p $PID_FILE contrail-named contrail-named
         fi
     fi
 }
