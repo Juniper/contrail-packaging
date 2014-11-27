@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+
+echo "running pre install"
+mkdir -p /contrail-smgr-save
+cp /etc/cobbler/dhcp.template /contrail-smgr-save
+cp /etc/cobbler/named.template /contrail-smgr-save
+cp /etc/cobbler/settings /contrail-smgr-save
+cp /etc/cobbler/zone.template /contrail-smgr-save
+cp -r /etc/cobbler/zone_templates /contrail-smgr-save
