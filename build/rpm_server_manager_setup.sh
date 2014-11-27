@@ -80,7 +80,7 @@ while [ "$1" != "" ]; do
     esac
     shift
 done
-
+rm temp.txt
 PKGS=./packages
 
 if [ "$SM" != ""  -o  "$WEBUI" != "" ]; then
@@ -89,6 +89,7 @@ if [ "$SM" != ""  -o  "$WEBUI" != "" ]; then
    wget http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
    # Install epel repo
    yum -y install ./epel-release-6-8.noarch.rpm
+   rm -rf ./epel-release-6-8.noarch.rpm
 fi
 
 if [ "$SM" != "" ]; then
@@ -173,9 +174,16 @@ if [ "$WEBUI" != "" ]; then
   else
     echo "config.multi_tenancy.enabled = false;" >> $WEBUI_CONF_FILE
   fi
+  grep "module.exports" $WEBUI_CONF_FILE
+  if [ $? == 0 ]; then
+    sed -i "s|module.exports =.*||g" $WEBUI_CONF_FILE
+  fi
   echo "module.exports = config;" >> $WEBUI_CONF_FILE
   sed -i "s/config.featurePkg.webController.enable = .*/config.featurePkg.webController.enable = false;/g" $WEBUI_CONF_FILE
   sed -i "s/smConfig.sm.server_ip = .*/smConfig.sm.server_ip = '$HOSTIP';/g" $SM_CONF_FILE
+  sed -i "s/smConfig.sm.server_port = .*/smConfig.sm.server_port = 9001;/g" $SM_CONF_FILE
+  sed -i "s/smConfig.sm.introspect_ip = .*/smConfig.sm.introspect_ip = '$HOSTIP';/g" $SM_CONF_FILE
+  sed -i "s/smConfig.sm.introspect_port = .*/smConfig.sm.introspect_port = 8106;/g" $SM_CONF_FILE
   # start redis and supervisord
   service redis restart
   service supervisord restart
