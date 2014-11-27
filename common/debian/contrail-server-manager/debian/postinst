@@ -82,6 +82,7 @@ sed -i "s/cobbler_password         = cobbler/cobbler_password         = testing/
 #sed -i 's:"/var/named":"/var/cache/bind":g' /etc/cobbler/named.template
 #sed -i 's:/var/named/data:/var/cache/bind:g' /etc/cobbler/named.template
 #sed -i 's:data/named.run:named.run:g' /etc/cobbler/named.template
+
 service apache2 restart
 service xinetd restart
 service cobbler restart

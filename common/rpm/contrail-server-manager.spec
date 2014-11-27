@@ -94,6 +94,10 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 #BuildRequires:
 Requires: python >= 2.6.6
 Requires: httpd
+Requires: httpd-devel
+Requires: mod_ssl
+Requires: ruby-devel
+Requires: rubygems
 Requires: sqlite
 Requires: cobbler
 Requires: cobbler-web
@@ -154,6 +158,7 @@ mkdir -p /var/www/html/contrail
 mkdir -p /var/log/contrail-server-manager/
 
 cp -u /etc/puppet/puppet_init_rd /var/www/cobbler/aux/puppet
+
 easy_install argparse
 easy_install paramiko
 easy_install pycrypto
