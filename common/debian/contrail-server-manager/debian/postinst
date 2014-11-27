@@ -82,6 +82,16 @@ sed -i "s/cobbler_password         = cobbler/cobbler_password         = testing/
 #sed -i 's:"/var/named":"/var/cache/bind":g' /etc/cobbler/named.template
 #sed -i 's:/var/named/data:/var/cache/bind:g' /etc/cobbler/named.template
 #sed -i 's:data/named.run:named.run:g' /etc/cobbler/named.template
+
+cp /contrail-smgr-save/dhcp.template /etc/cobbler/dhcp.template
+cp /contrail-smgr-save/named.template /etc/cobbler/named.template
+cp /contrail-smgr-save/settings /etc/cobbler/settings
+cp /contrail-smgr-save/zone.template /etc/cobbler/zone.template
+cp -r /contrail-smgr-save/zone_templates /etc/cobbler/
+if [ -e /contrail-smgr-save/tags.ini ]; then
+  /contrail-smgr-save/tags.ini /etc/contrail_smgr/tags.ini
+fi
+
 service apache2 restart
 service xinetd restart
 service cobbler restart
