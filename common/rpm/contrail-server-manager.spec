@@ -94,6 +94,10 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 #BuildRequires:
 Requires: python >= 2.6.6
 Requires: httpd
+Requires: httpd-devel
+Requires: mod_ssl
+Requires: ruby-devel
+Requires: rubygems
 Requires: sqlite
 Requires: cobbler
 Requires: cobbler-web
@@ -121,6 +125,15 @@ A Server manager description
 
 %prep
 #%setup -q
+
+%pre
+mkdir -p /contrail-smgr-save
+cp /etc/cobbler/dhcp.template /contrail-smgr-save
+cp /etc/cobbler/named.template /contrail-smgr-save
+cp /etc/cobbler/settings /contrail-smgr-save
+cp /etc/cobbler/zone.template /contrail-smgr-save
+cp -r /etc/cobbler/zone_templates /contrail-smgr-save
+cp /etc/contrail_smgr/tags.ini /contrail-smgr-save
 
 %post
 HOST_IP=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp'`
@@ -154,6 +167,14 @@ mkdir -p /var/www/html/contrail
 mkdir -p /var/log/contrail-server-manager/
 
 cp -u /etc/puppet/puppet_init_rd /var/www/cobbler/aux/puppet
+
+cp /contrail-smgr-save/dhcp.template /etc/cobbler/dhcp.template
+cp /contrail-smgr-save/named.template /etc/cobbler/named.template
+cp /contrail-smgr-save/settings /etc/cobbler/settings
+cp /contrail-smgr-save/zone.template /etc/cobbler/zone.template
+cp -r /contrail-smgr-save/zone_templates /etc/cobbler/
+cp /contrail-smgr-save/tags.ini /etc/contrail_smgr/tags.ini
+
 easy_install argparse
 easy_install paramiko
 easy_install pycrypto
