@@ -8,12 +8,6 @@ Build-Depends:
 Package: contrail-openstack-control
 Architecture: all
 Maintainer: amoghe <amoghe@juniper.net>
-Depends: supervisor,
-         contrail-lib,
-         contrail-control,
-         contrail-dns,
-         contrail-setup,
-         contrail-utils,
-         contrail-nodemgr
+Depends: contrail-control-common
 Replaces: contrail-dns
 Description: Contrail Openstack Control composite debian package
