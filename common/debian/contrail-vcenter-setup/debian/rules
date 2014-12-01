@@ -8,12 +8,11 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 
-SPEC_DIR := $(shell pwd)
 export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
-export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export buildroot := $(SB_TOP)/build/debian/contrail-openstack-analytics
+export buildroot := $(SB_TOP)/build/debian/contrail-vcenter-setup
+export _pyver := 2.7
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -25,12 +24,12 @@ BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 %:
-	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian 	
+	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
 
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
-override_dh_auto_install: 
+override_dh_auto_install:
 
 override_dh_usrlocal:	
 

@@ -55,11 +55,16 @@ PACKAGES = \
 	contrail-setup-deb \
 	$(CONTRAIL_OPENSTACK) \
 	contrail-openstack-ha-deb \
+	contrail-analytics-common-deb \
 	contrail-openstack-analytics-deb \
+	contrail-config-common-deb \
 	$(CONTRAIL_OPENSTACK_CONFIG) \
+	contrail-control-common-deb \
 	contrail-openstack-control-deb \
+	contrail-database-common-deb \
 	contrail-openstack-database-deb \
 	contrail-openstack-vrouter-deb \
+	contrail-webui-common-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
 	contrail-test-deb \
