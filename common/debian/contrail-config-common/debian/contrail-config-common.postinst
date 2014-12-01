@@ -1,4 +1,4 @@
-echo "Running Postinst for contrail-openstack-config"
+echo "Running Postinst for contrail-config-common"
 for svc in rabbitmq-server; do
     if [ -f /etc/init.d/$svc ]; then
         service $svc stop || true
@@ -7,4 +7,4 @@ for svc in rabbitmq-server; do
         cp /etc/init.d/$svc.initd.supervisord /etc/init.d/$svc
     fi
 done
-echo "Postinst for contrail-openstack-config done"
+echo "Postinst for contrail-config-common done"

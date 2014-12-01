@@ -1,0 +1,16 @@
+Source: contrail-vcenter-setup
+Maintainer: ijohnson <ijohnson@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends: debhelper (>= 8)
+
+Package: contrail-vcenter-setup
+Architecture: all
+Maintainer: ijohnson <ijohnson@juniper.net>
+Depends: contrail-setup,
+         contrail-vmware-utils
+Section: contrail-vcenter-setup
+Priority: extra
+Description: Contrail Vcenter Setup package with scripts for provisioning
+

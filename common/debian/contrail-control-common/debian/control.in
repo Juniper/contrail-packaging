@@ -1,0 +1,18 @@
+Source: contrail-control-common
+Maintainer: ijohnson <ijohnson@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends:
+
+Package: contrail-control-common
+Architecture: all
+Maintainer: ijohnson <ijohnson@juniper.net>
+Depends: supervisor,
+         contrail-lib,
+         contrail-control,
+         contrail-dns,
+         contrail-setup,
+         contrail-utils,
+         contrail-nodemgr
+Description: Contrail Control common composite debian package
