@@ -1,0 +1,5 @@
+pbr python-pbr
+coverage
+setuptools-git
+babel
+websockify

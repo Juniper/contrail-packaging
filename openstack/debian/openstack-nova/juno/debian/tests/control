@@ -1,0 +1,5 @@
+Tests: nova-compute-daemons nova-daemons nova-clients nova-api python-nova
+Depends: nova-compute, nova-conductor, nova-cert, nova-scheduler, nova-novncproxy,
+ nova-xvpvncproxy, nova-api, nova-network, nova-objectstore, nova-console,
+ nova-consoleauth, nova-baremetal, python-nova
+Restrictions: needs-root
