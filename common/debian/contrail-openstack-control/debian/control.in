@@ -15,5 +15,4 @@ Depends: supervisor,
          contrail-setup,
          contrail-utils,
          contrail-nodemgr
-Replaces: contrail-dns
 Description: Contrail Openstack Control composite debian package
