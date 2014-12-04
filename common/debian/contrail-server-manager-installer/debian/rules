@@ -42,7 +42,7 @@ override_dh_auto_build:
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
 override_dh_auto_install:
-	rm -rf $(build_root)
+	rm -rf $(buildroot)
 	# Setup directories
 	@echo "making deb for contrail-server-manager-installer"
 	install -d -m 755 $(buildroot)
