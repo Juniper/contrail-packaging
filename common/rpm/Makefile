@@ -8,6 +8,7 @@ BUILD_BASE          := $(CPLANE_GIT_ROOT)/build/package-build
 BUILD_SRC           := $(BUILD_BASE)/SOURCES
 PKGBLDDIR           := $(BUILD_BASE)/BUILD
 DISTRO_PACKAGING    := $(CPLANE_GIT_ROOT)/../distro/python-venv-packaging
+THIRDPARTY_DIR      := $(CPLANE_GIT_ROOT)/../third_party
 DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu" /etc/issue)
 RPMBLDOPTS          := --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' -bb
 SB_TOP              := $(CPLANE_GIT_ROOT)/..
@@ -29,6 +30,12 @@ ifdef FILE_LIST
  G_TAG += --define "_fileList $(FILE_LIST)"
 endif
 G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
+
+ifdef  TAG
+ TOOLS_VERSION := $(CPLANE_SRC_VER)-$(TAG)
+else
+ TOOLS_VERSION := $(CPLANE_SRC_VER)
+endif
 
 ifdef CONTRAIL_SKU
 else
@@ -219,6 +226,15 @@ contrail-server-manager-monitoring: $(PREP)
 	@echo making rpm for contrail-server-manager-monitoring
 	rpmbuild $(RPMBLDOPTS) contrail-server-manager-monitoring.spec $(G_TAG)
 
+contrail-fabric-utils: $(PPREP)
+	@echo making rpm for contrail-fabric-utils
+	rpmbuild $(RPMBLDOPTS) fabric-utils.spec $(G_TAG)
+	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-fabric-utils-$(TOOLS_VERSION).tgz fabric-utils
+
+contrail-test:
+	@echo making tgz for contrail-test
+	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz contrail-test
+
 ifeq ($(CONTRAIL_SKU), grizzly)
 NEUTRON_PLUGIN = 
 else
@@ -235,7 +251,8 @@ all: $(PREP) contrail \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT}\
-       contrail-vrouter-init contrail-vrouter-common
+       contrail-vrouter-init contrail-vrouter-common \
+       contrail-fabric-utils contrail-test
 
 server-manager-all: contrail-server-manager contrail-server-manager-monitoring contrail-server-manager-client contrail-web-server-manager
 clean:
