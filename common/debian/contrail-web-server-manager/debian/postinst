@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+
+echo "running post install"
+
+mkdir -p /var/log/contrail/

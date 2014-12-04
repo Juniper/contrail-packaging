@@ -55,6 +55,7 @@ rm -rf %{_specdir}/contrail-web-server-manager.spec
 %{_contrailwebsrc}/*
 
 %post
+mkdir -p /var/log/contrail/
 
 exit 0
 
