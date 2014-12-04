@@ -23,7 +23,7 @@ ifdef GIT_VER
  G_TAG := --define "_gitVer $(GIT_VER)"
 endif 
 ifdef TAG
- G_TAG += --define "_buildTag $(TAG)"
+ G_TAG += --define "_buildTag $(CPLANE_SRC_VER).$(TAG)"
 endif
 ifdef FILE_LIST
  G_TAG += --define "_fileList $(FILE_LIST)"

@@ -28,18 +28,12 @@ ifdef GIT_VER
  G_TAG := --define "_gitVer $(GIT_VER)"
 endif 
 ifdef TAG
- G_TAG += --define "_buildTag $(TAG)"
+ G_TAG += --define "_buildTag $(CPLANE_SRC_VER).$(TAG)"
 endif
 ifdef FILE_LIST
  G_TAG += --define "_fileList $(FILE_LIST)"
 endif
 G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
-
-ifdef  TAG
- TOOLS_VERSION := $(CPLANE_SRC_VER)-$(TAG)
-else
- TOOLS_VERSION := $(CPLANE_SRC_VER)
-endif
 
 ifndef CONTRAIL_SKU
   CONTRAIL_SKU := havana
@@ -66,15 +60,6 @@ $(LOCAL_PY): $(PPREP)
 		./configure --prefix=$(LOCAL_PY_PTH) && make install &&  \
 		$(LOCAL_PY) $(PKGBLDDIR)/packaging/archives/ez_setup.py; \
 	fi
-
-contrail-fabric-utils: $(PPREP)
-	@echo making rpm for contrail-fabric-utils
-	rpmbuild $(RPMBLDOPTS) fabric-utils.spec $(G_TAG)
-	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-fabric-utils-$(TOOLS_VERSION).tgz fabric-utils
-
-contrail-test:
-	@echo making tgz for contrail-test
-	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz contrail-test
 
 libvirt-client: libvirt
 libvirt-devel: libvirt
@@ -140,8 +125,7 @@ puppet: $(PREP)
 	@echo making rpm for puppet
 	rpmbuild $(RPMBLDOPTS) puppet.spec $(G_TAG)
 
-all: $(PREP) contrail-fabric-utils contrail-test \
-	libvirt puppet ixgbe
+all: $(PREP) libvirt puppet ixgbe
 
 clean:
 	@echo clean
