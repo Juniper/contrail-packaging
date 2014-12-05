@@ -139,10 +139,14 @@ ifeq ($(CONTRAIL_SKU), grizzly)
 contrail-openstack-config: $(PREP)
 	@echo making rpm for contrail-openstack-config
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-config.spec $(G_TAG)
-else
+else ifeq ($(CONTRAIL_SKU), havana)
 contrail-openstack-config: $(PREP)
 	@echo making rpm for contrail-openstack-config
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-config.spec $(G_TAG)
+else
+contrail-openstack-config: $(PREP)
+	@echo making rpm for contrail-openstack-config
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse-config.spec $(G_TAG)
 endif
 
 contrail-openstack-control: $(PREP)
