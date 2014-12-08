@@ -61,8 +61,8 @@ install -d -m 755 %{buildroot}/%{_bindir}
 pushd %{_builddir}/..
 # Install supervisord config config files and directories
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack_files
-install -D -m 755 %{_distropkgdir}/supervisor-openstack.initd %{buildroot}%{_initddir}/supervisor-openstack.initd_openstack
-install -D -m 755 %{_distropkgdir}/supervisord_openstack.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack.conf.supervisord_openstack
+install -D -m 755 %{_distropkgdir}/supervisor-openstack.initd %{buildroot}%{_initddir}/supervisor-openstack
+install -D -m 755 %{_distropkgdir}/supervisord_openstack.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_openstack.conf
 # Install supervisor init.d files
 install -D -m 755 %{_distropkgdir}/keystone.initd.supervisord %{buildroot}%{_initddir}/keystone
 install -D -m 755 %{_distropkgdir}/nova-api.initd.supervisord %{buildroot}%{_initddir}/nova-api
@@ -95,7 +95,6 @@ popd
 %{_sysconfdir}/contrail
 %{_initddir}
 %{_bindir}
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack.conf.supervisord_openstack
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/keystone.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/glance-api.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/glance-registry.ini
@@ -126,17 +125,6 @@ for svc in openstack-keystone openstack-nova_api openstack-nova-scheduler\
         mv %{_initddir}/$svc %{_initddir}/$svc.backup
     fi
 done
-
-if [ ! -f %{_initddir}/supervisor-openstack ]; then
-    mv %{_initddir}/supervisor-openstack.initd_openstack %{_initddir}/supervisor-openstack
-else
-    rm %{_initddir}/supervisor-openstack.initd_openstack
-fi
-if [ ! -f /etc/contrail/supervisord_openstack.conf ]; then
-    mv /etc/contrail/supervisord_openstack.conf.supervisord_openstack /etc/contrail/supervisord_openstack.conf
-else
-    rm /etc/contrail/supervisord_openstack.conf.supervisord_openstack
-fi
 
 %changelog
 * Tue Sep 26 2013 <ndramesh@juniper.net>
