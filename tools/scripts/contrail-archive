@@ -7,7 +7,7 @@ import glob
 import shlex
 import subprocess
 
-archiveBaseDir = "/volume/junosv-storage01/contrail/"
+archiveBaseDir = "/volume/contrail/"
 
 class ContrailArchive(object):
     """ contrailBuild class to parse and execute the build commands """
@@ -22,9 +22,15 @@ class ContrailArchive(object):
             print 'Error: Need a branch to archive'
             sys.exit(1)
 
-        require_arch = ["centos64_os", "ubuntu-12-04"]
+        require_arch = '''
+            centos64_os
+            centos65
+            ubuntu-12-04
+            ubuntu-14-04
+            redhat70
+        '''.split()
         if not self.opt.arch_type in require_arch:
-            print 'Error: Only centos64_os and ubuntu-12-04 are currently supported'
+            print 'Error: Only ' + ', '.join(require_arch) + ' are currently supported'
             sys.exit(1)
 
         if not os.path.exists(".repo"):
@@ -121,9 +127,13 @@ class ContrailArchive(object):
         os.chdir (self.opt.archive_path + "/artifacts")
 
         for files in glob.iglob("contrail-install*"):
+            newfilename = self.opt.arch_type + files.split('~')[-1]
+            newfilename = "~".join([files.split('~')[0], newfilename])
             command = "cp " + files + " .."
             execute(command, ignore_errors=False)
             command = "rm " + files
+            execute(command, ignore_errors=False)
+            command = "ln -s %s %s" % (os.path.join('..', files), newfilename)
             execute(command, ignore_errors=False)
 
         for files in glob.iglob("*.iso"):
@@ -144,9 +154,9 @@ class ContrailArchive(object):
         os.chdir ("binaries")
         os.symlink ("../sandbox/build/debug/control-node/contrail-control", "contrail-control")
         os.symlink ("../sandbox/build/debug/dns/contrail-dns", "contrail-dns")
-        os.symlink ("../sandbox/build/debug/query_engine/contrail-query-engine", "contrail-query-engine")
-        os.symlink ("../sandbox/build/debug/analytics/contrail-collector", "contrail-collector")
-        os.symlink ("../sandbox/build/debug/vnsw/agent/contrail/contrail-vrouter-agent", "contrail-vrouter-agent")
+        os.symlink ("../sandbox/build/debug/query_engine/qed", "qed")
+        os.symlink ("../sandbox/build/debug/analytics/vizd", "vizd")
+        os.symlink ("../sandbox/build/packages/contrail/usr/bin/contrail-vrouter-agent", "contrail-vrouter-agent")
         os.symlink ("../sandbox/vrouter/vrouter.ko", "vrouter.ko")
 
 def execute(command, ignore_errors=False):
