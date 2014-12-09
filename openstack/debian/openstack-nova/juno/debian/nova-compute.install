@@ -1,0 +1,4 @@
+etc/nova/rootwrap.d/compute.filters
+usr/bin/nova-compute
+usr/bin/nova-idmapshift
+usr/bin/nova-serialproxy

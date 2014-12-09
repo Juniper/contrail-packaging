@@ -1,0 +1,10 @@
+/var/log/nova/nova-objectstore.log {
+    daily
+    missingok
+    postrotate
+    restart nova-objectstore
+    endscript
+    compress
+    delaycompress
+    notifempty 
+}

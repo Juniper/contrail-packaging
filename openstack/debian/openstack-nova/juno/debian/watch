@@ -1,0 +1,3 @@
+version=3
+opts="uversionmangle=s/\.([a-zA-Z])/~$1/;s/%7E/~/" \
+ http://tarballs.openstack.org/nova/ nova-(\d.*)\.tar\.gz
