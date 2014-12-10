@@ -5,6 +5,7 @@ WEBUI=""
 SMCLIENT=""
 HOSTIP=""
 SMMON=""
+DOMAIN=""
 LOCALHOSTIP=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp' | awk 'NR==1'`
 yum clean all
 
@@ -19,11 +20,48 @@ function usage()
     echo "\t--sm-client=$SMCLIENT"
     echo "\t--sm-mon=$SMMON"
     echo "\t--hostip=$HOSTIP"
+    echo "\t--domain=$DOMAIN"
+    echo "\toptions: --no_passenger"
     echo "\t--all"
     echo ""
 }
 
+function passenger_install()
+{
 
+  gem install rack passenger
+  passenger-install-apache2-module
+  mkdir -p /usr/share/puppet/rack/puppetmasterd
+  mkdir -p /usr/share/puppet/rack/puppetmasterd/public /usr/share/puppet/rack/puppetmasterd/tmp
+  cp /usr/share/puppet/ext/rack/files/config.ru /usr/share/puppet/rack/puppetmasterd/
+  chown puppet:puppet /usr/share/puppet/rack/puppetmasterd/config.ru
+  if [ -e /etc/httpd/conf.d/puppetmaster.conf ]; then
+    mv /etc/httpd/conf.d/puppetmaster.conf /etc/httpd/conf.d/puppetmaster.conf.save
+  fi
+  cp ./puppetmaster.conf /etc/httpd/conf.d/puppetmaster.conf
+  host=`echo $HOSTNAME | awk '{print tolower($0)}'`
+  if [ "$DOMAIN" != "" ]; then
+    output="$(find /var/lib/puppet/ssl/certs/ -name "${host}.${DOMAIN}*.pem")"
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile      $output|g" /etc/httpd/conf.d/puppetmaster.conf
+    output="$(find /var/lib/puppet/ssl/private_keys/ -name "${host}.${DOMAIN}*.pem")"
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile   $output|g" /etc/httpd/conf.d/puppetmaster.conf
+    sed -i "s|ErrorLog .*|ErrorLog /var/log/httpd/${host}.${DOMAIN}_ssl_error.log|g" /etc/httpd/conf.d/puppetmaster.conf
+    sed -i "s|CustomLog .*|CustomLog /var/log/httpd/${host}.${DOMAIN}_ssl_access.log combined|g" /etc/httpd/conf.d/puppetmaster.conf
+  else
+    output="$(find /var/lib/puppet/ssl/certs/ -name "${host}*.pem")"
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile      $output|g" /etc/httpd/conf.d/puppetmaster.conf
+    output="$(find /var/lib/puppet/ssl/private_keys/ -name "${host}*.pem")"
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile   $output|g" /etc/httpd/conf.d/puppetmaster.conf
+    sed -i "s|ErrorLog .*|ErrorLog /var/log/httpd/${host}_ssl_error.log|g" /etc/httpd/conf.d/puppetmaster.conf
+    sed -i "s|CustomLog .*|CustomLog /var/log/httpd/${host}_ssl_access.log combined|g" /etc/httpd/conf.d/puppetmaster.conf
+  fi
+  service puppetmaster start
+  service puppetmaster stop
+  /etc/init.d/httpd restart
+  chkconfig puppetmaster off
+  chkconfig httpd on
+
+}
 
 if [ "$#" -eq 0 ]; then
    usage
@@ -74,6 +112,12 @@ while [ "$1" != "" ]; do
         --hostip)
             HOSTIP=$VALUE
             ;;
+        --domain)
+            DOMAIN=$VALUE
+            ;;
+        --no_passenger)
+            PASSENGER="no"
+            ;;
         *)
             echo "ERROR: unknown parameter \"$PARAM\""
             usage
@@ -98,14 +142,39 @@ if [ "$SM" != "" ]; then
   echo "SM is $SM"
   # convert https to http, since was not able to get the repos
   sed -i 's/https:/http:/g' /etc/yum.repos.d/epel.repo
-
+  # Install the puppetlabs-release repo
+  # yum -y install ./puppetlabs-release-el-6.noarch.rpm
+  # rm -rf ./puppetlabs-release-el-6.noarch.rpm
+  # yum clean all
   # Install server manager
   yum -y install $SM
   if [ "$HOSTIP" == "" ]; then
      HOSTIP=$LOCALHOSTIP
   fi
   sed -i "s/listen_ip_addr = .*/listen_ip_addr = $HOSTIP/g" /opt/contrail/server_manager/sm-config.ini
-  echo "Configure /etc/cobbler/ dhcp.template, named.template, settings to bring up server manager"
+  # Adding server and Public DNS to /etc/resolv.conf if not present
+  grep "nameserver $LOCALHOSTIP" /etc/resolv.conf
+  if [ $? != 0 ]; then
+    echo "nameserver $LOCALHOSTIP" >> /etc/resolv.conf
+  fi
+  grep "nameserver 8.8.8.8" /etc/resolv.conf
+  if [ $? != 0 ]; then
+    echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+  fi
+
+  if [ "$PASSENGER" != "no"  ]; then
+    passenger_install
+  fi
+
+  if [ "$DOMAIN" != "" ]; then
+    grep "manage_forward_zones: ['$DOMAIN']" /etc/cobbler/settings
+    if [ $? != 0 ]; then
+      sed -i "s/manage_forward_zones:.*/manage_forward_zones: ['$DOMAIN']/g" >> /etc/cobbler/settings
+    fi
+  fi
+
+  echo "IMPORTANT: CONFIGURE /ETC/COBBLER/DHCP.TEMPLATE, NAMED.TEMPLATE, SETTINGS TO BRING UP SERVER MANAGER."
+
 fi
 
 if [ "$WEBUI" != "" ]; then
@@ -207,4 +276,5 @@ fi
 if [ "$SMMON" != "" ]; then
   echo "SMMON is $SMMON"
   yum -y install $SMMON
+  echo "IMPORTANT: CONFIGURE /ETC/COBBLER/DHCP.TEMPLATE, NAMED.TEMPLATE, SETTINGS TO BRING UP SERVER MANAGER."
 fi

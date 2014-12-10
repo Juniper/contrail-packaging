@@ -53,6 +53,7 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_server_manager/packages/
 # install files
 pushd %{_builddir}/..
 install -p -m 755 tools/packaging/build/rpm_server_manager_setup.sh %{buildroot}%{_contrailopt}/contrail_server_manager/setup.sh
+install -p -m 755 tools/packaging/build/puppetmaster.conf %{buildroot}%{_contrailopt}/contrail_server_manager/puppetmaster.conf
 install -p -m 755 tools/packaging/build/server_manager.repo %{buildroot}/etc/yum.repos.d/server_manager.repo
 install -p -m 755 tools/packaging/build/rpm_server_manager_readme %{buildroot}%{_contrailopt}/contrail_server_manager/README
 popd

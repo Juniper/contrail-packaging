@@ -119,6 +119,10 @@ Requires: dpkg
 Requires: dpkg-devel
 Requires: syslinux
 Requires: python-gevent
+Requires: gcc-c++
+Requires: libcurl-devel
+Requires: openssl-devel
+Requires: zlib-devel
 
 %description
 A Server manager description
@@ -130,7 +134,10 @@ A Server manager description
 HOST_IP=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp'`
 echo $HOST_IP
 
-cp -r %{_contrailetc}/cobbler /etc/
+if [ "$1" -le 1 ]; then
+  cp -r %{_contrailetc}/cobbler /etc/
+fi
+
 # Copy cobbler distro signatures file that contains esxi5.5 signature.
 mv /etc/cobbler/distro_signatures.json /etc/cobbler/distro_signatures.json-save
 mv /var/lib/cobbler/distro_signatures.json /var/lib/cobbler/distro_signatures.json-save
@@ -152,7 +159,9 @@ cp %{_contrailetc}/sendmail.cf /etc/mail/
 mv /etc/ntp.conf /etc/ntp.conf.default
 cp %{_contrailetc}/ntp.conf /etc/ntp.conf
 
-cp /usr/bin/server_manager/dhcp.template /etc/cobbler/
+if [ "$1" -le 1 ]; then
+  cp /usr/bin/server_manager/dhcp.template /etc/cobbler/
+fi
 cp -r /usr/bin/server_manager/kickstarts /var/www/html/
 mkdir -p /var/www/html/contrail
 mkdir -p /var/log/contrail-server-manager/
@@ -208,6 +217,7 @@ rm -vv /var/www/html/thirdparty_packages/Packages.gz
 %build
 
 %install
+
 rm -rf %{buildroot}
 mkdir -p  %{buildroot}
 install -d -m 755 %{buildroot}/var/www/html/thirdparty_packages
@@ -285,7 +295,14 @@ rm -rf %{buildroot}
 %{_contrailopt}/*
 /usr/sbin/*
 /etc/init.d/contrail-server-manager
-%{_contrailetc}/*
+%config(noreplace) %{_contrailetc}/tags.ini
+%config(noreplace) %{_contrailetc}/sendmail.cf
+%config(noreplace) %{_contrailetc}/ntp.conf
+%{_contrailetc}/cobbler/*
+%{_contrailetc}/puppet/*
+%{_contrailetc}/kickstarts/*
+%{_contrailetc}/contrail-redhat-repo/*
+%{_contrailetc}/contrail-centos-repo/*
 #/etc/cobbler/dhcp.template
 #/etc/cobbler/dhcp.template
 #/etc/puppet/*
