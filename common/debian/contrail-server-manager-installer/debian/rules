@@ -51,6 +51,7 @@ override_dh_auto_install:
 	# Install files
 	install -p -m 755 $(SETUP_FILE)  $(buildroot)$(_contrailopt)/contrail_server_manager/setup.sh
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_server_manager/sources.list
+	install -p -m 755 $(SB_TOP)/tools/packaging/build/puppetmaster  $(buildroot)$(_contrailopt)/contrail_server_manager/puppetmaster
 	# install TGZ file and packages list file
 	if [ -f $(TGZ_FILE) ]; then echo "Using TGZ FILE = $(TGZ_FILE)"; install -p -m 644 $(TGZ_FILE) $(buildroot)$(_contrailopt)/contrail_server_manager/contrail_server_manager_packages.tgz; else echo "ERROR: TGZ file containing all debs is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
 override_dh_shlibdeps:
