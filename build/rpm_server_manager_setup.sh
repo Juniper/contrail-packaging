@@ -6,6 +6,7 @@ SMCLIENT=""
 HOSTIP=""
 SMMON=""
 LOCALHOSTIP=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp' | awk 'NR==1'`
+yum clean all
 
 function usage()
 {
@@ -56,6 +57,7 @@ while [ "$1" != "" ]; do
                 SM=$line
               fi
             done < temp.txt
+            rm temp.txt
             ;;
         --sm)
             SM=$VALUE
@@ -80,16 +82,16 @@ while [ "$1" != "" ]; do
     esac
     shift
 done
-rm temp.txt
 PKGS=./packages
 
 if [ "$SM" != ""  -o  "$WEBUI" != "" ]; then
    # Get the epel and puupetlab repo packages
    wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-   wget http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
+   # wget http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
    # Install epel repo
    yum -y install ./epel-release-6-8.noarch.rpm
    rm -rf ./epel-release-6-8.noarch.rpm
+   yum clean all
 fi
 
 if [ "$SM" != "" ]; then
