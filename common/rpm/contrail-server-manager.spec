@@ -194,6 +194,7 @@ service sendmail restart
 
 # Set IP address in cobbler settings file
 sed -i "s/__\$IPADDRESS__/$HOST_IP/" /etc/cobbler/settings
+sed -i 's|webdir: /var/www/cobbler|webdir: /srv/www/cobbler|g' /etc/cobbler/settings
 /sbin/chkconfig --add contrail-server-manager
 sed -i "s/module = authn_.*/module = authn_configfile/g" /etc/cobbler/modules.conf
 

@@ -30,7 +30,7 @@ function passenger_install()
 {
 
   gem install rack passenger
-  passenger-install-apache2-module
+  passenger-install-apache2-module --auto --languages 'ruby,python,nodejs'
   mkdir -p /usr/share/puppet/rack/puppetmasterd
   mkdir -p /usr/share/puppet/rack/puppetmasterd/public /usr/share/puppet/rack/puppetmasterd/tmp
   cp /usr/share/puppet/ext/rack/files/config.ru /usr/share/puppet/rack/puppetmasterd/
@@ -39,19 +39,27 @@ function passenger_install()
     mv /etc/httpd/conf.d/puppetmaster.conf /etc/httpd/conf.d/puppetmaster.conf.save
   fi
   cp ./puppetmaster.conf /etc/httpd/conf.d/puppetmaster.conf
+  rel=`passenger --version`
+  rel=( $rel )
+  sed -i "s|LoadModule passenger_module /usr/lib/ruby/gems/1.8/gems/passenger-4.0.53/buildout/apache2/mod_passenger.so|LoadModule passenger_module /usr/lib/ruby/gems/1.8/gems/passenger-${rel[3]}/buildout/apache2/mod_passenger.so|g" /etc/httpd/conf.d/puppetmaster.conf
+  sed -i "s|PassengerRoot /usr/lib/ruby/gems/1.8/gems/passenger-4.0.53|PassengerRoot /usr/lib/ruby/gems/1.8/gems/passenger-${rel[3]}|g" /etc/httpd/conf.d/puppetmaster.conf
   host=`echo $HOSTNAME | awk '{print tolower($0)}'`
   if [ "$DOMAIN" != "" ]; then
     output="$(find /var/lib/puppet/ssl/certs/ -name "${host}.${DOMAIN}*.pem")"
-    sed -i "s|SSLCertificateFile.*|SSLCertificateFile      $output|g" /etc/httpd/conf.d/puppetmaster.conf
+    output=( $output )
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile      ${output[0]}|g" /etc/httpd/conf.d/puppetmaster.conf
     output="$(find /var/lib/puppet/ssl/private_keys/ -name "${host}.${DOMAIN}*.pem")"
-    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile   $output|g" /etc/httpd/conf.d/puppetmaster.conf
+    output=( $output )
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile   ${output[0]}|g" /etc/httpd/conf.d/puppetmaster.conf
     sed -i "s|ErrorLog .*|ErrorLog /var/log/httpd/${host}.${DOMAIN}_ssl_error.log|g" /etc/httpd/conf.d/puppetmaster.conf
     sed -i "s|CustomLog .*|CustomLog /var/log/httpd/${host}.${DOMAIN}_ssl_access.log combined|g" /etc/httpd/conf.d/puppetmaster.conf
   else
     output="$(find /var/lib/puppet/ssl/certs/ -name "${host}*.pem")"
-    sed -i "s|SSLCertificateFile.*|SSLCertificateFile      $output|g" /etc/httpd/conf.d/puppetmaster.conf
+    output=( $output )
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile      ${output[0]}|g" /etc/httpd/conf.d/puppetmaster.conf
     output="$(find /var/lib/puppet/ssl/private_keys/ -name "${host}*.pem")"
-    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile   $output|g" /etc/httpd/conf.d/puppetmaster.conf
+    output=( $output )
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile   ${output[0]}|g" /etc/httpd/conf.d/puppetmaster.conf
     sed -i "s|ErrorLog .*|ErrorLog /var/log/httpd/${host}_ssl_error.log|g" /etc/httpd/conf.d/puppetmaster.conf
     sed -i "s|CustomLog .*|CustomLog /var/log/httpd/${host}_ssl_access.log combined|g" /etc/httpd/conf.d/puppetmaster.conf
   fi
