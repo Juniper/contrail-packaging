@@ -92,7 +92,6 @@ SOURCE0 : %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 #BuildRequires:
-Requires: puppetlabs-release
 Requires: python >= 2.6.6
 Requires: httpd
 Requires: httpd-devel
@@ -103,8 +102,8 @@ Requires: sqlite
 Requires: cobbler
 Requires: cobbler-web
 Requires:fence-agents
-Requires: puppet = 3.7.3-1.el6
-Requires: puppet-server = 3.7.3-1.el6
+Requires: puppet = 2.7.25
+Requires: puppet-server = 2.7.25
 Requires: python-devel
 Requires: python-pip
 Requires: dhcp
