@@ -122,14 +122,14 @@ rm temp.txt
 
 if [ "$SM" != "" ]; then
   echo "SM is $SM"
-  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppet-common_3.7.3-1puppetlabs1_all.deb
-  gdebi puppet-common_3.7.3-1puppetlabs1_all.deb
+  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppet-common_2.7.25-1puppetlabs1_all.deb
+  gdebi puppet-common_2.7.25-1puppetlabs1_all.deb
 
-  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppetmaster-common_3.7.3-1puppetlabs1_all.deb
-  gdebi puppetmaster-common_3.7.3-1puppetlabs1_all.deb
+  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppetmaster-common_2.7.25-1puppetlabs1_all.deb
+  gdebi puppetmaster-common_2.7.25-1puppetlabs1_all.deb
 
-  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppetmaster_3.7.3-1puppetlabs1_all.deb
-  gdebi puppetmaster_3.7.3-1puppetlabs1_all.deb
+  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppetmaster_2.7.25-1puppetlabs1_all.deb
+  gdebi puppetmaster_2.7.25-1puppetlabs1_all.deb
 
   # Install server manager
   gdebi $SM
