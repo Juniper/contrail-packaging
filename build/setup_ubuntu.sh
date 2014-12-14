@@ -1,5 +1,11 @@
 #! /bin/bash
 
+# backup old directories in case of upgrade
+if [ -d /opt/contrail/contrail_install_repo ]; then
+    mkdir -p /opt/contrail/contrail_install_repo_backup
+    mv /opt/contrail/contrail_install_repo/* /opt/contrail/contrail_install_repo_backup/
+fi
+
 # copy files over
 mkdir -p /opt/contrail/contrail_install_repo
 cd /opt/contrail/contrail_install_repo; tar xvzf /opt/contrail/contrail_packages/contrail_debs.tgz
