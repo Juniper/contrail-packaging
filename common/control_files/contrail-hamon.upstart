@@ -1,10 +1,19 @@
 description "contrail cmon checker"
 
-start on runlevel [2345]
-stop on runlevel [!2345]
-
-respawn
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on runlevel [016]
+limit core unlimited unlimited
 
 limit nofile 8192 8192
 
+pre-start script
+  logger "Starting contrail-hamon"
+end script
+
 exec /opt/contrail/bin/contrail-ha-check.sh
+
+respawn
+
+post-start script
+  logger "contrail-hamon started"
+end script
