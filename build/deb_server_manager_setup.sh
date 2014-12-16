@@ -221,15 +221,17 @@ function passenger_install()
 
 function upgrade_cobbler()
 {
-  #save_cobbler_state
-  #dpkg -P cobbler
-  #dpkg -P cobbler-web
-  #dpkg -P cobbler-common
   apt-get -y install apache2 libapache2-mod-wsgi tftpd-hpa python-urlgrabber python-django selinux-utils python-simplejson python-dev
-  wget -qO - http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/Release.key | apt-key add -
   apt-get -y install python-software-properties
+  wget -qO - http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/Release.key | apt-key add -
   add-apt-repository "deb http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/ ./"
   apt-get update --yes
+  cv=`cobbler --version`
+  cv=( $cv  )
+  if [ "${cv[1]}" != "2.6.3" ]; then
+    dpkg -P --force-all python-cobbler
+    dpkg -P --force-all cobbler-common
+  fi
   apt-get -y install cobbler="2.6.3-1"
   rel=`lsb_release -r`
   rel=( $rel )
