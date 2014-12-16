@@ -101,7 +101,9 @@ clean-%:
 	rm -rf $(SB_TOP)/build/packages/$(PACKAGE)
 
 KERNEL_VERSIONS := 3.8.0-29-generic 3.2.0-58-generic 3.2.0-51-generic 3.11.0-22-generic \
-                   3.13.0-24-generic 3.8.0-31-generic 3.13.0-34-generic 3.13.0-35-generic
+                   3.13.0-24-generic 3.8.0-31-generic 3.13.0-34-generic 3.13.0-35-generic \
+                   3.13.0-40-generic
+
 package-contrail: debian-contrail
 	$(eval PACKAGE := contrail)
 	@echo "Building package $(PACKAGE)"
