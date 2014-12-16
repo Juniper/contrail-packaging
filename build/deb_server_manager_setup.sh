@@ -219,19 +219,13 @@ function passenger_install()
     update-rc.d -f puppetmaster remove
 }
 
-function upgrade_cobbler()
+function install_cobbler()
 {
   apt-get -y install apache2 libapache2-mod-wsgi tftpd-hpa python-urlgrabber python-django selinux-utils python-simplejson python-dev
-  apt-get -y install python-software-properties
+  apt-get -y install python-software-properties debmirror
   wget -qO - http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/Release.key | apt-key add -
   add-apt-repository "deb http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/ ./"
   apt-get update --yes
-  cv=`cobbler --version`
-  cv=( $cv  )
-  if [ "${cv[1]}" != "2.6.3" ]; then
-    dpkg -P --force-all python-cobbler
-    dpkg -P --force-all cobbler-common
-  fi
   apt-get -y install cobbler="2.6.3-1"
   rel=`lsb_release -r`
   rel=( $rel )
@@ -246,7 +240,6 @@ function upgrade_cobbler()
   a2enmod proxy_http
   a2enmod version
   setenforce 0
-  #replace_cobbler_state
 }
 
 function bind_logging()
@@ -304,14 +297,23 @@ if [ "$SM" != "" ]; then
   if [ "$check" != ""  ]; then
     # Upgrade
     save_cobbler_state
-    upgrade_cobbler
+    cv=`cobbler --version`
+    cv=( $cv  )
+    if [ "${cv[1]}" != "2.6.3" ]; then
+      dpkg -P --force-all python-cobbler
+      dpkg -P --force-all cobbler-common
+      dpkg -P --force-all cobbler-web
+      dpkg -P --force-all cobbler
+      dpkg -P --force-all contrail-server-manager
+    fi
+    install_cobbler
     if [ -e /etc/apache2/sites-enabled/puppetmasterd ]; then
       rm /etc/apache2/sites-enabled/puppetmasterd
     fi
     gdebi -n $SM
     replace_cobbler_state
   else
-    upgrade_cobbler
+    install_cobbler
     gdebi -n $SM
   fi
 
