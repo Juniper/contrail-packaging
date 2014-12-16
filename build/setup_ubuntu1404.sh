@@ -23,6 +23,7 @@ grep "deb file:/opt/contrail/contrail_install_repo ./" /etc/apt/sources.list
 if [ $? != 0 ]; then
     datetime_string=`date +%Y_%m_%d__%H_%M_%S`
     cp /etc/apt/sources.list /etc/apt/sources.list.$datetime_string
+    echo >> /etc/apt/sources.list
     sed -i '1 i\deb file:/opt/contrail/contrail_install_repo ./' /etc/apt/sources.list
 fi
 
