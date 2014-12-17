@@ -48,6 +48,9 @@ endif
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
+override_dh_builddeb:
+	dh_builddeb -- -Zgzip
+
 override_dh_auto_install: 
 	# Setup directories
 	@echo "making deb for contrail-install-packages"
