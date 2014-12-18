@@ -22,6 +22,7 @@ endif
 
 ifeq ($(CONTRAIL_SKU),juno)
     CONTRAIL_OPENSTACK := contrail-openstack-juno-deb
+    CONTRAIL_HEAT := contrail-heat-deb
 endif
 
 ifeq ($(CONTRAIL_SKU),icehouse)
