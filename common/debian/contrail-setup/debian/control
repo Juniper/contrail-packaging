@@ -18,7 +18,8 @@ Depends: tar,
     vlan,
     python-iniparse
 # Replaces some files in /opt/contrail/contrail_packages/ created by contrail-install-packages.
-Replaces: contrail-install-packages
+# Replaces some files in /opt/contrail/bin/ created by contrail-openstack-ha
+Replaces: contrail-install-packages, contrail-openstack-ha
 Section: contrail-setup
 Priority: extra
 Description: Contrail Setup package with scripts for provisioning
