@@ -104,6 +104,8 @@ KERNEL_VERSIONS := 3.8.0-29-generic 3.2.0-58-generic 3.2.0-51-generic 3.11.0-22-
                    3.13.0-24-generic 3.8.0-31-generic 3.13.0-34-generic 3.13.0-35-generic \
                    3.13.0-40-generic
 
+AVAILABLE_KERNEL_VERSIONS := $(foreach kname, $(KERNEL_VERSIONS), $(shell [ -d /lib/modules/$(kname)/build ] && echo $(kname)))
+
 package-contrail: debian-contrail
 	$(eval PACKAGE := contrail)
 	@echo "Building package $(PACKAGE)"
@@ -113,7 +115,7 @@ package-contrail: debian-contrail
 	sed -i '/BUILDDEP_SERIES/d' $(SB_TOP)/build/packages/$(PACKAGE)/debian/control
 	(cd $(SB_TOP)/build/packages/$(PACKAGE); dpkg-buildpackage -uc -us -b -rfakeroot)
 	chmod u+x $(SB_TOP)/build/packages/contrail/debian/rules.modules
-	$(foreach kver, $(KERNEL_VERSIONS), \
+	$(foreach kver, $(AVAILABLE_KERNEL_VERSIONS), \
             (cd $(SB_TOP)/vrouter; git clean -f -d); \
             (cd $(SB_TOP)/build/packages/$(PACKAGE); \
             fakeroot debian/rules.modules KVERS=$(kver) clean; \
