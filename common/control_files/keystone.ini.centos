@@ -3,8 +3,8 @@
 command=/usr/bin/python /usr/bin/keystone-all
 user=keystone
 redirect_stderr=true
-stdout_logfile= /var/log/keystone/keystone.log
-stderr_logfile= /var/log/keystone/keystone.log
+stdout_logfile=/var/log/contrail/keystone-supervisor-stdout.log
+stderr_logfile=/var/log/contrail/keystone-supervisor-stderr.log
 priority=440
 autostart=true
 killasgroup=true

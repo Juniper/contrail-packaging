@@ -3,6 +3,8 @@
 command=/usr/bin/python /usr/bin/nova-consoleauth --config-file /etc/nova/nova.conf --logfile /var/log/nova/consoleauth.log --debug
 user=nova
 redirect_stderr=true
+stdout_logfile=/var/log/contrail/nova-consoleauth-supervisor-stdout.log
+stderr_logfile=/var/log/contrail/nova-consoleauth-supervisor-stderr.log
 priority=440
 autostart=true
 killasgroup=true

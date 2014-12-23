@@ -3,6 +3,8 @@
 command=/usr/bin/python /usr/bin/cinder-api --config-file /usr/share/cinder/cinder-dist.conf --config-file /etc/cinder/cinder.conf --logfile /var/log/cinder/api.log
 user=cinder
 redirect_stderr=true
+stdout_logfile=/var/log/contrail/cinder-api-supervisor-stdout.log
+stderr_logfile=/var/log/contrail/cinder-api-supervisor-stderr.log
 priority=440
 autostart=true
 killasgroup=true

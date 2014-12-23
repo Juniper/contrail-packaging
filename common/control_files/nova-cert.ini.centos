@@ -3,6 +3,8 @@
 command=/usr/bin/python /usr/bin/nova-cert --config-file /etc/nova/nova.conf --logfile /var/log/nova/cert.log
 user=nova
 redirect_stderr=true
+stdout_logfile=/var/log/contrail/nova-cert-supervisor-stdout.log
+stderr_logfile=/var/log/contrail/nova-cert-supervisor-stderr.log
 priority=440
 autostart=true
 killasgroup=true
