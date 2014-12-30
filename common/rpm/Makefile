@@ -39,7 +39,7 @@ endif
 
 ifdef CONTRAIL_SKU
 else
-  CONTRAIL_SKU := "grizzly"
+  CONTRAIL_SKU := "havana"
 endif
 G_TAG += --define "_skuTag $(CONTRAIL_SKU)"
 
@@ -116,12 +116,6 @@ contrail-openstack-ha: $(PREP)
 contrail-openstack-analytics: $(PREP)
 	@echo making rpm for contrail-openstack-analytics
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-analytics.spec $(G_TAG)
-
-ifeq ($(CONTRAIL_SKU), grizzly)
-contrail-openstack-config: $(PREP)
-	@echo making rpm for contrail-openstack-config
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-config.spec $(G_TAG)
-endif
 
 ifeq ($(CONTRAIL_SKU), havana)
 contrail-openstack-config: $(PREP)
@@ -241,11 +235,7 @@ contrail-test:
 	@echo making tgz for contrail-test
 	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz contrail-test
 
-ifeq ($(CONTRAIL_SKU), grizzly)
-NEUTRON_PLUGIN = 
-else
 NEUTRON_PLUGIN = neutron-plugin-contrail
-endif
 ifeq ($(CONTRAIL_SKU), icehouse)
 CONTRAIL_HEAT = contrail-heat
 else

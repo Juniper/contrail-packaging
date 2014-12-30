@@ -14,11 +14,7 @@ else
   export CONTRAIL_SKU := havana
 endif
 
-ifeq ($(CONTRAIL_SKU),grizzly)
-    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-grizzly-deb
-else
-    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
-endif
+CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 
 ifeq ($(CONTRAIL_SKU),juno)
     CONTRAIL_OPENSTACK := contrail-openstack-juno-deb
@@ -270,21 +266,17 @@ contrail-web-core-deb:
                 || echo no control.in
 
 neutron-plugin-contrail-deb:
-	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
-		$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail) \
-		mkdir -p ${BUILDDIR}; \
-		cp -R ${SB_TOP}/openstack/neutron_plugin/* ${BUILDDIR}; \
-		cp -R ${SB_TOP}/tools/packages/debian/neutron-plugin-contrail/debian ${BUILDDIR}/debian; \
-		sed -i 's/VERSION/$(VERSION)/g' ${BUILDDIR}/debian/changelog; \
-		(cd ${BUILDDIR}; fakeroot debian/rules clean); \
-		(cd ${BUILDDIR}; fakeroot debian/rules binary); \
-	fi
+	$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail) \
+	mkdir -p ${BUILDDIR}; \
+	cp -R ${SB_TOP}/openstack/neutron_plugin/* ${BUILDDIR}; \
+	cp -R ${SB_TOP}/tools/packages/debian/neutron-plugin-contrail/debian ${BUILDDIR}/debian; \
+	sed -i 's/VERSION/$(VERSION)/g' ${BUILDDIR}/debian/changelog; \
+	(cd ${BUILDDIR}; fakeroot debian/rules clean); \
+	(cd ${BUILDDIR}; fakeroot debian/rules binary);
 
 neutron-plugin-contrail-clean:
-	if [ '${CONTRAIL_SKU}' != 'grizzly' ]; then \
-		$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail) \
-		rm -rf ${BUILDDIR}; \
-	fi
+	$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail) \
+	rm -rf ${BUILDDIR};
 
 contrail-heat-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-heat) \

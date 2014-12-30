@@ -34,11 +34,7 @@ URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
 Requires:	redis
-%if %{_skuTag} == "grizzly"
-Requires:	contrail-nodejs = 0.8.15-1%{?dist}
-%else
 Requires:	nodejs = 0.8.15-1%{?dist}
-%endif
 Requires:	supervisor
 
 Obsoletes:      contrail-webui
@@ -105,10 +101,6 @@ install -d -m 755 %{buildroot}%{_supervisordir}
 install -p -m 755 %{_distropkgdir}/supervisord_webui.conf %{buildroot}%{_contrailetc}/supervisord_webui.conf
 install -p -m 755 %{_distropkgdir}/contrail-webui.ini %{buildroot}%{_supervisordir}/contrail-webui.ini
 install -p -m 755 %{_distropkgdir}/contrail-webui-middleware.ini %{buildroot}%{_supervisordir}/contrail-webui-middleware.ini
-%if %{_skuTag} == "grizzly"
-perl -pi -e '{ s/node webServerStart.js/nodejs-contrail webServerStart.js/g; }' %{buildroot}%{_supervisordir}/contrail-webui.ini
-perl -pi -e '{ s/node jobServerStart.js/nodejs-contrail jobServerStart.js/g; }' %{buildroot}%{_supervisordir}/contrail-webui-middleware.ini
-%endif
 
 %clean
 rm -rf %{buildroot}
