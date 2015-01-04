@@ -1,0 +1,6 @@
+[contrail_openstack_repo]
+name=contrail_openstack_repo
+baseurl=file:///opt/contrail/contrail_openstack_repo/
+enabled=1
+priority=1
+gpgcheck=0

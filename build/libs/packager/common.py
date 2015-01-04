@@ -19,7 +19,6 @@ from lxml import etree
 from libs.packager.utils import Utils
 
 log = logging.getLogger("pkg")
-PLATFORM = Utils.get_platform_info()
 
 class MakeError(Exception):
     pass
@@ -43,8 +42,9 @@ class BasePackager(Utils):
         self.make_targets_file     = self.expanduser(kwargs.get('make_targets_file', None))
         pkg_types                  = {'ubuntu': 'deb', 'centos': 'rpm', \
                                       'redhatenterpriselinuxserver': 'rpm', 'fedora': 'rpm'}
-        self.platform              = PLATFORM['default'][0]
-        self.cache_subdir          = PLATFORM['formatted']
+        platform                   = self.get_platform_info(kwargs['os_version'])
+        self.platform              = platform['default'][0]
+        self.cache_subdir          = platform['formatted']
         self.pkg_type              = pkg_types[self.platform]
         self.store_log_dir         = os.path.join(self.store, 'package_info')
         self.artifacts_dir         = os.path.join(self.git_local_repo, 'build', 'artifacts')
@@ -71,7 +71,9 @@ class BasePackager(Utils):
         contrail_pkgs_dict = self.get_dict_by_item(contrail_pkgs, 'package_type')
 
         # make contrail-install-packages are done first
-        pkgtypes = sorted(contrail_pkgs_dict.keys())
+        pkgtypes = list(set(sorted(contrail_pkgs_dict.keys() +
+                                   depends_pkgs_dict.keys() +
+                                   base_pkgs_dict.keys())))
         if 'contrail-install-packages' in pkgtypes:
             pkgtypes.remove('contrail-install-packages')
             pkgtypes = ['contrail-install-packages'] + pkgtypes

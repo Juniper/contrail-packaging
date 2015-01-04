@@ -187,9 +187,21 @@ contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
 	rpmbuild $(RPMBLDOPTS) contrail-install-packages.spec  $(G_TAG)
 
+contrail-packages: $(PREP)
+	@echo making rpm for contrail-packages
+	rpmbuild $(RPMBLDOPTS) contrail-packages.spec  $(G_TAG)
+
 contrail-thirdparty-packages: $(PREP)
 	@echo making rpm for contrail-thirdparty-packages
 	rpmbuild $(RPMBLDOPTS) contrail-thirdparty-packages.spec  $(G_TAG)
+
+contrail-dependent-packages: $(PREP)
+	@echo making rpm for contrail-dependent-packages
+	rpmbuild $(RPMBLDOPTS) contrail-dependent-packages.spec  $(G_TAG)
+
+contrail-openstack-packages: $(PREP)
+	@echo making rpm for contrail-openstack-packages
+	rpmbuild $(RPMBLDOPTS) contrail-openstack-packages.spec  $(G_TAG)
 
 contrail-database: $(PREP)
 	@echo making rpm for contrail-database

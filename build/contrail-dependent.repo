@@ -1,0 +1,6 @@
+[contrail_dependent_repo]
+name=contrail_dependent_repo
+baseurl=file:///opt/contrail/contrail_dependent_repo/
+enabled=1
+priority=1
+gpgcheck=0
