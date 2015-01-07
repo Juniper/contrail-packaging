@@ -151,9 +151,9 @@ if [ "$SM" != "" ]; then
   # convert https to http, since was not able to get the repos
   sed -i 's/https:/http:/g' /etc/yum.repos.d/epel.repo
   # Install the puppetlabs-release repo
-  # yum -y install ./puppetlabs-release-el-6.noarch.rpm
-  # rm -rf ./puppetlabs-release-el-6.noarch.rpm
-  # yum clean all
+  yum -y install ./puppetlabs-release-el-6.noarch.rpm
+  rm -rf ./puppetlabs-release-el-6.noarch.rpm
+  yum clean all
   # Install server manager
   yum -y install $SM
   if [ "$HOSTIP" == "" ]; then
