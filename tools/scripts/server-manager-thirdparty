@@ -14,3 +14,8 @@ puppetlabs-release-precise.deb, 8a30a179f20e0768943447f3e9e7be02
 ruby1.8_1.8.7.352-2ubuntu1.4_amd64.deb, 2ae7a774a6f69003d43fd97c2aad106f
 ruby_4.8_all.deb, 55247c5c4791de1d41489a6ea46f7421
 biosdevname_0.4.1-0ubuntu6.1_amd64.deb, 29af831d64f94163cf06d6dfc8397452
+facter_2.3.0-1puppetlabs1_all.deb, 127f8af461cd773be4a3e4cdb2a41778
+libruby1.8_1.8.7.352-2ubuntu1.6_amd64.deb, 80cd8c8b4b47805b9c2e6cf8ac4b8d61
+puppet_3.7.3-1puppetlabs1_all.deb, a0411e49e502d5675db04281dfb30caf
+puppet-common_3.7.3-1puppetlabs1_all.deb, 91a479be1a8f6563e23cd5007f5a0690
+ruby1.8_1.8.7.352-2ubuntu1.6_amd64.deb, dd8668fdbd22b44e2d0a3d366fdf26c0
