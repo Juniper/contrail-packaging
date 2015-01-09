@@ -139,7 +139,7 @@ PKGS=./packages
 if [ "$SM" != ""  -o  "$WEBUI" != "" ]; then
    # Get the epel and puupetlab repo packages
    wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-   # wget http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
+   wget http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
    # Install epel repo
    yum -y install ./epel-release-6-8.noarch.rpm
    rm -rf ./epel-release-6-8.noarch.rpm
