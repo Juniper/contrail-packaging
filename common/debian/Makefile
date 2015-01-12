@@ -31,12 +31,17 @@ ifeq ($(CONTRAIL_SKU),havana)
 endif
 
 KVERS ?= $(shell uname -r)
+ifndef CONTRAIL_VERSION
 VERSION = 
 ifdef TAG
 VERSION = $(SRC_VER)-$(TAG)
 else
 VERSION = $(SRC_VER)-$(BUILDTIME)
 endif
+else
+VERSION = $(CONTRAIL_VERSION)
+endif
+
 
 PACKAGES = \
         contrail \
