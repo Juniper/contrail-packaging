@@ -275,6 +275,9 @@ function bind_logging()
 
 if [ "$SM" != "" ]; then
   echo "SM is $SM"
+  wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
+  gdebi -n puppetlabs-release-precise.deb
+
   wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppet-common_3.7.3-1puppetlabs1_all.deb
   gdebi -n puppet-common_3.7.3-1puppetlabs1_all.deb
 
