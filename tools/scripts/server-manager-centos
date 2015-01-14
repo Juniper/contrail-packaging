@@ -1,10 +1,23 @@
 package, md5
+augeas-libs-1.0.0-7.el6.x86_64.rpm, 1ff27d1966ae44d2f77e19e718bd04ba
 compat-readline5-5.2-17.1.el6.x86_64.rpm, 062e07c76c6f91b59a3773570002a93e
 facter-1.5.8-1.el6.rf.noarch.rpm, 4e25baf92aaf67b686e699fbe340621e
+facter-2.3.0-1.el6.x86_64.rpm, b73669da59938b1ec67590235bbaf0f0
+libselinux-2.0.94-5.8.el6.x86_64.rpm, 4af57b722497226552a2ff4053d5c900
+libselinux-ruby-2.0.94-5.8.el6.x86_64.rpm, 5d68fe56969c73d784b58addc32fd3cd
+libselinux-utils-2.0.94-5.8.el6.x86_64.rpm, a6a0d609968343047a8994a65a461f7e
 ntp-4.2.4p8-3.el6.centos.x86_64.rpm, 59bded1ee5ca343bc914202f2568e408
 ntpdate-4.2.4p8-3.el6.centos.x86_64.rpm, 3078b5bbded69e854a045a9aaa1f243f
+openssl-1.0.1e-30.el6_6.4.x86_64.rpm, 85e017b53109aa9b73c573a4ee9c5698
+pciutils-3.1.10-4.el6.x86_64.rpm, ca0c8a97adbe3330b8486de83b6e191b
+pciutils-libs-3.1.10-4.el6.x86_64.rpm, 0a10797f9bf17b623386b2e11ecad847
 puppet-2.7.20-1308300027.noarch.rpm, b5ec84fd8669b7a46b681a70d4a27964
+puppet-3.7.3-1.el6.noarch.rpm, a5f008bc524c8a60f7eb1c5b66552e3a
 puppet-server-2.7.20-1308300027.noarch.rpm, 189c85ff497cfcf117be3b3db9966e09
 ruby-1.8.7.352-10.el6_4.x86_64.rpm, 5f27c9d92645baa7c99ba92f4fb037f6
+ruby-1.8.7.374-3.el6_6.x86_64.rpm, 7f342571be8a6ec834200d5f8325a54a
+ruby-irb-1.8.7.374-3.el6_6.x86_64.rpm, c232a49ae98c1ba9f7ba48dec60f21b7
 ruby-libs-1.8.7.352-10.el6_4.x86_64.rpm, 543f3d56d58eb851ed5871a83ef51275
+ruby-libs-1.8.7.374-3.el6_6.x86_64.rpm, 82cee0f6dd08334faf25cf58860265fb
+ruby-rdoc-1.8.7.374-3.el6_6.x86_64.rpm,9e400eaf0e6089f191d0f3c209c366ad
 wget-1.12-1.8.el6.x86_64.rpm, 3f5e17d2e8a9b8c4372e40cf2e0ae029
