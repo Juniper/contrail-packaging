@@ -181,7 +181,7 @@ function passenger_install()
     passenger-install-apache2-module --auto --languages 'ruby,python,nodejs'
     mkdir -p /usr/share/puppet/rack/puppetmasterd
     mkdir -p /usr/share/puppet/rack/puppetmasterd/public /usr/share/puppet/rack/puppetmasterd/tmp
-    cp /usr/share/puppet/ext/rack/files/config.ru /usr/share/puppet/rack/puppetmasterd/
+    cp /usr/share/puppet/ext/rack/config.ru /usr/share/puppet/rack/puppetmasterd/
     chown puppet:puppet /usr/share/puppet/rack/puppetmasterd/config.ru
     if [ -e /etc/apache2/sites-available/puppetmasterd ]; then
       mv /etc/apache2/sites-available/puppetmasterd /etc/apache2/sites-available/puppetmasterd.save
