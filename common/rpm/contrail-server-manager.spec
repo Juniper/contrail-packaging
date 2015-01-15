@@ -165,6 +165,7 @@ if [ "$1" -le 1 ]; then
 fi
 cp -r /usr/bin/server_manager/kickstarts /var/www/html/
 mkdir -p /var/www/html/contrail
+mkdir -p /var/www/html/contrail/config_file
 mkdir -p /var/log/contrail-server-manager/
 
 cp -u /etc/puppet/puppet_init_rd /var/www/cobbler/aux/puppet
