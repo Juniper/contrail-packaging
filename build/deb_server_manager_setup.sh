@@ -240,6 +240,25 @@ function install_cobbler()
   a2enmod proxy_http
   a2enmod version
   setenforce 0
+  cp -r /srv/www/cobbler /var/www/cobbler
+  cp -r /srv/www/cobbler_webui_content /var/www/cobbler_webui_content
+  # Add htigest - users.digest stuff here
+  # user="cobbler"
+  # realm="cobbler"
+  # password="cobbler"
+  # path_to_file="/etc/cobbler/users.digest.new"
+  # echo ${user}:${realm}:$(printf "${user}:${realm}:${password}" | md5sum - | sed -e 's/\s\+-//') > ${path_to_file}
+  sed -i "s/cobbler_username         = .*/cobbler_username         = cobbler/g" /opt/contrail/server_manager/sm-config.ini
+  sed -i "s/cobbler_password         = .*/cobbler_password         = cobbler/g" /opt/contrail/server_manager/sm-config.ini
+  cp ./cobbler.conf /etc/apache2/conf.d/
+  cp ./cobbler_web.conf /etc/apache2/conf.d/
+  cp ./cobbler.conf /etc/cobbler/
+  cp ./cobbler_web.conf /etc/cobbler/
+  sed -i "s/module = authn_.*/module = authn_configfile/g" /etc/cobbler/modules.conf
+  sed -i "s/django.conf.urls /django.conf.urls.defaults /g" /usr/share/cobbler/web/cobbler_web/urls.py
+  chmod 777 /var/lib/cobbler/webui_sessions/
+  service cobblerd restart
+  service apache2 restart
 }
 
 function bind_logging()
@@ -277,16 +296,9 @@ if [ "$SM" != "" ]; then
   echo "SM is $SM"
   wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
   gdebi -n puppetlabs-release-precise.deb
+  apt-get update
 
-  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppet-common_3.7.3-1puppetlabs1_all.deb
-  gdebi -n puppet-common_3.7.3-1puppetlabs1_all.deb
-
-  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppetmaster-common_3.7.3-1puppetlabs1_all.deb
-  gdebi -n puppetmaster-common_3.7.3-1puppetlabs1_all.deb
-
-  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppetmaster_3.7.3-1puppetlabs1_all.deb
-  gdebi -n puppetmaster_3.7.3-1puppetlabs1_all.deb
-
+  apt-get -y install puppet="3.7.3-1puppetlabs1"
   gdebi -n nodejs_0.8.15-1contrail1_amd64.deb
 
   if [ -e /etc/init.d/apparmor ]; then
@@ -350,7 +362,7 @@ if [ "$SM" != "" ]; then
   if [ "$DOMAIN" != "" ]; then
     grep "manage_forward_zones: ['$DOMAIN']" /etc/cobbler/settings
     if [ $? != 0 ]; then
-      sed -i "s/manage_forward_zones:.*/manage_forward_zones: ['$DOMAIN']/g" >> /etc/cobbler/settings
+      sed -i "s/manage_forward_zones:.*/manage_forward_zones: ['$DOMAIN']/g" /etc/cobbler/settings
     fi
   fi
 
@@ -394,7 +406,7 @@ if [ "$WEBUI" != "" ]; then
   fi
   grep "config.featurePkg.serverManager.enable" $WEBUI_CONF_FILE
   if [ $? == 0 ]; then
-    sed -i "s/config.featurePkg.serverManager.enable = .*/config.featurePkg.serverManager.enable = true;/g" >> $WEBUI_CONF_FILE
+    sed -i "s/config.featurePkg.serverManager.enable = .*/config.featurePkg.serverManager.enable = true;/g" $WEBUI_CONF_FILE
   else
     echo "config.featurePkg.serverManager.enable = true;" >> $WEBUI_CONF_FILE
   fi
@@ -403,7 +415,7 @@ if [ "$WEBUI" != "" ]; then
   fi
   grep "config.orchestration" $WEBUI_CONF_FILE
   if [ $? == 0 ]; then
-    sed -i "s/config.orchestration = .*/config.orchestration = {};/g" >> $WEBUI_CONF_FILE
+    sed -i "s/config.orchestration = .*/config.orchestration = {};/g" $WEBUI_CONF_FILE
   else
     echo "config.orchestration = {};" >> $WEBUI_CONF_FILE
   fi
