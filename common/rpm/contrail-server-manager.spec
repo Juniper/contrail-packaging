@@ -165,6 +165,7 @@ if [ "$1" -le 1 ]; then
 fi
 cp -r /usr/bin/server_manager/kickstarts /var/www/html/
 mkdir -p /var/www/html/contrail
+mkdir -p /var/www/html/contrail/config_file
 mkdir -p /var/log/contrail-server-manager/
 
 cp -u /etc/puppet/puppet_init_rd /var/www/cobbler/aux/puppet
@@ -248,6 +249,7 @@ cp %{_contrail_smgr_src}server_mgr_status.py %{buildroot}%{_contrailopt}%{_contr
 cp %{_contrail_smgr_src}smgr_dhcp_event.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}server_mgr_defaults.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}server_mgr_err.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
+cp %{_contrail_smgr_src}openstack_hieradata.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}contrail_defaults.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}server_mgr_mon_base_plugin.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 
