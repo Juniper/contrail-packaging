@@ -1,8 +1,15 @@
 #!/bin/bash
-
+set -x
+datetime_string=`date +%Y_%m_%d__%H_%M_%S`
+exec > ./install_$datetime_string.log
 # copy files over
 cd /opt/contrail/contrail_server_manager;
+
+space="    "
+
+echo "### Begin: Untarring Packages"
 tar -xvf contrail_server_manager_packages.tgz
+echo "### End: Untarring Packages"
 
 ALL=""
 SM=""
@@ -149,16 +156,19 @@ cd /opt/contrail/contrail_server_manager
 
 function save_cobbler_state()
 {
+  echo "$space### Begin: Saving Cobbler State"
   mkdir -p /cobbler_save_state
   cp /etc/mail/sendmail.cf /cobbler_save_state/
   cp /etc/ntp.conf /cobbler_save_state/
   cp /etc/contrail_smgr/tags.ini /cobbler_save_state/
   cp -r /etc/cobbler/* /cobbler_save_state/
   cp /etc/bind/named.conf.options /cobbler_save_state/
+  echo "$space### End: Saving Cobbler State"
 }
 
 function replace_cobbler_state()
 {
+  echo "$space### Begin: Replacing Cobbler State"
   cp /cobbler_save_state/named.conf.options /etc/bind/
   cp /cobbler_save_state/dhcp.template /etc/cobbler/
   cp /cobbler_save_state/named.template /etc/cobbler/
@@ -169,16 +179,18 @@ function replace_cobbler_state()
   cp /cobbler_save_state/sendmail.cf /etc/mail/
   cp /cobbler_save_state/ntp.conf /etc/
   cp /cobbler_save_state/tags.ini /etc/contrail_smgr/
+  echo "$space### End: Replacing Cobbler State"
 }
 
 
 function passenger_install()
 {
+    echo "$space### Begin: Install Passenger"
     apt-get -y install apache2 ruby1.8-dev rubygems libcurl4-openssl-dev libssl-dev zlib1g-dev apache2-threaded-dev libapr1-dev libaprutil1-dev
     a2enmod ssl
     a2enmod headers
     gem install rack passenger
-    passenger-install-apache2-module --auto --languages 'ruby,python,nodejs'
+    passenger-install-apache2-module --auto --languages 'ruby,python,nodejs' &> /dev/null
     mkdir -p /usr/share/puppet/rack/puppetmasterd
     mkdir -p /usr/share/puppet/rack/puppetmasterd/public /usr/share/puppet/rack/puppetmasterd/tmp
     cp /usr/share/puppet/ext/rack/config.ru /usr/share/puppet/rack/puppetmasterd/
@@ -217,10 +229,12 @@ function passenger_install()
     /etc/init.d/puppetmaster stop
     /etc/init.d/apache2 restart
     update-rc.d -f puppetmaster remove
+    echo "$space### End: Install Passenger"
 }
 
 function install_cobbler()
 {
+  echo "$space### Begin: Install Cobbler"
   apt-get -y install apache2 libapache2-mod-wsgi tftpd-hpa python-urlgrabber python-django selinux-utils python-simplejson python-dev
   apt-get -y install python-software-properties debmirror
   wget -qO - http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/Release.key | apt-key add -
@@ -240,6 +254,23 @@ function install_cobbler()
   a2enmod proxy_http
   a2enmod version
   setenforce 0
+  cp -r /srv/www/cobbler /var/www/cobbler
+  cp -r /srv/www/cobbler_webui_content /var/www/cobbler_webui_content
+  # Add htigest - users.digest stuff here
+  # user="cobbler"
+  # realm="cobbler"
+  # password="cobbler"
+  # path_to_file="/etc/cobbler/users.digest.new"
+  # echo ${user}:${realm}:$(printf "${user}:${realm}:${password}" | md5sum - | sed -e 's/\s\+-//') > ${path_to_file}
+  cp ./cobbler.conf /etc/apache2/conf.d/
+  cp ./cobbler_web.conf /etc/apache2/conf.d/
+  cp ./cobbler.conf /etc/cobbler/
+  cp ./cobbler_web.conf /etc/cobbler/
+  sed -i "s/django.conf.urls /django.conf.urls.defaults /g" /usr/share/cobbler/web/cobbler_web/urls.py
+  chmod 777 /var/lib/cobbler/webui_sessions/
+  service cobblerd restart
+  service apache2 restart
+  echo "$space### End: Install Cobbler"
 }
 
 function bind_logging()
@@ -274,19 +305,13 @@ function bind_logging()
 
 
 if [ "$SM" != "" ]; then
+  echo "### Begin: Installing Server Manager"
   echo "SM is $SM"
   wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
   gdebi -n puppetlabs-release-precise.deb
+  apt-get update
 
-  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppet-common_3.7.3-1puppetlabs1_all.deb
-  gdebi -n puppet-common_3.7.3-1puppetlabs1_all.deb
-
-  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppetmaster-common_3.7.3-1puppetlabs1_all.deb
-  gdebi -n puppetmaster-common_3.7.3-1puppetlabs1_all.deb
-
-  wget http://apt.puppetlabs.com/pool/stable/main/p/puppet/puppetmaster_3.7.3-1puppetlabs1_all.deb
-  gdebi -n puppetmaster_3.7.3-1puppetlabs1_all.deb
-
+  apt-get -y install puppet="3.7.3-1puppetlabs1"
   gdebi -n nodejs_0.8.15-1contrail1_amd64.deb
 
   if [ -e /etc/init.d/apparmor ]; then
@@ -350,23 +375,26 @@ if [ "$SM" != "" ]; then
   if [ "$DOMAIN" != "" ]; then
     grep "manage_forward_zones: ['$DOMAIN']" /etc/cobbler/settings
     if [ $? != 0 ]; then
-      sed -i "s/manage_forward_zones:.*/manage_forward_zones: ['$DOMAIN']/g" >> /etc/cobbler/settings
+      sed -i "s/manage_forward_zones:.*/manage_forward_zones: ['$DOMAIN']/g" /etc/cobbler/settings
     fi
   fi
-
+  echo "### End: Installing Server Manager"
   echo "IMPORTANT: CONFIGURE /ETC/COBBLER/DHCP.TEMPLATE, NAMED.TEMPLATE, SETTINGS TO BRING UP SERVER MANAGER."
 fi
 
 if [ "$SMCLIENT" != "" ]; then
+  echo "### Begin: Installing Server Manager Client"
   echo "SMCLIENT is $SMCLIENT"
   gdebi -n $SMCLIENT
   if [ "$HOSTIP" == "" ]; then
      HOSTIP=$LOCALHOSTIP
   fi
   sed -i "s/listen_ip_addr = .*/listen_ip_addr = $HOSTIP/g" /opt/contrail/server_manager/client/sm-client-config.ini
+  echo "### End: Installing Server Manager Client"
 fi
 
 if [ "$WEBUI" != "" ]; then
+  echo "### Begin: Installing Server Manager Web UI"
   echo "WEBUI is $WEBUI"
   # install webui
   if [ $WEBCORE!="" ]; then
@@ -394,7 +422,7 @@ if [ "$WEBUI" != "" ]; then
   fi
   grep "config.featurePkg.serverManager.enable" $WEBUI_CONF_FILE
   if [ $? == 0 ]; then
-    sed -i "s/config.featurePkg.serverManager.enable = .*/config.featurePkg.serverManager.enable = true;/g" >> $WEBUI_CONF_FILE
+    sed -i "s/config.featurePkg.serverManager.enable = .*/config.featurePkg.serverManager.enable = true;/g" $WEBUI_CONF_FILE
   else
     echo "config.featurePkg.serverManager.enable = true;" >> $WEBUI_CONF_FILE
   fi
@@ -403,7 +431,7 @@ if [ "$WEBUI" != "" ]; then
   fi
   grep "config.orchestration" $WEBUI_CONF_FILE
   if [ $? == 0 ]; then
-    sed -i "s/config.orchestration = .*/config.orchestration = {};/g" >> $WEBUI_CONF_FILE
+    sed -i "s/config.orchestration = .*/config.orchestration = {};/g" $WEBUI_CONF_FILE
   else
     echo "config.orchestration = {};" >> $WEBUI_CONF_FILE
   fi
@@ -454,10 +482,13 @@ if [ "$WEBUI" != "" ]; then
   # start webui
   mkdir -p /var/log/contrail/
   service supervisor-webui restart
+  echo "### End: Installing Server Manager Web UI"
 fi
 
 if [ "$SMMON" != "" ]; then
+  echo "### Begin: Installing Server Manager Monitoring"
   echo "SMMON is $SMMON"
   gdebi -n $SMMON
+  echo "### End: Installing Server Manager Monitoring"
   echo "IMPORTANT: CONFIGURE /ETC/COBBLER/DHCP.TEMPLATE, NAMED.TEMPLATE, SETTINGS TO BRING UP SERVER MANAGER."
 fi
