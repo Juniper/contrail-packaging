@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/bin/env python2.7
 """
 Copyright (c) 2013, Juniper Networks, Inc.
 All rights reserved.
@@ -345,3 +345,7 @@ if __name__ == '__main__':
 
     print "Unknown command: ", build.opt.command
     sys.exit(1)
+
+# Local Variables:
+# mode: python
+# End:
