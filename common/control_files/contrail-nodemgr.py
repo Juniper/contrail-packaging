@@ -69,7 +69,7 @@ class EventListenerProtocolNodeMgr(childutils.EventListenerProtocol):
 listener_nodemgr = EventListenerProtocolNodeMgr()
 
 class process_stat:
-    def __init__(self):
+    def __init__(self, node_type, pname):
         self.start_count = 0
         self.stop_count = 0
         self.exit_count = 0
@@ -80,8 +80,69 @@ class process_stat:
         self.last_exit_unexpected = False
         self.process_state = 'PROCESS_STATE_STOPPED'
 
+        # In cases where there can be multiple node status UVEs for a single
+        # node type, group the processes that need to go in each UVE. For
+        # vrouter, node status UVEs are sent for contrail-vrouter-agent and
+        # one each for contrail-tor-agent.
+        # Here, identify the group to which the process belongs. Also, the
+        # name associated with the Node Status UVE for this group.
+        if (node_type == 'contrail-vrouter'):
+            (self.group, self.name) = self.get_vrouter_process_info(pname)
+            # sys.stderr.write('Process stat group : ' + self.group + ' name : ' + self.name)
+        else:
+            self.group = 'default'
+            self.name = socket.gethostname()
+
+    # Read the ini files in supervisord_vrouter_files to match against proc_name.
+    # From the matching file, get the config file name (argument to contrail-tor-agent).
+    # Each contrail-tor-agent instance belongs to a different group, while other
+    # processes (contrail-vrouter-agent, contrail-nodemgr and openstack-nova-compute)
+    # belong to one group.
+    def get_vrouter_process_info(self, proc_name):
+        import os
+        import ConfigParser
+        from StringIO import StringIO
+
+        for root, dirs, files in os.walk("/etc/contrail/supervisord_vrouter_files"):
+            for file in files:
+                if file.endswith(".ini"):
+                    filename = '/etc/contrail/supervisord_vrouter_files/' + file
+                    data = StringIO('\n'.join(line.strip() for line in open(filename)))
+                    Config = ConfigParser.SafeConfigParser()
+                    Config.readfp(data)
+                    sections = Config.sections()
+                    name = sections[0].split(':')
+                    if name[1] == proc_name:
+                        command = Config.get(sections[0], "command")
+                        args = command.split()
+                        if (args[0] == '/usr/bin/contrail-tor-agent'):
+                            found = False
+                            for arg in args:
+                                if arg == '--config_file':
+                                    found = True
+                                    continue
+                                if found:
+                                    agent_name = self.get_vrouter_tor_agent_name(arg)
+                                    return (proc_name, agent_name)
+        return ('vrouter_group', socket.gethostname())
+    #end get_vrouter_process_info
+
+    # Read agent_name from vrouter-tor-agent conf file
+    def get_vrouter_tor_agent_name(self, conf_file):
+        tor_agent_name = None
+        if conf_file:
+            import ConfigParser
+            from StringIO import StringIO
+            data = StringIO('\n'.join(line.strip() for line in open(conf_file)))
+            Config = ConfigParser.SafeConfigParser()
+            Config.readfp(data)
+            tor_agent_name = Config.get("DEFAULT", "agent_name")
+        return tor_agent_name
+    #end get_vrouter_tor_agent_name
+
 class EventManager:
     rules_data = []
+    group_names = []
     process_state_db = {}
 
     def __init__(self, rules, node_type='contrail-analytics'):
@@ -96,7 +157,7 @@ class EventManager:
         self.all_core_file_list = []
         self.core_dir_modified_time = 0
         if (node_type == 'contrail-vrouter'):
-            os_nova_comp = process_stat()
+            os_nova_comp = process_stat(node_type, 'openstack-nova-compute')
             (os_nova_comp_state, error_value) = Popen("openstack-status | grep openstack-nova-compute | cut -d ':' -f2", shell=True, stdout=PIPE).communicate()
             os_nova_comp.process_state = os_nova_comp_state.strip()
             if (os_nova_comp.process_state == 'active'):
@@ -113,7 +174,9 @@ class EventManager:
         if pname in self.process_state_db.keys():
             proc_stat = self.process_state_db[pname]
         else:
-            proc_stat = process_stat()
+            proc_stat = process_stat(self.node_type, pname)
+            if not proc_stat.group in self.group_names:
+                self.group_names.append(proc_stat.group)
 
         proc_stat.process_state = pstate
 
@@ -173,11 +236,11 @@ class EventManager:
             return
 
         if (send_uve):
-            self.send_process_state_db(sandeshconn)
+            self.send_process_state_db(sandeshconn, [proc_stat.group])
 
 
     # send UVE for updated process state database
-    def send_process_state_db(self, sandeshconn):
+    def send_process_state_db(self, sandeshconn, group_name):
         # code to import appropriate sandesh odules based on node-type
         if (self.node_type == 'contrail-config'):
             from cfgm_common.uve.cfgm_cpuinfo.ttypes \
@@ -203,35 +266,43 @@ class EventManager:
             from analytics.process_info.ttypes import \
                 ProcessInfo
 
-	if (self.node_type == 'contrail-database'):
+        if (self.node_type == 'contrail-database'):
             from database.sandesh.database.ttypes import \
                 NodeStatusUVE, NodeStatus
             from database.sandesh.database.process_info.ttypes import \
                 ProcessInfo
 
-        process_infos = []
-        for key in self.process_state_db:
-            process_info = ProcessInfo()
-            pstat = self.process_state_db[key]
-            process_info.process_name = key 
-            process_info.process_state = pstat.process_state
-            process_info.start_count = pstat.start_count
-            process_info.stop_count = pstat.stop_count
-            process_info.exit_count = pstat.exit_count
-            process_info.last_start_time = pstat.start_time
-            process_info.last_stop_time = pstat.stop_time
-            process_info.last_exit_time = pstat.exit_time
-            process_info.core_file_list = pstat.core_file_list
-            process_infos.append(process_info)
+        name = socket.gethostname()
+        for group in self.group_names:
+            process_infos = []
+            for key in self.process_state_db:
+                pstat = self.process_state_db[key]
+                if (pstat.group != group):
+                    continue
+                process_info = ProcessInfo()
+                process_info.process_name = key
+                process_info.process_state = pstat.process_state
+                process_info.start_count = pstat.start_count
+                process_info.stop_count = pstat.stop_count
+                process_info.exit_count = pstat.exit_count
+                process_info.last_start_time = pstat.start_time
+                process_info.last_stop_time = pstat.stop_time
+                process_info.last_exit_time = pstat.exit_time
+                process_info.core_file_list = pstat.core_file_list
+                process_infos.append(process_info)
+                name = pstat.name
 
-        # send node UVE
-        node_status = NodeStatus()
-        node_status.name = socket.gethostname()
-        node_status.process_info = process_infos
-        node_status.all_core_file_list = self.all_core_file_list
-        node_status_uve = NodeStatusUVE(data = node_status)
-        sys.stderr.write('Sending UVE:' + str(node_status_uve))
-        node_status_uve.send()
+            if not process_infos:
+                continue
+
+            # send node UVE
+            node_status = NodeStatus()
+            node_status.name = name
+            node_status.process_info = process_infos
+            node_status.all_core_file_list = self.all_core_file_list
+            node_status_uve = NodeStatusUVE(data = node_status)
+            sys.stderr.write('Sending UVE:' + str(node_status_uve))
+            node_status_uve.send()
     # end send_process_state_db
 
     def send_database_usage(self):
@@ -272,7 +343,7 @@ class EventManager:
         ls_command_option = "ls /var/crashes"
         (corename, stderr) = Popen(ls_command_option.split(), stdout=PIPE).communicate()
         self.all_core_file_list = corename.split('\n')[0:-1]
-        self.send_process_state_db(sandeshconn)
+        self.send_process_state_db(sandeshconn, self.group_names)
 
     def runforever(self, sandeshconn, test=False):
     #sys.stderr.write(str(self.rules_data['Rules'])+'\n')
@@ -353,7 +424,7 @@ class EventManager:
                             os_nova_comp.stop_time = str(int(time.time()*1000000))
                             os_nova_comp.stop_count += 1
                         self.process_state_db['openstack-nova-compute'] = os_nova_comp
-                        self.send_process_state_db(sandeshconn)
+                        self.send_process_state_db(sandeshconn, 'vrouter_group')
                     else:
                         sys.stderr.write('Openstack Nova Compute status unchanged at:' + os_nova_comp.process_state + "\n")
                         
@@ -382,7 +453,7 @@ class EventManager:
                     except:
                         sys.stderr.write("Unable to write json")
                         pass
-                    self.send_process_state_db(sandeshconn)
+                    self.send_process_state_db(sandeshconn, self.group_names)
                 prev_current_time = int(time.time())
 
             listener_nodemgr.ok(self.stdout)
