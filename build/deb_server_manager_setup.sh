@@ -3,13 +3,8 @@ set -x
 datetime_string=`date +%Y_%m_%d__%H_%M_%S`
 exec > ./install_$datetime_string.log
 # copy files over
-cd /opt/contrail/contrail_server_manager;
 
 space="    "
-
-echo "### Begin: Untarring Packages"
-tar -xvf contrail_server_manager_packages.tgz
-echo "### End: Untarring Packages"
 
 ALL=""
 SM=""
@@ -311,7 +306,7 @@ if [ "$SM" != "" ]; then
   gdebi -n puppetlabs-release-precise.deb
   apt-get update
 
-  apt-get -y install puppet="3.7.3-1puppetlabs1"
+  apt-get -y install puppetmaster="3.7.3-1puppetlabs1"
   gdebi -n nodejs_0.8.15-1contrail1_amd64.deb
 
   if [ -e /etc/init.d/apparmor ]; then
