@@ -1,0 +1,19 @@
+Source: dpdk-depends-packages
+Section: unknown
+Priority: extra
+Maintainer: Michal Dubiel <md@semihalf.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.2
+Homepage: opencontrail.org
+#Vcs-Git: git://git.debian.org/collab-maint/contrail-dpdk-packages.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/contrail-dpdk-packages.git;a=summary
+
+Package: dpdk-depends-packages
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Extra packages required in DPDK mode
+ This package consists of some extra packages like newer qemu, libvirt,
+ liburcu, and script to create an extra deb repo with those packages. Nodes
+ configured to work in DPDK mode has to install it and run
+ /opt/contrail/contrail_packages_dpdk/setup.sh before installing contrail
+ packages.

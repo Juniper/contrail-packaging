@@ -1,0 +1,5 @@
+dpdk-depends-packages (0.1-0contrail1) unstable; urgency=low
+
+  * Initial release
+
+ -- Michal Dubiel <md@semihalf.com>  Mon, 02 Feb 2015 11:43:04 +0100
