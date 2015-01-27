@@ -28,6 +28,7 @@ class BasePackager(Utils):
     def __init__(self, **kwargs):
         self.base_pkg_files        = self.expanduser(kwargs['base_package_file'])
         self.depends_pkg_files     = self.expanduser(kwargs['depends_package_file'])
+        self.dpdk_pkg_files        = self.expanduser(kwargs['dpdk_package_file'])
         self.contrail_pkg_files    = self.expanduser(kwargs['contrail_package_file'])
         self.id                    = kwargs.get('build_id', 999)
         self.sku                   = kwargs.get('sku', 'grizzly')
@@ -55,6 +56,7 @@ class BasePackager(Utils):
         self.packager_dir          = os.getcwd()
         self.base_pkgs             = {}
         self.depends_pkgs          = {}
+        self.dpdk_pkgs             = {}
         self.contrail_pkgs         = {}
         self.repo_dir              = ''
         self.exec_status           = 0
@@ -65,9 +67,11 @@ class BasePackager(Utils):
         additems = {'found_at': {}, 'repo': ''}
         base_pkgs = self.parse_cfg_file(self.base_pkg_files)
         depends_pkgs = self.parse_cfg_file(self.depends_pkg_files)
+        dpdk_pkgs = self.parse_cfg_file(self.dpdk_pkg_files)
         contrail_pkgs = self.parse_cfg_file(self.contrail_pkg_files, additems)
         base_pkgs_dict = self.get_dict_by_item(base_pkgs, 'package_type')
         depends_pkgs_dict = self.get_dict_by_item(depends_pkgs, 'package_type')
+        dpdk_pkgs_dict = self.get_dict_by_item(dpdk_pkgs, 'package_type')
         contrail_pkgs_dict = self.get_dict_by_item(contrail_pkgs, 'package_type')
 
         # make contrail-install-packages are done first
@@ -86,9 +90,10 @@ class BasePackager(Utils):
 
         for pkgtype in pkgtypes:
             try:
-                self.base_pkgs, self.depends_pkgs = {}, {}
+                self.base_pkgs, self.depends_pkgs, self.dpdk_pkgs = {}, {}, {}
                 self.targets = []
                 self.repo_dir = os.path.join(self.store, pkgtype)
+                self.repo_dpdk_dir = os.path.join(self.store, pkgtype + '-dpdk')
                 self.contrail_pkgs = contrail_pkgs_dict[pkgtype]
                 self.meta_pkg = pkgtype
                 self.pkglist_file = os.path.join(self.store_log_dir,
@@ -104,6 +109,8 @@ class BasePackager(Utils):
                     self.base_pkgs = base_pkgs_dict[pkgtype]
                 if depends_pkgs_dict.has_key(pkgtype):
                     self.depends_pkgs = depends_pkgs_dict[pkgtype]
+                if dpdk_pkgs_dict.has_key(pkgtype):
+                    self.dpdk_pkgs = dpdk_pkgs_dict[pkgtype]
                 self.exec_steps()
                 log.info('\n')
                 log.info('Packager Store: %s' % self.store)
@@ -126,10 +133,14 @@ class BasePackager(Utils):
         
         # update repo dir with store dir prefix and get repo list
         self.update_repoinfo(self.base_pkgs, self.depends_pkgs,
-                                           self.contrail_pkgs)
+                             self.contrail_pkgs)
+
+        # Special handling for DPDK extra packages
+        self.update_repoinfo(self.repo_dpdk_dir, self.dpdk_pkgs)
 
         # create packager local repo dir
         self.create_dir(self.repo_dir, recreate=True)
+        self.create_dir(self.repo_dpdk_dir, recreate=True)
 
         # Update make location with git local repo
         for target in self.contrail_pkgs.keys():
@@ -151,6 +162,9 @@ class BasePackager(Utils):
         for each in self.depends_pkgs.keys():
             if self.depends_pkgs[each]['location'] == '':
                 self.depends_pkgs[each]['location'] = cache_dir
+        for each in self.dpdk_pkgs.keys():
+            if self.dpdk_pkgs[each]['location'] == '':
+                self.dpdk_pkgs[each]['location'] = cache_dir
 
         # override location of os and dependent packages if absolute path given
         if self.abs_pkg_dirs:
@@ -158,6 +172,8 @@ class BasePackager(Utils):
                 self.base_pkgs[each]['location'] = self.abs_pkg_dirs
             for each in self.depends_pkgs.keys():
                 self.depends_pkgs[each]['location'] = self.abs_pkg_dirs
+            for each in self.dpdk_pkgs.keys():
+                self.dpdk_pkgs[each]['location'] = self.abs_pkg_dirs
 
         # update make target list
         if self.make_targets != None and len(self.make_targets) != 0:
@@ -192,10 +208,13 @@ class BasePackager(Utils):
         # OS PKGs and Depends PKGs
         self.check_package_md5(self.base_pkgs)
         self.check_package_md5(self.depends_pkgs)
+        self.check_package_md5(self.dpdk_pkgs)
         self.copy_pkg_files(self.depends_pkgs)
         self.copy_pkg_files(self.base_pkgs)
+        self.copy_pkg_files(self.dpdk_pkgs)
         self.check_package_md5(self.base_pkgs, 'repo')
         self.check_package_md5(self.depends_pkgs, 'repo')
+        self.check_package_md5(self.dpdk_pkgs, 'repo')
 
     def make_pkgs(self):
         ''' make package with given TAG '''
@@ -337,9 +356,13 @@ class BasePackager(Utils):
         tgz_name = os.path.join(self.store,
                                 '%s_%s-%s~%s.tgz' %(self.meta_pkg,
                                 self.branch, self.id, self.sku))
+        dpdk_tgz_name = os.path.join(self.store, '%s-dpdk_%s-%s~%s.tgz'
+                                     %(self.meta_pkg, self.branch, self.id,
+                                       self.sku))
+
         try:
-            self.exec_cmd('make CONTRAIL_SKU=%s FILE_LIST=%s TAG=%s %s' %(
-                           self.sku, tgz_name, self.id,
+            self.exec_cmd('make CONTRAIL_SKU=%s FILE_LIST=%s DPDK_PKGS_TGZ=%s TAG=%s %s' %(
+                           self.sku, tgz_name, dpdk_tgz_name, self.id,
                            pkginfo['target']), pkginfo['makeloc'])
         except:
             raise MakeError(sys.exc_info()[1])

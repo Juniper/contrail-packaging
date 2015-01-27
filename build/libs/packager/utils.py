@@ -350,11 +350,11 @@ class Utils(object):
             log.debug(dirname)
         return filter(None, repo_dirs)
 
-    def update_repoinfo(self, *pkgcfgs):
+    def update_repoinfo(self, dir=None, *pkgcfgs):
         '''Update repo of each package with repo dir value'''
         for pkgcfg in pkgcfgs:
             for pkg in pkgcfg.keys():
-                pkgcfg[pkg]['repo'] = self.repo_dir
+                pkgcfg[pkg]['repo'] = dir or self.repo_dir
 
     def get_dict_by_item(self, tdict, titem):
         matrix = {}

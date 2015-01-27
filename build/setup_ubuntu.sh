@@ -9,6 +9,9 @@ fi
 # copy files over
 mkdir -p /opt/contrail/contrail_install_repo
 cd /opt/contrail/contrail_install_repo; tar xvzf /opt/contrail/contrail_packages/contrail_debs.tgz
+if [ -n "$DPDK_MODE" ]; then
+    tar xvzf /opt/contrail/contrail_packages/contrail_dpdk_debs.tgz
+fi
 
 # create shell scripts and put to bin
 mkdir -p /opt/contrail/bin

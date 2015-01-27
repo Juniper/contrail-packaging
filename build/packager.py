@@ -62,6 +62,7 @@ class PackagerArgParser(Utils):
         pkg_file_dir = os.path.join(SCRIPTDIR, 'package_configs')
         base_pkg_file = 'base*_packages.cfg'
         deps_pkg_file = 'depends*_packages.cfg'
+        dpdk_pkg_file = 'dpdk*_packages.cfg'
         cont_pkg_file = 'contrail*_packages.cfg'
         git_local_repo = SCRIPTDIR.replace('tools/packaging/build', '')
         if git_local_repo == '':
@@ -80,6 +81,7 @@ class PackagerArgParser(Utils):
             'contrail_package_dir'  : None,
             'base_package_file'     : [os.path.join(pkg_file_dir, '{dist_dir}', '{skuname}', base_pkg_file)],
             'depends_package_file'  : [os.path.join(pkg_file_dir, '{dist_dir}', '{skuname}', deps_pkg_file)],
+            'dpdk_package_file'     : [os.path.join(pkg_file_dir, '{dist_dir}', '{skuname}', dpdk_pkg_file)],
             'contrail_package_file' : [os.path.join(pkg_file_dir, '{dist_dir}', '{skuname}', cont_pkg_file)],
             'make_targets'          : [],
             'make_targets_file'     : None,
@@ -148,6 +150,11 @@ class PackagerArgParser(Utils):
                                               deps_file in Utils.get_as_list(ns_cliargs.depends_package_file)]
         ns_cliargs.depends_package_file = self.get_files_by_pattern(ns_cliargs.depends_package_file, True)
 
+        ns_cliargs.dpdk_package_file = [dpdk_file.format(skuname=ns_cliargs.sku,
+                                        dist_dir=ns_cliargs.os_version) for \
+                                            dpdk_file in Utils.get_as_list(ns_cliargs.dpdk_package_file)]
+        ns_cliargs.dpdk_package_file = self.get_files_by_pattern(ns_cliargs.dpdk_package_file, True)
+
         ns_cliargs.contrail_package_file = [cont_file.format(skuname=ns_cliargs.sku,
                                                dist_dir=ns_cliargs.os_version) for \
                                                cont_file in Utils.get_as_list(ns_cliargs.contrail_package_file)]
@@ -162,6 +169,7 @@ class PackagerArgParser(Utils):
         self.is_file_exists(ns_cliargs.base_package_file)
         self.is_file_exists(ns_cliargs.depends_package_file)
         self.is_file_exists(ns_cliargs.contrail_package_file)
+        self.is_file_exists(ns_cliargs.dpdk_package_file)
 
         # convert namespace as a dict
         self.cliargs = dict(ns_cliargs._get_kwargs())
@@ -249,6 +257,11 @@ class PackagerArgParser(Utils):
                              default='sandbox/tools/packaging/build/package_configs/<os>/<sku>/depends*_packages.cfg',
                              nargs='+',
                              help='Config files specifying dependant pacakges info')
+        aparser.add_argument('--dpdk-package-file', '-D',
+                             action='store',
+                             default='sandbox/tools/packaging/build/package_configs/<os>/<sku>/dpdk*_packages.cfg',
+                             nargs='+',
+                             help='Config files specifying dpdk dependent pacakges info')
         aparser.add_argument('--contrail-package-file', '-f',
                              action='store',
                              default='sandbox/tools/packaging/build/package_configs/<os>/<sku>/contrail*_packages.cfg',
