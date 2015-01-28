@@ -126,6 +126,20 @@ class ContrailArchive(object):
         print "Fixing up the archive"
         os.chdir (self.opt.archive_path + "/artifacts")
 
+        # add link to storage package with os name
+        for files in glob.iglob("contrail-storage-packages*"):
+            newfilename = self.opt.arch_type + files.split('~')[-1]
+            newfilename = "~".join([files.split('~')[0], newfilename])
+            command = "ln -s %s %s" % (files, newfilename)
+            execute(command, ignore_errors=False)
+
+        # add link to server manager package with os name
+        for files in glob.iglob("contrail-server-manager-installer*"):
+            newfilename = self.opt.arch_type + files.split('~')[-1]
+            newfilename = "~".join([files.split('~')[0], newfilename])
+            command = "ln -s %s %s" % (files, newfilename)
+            execute(command, ignore_errors=False)
+
         for files in glob.iglob("contrail-install*"):
             newfilename = self.opt.arch_type + files.split('~')[-1]
             newfilename = "~".join([files.split('~')[0], newfilename])
