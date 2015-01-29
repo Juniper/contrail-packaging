@@ -9,10 +9,10 @@
 export DH_VERBOSE=1
 
 SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+export SB_TOP := $(shell pwd | sed -re "s/\/build\/debian\/contrail-server-manager-client//g")
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export src_path := $(SB_TOP)/tools/contrail-server-manager/src/
-export build_root := $(SB_TOP)/build/debian/contrail-server-manager-client/
+export build_root := $(SB_TOP)/build/debian/contrail-server-manager-client/debian/contrail-server-manager-client
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
