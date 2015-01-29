@@ -68,16 +68,14 @@ PACKAGES = \
 	libvirt-deb \
 	contrail-openstack-dashboard-deb \
 	contrail-ostack-dashboard-deb \
-	contrail-server-manager-deb \
-	contrail-server-manager-client-deb \
-	contrail-server-manager-monitoring-deb \
-	contrail-server-manager-installer-deb \
 	$(CONTRAIL_HEAT) \
 	neutron-plugin-contrail-deb \
 	contrail-vmware-utils-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
+
+server-manager-all: contrail-server-manager-deb contrail-server-manager-client-deb contrail-server-manager-monitoring-deb contrail-server-manager-installer-deb
 
 clean: $(PACKAGES:%-deb=%-clean)
 	@echo "Clean"
@@ -147,6 +145,38 @@ contrail-install-packages-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 	@echo "Wrote: ${BUILDDIR}/../contrail-install-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
+
+contrail-server-manager-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-server-manager-client-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-client/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-server-manager-monitoring-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-monitoring/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-server-manager-installer-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-installer/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 contrail-install-packages-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-install-packages)
