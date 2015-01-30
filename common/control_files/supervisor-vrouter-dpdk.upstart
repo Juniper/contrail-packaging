@@ -1,0 +1,31 @@
+description     "Supervisord for VNC Vrouter"
+
+start on runlevel [2345]
+stop on runlevel [016]
+limit core unlimited unlimited
+
+pre-start script
+    /opt/contrail/bin/vrouter-dpdk-pre-start.sh
+    ulimit -s unlimited
+    ulimit -c unlimited
+    ulimit -d unlimited
+    ulimit -v unlimited
+    ulimit -n 4096
+end script
+
+script
+    supervisord --nodaemon -c /etc/contrail/supervisord_vrouter.conf || true
+    echo "supervisor-vrouter  failed. lsof -i :9005..."
+    lsof -i :9005 || true
+    pid=`lsof -Fp -i :9005 | cut -d'p' -f2` || true
+    if [ "x$pid" != "x" ]; then
+        ps uw -p $pid
+    fi
+end script
+
+pre-stop script
+    supervisorctl -s http://localhost:9005 stop all
+    supervisorctl -s http://localhost:9005 shutdown
+    /usr/bin/supervisor_killall /etc/contrail/supervisord_vrouter_files
+    /opt/contrail/bin/vrouter-pre-stop.sh
+end script
