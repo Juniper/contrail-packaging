@@ -50,6 +50,7 @@ PACKAGES = \
         contrail-nova-vif-deb \
         contrail-vrouter-init-deb \
         contrail-vrouter-common-deb \
+        contrail-vrouter-dpdk-init-deb \
 	contrail-web-core-deb \
 	contrail-web-controller-deb \
 	contrail-web-server-manager-deb \
