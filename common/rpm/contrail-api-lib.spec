@@ -67,33 +67,33 @@ install -d -m 755 %{buildroot}%{_anl_venv_archv}
 mkdir -p build/python_dist
 pushd build/python_dist
 
-install -D -p -m 644 %{_build_dist}/api-lib/dist/vnc_api-0.1dev.tar.gz %{buildroot}%{_api_venv_archv}/vnc_api-0.1dev.tar.gz
-install -D -p -m 644 %{_build_dist}/api-lib/dist/vnc_api-0.1dev.tar.gz %{buildroot}%{_anl_venv_archv}/vnc_api-0.1dev.tar.gz
-tar zxf %{_build_dist}/api-lib/dist/vnc_api-0.1dev.tar.gz
-pushd vnc_api-0.1dev
+install -D -p -m 644 %{_build_dist}/api-lib/dist/vnc_api-0.1.dev0.tar.gz %{buildroot}%{_api_venv_archv}/vnc_api-0.1.dev0.tar.gz
+install -D -p -m 644 %{_build_dist}/api-lib/dist/vnc_api-0.1.dev0.tar.gz %{buildroot}%{_anl_venv_archv}/vnc_api-0.1.dev0.tar.gz
+tar zxf %{_build_dist}/api-lib/dist/vnc_api-0.1.dev0.tar.gz
+pushd vnc_api-0.1.dev0
 %{__python} setup.py install --root=%{buildroot}
 popd
 
-install -D -p -m 644 %{_build_dist}/config/common/dist/cfgm_common-0.1dev.tar.gz %{buildroot}%{_api_venv_archv}/cfgm_common-0.1dev.tar.gz
-install -D -p -m 644 %{_build_dist}/config/common/dist/cfgm_common-0.1dev.tar.gz %{buildroot}%{_anl_venv_archv}/cfgm_common-0.1dev.tar.gz
-tar zxf %{_build_dist}/config/common/dist/cfgm_common-0.1dev.tar.gz
-pushd cfgm_common-0.1dev
+install -D -p -m 644 %{_build_dist}/config/common/dist/cfgm_common-0.1.dev0.tar.gz %{buildroot}%{_api_venv_archv}/cfgm_common-0.1.dev0.tar.gz
+install -D -p -m 644 %{_build_dist}/config/common/dist/cfgm_common-0.1.dev0.tar.gz %{buildroot}%{_anl_venv_archv}/cfgm_common-0.1.dev0.tar.gz
+tar zxf %{_build_dist}/config/common/dist/cfgm_common-0.1.dev0.tar.gz
+pushd cfgm_common-0.1.dev0
 %{__python}  setup.py install --root=%{buildroot}
 popd
 
-install -D -p -m 644 %{_build_dist}/discovery/client/dist/discoveryclient-0.1dev.tar.gz %{buildroot}%{_api_venv_archv}/discoveryclient-0.1dev.tar.gz
-tar zxf %{_build_dist}/discovery/client/dist/discoveryclient-0.1dev.tar.gz
-pushd discoveryclient-0.1dev
+install -D -p -m 644 %{_build_dist}/discovery/client/dist/discoveryclient-0.1.dev0.tar.gz %{buildroot}%{_api_venv_archv}/discoveryclient-0.1.dev0.tar.gz
+tar zxf %{_build_dist}/discovery/client/dist/discoveryclient-0.1.dev0.tar.gz
+pushd discoveryclient-0.1.dev0
 %{__python}  setup.py install --root=%{buildroot}
 popd
 
-tar zxf %{_build_dist}/sandesh/common/dist/sandesh-common-0.1dev.tar.gz
-pushd sandesh-common-0.1dev
+tar zxf %{_build_dist}/sandesh/common/dist/sandesh-common-0.1.dev0.tar.gz
+pushd sandesh-common-0.1.dev0
 %{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
 popd
 
-tar zxf %{_build_dist}/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz
-pushd sandesh-0.1dev
+tar zxf %{_build_dist}/tools/sandesh/library/python/dist/sandesh-0.1.dev0.tar.gz
+pushd sandesh-0.1.dev0
 %{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
 popd
 
@@ -108,24 +108,24 @@ popd
 %{python_sitelib}/pysandesh
 %{python_sitelib}/sandesh_common
 %{python_sitelib}/sandesh_common-*
-%{python_sitelib}/sandesh-0.1dev*
-%{_api_venv_archv}/vnc_api-0.1dev.tar.gz
-%{_anl_venv_archv}/vnc_api-0.1dev.tar.gz
-%{_api_venv_archv}/cfgm_common-0.1dev.tar.gz
-%{_anl_venv_archv}/cfgm_common-0.1dev.tar.gz
-%{_api_venv_archv}/discoveryclient-0.1dev.tar.gz
+%{python_sitelib}/sandesh-0.1.dev0*
+%{_api_venv_archv}/vnc_api-0.1.dev0.tar.gz
+%{_anl_venv_archv}/vnc_api-0.1.dev0.tar.gz
+%{_api_venv_archv}/cfgm_common-0.1.dev0.tar.gz
+%{_anl_venv_archv}/cfgm_common-0.1.dev0.tar.gz
+%{_api_venv_archv}/discoveryclient-0.1.dev0.tar.gz
 
 %post
 
 if [ -f /opt/contrail/api-venv/bin/activate ] ; then
    source /opt/contrail/api-venv/bin/activate
-   pip install --upgrade --index-url "" --no-deps %{_api_venv_archv}/vnc_api-0.1dev.tar.gz %{_api_venv_archv}/cfgm_common-0.1dev.tar.gz %{_api_venv_archv}/discoveryclient-0.1dev.tar.gz
+   pip install --upgrade --index-url "" --no-deps %{_api_venv_archv}/vnc_api-0.1.dev0.tar.gz %{_api_venv_archv}/cfgm_common-0.1.dev0.tar.gz %{_api_venv_archv}/discoveryclient-0.1.dev0.tar.gz
    deactivate
 fi
 
 if [ -f /opt/contrail/analytics-venv/bin/activate ] ; then
    source /opt/contrail/analytics-venv/bin/activate
-   pip install --upgrade --index-url "" --no-deps %{_anl_venv_archv}/vnc_api-0.1dev.tar.gz %{_anl_venv_archv}/cfgm_common-0.1dev.tar.gz
+   pip install --upgrade --index-url "" --no-deps %{_anl_venv_archv}/vnc_api-0.1.dev0.tar.gz %{_anl_venv_archv}/cfgm_common-0.1.dev0.tar.gz
    deactivate
 fi
 

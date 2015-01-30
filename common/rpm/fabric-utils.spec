@@ -42,7 +42,7 @@ BuildRequires:  systemd-units
 %build
 ##pushd %{buildroot}/
 pushd %{_builddir}/../third_party
-rm -rf fabric-utils/contrail_fabric_utils-0.1dev
+rm -rf fabric-utils/contrail_fabric_utils-0.1.dev0
 rm -rf fabric-utils/contrail_fabric_utils.egg-info
 (cd fabric-utils; %{__python} setup.py sdist)
 
@@ -54,8 +54,8 @@ install -d -m 755 %{buildroot}%{python_sitelib}
 install -d -m 755 %{buildroot}%{_contrailopt}/utils
 
 pushd %{_builddir}/../third_party/fabric-utils
-tar zxf dist/contrail_fabric_utils-0.1dev.tar.gz
-cd contrail_fabric_utils-0.1dev
+tar zxf dist/contrail_fabric_utils-0.1.dev0.tar.gz
+cd contrail_fabric_utils-0.1.dev0
 %{__python} setup.py install --root=%{buildroot}
 cp README %{buildroot}%{_contrailopt}/utils/README.fabric
 cp -R %{buildroot}%{python_sitelib}/contrail_fabric_utils/fabfile %{buildroot}%{_contrailopt}/utils/fabfile

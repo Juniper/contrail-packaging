@@ -55,8 +55,8 @@ install -d -m 755 %{buildroot}%{_venv_root}
 mkdir -p build/python_dist
 pushd build/python_dist
 
-tar zxf %{_build_dist}/config/vnc_openstack/dist/vnc_openstack-0.1dev.tar.gz
-pushd vnc_openstack-0.1dev
+tar zxf %{_build_dist}/config/vnc_openstack/dist/vnc_openstack-0.1.dev0.tar.gz
+pushd vnc_openstack-0.1.dev0
 %{__python} setup.py install --root=%{buildroot}
 popd
 

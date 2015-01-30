@@ -81,25 +81,25 @@ fi
 #install database
 install -d -m 755 %{buildroot}%{_venv_root}
 pushd %{_builddir}/..
-tar zxvf %{_build_dist}/analytics/database/dist/database-0.1dev.tar.gz
-pushd database-0.1dev
+tar zxvf %{_build_dist}/analytics/database/dist/database-0.1.dev0.tar.gz
+pushd database-0.1.dev0
 %{__python} setup.py install --root=%{buildroot} %{?_venvtr}
 popd
-tar zxf %{_build_dist}/sandesh/common/dist/sandesh-common-0.1dev.tar.gz
-pushd sandesh-common-0.1dev
+tar zxf %{_build_dist}/sandesh/common/dist/sandesh-common-0.1.dev0.tar.gz
+pushd sandesh-common-0.1.dev0
 %{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
 popd
-tar zxf %{_build_dist}/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz
-pushd sandesh-0.1dev
+tar zxf %{_build_dist}/tools/sandesh/library/python/dist/sandesh-0.1.dev0.tar.gz
+pushd sandesh-0.1.dev0
 %{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
 popd
-tar zxf %{_build_dist}/discovery/dist/discovery-0.1dev.tar.gz
-pushd discovery-0.1dev
+tar zxf %{_build_dist}/discovery/dist/discovery-0.1.dev0.tar.gz
+pushd discovery-0.1.dev0
 %{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
 popd
 
-tar zxf %{_build_dist}/discovery/client/dist/discoveryclient-0.1dev.tar.gz
-pushd discoveryclient-0.1dev
+tar zxf %{_build_dist}/discovery/client/dist/discoveryclient-0.1.dev0.tar.gz
+pushd discoveryclient-0.1.dev0
 %{__python}  setup.py install --root=%{buildroot} %{?_venvtr}
 popd
 

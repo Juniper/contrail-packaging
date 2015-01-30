@@ -83,7 +83,7 @@ fi
 %build
 pushd %{_provdir}
 rm -rf ContrailProvisioning.egg-info
-rm -rf ContrailProvisioning-0.1dev
+rm -rf ContrailProvisioning-0.1.dev0
 %{__python} setup.py sdist
 popd
 
@@ -117,8 +117,8 @@ popd
 install -p -m 644 cfgm_utils.tgz  %{buildroot}%{_contrailopt}/cfgm_utils.tgz
 install -p -m 644 dns_scripts.tgz  %{buildroot}%{_contrailopt}/dns_scripts.tgz
 pushd %{_provdir}
-tar zxf dist/ContrailProvisioning-0.1dev.tar.gz
-cd ContrailProvisioning-0.1dev
+tar zxf dist/ContrailProvisioning-0.1.dev0.tar.gz
+cd ContrailProvisioning-0.1.dev0
 %{__python} setup.py install --root=%{buildroot} --install-scripts %{_contrailopt}/bin/
 popd
 %if 0%{?rhel}
