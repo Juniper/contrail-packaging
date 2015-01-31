@@ -1,0 +1,7 @@
+# Sample debian/rules that uses debhelper.
+#!/bin/sh
+set -e
+cd /opt/contrail/contrail_server_manager/;
+
+echo "running post install"
+tar -xvf contrail_server_manager_packages.tgz
