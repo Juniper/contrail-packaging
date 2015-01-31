@@ -9,10 +9,10 @@
 export DH_VERBOSE=1
 
 SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+export SB_TOP := $(shell pwd | sed -re "s/\/build\/debian\/contrail-server-manager//g")
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export src_path := $(SB_TOP)/tools/contrail-server-manager/src/
-export build_root := $(SB_TOP)/build/debian/contrail-server-manager/
+export build_root := $(SB_TOP)/build/debian/contrail-server-manager/debian/contrail-server-manager
 #python_version := $(PYTHONPATH=$(PYTHONPATH):$(build_root)/../tools/packaging/tools/scripts/ python -c "import sys; print '%s.%s' % sys.version_info[0:2]")
 #python_dir := python$(python_version)
 python_version=$(shell python -c "import sys; print '%s.%s' % sys.version_info[0:2]")
