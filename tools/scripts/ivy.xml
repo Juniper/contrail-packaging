@@ -733,6 +733,7 @@
     <dependency org="juniper.net" name="grep" rev="2.6.3-3.el6.x86_64"/>
     <dependency org="juniper.net" name="cassandra20" rev="2.0.2-1.noarch"/>
     <dependency org="juniper.net" name="cassandra12" rev="1.2.11-1.noarch"/>
+    <dependency org="juniper.net" name="kafka" rev="2.9.2-0.8.1.1.0contrail0.el6.x86_64"/>
     <dependency org="juniper.net" name="python-pygments" rev="1.1.1-1.el6.noarch"/>
   </dependencies>
 </ivy-module>
