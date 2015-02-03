@@ -6,20 +6,11 @@ for svc in keystone nova-api nova-scheduler nova-conductor nova-console\
         service $svc stop || true
         mv /etc/init/$svc.conf /etc/init/$svc.conf.backup
         mv /etc/init.d/$svc /etc/init.d/$svc.backup
-        cp /etc/init.d/$svc.initd.supervisord /etc/init.d/$svc
+    fi
+    if [ -f /etc/init.d/$svc.initd.supervisord ]; then
+        mv /etc/init.d/$svc.initd.supervisord /etc/init.d/$svc
     fi
 done
-
-if [ ! -f /etc/init/supervisor-openstack.conf ]; then
-    mv /etc/init/supervisor-openstack.conf.upstart_openstack /etc/init/supervisor-openstack.conf
-elif [ -f /etc/init/supervisor-openstack.conf.upstart_openstack ]; then
-    rm /etc/init/supervisor-openstack.conf.upstart_openstack
-fi
-if [ ! -f /etc/contrail/supervisord_openstack.conf ]; then
-    mv /etc/contrail/supervisord_openstack.conf.supervisord_openstack /etc/contrail/supervisord_openstack.conf
-elif [ -f /etc/contrail/supervisord_openstack.conf.supervisord_openstack ]; then
-    rm /etc/contrail/supervisord_openstack.conf.supervisord_openstack
-fi
 
 # Start mysql at boot time
 sudo update-rc.d -f mysql remove
