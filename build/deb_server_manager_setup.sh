@@ -304,7 +304,7 @@ if [ "$SM" != "" ]; then
   echo "SM is $SM"
   wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
   gdebi -n puppetlabs-release-precise.deb
-  apt-get update
+  apt-get update --yes
 
   apt-get -y install puppetmaster="3.7.3-1puppetlabs1"
   gdebi -n nodejs_0.8.15-1contrail1_amd64.deb
@@ -393,6 +393,8 @@ if [ "$WEBUI" != "" ]; then
   echo "WEBUI is $WEBUI"
   # install webui
   if [ $WEBCORE!="" ]; then
+    add-apt-repository ppa:rwky/redis --yes
+    apt-get update --yes
     gdebi -n $WEBCORE
   fi
   gdebi -n $WEBUI
