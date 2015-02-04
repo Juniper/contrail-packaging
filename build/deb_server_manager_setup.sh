@@ -1,7 +1,8 @@
 #!/bin/bash
 set -x
 datetime_string=`date +%Y_%m_%d__%H_%M_%S`
-exec > ./install_$datetime_string.log
+mkdir -p /var/log/contrail/install_logs/
+exec > /var/log/contrail/install_logs/install_$datetime_string.log
 # copy files over
 
 space="    "
@@ -224,6 +225,7 @@ function passenger_install()
     /etc/init.d/puppetmaster stop
     /etc/init.d/apache2 restart
     update-rc.d -f puppetmaster remove
+    sed -i "s|START=.*|START=no|g" /etc/default/puppetmaster
     echo "$space### End: Install Passenger"
 }
 
@@ -251,12 +253,6 @@ function install_cobbler()
   setenforce 0
   cp -r /srv/www/cobbler /var/www/cobbler
   cp -r /srv/www/cobbler_webui_content /var/www/cobbler_webui_content
-  # Add htigest - users.digest stuff here
-  # user="cobbler"
-  # realm="cobbler"
-  # password="cobbler"
-  # path_to_file="/etc/cobbler/users.digest.new"
-  # echo ${user}:${realm}:$(printf "${user}:${realm}:${password}" | md5sum - | sed -e 's/\s\+-//') > ${path_to_file}
   cp ./cobbler.conf /etc/apache2/conf.d/
   cp ./cobbler_web.conf /etc/apache2/conf.d/
   cp ./cobbler.conf /etc/cobbler/
@@ -304,7 +300,7 @@ if [ "$SM" != "" ]; then
   echo "SM is $SM"
   wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
   gdebi -n puppetlabs-release-precise.deb
-  apt-get update
+  apt-get update --yes
 
   apt-get -y install puppetmaster="3.7.3-1puppetlabs1"
   gdebi -n nodejs_0.8.15-1contrail1_amd64.deb
@@ -375,6 +371,7 @@ if [ "$SM" != "" ]; then
   fi
   echo "### End: Installing Server Manager"
   echo "IMPORTANT: CONFIGURE /ETC/COBBLER/DHCP.TEMPLATE, NAMED.TEMPLATE, SETTINGS TO BRING UP SERVER MANAGER."
+  echo "Install log is at /var/log/contrail/install_logs/"
 fi
 
 if [ "$SMCLIENT" != "" ]; then
@@ -393,6 +390,8 @@ if [ "$WEBUI" != "" ]; then
   echo "WEBUI is $WEBUI"
   # install webui
   if [ $WEBCORE!="" ]; then
+    add-apt-repository ppa:rwky/redis --yes
+    apt-get update --yes
     gdebi -n $WEBCORE
   fi
   gdebi -n $WEBUI
@@ -486,4 +485,5 @@ if [ "$SMMON" != "" ]; then
   gdebi -n $SMMON
   echo "### End: Installing Server Manager Monitoring"
   echo "IMPORTANT: CONFIGURE /ETC/COBBLER/DHCP.TEMPLATE, NAMED.TEMPLATE, SETTINGS TO BRING UP SERVER MANAGER."
+  echo "Install log is at /var/log/contrail/install_logs/"
 fi
