@@ -1,0 +1,1 @@
+sed -i 's/deb file\:\/opt\/contrail\/contrail_dependent_packages \.\///' /etc/apt/sources.list
