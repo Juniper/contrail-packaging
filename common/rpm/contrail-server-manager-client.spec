@@ -66,7 +66,12 @@ A Client for Server manager
 #%setup -q
 
 %post
-HOST_IP=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp'`
+HOST_IP_LIST=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp'`
+HOST_IP=`echo $HOST_IP_LIST | cut -d' ' -f1`
+if [ -f /opt/contrail/contrail_server_manager/IP.txt ];
+then
+   HOST_IP=$(cat /opt/contrail/contrail_server_manager/IP.txt)
+fi
 echo $HOST_IP
 
 easy_install argparse
