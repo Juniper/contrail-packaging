@@ -166,11 +166,18 @@ class ContrailArchive(object):
         os.chdir (path)
         os.mkdir ("binaries")
         os.chdir ("binaries")
-        os.symlink ("../sandbox/build/debug/control-node/contrail-control", "contrail-control")
-        os.symlink ("../sandbox/build/debug/dns/contrail-dns", "contrail-dns")
-        os.symlink ("../sandbox/build/debug/query_engine/qed", "qed")
-        os.symlink ("../sandbox/build/debug/analytics/vizd", "vizd")
-        os.symlink ("../sandbox/vrouter/vrouter.ko", "vrouter.ko")
+        lnk_binaries = [
+            ["../sandbox/build/debug/control-node/contrail-control", "contrail-control"],
+            ["../sandbox/build/debug/dns/contrail-dns", "contrail-dns"],
+            ["../sandbox/build/debug/dns/dnsd", "dnsd"],
+            ["../sandbox/build/debug/query_engine/qed", "qed"],
+            ["../sandbox/build/debug/analytics/vizd", "vizd"],
+            ["../sandbox/vrouter/vrouter.ko", "vrouter.ko"],
+            ["../sandbox/build/debug/vnsw/agent/ovs_tor_agent/contrail-tor-agent", "contrail-tor-agent"]
+        ]
+        for (path, link) in lnk_binaries:
+            if os.path.isfile(path):
+                os.symlink (path, link)
 
         # On Ubuntu, we find the packaged c-v-a in the build//packages dir, but on CentOS
         # and RedHat, the packages dir is different, and it's been removed by the time
