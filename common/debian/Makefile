@@ -64,6 +64,7 @@ PACKAGES = \
 	contrail-openstack-dashboard-deb \
 	contrail-ostack-dashboard-deb \
 	contrail-server-manager-deb \
+	contrail-server-manager-local-deb \
 	contrail-server-manager-client-deb \
 	contrail-server-manager-monitoring-deb \
 	contrail-server-manager-installer-deb \

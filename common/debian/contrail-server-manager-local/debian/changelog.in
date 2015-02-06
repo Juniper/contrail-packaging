@@ -1,0 +1,6 @@
+contrail-server-manager-local (BUILDTAG) pmiriyala; urgency=low
+
+  [pmiriyala ]
+  * debian/changelog: changelog
+
+ -- pmiriyala <pmiriyala@juniper.net>  Thu Feb 5 17:39:50 PDT 2015

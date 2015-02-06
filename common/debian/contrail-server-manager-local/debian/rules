@@ -12,7 +12,7 @@ SPEC_DIR := $(shell pwd)
 export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export src_path := $(SB_TOP)/tools/contrail-server-manager/src/
-export build_root := $(SB_TOP)/build/debian/contrail-server-manager/
+export build_root := $(SB_TOP)/build/debian/contrail-server-manager-local/
 #python_version := $(PYTHONPATH=$(PYTHONPATH):$(build_root)/../tools/packaging/tools/scripts/ python -c "import sys; print '%s.%s' % sys.version_info[0:2]")
 #python_dir := python$(python_version)
 python_version=$(shell python -c "import sys; print '%s.%s' % sys.version_info[0:2]")
@@ -44,11 +44,11 @@ else
 centos_pkg_file := $(src_path)/../../../tools/packaging/tools/scripts/server-manager-centos
 endif
 
-# ifdef REDHAT_PKT_FILE
-# redhat_pkg_file := $(_redhatPkgFile)
-# else
-# redhat_pkg_file := $(src_path)/../../../tools/packaging/tools/scripts/server-manager-redhat
-# endif
+ifdef REDHAT_PKT_FILE
+redhat_pkg_file := $(_redhatPkgFile)
+else
+redhat_pkg_file := $(src_path)/../../../tools/packaging/tools/scripts/server-manager-redhat
+endif
 
 ifdef PKG_DIRS
 pkg_sources := $(_pkgDirs)
@@ -117,7 +117,7 @@ override_dh_auto_install:
  --destination-dir $(build_root)/etc/contrail_smgr/contrail-centos-repo \
  --source-dirs $(pkg_sources) || (echo "Copying Built centos packages failed"; exit 1)
 
-#	$(src_path)/../../../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file $(redhat_pkg_file) \
+	$(src_path)/../../../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file $(redhat_pkg_file) \
  --destination-dir $(build_root)/etc/contrail_smgr/contrail-redhat-repo \
  --source-dirs $(pkg_sources) || (echo "Copying Built redhat packages failed"; exit 1)
 
