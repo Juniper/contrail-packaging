@@ -35,6 +35,7 @@ mkdir -p /var/www/html/kickstarts
 cp -r /etc/contrail_smgr/kickstarts /var/www/html/
 mkdir -p /var/www/html/contrail
 mkdir -p /var/www/html/contrail/config_file
+mkdir -p /var/www/html/contrail/images
 mkdir -p /var/log/contrail-server-manager
 mkdir -p /etc/mail/
 cp /etc/contrail_smgr/sendmail.cf /etc/mail/
