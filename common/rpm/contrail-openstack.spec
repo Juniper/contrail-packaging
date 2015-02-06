@@ -28,8 +28,7 @@ Requires: openstack-glance
 Requires: openstack-keystone
 Requires: openstack-nova = 2013.2-2contrail
 Requires: openstack-cinder
-Requires: mysql-server
-#Requires: MySQL-server
+Requires: mysql-server >= 5.1.73
 Requires: openssl098e
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: contrail-utils >= %{_verstr}-%{_relstr}
