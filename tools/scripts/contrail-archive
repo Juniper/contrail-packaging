@@ -170,8 +170,26 @@ class ContrailArchive(object):
         os.symlink ("../sandbox/build/debug/dns/contrail-dns", "contrail-dns")
         os.symlink ("../sandbox/build/debug/query_engine/qed", "qed")
         os.symlink ("../sandbox/build/debug/analytics/vizd", "vizd")
-        os.symlink ("../sandbox/build/packages/contrail/usr/bin/contrail-vrouter-agent", "contrail-vrouter-agent")
         os.symlink ("../sandbox/vrouter/vrouter.ko", "vrouter.ko")
+
+        #Since tor agent is available from R2.1+ releases, we need this check
+        if os.path.isfile("../sandbox/build/debug/vnsw/agent/ovs_tor_agent/contrail-tor-agent"):
+            os.symlink ("../sandbox/build/debug/vnsw/agent/ovs_tor_agent/contrail-tor-agent", "contrail-tor-agent")
+
+        # On Ubuntu, we find the packaged c-v-a in the build//packages dir, but on CentOS
+        # and RedHat, the packages dir is different, and it's been removed by the time
+        # we get here. So we use the original c-v-a exe that went into CentOS/RedHat pkg
+        vrouter_agent = [
+            "../sandbox/build/packages/contrail/usr/bin/contrail-vrouter-agent", # Ubuntu
+            "../sandbox/build/debug/vnsw/agent/contrail/contrail-vrouter-agent"  # CentOS/RedHat
+        ]
+
+        if os.path.isfile(vrouter_agent[0]):
+            os.symlink (vrouter_agent[0], "contrail-vrouter-agent")
+        elif os.path.isfile(vrouter_agent[1]):
+            os.symlink (vrouter_agent[1], "contrail-vrouter-agent")
+        else:
+            print 'Warning : Could not symlink contrail-vrouter-agent executable, skipping'
 
 def execute(command, ignore_errors=False):
     """ Function to execute shell command and return the output """
