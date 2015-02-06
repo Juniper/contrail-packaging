@@ -330,8 +330,38 @@ class EventManager:
             if headers['eventname'].startswith("TICK_60"):
                 # send other core file
                 self.send_all_core_file(sandeshconn)
-                # check for openstack nova compute status
+
                 if (self.node_type == "contrail-vrouter"):
+                    send_uve = False
+
+                    # check for any processes which we may have missed
+                    (proc_status_str, error_value) = Popen(
+                        "supervisorctl -s unix:///tmp/supervisord_vrouter.sock  status  |grep -v nodemgr | cut -d',' -f1",
+                        shell=True, stdout=PIPE).communicate()
+                    if (error_value is None):
+                        # find out if any process missed the radar
+                        proc_status_list = proc_status_str.split()
+                        i = 0
+                        while (i <  len(proc_status_list)):
+                            if not (proc_status_list[i] in 
+                                    self.process_state_db):
+                                process_stat_ent = process_stat()
+                                process_stat_ent.process_state = "PROCESS_STATE_" + proc_status_list[i+1].strip()
+                                if (process_stat_ent.process_state  ==
+                                        'PROCESS_STATE_RUNNING'):
+                                    process_stat_ent.start_time = str(int(time.time()*1000000))
+                                    process_stat_ent.start_count += 1
+                                self.process_state_db[proc_status_list[i]] = process_stat_ent
+                                send_uve = True
+                                sys.stderr.write("\nAdding:" + proc_status_list[i] + "\n")
+                            # there are 4 strings in each line of supervisorctl output
+                            i +=4 
+
+                    else:
+                        sys.stderr.write("supervisorctl error value:"+ error_value)
+
+
+                    # check for openstack nova compute status
                     os_nova_comp = self.process_state_db['openstack-nova-compute']
                     (os_nova_comp_state, error_value) = Popen("openstack-status | grep openstack-nova-compute | cut -d ':' -f2", shell=True, stdout=PIPE).communicate()
                     if (os_nova_comp_state.strip() == 'active'):
@@ -353,11 +383,17 @@ class EventManager:
                             os_nova_comp.stop_time = str(int(time.time()*1000000))
                             os_nova_comp.stop_count += 1
                         self.process_state_db['openstack-nova-compute'] = os_nova_comp
-                        self.send_process_state_db(sandeshconn)
+                        send_uve = True
                     else:
                         sys.stderr.write('Openstack Nova Compute status unchanged at:' + os_nova_comp.process_state + "\n")
                         
                     self.process_state_db['openstack-nova-compute'] = os_nova_comp
+
+                    # send updated uve
+                    if (send_uve):
+                        sys.stderr.write('Updated UVE sent at the TICK_60\n')
+                        self.send_process_state_db(sandeshconn)
+
                 elif (self.node_type == 'contrail-database'):
                     self.send_database_usage()
 
