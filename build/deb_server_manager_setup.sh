@@ -185,6 +185,70 @@ function replace_cobbler_state()
 
 function passenger_install()
 {
+  rel=`lsb_release -r`
+  rel=( $rel )
+  if [ ${rel[1]} == "14.04"  ]; then
+    passenger_install_14
+  else
+    passenger_install_12
+  fi
+}
+function passenger_install_14()
+{
+  apt-get -y install libcurl4-openssl-dev libssl-dev zlib1g-dev apache2-threaded-dev ruby-dev libapr1-dev libaprutil1-dev
+  gem install rack passenger
+  apt-get -y install puppetmaster-passenger="3.7.3-1puppetlabs1"
+  service apache2 stop
+  if [ -e /etc/apt/preferences.d/00-puppet.pref ]; then
+    rm /etc/apt/preferences.d/00-puppet.pref
+  fi
+  echo -e "# /etc/apt/preferences.d/00-puppet.pref\nPackage: puppet puppet-common puppetmaster-passenger\nPin: version 3.7.3\nPin-Priority: 501" >> /etc/apt/preferences.d/00-puppet.pref
+  passenger-install-apache2-module --auto --languages 'ruby,python,nodejs' &> /dev/null
+  mkdir -p /usr/share/puppet/rack/puppetmasterd
+  mkdir -p /usr/share/puppet/rack/puppetmasterd/public /usr/share/puppet/rack/puppetmasterd/tmp
+  cp /usr/share/puppet/ext/rack/config.ru /usr/share/puppet/rack/puppetmasterd/
+  chown puppet:puppet /usr/share/puppet/rack/puppetmasterd/config.ru
+  if [ -e /etc/apache2/sites-available/puppetmaster.conf ]; then
+    mv /etc/apache2/sites-available/puppetmaster.conf /etc/apache2/sites-available/puppetmaster.conf.save
+  fi
+  cp ./puppetmaster /etc/apache2/sites-available/puppetmaster.conf
+  # passenger version is hard coded at puppetmasterd, hence the following change
+  rel=`passenger --version`
+  rel=( $rel )
+  sed -i "s|LoadModule passenger_module /var/lib/gems/1.8/gems/passenger-4.0.53/buildout/apache2/mod_passenger.so|LoadModule passenger_module /var/lib/gems/1.9.1/gems/passenger-${rel[3]}/buildout/apache2/mod_passenger.so|g" /etc/apache2/sites-available/puppetmaster.conf
+  sed -i "s|PassengerRoot /var/lib/gems/1.8/gems/passenger-4.0.53|PassengerRoot /var/lib/gems/1.9.1/gems/passenger-${rel[3]}|g" /etc/apache2/sites-available/puppetmaster.conf
+  sed -i "s|PassengerDefaultRuby /usr/bin/ruby1.8|PassengerDefaultRuby /usr/bin/ruby1.9.1|g" /etc/apache2/sites-available/puppetmaster.conf
+  a2ensite puppetmaster
+  host=`echo $HOSTNAME | awk '{print tolower($0)}'`
+  if [ "$DOMAIN" != "" ]; then
+    output="$(find /var/lib/puppet/ssl/certs/ -name "${host}.${DOMAIN}*.pem")"
+    output=( $output )
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile      ${output[0]}|g" /etc/apache2/sites-available/puppetmaster.conf
+    output="$(find /var/lib/puppet/ssl/private_keys/ -name "${host}.${DOMAIN}*.pem")"
+    output=( $output )
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile   ${output[0]}|g" /etc/apache2/sites-available/puppetmaster.conf
+    sed -i "s|ErrorLog .*|ErrorLog /var/log/apache2/${host}.${DOMAIN}_ssl_error.log|g" /etc/apache2/sites-available/puppetmaster.conf
+    sed -i "s|CustomLog .*|CustomLog /var/log/apache2/${host}.${DOMAIN}_ssl_access.log combined|g" /etc/apache2/sites-available/puppetmaster.conf
+  else
+    output="$(find /var/lib/puppet/ssl/certs/ -name "${host}*.pem")"
+    output=( $output )
+    sed -i "s|SSLCertificateFile.*|SSLCertificateFile      ${output[0]}|g" /etc/apache2/sites-available/puppetmaster.conf
+    output="$(find /var/lib/puppet/ssl/private_keys/ -name "${host}*.pem")"
+    output=( $output )
+    sed -i "s|SSLCertificateKeyFile.*|SSLCertificateKeyFile   ${output[0]}|g" /etc/apache2/sites-available/puppetmaster.conf
+    sed -i "s|ErrorLog .*|ErrorLog /var/log/apache2/${host}_ssl_error.log|g" /etc/apache2/sites-available/puppetmaster.conf
+    sed -i "s|CustomLog .*|CustomLog /var/log/apache2/${host}_ssl_access.log combined|g" /etc/apache2/sites-available/puppetmaster.conf
+  fi
+  /etc/init.d/puppetmaster start
+  /etc/init.d/puppetmaster stop
+  /etc/init.d/apache2 restart
+  update-rc.d -f puppetmaster remove
+  sed -i "s|START=.*|START=no|g" /etc/default/puppetmaster
+  echo "$space### End: Install Passenger"
+}
+
+function passenger_install_12()
+{
     echo "$space### Begin: Install Passenger"
     apt-get -y install apache2 ruby1.8-dev rubygems libcurl4-openssl-dev libssl-dev zlib1g-dev apache2-threaded-dev libapr1-dev libaprutil1-dev
     a2enmod ssl
@@ -235,6 +299,17 @@ function passenger_install()
 
 function install_cobbler()
 {
+  rel=`lsb_release -r`
+  rel=( $rel )
+  if [ ${rel[1]} == "14.04"  ]; then
+    install_cobbler_14
+  else
+    install_cobbler_12
+  fi
+}
+
+function install_cobbler_12()
+{
   echo "$space### Begin: Install Cobbler"
   apt-get -y install apache2 libapache2-mod-wsgi tftpd-hpa python-urlgrabber python-django selinux-utils python-simplejson python-dev
   apt-get -y install python-software-properties debmirror
@@ -242,15 +317,6 @@ function install_cobbler()
   add-apt-repository "deb http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/ ./"
   apt-get update --yes
   apt-get -y install cobbler="2.6.3-1"
-  rel=`lsb_release -r`
-  rel=( $rel )
-  if [ ${rel[1]} == "14.04"  ]; then
-    if [ -d /etc/apache2/conf-available/ ]; then
-      cp /etc/apache2/conf.d/cobbler.conf /etc/apache2/conf-available/
-      cp /etc/apache2/conf.d/cobbler_web.conf /etc/apache2/conf-available/
-    fi
-    a2enconf cobbler cobbler_web
-  fi
   a2enmod proxy
   a2enmod proxy_http
   a2enmod version
@@ -263,6 +329,35 @@ function install_cobbler()
   cp ./cobbler_web.conf /etc/cobbler/
   sed -i "s/django.conf.urls /django.conf.urls.defaults /g" /usr/share/cobbler/web/cobbler_web/urls.py
   chmod 777 /var/lib/cobbler/webui_sessions/
+  service cobblerd restart
+  service apache2 restart
+  echo "$space### End: Install Cobbler"
+}
+
+function install_cobbler_14()
+{
+  echo "$space### Begin: Install Cobbler"
+  apt-get -y install apache2 libapache2-mod-wsgi tftpd-hpa python-urlgrabber python-django selinux-utils python-simplejson python-dev
+  apt-get -y install python-software-properties debmirror
+  wget -qO - http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_14.04/Release.key | apt-key add -
+  add-apt-repository "deb http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_14.04/ ./"
+  apt-get update --yes
+  apt-get -y install cobbler="2.6.3-1"
+  mkdir -p /etc/apache2/conf-available/
+  cp ./cobbler_14.conf /etc/apache2/conf.d/cobbler.conf
+  cp ./cobbler_web_14.conf /etc/apache2/conf.d/cobbler_web.conf
+  cp ./cobbler_14.conf /etc/cobbler/cobbler.conf
+  cp ./cobbler_web_14.conf /etc/cobbler/cobbler_web.conf
+  cp /etc/apache2/conf.d/cobbler.conf /etc/apache2/conf-available/
+  cp /etc/apache2/conf.d/cobbler_web.conf /etc/apache2/conf-available/
+  a2enconf cobbler cobbler_web
+  a2enmod proxy
+  a2enmod proxy_http
+  cp -r /srv/www/cobbler /var/www/cobbler
+  cp -r /srv/www/cobbler_webui_content /var/www/cobbler_webui_content
+  chmod 777 /var/lib/cobbler/webui_sessions/
+  SECRET_KEY=$(python -c 'import re;from random import choice; import sys; sys.stdout.write(re.escape("".join([choice("abcdefghijklmnopqrstuvwxyz0123456789^&*(-_=+)") for i in range(100)])))')
+  sudo sed --in-place "s/^SECRET_KEY = .*/SECRET_KEY = '${SECRET_KEY}'/" /usr/share/cobbler/web/settings.py
   service cobblerd restart
   service apache2 restart
   echo "$space### End: Install Cobbler"
@@ -302,12 +397,25 @@ function bind_logging()
 if [ "$SM" != "" ]; then
   echo "### Begin: Installing Server Manager"
   echo "SM is $SM"
-  wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
-  gdebi -n puppetlabs-release-precise.deb
-  apt-get update --yes
-
-  apt-get -y install puppetmaster="3.7.3-1puppetlabs1"
-  gdebi -n nodejs_0.8.15-1contrail1_amd64.deb
+  rel=`lsb_release -r`
+  rel=( $rel )
+  if [ ${rel[1]} == "14.04"  ]; then
+    wget https://apt.puppetlabs.com/puppetlabs-release-trusty.deb
+    gdebi -n puppetlabs-release-trusty.deb
+    apt-get update --yes
+    apt-get -y install puppet-common="3.7.3-1puppetlabs1"
+    apt-get -y install puppetmaster-common="3.7.3-1puppetlabs1"
+    apt-get -y install puppetmaster="3.7.3-1puppetlabs1"
+    service puppetmaster stop
+    service apache2 start
+    gdebi -n nodejs_0.8.15-1contrail1_amd64.deb
+  else
+    wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
+    gdebi -n puppetlabs-release-precise.deb
+    apt-get update --yes
+    apt-get -y install puppetmaster="3.7.3-1puppetlabs1"
+    gdebi -n nodejs_0.8.15-1contrail1_amd64.deb
+  fi
 
   if [ -e /etc/init.d/apparmor ]; then
     /etc/init.d/apparmor stop
@@ -315,6 +423,7 @@ if [ "$SM" != "" ]; then
     apt-get --purge remove apparmor apparmor-utils libapparmor-perl libapparmor1 --yes
   fi
 
+  apt-get -y install software-properties-common
   # Check if this is an upgrade
   check=`dpkg --list | grep "contrail-server-manager "`
   if [ "$check" != ""  ]; then
