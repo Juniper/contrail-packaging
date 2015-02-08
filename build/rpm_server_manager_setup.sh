@@ -6,7 +6,9 @@ SMCLIENT=""
 HOSTIP=""
 SMMON=""
 DOMAIN=""
-LOCALHOSTIP=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp' | awk 'NR==1'`
+HOST_IP_LIST=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp'`
+LOCALHOSTIP=`echo $HOST_IP_LIST | cut -d' ' -f1`
+echo $LOCALHOSTIP
 yum clean all
 
 function usage()
@@ -119,6 +121,8 @@ while [ "$1" != "" ]; do
             ;;
         --hostip)
             HOSTIP=$VALUE
+            rm -rf ./IP.txt
+            echo $HOSTIP >> IP.txt
             ;;
         --domain)
             DOMAIN=$VALUE

@@ -76,7 +76,13 @@ install -p -m 755 %{_contrail_smgr_src}sm-monitoring-config.ini %{buildroot}%{_c
 if [ -x /bin/systemctl ]; then
    /bin/systemctl --system daemon-reload
 fi
-HOST_IP=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp'`
+HOST_IP_LIST=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp'`
+HOST_IP=`echo $HOST_IP_LIST | cut -d' ' -f1`
+if [ -f /opt/contrail/contrail_server_manager/IP.txt ];
+then
+   HOST_IP=$(cat /opt/contrail/contrail_server_manager/IP.txt)
+fi
+echo $HOST_IP
 sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/sm-monitoring-config.ini
 cat /opt/contrail/server_manager/sm-monitoring-config.ini >> /opt/contrail/server_manager/sm-config.ini
 %changelog
