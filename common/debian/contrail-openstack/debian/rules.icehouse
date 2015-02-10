@@ -46,8 +46,8 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
 	# Install supervisord config config files and directories
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files
-	install -D -m 755 $(_src_config)/supervisor-openstack.upstart $(buildroot)$(_initdir)/supervisor-openstack.conf.upstart_openstack
-	install -p -m 755 $(_src_config)/supervisord_openstack.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack.conf.supervisord_openstack
+	install -D -m 755 $(_src_config)/supervisor-openstack.upstart $(buildroot)$(_initdir)/supervisor-openstack.conf
+	install -p -m 755 $(_src_config)/supervisord_openstack.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack.conf
 	# Install supervisor init.d files
 	install -p -m 755 $(_src_config)/keystone.initd.supervisord $(buildroot)$(_initddir)/keystone.initd.supervisord
 	install -p -m 755 $(_src_config)/nova-api.initd.supervisord $(buildroot)$(_initddir)/nova-api.initd.supervisord

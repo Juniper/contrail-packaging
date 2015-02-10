@@ -114,7 +114,7 @@ fi
 mv %{_bindir}/openstack-status.contrail %{_bindir}/openstack-status
 
 # Replace stock openstack initd scripts with contrail initd scripts
-for svc in openstack-keystone openstack-nova_api openstack-nova-scheduler\
+for svc in openstack-keystone openstack-nova-api openstack-nova-scheduler\
            openstack-nova-consoleauth openstack-nova-conductor\
            openstack-nova-novncproxy openstack-glance-api\
            openstack-glance-registry openstack-cinder-api\
