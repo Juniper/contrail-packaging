@@ -413,6 +413,8 @@ if [ "$SM" != "" ]; then
     wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
     gdebi -n puppetlabs-release-precise.deb
     apt-get update --yes
+    apt-get -y install puppet-common="3.7.3-1puppetlabs1"
+    apt-get -y install puppetmaster-common="3.7.3-1puppetlabs1"
     apt-get -y install puppetmaster="3.7.3-1puppetlabs1"
     gdebi -n nodejs_0.8.15-1contrail1_amd64.deb
   fi
