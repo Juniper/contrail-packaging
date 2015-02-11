@@ -9,7 +9,7 @@ fi
 LOG=/var/log/contrail.log
 echo "LOG=$LOG" > $CFG_FILE
 
-CONFIG=/etc/contrail/agent.conf
+CONFIG=/etc/contrail/contrail-vrouter-agent.conf
 echo CONFIG=$CONFIG >> $CFG_FILE
 
 prog=/usr/bin/contrail-vrouter-agent

@@ -1,0 +1,31 @@
+#!/bin/sh
+
+NAME=contrail-dpdk-kernel-modules
+PACKAGE_NAME=$NAME-dkms
+DEB_NAME=$(echo $PACKAGE_NAME | sed 's,_,-,')
+VERSION=`dpkg-query -W -f='${Version}' $DEB_NAME | cut -d\: -f2`
+ARCH=`dpkg --print-architecture`
+
+set -e
+
+case "$1" in
+    remove|upgrade|deconfigure)
+      if [  "`dkms status -m $NAME`" ]; then
+         dkms remove -m $NAME -v $VERSION --all
+      fi
+    ;;
+
+    failed-upgrade)
+    ;;
+
+    *)
+        echo "prerm called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0
+
+
