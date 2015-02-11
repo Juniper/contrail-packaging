@@ -11,5 +11,6 @@ Depends: contrail-vrouter,
     python-contrail-vrouter-api,
     python-opencontrail-vrouter-netns,
     supervisor
+Conflicts: contrail-vrouter-dpdk
 Priority: optional
 Description: OpenContrail compute-node startup and monitoring scripts.
