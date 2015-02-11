@@ -25,6 +25,11 @@ ifeq ($(CONTRAIL_SKU),icehouse)
     CONTRAIL_OPENSTACK := contrail-openstack-icehouse-deb
     CONTRAIL_HEAT := contrail-heat-deb
     CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
+    ifeq ($(SERIES),precise)
+        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
+        CONTRAIL_VRDPDK_KMOD := contrail-dpdk-kernel-modules-dkms-deb
+        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
+    endif
 endif
 
 ifeq ($(CONTRAIL_SKU),havana)
@@ -52,6 +57,8 @@ PACKAGES = \
         contrail-nova-networkapi-deb \
         contrail-vrouter-init-deb \
         contrail-vrouter-common-deb \
+        $(CONTRAIL_VRDPDK_BIN) \
+        $(CONTRAIL_VRDPDK_INIT) \
 	contrail-web-core-deb \
 	contrail-web-controller-deb \
 	contrail-web-server-manager-deb \
@@ -73,7 +80,8 @@ PACKAGES = \
 	$(CONTRAIL_HEAT) \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
-	contrail-vmware-utils-deb
+	contrail-vmware-utils-deb \
+	$(CONTRAIL_VRDPDK_KMOD)
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -126,6 +134,11 @@ package-contrail: debian-contrail
             fakeroot debian/rules.modules KVERS=$(kver) clean; \
             fakeroot debian/rules.modules KVERS=$(kver) binary-modules); )
 
+package-contrail-vrouter-dpdk:
+	(cd ${SB_TOP}; make CONTRAIL_VERSION=$(VERSION) -f tools/packages/packages.make package-contrail-vrouter-dpdk)
+
+contrail-vrouter-dpdk: package-contrail-vrouter-dpdk
+	@echo "Package contrail-vrouter-dpdk done"
 
 package-ifmap-server: clean-ifmap-server debian-ifmap-server
 	$(eval PACKAGE := $(patsubst package-%,%,$@))
@@ -405,4 +418,18 @@ contrail-vrouter-deb: contrail-libs-deb
 		(cd contrail-vrouter; fakeroot debian/rules clean); \
 		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
 	fi
+
+dpdk-depends-packages-deb:
+	(cd $(@:-deb=); fakeroot debian/rules clean)
+	(cd $(@:-deb=); fakeroot debian/rules binary)
+
+contrail-dpdk-kernel-modules-dkms-deb:
+	(cd $(@:-deb=); sed -re "1 s/VERSION/$(VERSION)/" \
+	    debian/changelog.in > debian/changelog)
+	(cd $(@:-deb=); fakeroot debian/rules clean)
+	(cd $(@:-deb=); fakeroot debian/rules binary)
+
+contrail-dpdk-kernel-modules-dkms-clean:
+	(cd $(@:-clean=); fakeroot debian/rules clean)
+	(cd $(@:-clean=); rm -rf debian/changelog)
 
