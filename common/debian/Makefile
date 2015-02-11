@@ -52,6 +52,7 @@ PACKAGES = \
         contrail-nova-networkapi-deb \
         contrail-vrouter-init-deb \
         contrail-vrouter-common-deb \
+        contrail-vrouter-dpdk-init-deb \
 	contrail-web-core-deb \
 	contrail-web-controller-deb \
 	contrail-web-server-manager-deb \
@@ -73,7 +74,8 @@ PACKAGES = \
 	$(CONTRAIL_HEAT) \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
-	contrail-vmware-utils-deb
+	contrail-vmware-utils-deb \
+	contrail-dpdk-kernel-modules-dkms-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -405,4 +407,18 @@ contrail-vrouter-deb: contrail-libs-deb
 		(cd contrail-vrouter; fakeroot debian/rules clean); \
 		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
 	fi
+
+dpdk-depends-packages-deb:
+	(cd $(@:-deb=); fakeroot debian/rules clean)
+	(cd $(@:-deb=); fakeroot debian/rules binary)
+
+contrail-dpdk-kernel-modules-dkms-deb:
+	(cd $(@:-deb=); sed -re "1 s/VERSION/$(VERSION)/" \
+	    debian/changelog.in > debian/changelog)
+	(cd $(@:-deb=); fakeroot debian/rules clean)
+	(cd $(@:-deb=); fakeroot debian/rules binary)
+
+contrail-dpdk-kernel-modules-dkms-clean:
+	(cd $(@:-clean=); fakeroot debian/rules clean)
+	(cd $(@:-clean=); rm -rf debian/changelog)
 

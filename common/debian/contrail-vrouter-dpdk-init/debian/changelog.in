@@ -1,0 +1,4 @@
+contrail-vrouter-dpdk-init (BUILDTAG) builder; urgency=low
+   [builder]
+   * debian/changelog: initial version
+
