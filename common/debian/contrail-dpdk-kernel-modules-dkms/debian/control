@@ -1,0 +1,11 @@
+Source: contrail-dpdk-kernel-modules-dkms
+Section: misc
+Priority: optional
+Maintainer: Dynamic Kernel Modules Support Team <pkg-dkms-maint@lists.alioth.debian.org>
+Build-Depends: debhelper (>= 7), dkms
+Standards-Version: 3.8.1
+
+Package: contrail-dpdk-kernel-modules-dkms
+Architecture: all
+Depends: dkms (>= 1.95), libc-dev, ${misc:Depends}
+Description: contrail-dpdk-kernel-modules driver in DKMS format.
