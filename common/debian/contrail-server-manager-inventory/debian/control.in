@@ -1,0 +1,15 @@
+Source: contrail-server-manager-inventory
+Maintainer: sgurumurthy <sgurumurthy@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends: debhelper (>= 8)
+
+Package: contrail-server-manager-inventory
+Architecture: all
+Maintainer: sgurumurthy <sgurumurthy@juniper.net>
+Depends: python-contrail,
+    python-bottle (>= 0.11.6)
+Section: contrail-server-manager-inventory
+Priority: extra
+Description: Contrail Server-manager Inventory API Library package

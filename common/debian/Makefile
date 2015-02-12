@@ -78,6 +78,7 @@ all: ${PACKAGES}
 server-manager-all: contrail-server-manager-deb \
                     contrail-server-manager-client-deb \
                     contrail-server-manager-monitoring-deb \
+                    contrail-server-manager-inventory-deb \
                     contrail-server-manager-installer-deb
 
 clean: $(PACKAGES:%-deb=%-clean)
@@ -173,6 +174,14 @@ contrail-server-manager-monitoring-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
+contrail-server-manager-inventory-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-inventory)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-inventory/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
 contrail-server-manager-installer-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-installer)
 	rm -rf ${BUILDDIR}
@@ -199,6 +208,10 @@ contrail-server-manager-installer-clean:
 
 contrail-server-manager-monitoring-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-monitoring)
+	rm -rf ${BUILDDIR}
+
+contrail-server-manager-inventory-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-inventory)
 	rm -rf ${BUILDDIR}
 
 contrail-fabric-utils-deb:
