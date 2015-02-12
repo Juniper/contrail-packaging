@@ -3,4 +3,4 @@
 mv /etc/contrail/ifcfg* /etc/sysconfig/network-scripts 2>/dev/null 1>&2
 sync
 echo "force rebooting"
-reboot --force
+reboot
