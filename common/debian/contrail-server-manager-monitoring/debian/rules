@@ -40,6 +40,7 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_bindir)
 	install -d -m 755 $(buildroot)/opt/contrail/server_manager/
 	scons -U install_contrail_sm_monitoring --root=${buildroot}
+	scons -U install_contrail_sm_inventory --root=${buildroot}
 	cp -r $(src_path)/server_mgr_ipmi_monitoring.py $(buildroot)/opt/contrail/server_manager/
 	cp -r $(src_path)/sm-monitoring-config.ini $(buildroot)/opt/contrail/server_manager/
 override_dh_shlibdeps:
