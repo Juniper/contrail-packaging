@@ -1,0 +1,5 @@
+Name: contrail-nova-vif
+Maintainer: builder@juniper.net
+License: Apache
+Files: *
+Copyright (c) 2014 Juniper Networks, Inc. All rights reserverd.
