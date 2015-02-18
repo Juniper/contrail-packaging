@@ -445,13 +445,17 @@ class EventManager:
                 if ((abs(current_time - prev_current_time)) > 300):
                     #update all process start_times with the updated time
                     #Compute the elapsed time and subtract them from current time to get updated values
+                    sys.stderr.write("Time lapse detected %d \n",abs(current_time - prev_current_time)
                     for key in self.process_state_db:
                         pstat = self.process_state_db[key]
-                        pstat.start_time = str((int(current_time - (prev_current_time-((int)(pstat.start_time))/1000000)))*1000000)
+                        if pstat.start_time is not '':
+                            pstat.start_time = str((int(current_time - (prev_current_time-((int)(pstat.start_time))/1000000)))*1000000)
                         if (pstat.process_state == 'PROCESS_STATE_STOPPED'):
-                            pstat.stop_time = str(int(current_time - (prev_current_time-((int)(pstat.stop_time))/1000000))*1000000)
+                            if pstat.stop_time is not '':
+                                pstat.stop_time = str(int(current_time - (prev_current_time-((int)(pstat.stop_time))/1000000))*1000000)
                         if (pstat.process_state == 'PROCESS_STATE_EXITED'):
-                            pstat.exit_time = str(int(current_time - (prev_current_time-((int)(pstat.exit_time))/1000000))*1000000)
+                            if pstat.exit_time is not '':
+                                pstat.exit_time = str(int(current_time - (prev_current_time-((int)(pstat.exit_time))/1000000))*1000000)
                         # update process state database
                         self.process_state_db[key] = pstat
                     #sys.stderr.write("Info being written"+str(self.process_state_db))
