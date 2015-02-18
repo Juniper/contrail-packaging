@@ -1,0 +1,7 @@
+#!/bin/bash
+
+line_num=`cat /etc/apt/sources.list | grep -n contrail_dependents_repo | cut -d ':' -f1`
+sed -i 's%deb file\:\/opt\/contrail\/contrail_dependents_repo \.\/%%' /etc/apt/sources.list
+sed -i ''$line_num'{/^$/d}' /etc/apt/sources.list
+
+echo "You may need to run \"apt-get update\" after de-installing the package..."
