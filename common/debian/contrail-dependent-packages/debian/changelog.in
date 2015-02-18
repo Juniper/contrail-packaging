@@ -1,0 +1,6 @@
+contrail-dependent-packages (BUILDTAG) vmahuli; urgency=low
+
+  [vmahuli ]
+  * debian/changelog: changelog
+
+ -- vmahuli <vmahuli@juniper.net>  Tue, 10 Feb 2015 8:00:11 +0800

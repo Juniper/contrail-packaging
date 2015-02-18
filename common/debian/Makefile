@@ -82,7 +82,6 @@ PACKAGES = \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
 	contrail-vmware-utils-deb \
-	contrail-f5-deb \
 	$(CONTRAIL_VRDPDK_KMOD)
 
 all: ${PACKAGES}
@@ -166,6 +165,42 @@ contrail-install-packages-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 	@echo "Wrote: ${BUILDDIR}/../contrail-install-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
+
+contrail-packages: contrail-packages-deb
+contrail-packages-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-packages)
+	mkdir -p ${BUILDDIR}
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	@echo "Wrote: ${BUILDDIR}/../contrail-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
+
+contrail-dependent-packages: contrail-dependent-packages-deb
+contrail-dependent-packages-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-dependent-packages)
+	mkdir -p ${BUILDDIR}
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-dependent-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	@echo "Wrote: ${BUILDDIR}/../contrail-dependent-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
+
+contrail-openstack-packages: contrail-openstack-packages-deb
+contrail-openstack-packages-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-packages)
+	mkdir -p ${BUILDDIR}
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	@echo "Wrote: ${BUILDDIR}/../contrail-openstack-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
+
+contrail-thirdparty-packages: contrail-thirdparty-packages-deb
+contrail-thirdparty-packages-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-thirdparty-packages)
+	mkdir -p ${BUILDDIR}
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-thirdparty-packages/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	@echo "Wrote: ${BUILDDIR}/../contrail-thirdparty-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
 
 contrail-server-manager-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager)
