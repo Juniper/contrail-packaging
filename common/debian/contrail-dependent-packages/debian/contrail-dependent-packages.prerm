@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [ -f /opt/contrail/.contrail_dependent_packages ]; then
+    echo -e "\nYou may need to run \.\/remove\.sh before uninstalling the package..."
+    exit 1
+fi
