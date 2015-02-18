@@ -320,6 +320,12 @@ class BasePackager(Utils):
         log.info('Executing createrepo in (%s)...' % self.repo_dir)
         self.exec_cmd('createrepo %s .' % extraargs, wd=self.repo_dir)   
 
+    def createrepo_ubuntu(self, extraargs=''):
+        ''' execute create repo '''
+        log.info('Executing dpkg-scanpackages in (%s)...' % self.repo_dir)
+        self.exec_cmd('dpkg-scanpackages %s . /dev/null | gzip -9c > Packages.gz' % extraargs, wd=self.repo_dir)
+
+
     def cleanup_store(self):
         log.info('Removing Packager repo dir (%s)' % self.repo_dir)
         shutil.rmtree(self.repo_dir)
