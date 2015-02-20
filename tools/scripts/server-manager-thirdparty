@@ -24,3 +24,6 @@ ruby1.8_1.8.7.352-2ubuntu1.6_amd64.deb, dd8668fdbd22b44e2d0a3d366fdf26c0
 ruby_4.8_all.deb, 55247c5c4791de1d41489a6ea46f7421
 ruby-json_1.6.3-1_amd64.deb, 60512a21163973f1b714dad68ee276e0
 virt-what_1.11-1_amd64.deb, 76fc052bf3bfef3d0fe66f6145decdb6
+python-netaddr_0.7.10-1ubuntu1.1_all.deb, 336a9d9630e86bdfb1b77cd31116b09c
+ifenslave_2.4ubuntu1_all.deb, 939a6c5c389757ace752bb01d0467064
+ifenslave-2.6_2.4ubuntu1_all.deb, 38759149a444c81e9f8261540c0dcf30
