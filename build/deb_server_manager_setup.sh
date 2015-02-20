@@ -320,6 +320,7 @@ function install_cobbler_12()
   a2enmod proxy
   a2enmod proxy_http
   a2enmod version
+  a2enmod wsgi
   setenforce 0
   cp -r /srv/www/cobbler /var/www/cobbler
   cp -r /srv/www/cobbler_webui_content /var/www/cobbler_webui_content
@@ -353,6 +354,7 @@ function install_cobbler_14()
   a2enconf cobbler cobbler_web
   a2enmod proxy
   a2enmod proxy_http
+  a2enmod wsgi
   cp -r /srv/www/cobbler /var/www/cobbler
   cp -r /srv/www/cobbler_webui_content /var/www/cobbler_webui_content
   chmod 777 /var/lib/cobbler/webui_sessions/
