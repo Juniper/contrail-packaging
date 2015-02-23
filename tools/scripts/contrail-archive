@@ -173,7 +173,7 @@ class ContrailArchive(object):
             ["../sandbox/build/debug/query_engine/qed", "qed"],
             ["../sandbox/build/debug/analytics/vizd", "vizd"],
             ["../sandbox/vrouter/vrouter.ko", "vrouter.ko"],
-            ["../sandbox/build/debug/vnsw/agent/ovs_tor_agent/contrail-tor-agent", "contrail-tor-agent"]
+            ["../sandbox/build/production/vnsw/agent/ovs_tor_agent/contrail-tor-agent", "contrail-tor-agent"]
         ]
         for (path, link) in lnk_binaries:
             if os.path.isfile(path):
