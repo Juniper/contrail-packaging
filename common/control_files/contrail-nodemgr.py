@@ -668,6 +668,13 @@ def main(argv=sys.argv):
         except:
             import discoveryclient.client as client
 
+        from database.sandesh.database.ttypes import \
+            NodeStatusUVE, NodeStatus
+        from database.sandesh.database.process_info.ttypes import \
+            ProcessInfo, ProcessStatus, ProcessState
+        from database.sandesh.database.process_info.constants import \
+            ProcessStateNames
+
         module = Module.DATABASE_NODE_MGR
         module_name = ModuleNames[module]
         node_type = Module2NodeType[module]
@@ -688,6 +695,42 @@ def main(argv=sys.argv):
             node_type_name, instance_id, [], module_name,
             8103, ['database.sandesh'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
+
+        (linux_dist, x, y) = platform.linux_distribution()
+        if (linux_dist == 'Ubuntu'):
+            (disk_space_used, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2 \`/ContrailAnalytics | grep %` && echo $3 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+            (disk_space_available, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics | grep %` && echo $4  | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+            (analytics_db_size, error_value) = Popen("set `du -skL \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics` && echo $1 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+        else:
+            (disk_space_used, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2 \`/ContrailAnalytics | grep %` && echo $3 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+            (disk_space_available, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics | grep %` && echo $4  | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+            (analytics_db_size, error_value) = Popen("set `du -skL \`grep -A 1 'data_file_directories:'  /etc/cassandra/conf/cassandra.yaml | grep '-' | cut -d'-' -f2\`/ContrailAnalytics` && echo $1 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
+        disk_space_total = int(disk_space_used) + int(disk_space_available)
+        try:
+            min_disk_opt = Config.get("DEFAULT", "minimum_diskGB")
+            min_disk = int(min_disk_opt)
+        except:
+            min_disk = 0
+        if (disk_space_total/(1024*1024) < min_disk):
+            from sandesh_common.vns.constants import SERVICE_CONTRAIL_DATABASE
+
+            cmd_str = "service " + SERVICE_CONTRAIL_DATABASE + " stop"
+            (ret_value, error_value) = Popen(cmd_str, shell=True, stdout=PIPE).communicate()
+            process_status = ProcessStatus(module_id = module_name, instance_id = instance_id, state = ProcessStateNames[ProcessState.NON_FUNCTIONAL], description = "Low disk for analytics db, cassandra stopped")
+            process_status_list = []
+            process_status_list.append(process_status)
+            node_status = NodeStatus(name = socket.gethostname(), process_status = process_status_list)
+            node_status_uve = NodeStatusUVE(data = node_status)
+            sys.stderr.write('Sending UVE:' + str(node_status_uve))
+            node_status_uve.send()
+        else:
+            process_status = ProcessStatus(module_id = module_name, instance_id = instance_id, state = ProcessStateNames[ProcessState.FUNCTIONAL], description = "")
+            process_status_list = []
+            process_status_list.append(process_status)
+            node_status = NodeStatus(name = socket.gethostname(), process_status = process_status_list)
+            node_status_uve = NodeStatusUVE(data = node_status)
+            sys.stderr.write('Sending UVE:' + str(node_status_uve))
+            node_status_uve.send()
 
     gevent.joinall([gevent.spawn(prog.runforever, sandesh_global)])
 
