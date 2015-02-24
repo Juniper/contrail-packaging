@@ -48,6 +48,7 @@ PACKAGES = \
         ifmap-server \
         ifmap-python-client \
         contrail-nova-vif-deb \
+        contrail-nova-networkapi-deb \
         contrail-vrouter-init-deb \
         contrail-vrouter-common-deb \
 	contrail-web-core-deb \

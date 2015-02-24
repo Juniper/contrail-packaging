@@ -1,0 +1,10 @@
+Source: contrail-nova-networkapi
+Maintainer: builder@juniper.net
+Section: net
+Priority: optional
+
+Package: contrail-nova-networkapi
+Architecture: all
+Depends: nova-api
+Priority: optional
+Description: OpenContrail networking api for nova

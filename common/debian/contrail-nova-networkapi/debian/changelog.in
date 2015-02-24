@@ -1,0 +1,3 @@
+contrail-nova-networkapi (BUILDTAG) builder; urgency=low
+   [builder]
+   * debian/changelog: initial version
