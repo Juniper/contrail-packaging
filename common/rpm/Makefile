@@ -85,6 +85,10 @@ neutron-plugin-contrail: $(PREP)
 	@echo making rpm for neutron-plugin-plugin
 	rpmbuild $(RPMBLDOPTS) neutron-plugin-contrail.spec $(G_TAG)
 
+ceilometer-plugin-contrail: $(PREP)
+	@echo making rpm for ceilometer-plugin-contrail
+	rpmbuild $(RPMBLDOPTS) ceilometer-plugin-contrail.spec $(G_TAG)
+
 contrail-heat: $(PREP)
 	@echo making rpm for contrail-heat
 	rpmbuild $(RPMBLDOPTS) contrail-heat.spec $(G_TAG)
@@ -250,15 +254,17 @@ contrail-test:
 NEUTRON_PLUGIN = neutron-plugin-contrail
 ifeq ($(CONTRAIL_SKU), icehouse)
 CONTRAIL_HEAT = contrail-heat
+CEILOMETER_PLUGIN = ceilometer-plugin-contrail
 else
 CONTRAIL_HEAT = 
+CEILOMETER_PLUGIN =
 endif
 
 all: $(PREP) contrail \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
-       ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT}\
+       ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
        contrail-vrouter-init contrail-vrouter-common \
        contrail-fabric-utils contrail-test
 
