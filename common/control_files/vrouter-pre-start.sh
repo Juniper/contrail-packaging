@@ -38,7 +38,7 @@ function create_virtual_gateway() {
     #for element in "${vgw_array[@]}"
     for ((i=0;i<${#vgw_array[@]};++i))
        do
-       vif --create ${vgw_intf_array[i]} --mac 00:01:00:5e:00:00
+       vif --create ${vgw_intf_array[i]} --mac 00:00:5e:00:01:00
        if [ $? != 0 ]
            then
            echo "$(date): Error adding intreface vgw"
