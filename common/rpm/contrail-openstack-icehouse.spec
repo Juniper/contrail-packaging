@@ -51,7 +51,7 @@ Requires: openstack-heat-api
 Requires: openstack-heat-common
 Requires: openstack-heat-engine
 Requires: crudini
-Requires: openstack-utils
+Requires: openstack-utils >= 2014.1-1
 %endif
 
 %description
