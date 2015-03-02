@@ -36,6 +36,7 @@ import platform
 import select
 import gevent
 import ConfigParser
+from ConfigParser import NoOptionError
 
 from supervisor import childutils
 
@@ -602,7 +603,14 @@ def main(argv=sys.argv):
         Config = ConfigParser.SafeConfigParser()
         Config.readfp(data)
         if discovery_server == socket.gethostname():
-            discovery_server = Config.get("DISCOVERY", "server")
+            try:
+                discovery_server = Config.get("DISCOVERY", "server")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e) + '\n')
+            try:
+                discovery_port = Config.get("DISCOVERY", "port")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e) + '\n')
             #Hack becos of Configparser and the conf file format itself
             try:
                 discovery_server = discovery_server[:discovery_server.index('#')].strip()
@@ -639,8 +647,14 @@ def main(argv=sys.argv):
         instance_id = INSTANCE_ID_DEFAULT
         Config = ConfigParser.ConfigParser()
         Config.read("/etc/contrail/contrail-api.conf")
-        discovery_server = Config.get("DEFAULTS", "disc_server_ip")
-        discovery_port = Config.get("DEFAULTS", "disc_server_port")
+        try:
+            discovery_server = Config.get("DEFAULTS", "disc_server_ip")
+        except NoOptionError as e:
+            sys.stderr.write("ERROR: " + str(e) + '\n')
+        try:
+            discovery_port = Config.get("DEFAULTS", "disc_server_port")
+        except NoOptionError as e:
+            sys.stderr.write("ERROR: " + str(e) + '\n')
         sys.stderr.write("Updated discovery server: " + discovery_server + "\n")
         sys.stderr.write("Updated discovery port: " + str(discovery_port) + "\n")
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
@@ -668,7 +682,14 @@ def main(argv=sys.argv):
         Config = ConfigParser.SafeConfigParser()
         Config.readfp(data)
         if discovery_server == socket.gethostname():
-            discovery_server = Config.get("DISCOVERY", "server")
+            try:
+                discovery_server = Config.get("DISCOVERY", "server")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e) + '\n')
+            try:
+                discovery_port = Config.get("DISCOVERY", "port")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e) + '\n')
             #Hack becos of Configparser and the conf file format itself
             try:
                 discovery_server = discovery_server[:discovery_server.index('#')].strip()
@@ -700,9 +721,19 @@ def main(argv=sys.argv):
         Config = ConfigParser.SafeConfigParser()
         Config.readfp(data)
         if discovery_server == socket.gethostname():
-            discovery_server = Config.get("DISCOVERY", "server")
+            try:
+                discovery_server = Config.get("DISCOVERY", "server")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e) + '\n')
+            try:
+                discovery_port = Config.get("DISCOVERY", "port")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e) + '\n')
             #Hack becos of Configparser and the conf file format itself
-            discovery_server = discovery_server.strip()
+            try:
+                discovery_server = discovery_server[:discovery_server.index('#')].strip()
+            except:
+                discovery_server = discovery_server.strip()
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         sandesh_global.init_generator(module_name, socket.gethostname(), 
             node_type_name, instance_id, collector_addr, module_name, 
@@ -734,9 +765,19 @@ def main(argv=sys.argv):
         Config = ConfigParser.SafeConfigParser()
         Config.readfp(data)
         if discovery_server == socket.gethostname():
-            discovery_server = Config.get("DISCOVERY", "server")
+            try:
+                discovery_server = Config.get("DISCOVERY", "server")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e) + '\n')
+            try:
+                discovery_port = Config.get("DISCOVERY", "port")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e) + '\n')
             #Hack becos of Configparser and the conf file format itself
-            discovery_server = discovery_server.strip()
+            try:
+                discovery_server = discovery_server[:discovery_server.index('#')].strip()
+            except:
+                discovery_server = discovery_server.strip()
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
         sandesh_global.init_generator(module_name, socket.gethostname(),
             node_type_name, instance_id, [], module_name,
