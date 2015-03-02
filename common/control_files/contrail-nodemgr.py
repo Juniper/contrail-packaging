@@ -36,6 +36,7 @@ import platform
 import select
 import gevent
 import ConfigParser
+from ConfigParser import NoOptionError
 
 from supervisor import childutils
 
@@ -555,7 +556,10 @@ def main(argv=sys.argv):
         Config = ConfigParser.SafeConfigParser()
         Config.readfp(data)
         if discovery_server == socket.gethostname():
-            discovery_server = Config.get("DISCOVERY", "server")
+            try:
+                discovery_server = Config.get("DISCOVERY", "server")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e))
             #Hack becos of Configparser and the conf file format itself
             try:
                 discovery_server = discovery_server[:discovery_server.index('#')].strip()
@@ -621,7 +625,10 @@ def main(argv=sys.argv):
         Config = ConfigParser.SafeConfigParser()
         Config.readfp(data)
         if discovery_server == socket.gethostname():
-            discovery_server = Config.get("DISCOVERY", "server")
+            try:
+                discovery_server = Config.get("DISCOVERY", "server")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e))
             #Hack becos of Configparser and the conf file format itself
             try:
                 discovery_server = discovery_server[:discovery_server.index('#')].strip()
@@ -653,7 +660,10 @@ def main(argv=sys.argv):
         Config = ConfigParser.SafeConfigParser()
         Config.readfp(data)
         if discovery_server == socket.gethostname():
-            discovery_server = Config.get("DISCOVERY", "server")
+            try:
+                discovery_server = Config.get("DISCOVERY", "server")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e))
             #Hack becos of Configparser and the conf file format itself
             discovery_server = discovery_server.strip()
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
@@ -687,7 +697,10 @@ def main(argv=sys.argv):
         Config = ConfigParser.SafeConfigParser()
         Config.readfp(data)
         if discovery_server == socket.gethostname():
-            discovery_server = Config.get("DISCOVERY", "server")
+            try:
+                discovery_server = Config.get("DISCOVERY", "server")
+            except NoOptionError as e:
+                sys.stderr.write("ERROR: " + str(e))
             #Hack becos of Configparser and the conf file format itself
             discovery_server = discovery_server.strip()
         _disc= client.DiscoveryClient(discovery_server, discovery_port, module_name)
