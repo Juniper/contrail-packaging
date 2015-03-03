@@ -30,6 +30,7 @@ Source0:            git_root
 Contrail Fabric Utilities for cluster management
 
 BuildRequires:  systemd-units
+Requires: python-yaml
 
 %prep
 ## if [ ! -d contrail-fabric-utils]; then
