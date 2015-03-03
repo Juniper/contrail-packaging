@@ -177,6 +177,12 @@ class EventManager:
             sys.stderr.write('Openstack Nova Compute status:' + os_nova_comp.process_state + "\n")
             self.process_state_db['openstack-nova-compute'] = os_nova_comp
 
+        if (node_type == 'contrail-database'):
+            from database.sandesh.database.process_info.ttypes import \
+                ProcessState
+            self.disk_space_status = ProcessState.FUNCTIONAL
+            self.server_port_status = ProcessState.FUNCTIONAL
+
     def send_process_state(self, pname, pstate, pheaders, sandeshconn):
         # update process stats
         if pname in self.process_state_db.keys():
@@ -313,7 +319,7 @@ class EventManager:
             node_status_uve.send()
     # end send_process_state_db
 
-    def send_database_usage(self):
+    def database_periodic(self):
         from database.sandesh.database.ttypes import \
             DatabaseUsageStats, DatabaseUsageInfo, DatabaseUsage
 
@@ -340,7 +346,48 @@ class EventManager:
             db_info.database_usage_stats = [db_stat]
             usage_stat = DatabaseUsage(data=db_info)
             usage_stat.send()
-    # end send_database_usage
+        
+        from database.sandesh.database.process_info.ttypes import ProcessState
+        if self.disk_space_status == ProcessState.FUNCTIONAL:
+            cassandra_cli_cmd = "cassandra-cli --host " + self.hostip + " --batch  < /dev/null | grep 'Connected to:'"
+            proc = Popen(cassandra_cli_cmd, shell=True)
+            proc.wait()
+
+            from database.sandesh.database.ttypes import \
+                NodeStatusUVE, NodeStatus
+            from database.sandesh.database.process_info.ttypes import \
+                ProcessStatus
+            from database.sandesh.database.process_info.constants import \
+                ProcessStateNames
+     
+            if proc.returncode != 0:
+                if self.server_port_status == ProcessState.FUNCTIONAL:
+                    process_status = ProcessStatus(module_id = ModuleNames[Module.DATABASE_NODE_MGR],
+                            instance_id = INSTANCE_ID_DEFAULT,
+                            state = ProcessStateNames[ProcessState.NON_FUNCTIONAL],
+                            description = "cassandra state detected DOWN")
+                    process_status_list = []
+                    process_status_list.append(process_status)
+                    node_status = NodeStatus(name = socket.gethostname(), process_status = process_status_list)
+                    node_status_uve = NodeStatusUVE(data = node_status)
+                    sys.stderr.write('Sending UVE:' + str(node_status_uve))
+                    node_status_uve.send()
+                    self.server_port_status = ProcessState.NON_FUNCTIONAL
+            else:
+                if self.server_port_status == ProcessState.NON_FUNCTIONAL:
+                    process_status = ProcessStatus(module_id = ModuleNames[Module.DATABASE_NODE_MGR],
+                            instance_id = INSTANCE_ID_DEFAULT,
+                            state = ProcessStateNames[ProcessState.FUNCTIONAL],
+                            description = "")
+                    process_status_list = []
+                    process_status_list.append(process_status)
+                    node_status = NodeStatus(name = socket.gethostname(), process_status = process_status_list)
+                    node_status_uve = NodeStatusUVE(data = node_status)
+                    sys.stderr.write('Sending UVE:' + str(node_status_uve))
+                    node_status_uve.send()
+                    self.server_port_status = ProcessState.FUNCTIONAL
+
+    # end database_periodic
 
     def send_all_core_file(self, sandeshconn):
         stat_command_option = "stat --printf=%Y /var/crashes"
@@ -438,7 +485,7 @@ class EventManager:
                         
                     self.process_state_db['openstack-nova-compute'] = os_nova_comp
                 elif (self.node_type == 'contrail-database'):
-                    self.send_database_usage()
+                    self.database_periodic()
 
                 current_time = int(time.time())
                 #sys.stderr.write("Time changed %d \n",abs(current_time - prev_current_time)
@@ -696,6 +743,11 @@ def main(argv=sys.argv):
             8103, ['database.sandesh'], _disc)
         #sandesh_global.set_logging_params(enable_local_log=True)
 
+        try:
+            prog.hostip = Config.get("DEFAULT", "hostip")
+        except:
+            prog.hostip = '127.0.0.1'
+
         (linux_dist, x, y) = platform.linux_distribution()
         if (linux_dist == 'Ubuntu'):
             (disk_space_used, error_value) = Popen("set `df -Pk \`grep -A 1 'data_file_directories:'  /etc/cassandra/cassandra.yaml | grep '-' | cut -d'-' -f2 \`/ContrailAnalytics | grep %` && echo $3 | cut -d'%' -f1", shell=True, stdout=PIPE).communicate()
@@ -723,6 +775,7 @@ def main(argv=sys.argv):
             node_status_uve = NodeStatusUVE(data = node_status)
             sys.stderr.write('Sending UVE:' + str(node_status_uve))
             node_status_uve.send()
+            prog.disk_space_status = ProcessState.NON_FUNCTIONAL
         else:
             process_status = ProcessStatus(module_id = module_name, instance_id = instance_id, state = ProcessStateNames[ProcessState.FUNCTIONAL], description = "")
             process_status_list = []
