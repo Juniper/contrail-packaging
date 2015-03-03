@@ -41,6 +41,9 @@ function insert_vrouter() {
         if [ -f /sys/class/net/pkt2/queues/rx-0/rps_cpus ]; then
             pkt_setup pkt2
         fi
+        if [ -f /sys/class/net/pkt3/queues/rx-0/rps_cpus ]; then
+            pkt_setup pkt3
+        fi
     fi
 
     # check if vhost0 is not present, then create vhost0 and $dev
