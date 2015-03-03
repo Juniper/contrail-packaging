@@ -60,8 +60,11 @@ function insert_vrouter() {
     if [ -f /sys/class/net/pkt1/queues/rx-0/rps_cpus ]; then
         pkt_setup pkt1
     fi
-    if [ -f /sys/class/net/pkt2/queues/rx-0/rps_cpus ]; then 
+    if [ -f /sys/class/net/pkt2/queues/rx-0/rps_cpus ]; then
         pkt_setup pkt2
+    fi
+    if [ -f /sys/class/net/pkt3/queues/rx-0/rps_cpus ]; then
+        pkt_setup pkt3
     fi
 
     echo "$(date): Creating vhost interface: $DEVICE."
