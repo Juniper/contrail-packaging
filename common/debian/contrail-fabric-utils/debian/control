@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-fabric-utils
 Architecture: all
 Maintainer: amoghe <amoghe@juniper.net>
-Depends:
+Depends: python-yaml
 Section: contrail-fabric-utils
 Priority: extra
 Description: Contrail Fabric Utilities for cluster management
