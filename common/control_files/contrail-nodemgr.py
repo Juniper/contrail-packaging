@@ -36,6 +36,9 @@ import platform
 import select
 import gevent
 import ConfigParser
+import supervisor.xmlrpc
+import xmlrpclib
+
 from ConfigParser import NoOptionError
 
 from supervisor import childutils
@@ -185,6 +188,36 @@ class EventManager:
                 os_nova_comp.process_state = 'PROCESS_STATE_FATAL'
             sys.stderr.write('Openstack Nova Compute status:' + os_nova_comp.process_state + "\n")
             self.process_state_db['openstack-nova-compute'] = os_nova_comp
+
+        # Initialize process data structure
+        if (node_type == 'contrail-analytics'):
+            self.supervisor_serverurl = "unix:///tmp/supervisord_analytics.sock"
+        if (node_type == 'contrail-config'):
+            self.supervisor_serverurl = "unix:///tmp/supervisord_config.sock"
+        if (node_type == 'contrail-control'):
+            self.supervisor_serverurl = "unix:///tmp/supervisord_control.sock"
+        if (node_type == 'contrail-vrouter'):
+            self.supervisor_serverurl = "unix:///tmp/supervisord_vrouter.sock"
+        if (node_type == 'contrail-database'):
+            self.supervisor_serverurl = "unix:///tmp/supervisord_database.sock"
+
+        proxy = xmlrpclib.ServerProxy('http://127.0.0.1',
+                transport=supervisor.xmlrpc.SupervisorTransport(None, None, serverurl=self.supervisor_serverurl))
+        # Add all current processes to make sure nothing misses the radar
+        for proc_info in proxy.supervisor.getAllProcessInfo():
+            if (proc_info['name'] != proc_info['group']):
+                proc_name = proc_info['group']+ ":" + proc_info['name']
+            else:
+                proc_name = proc_info['name']
+            process_stat_ent = process_stat(self.node_type, proc_name)
+            process_stat_ent.process_state = "PROCESS_STATE_" + proc_info['statename']
+            if (process_stat_ent.process_state  ==
+                    'PROCESS_STATE_RUNNING'):
+                process_stat_ent.start_time = str(proc_info['start']*1000000)
+                process_stat_ent.start_count += 1
+            self.process_state_db[proc_name] = process_stat_ent
+            sys.stderr.write("\nAdding:" + str(proc_info) + "\n")
+    #end __init__
 
     def send_nodemgr_process_status(self):
         if (self.node_type == 'contrail-config'):
@@ -901,6 +934,7 @@ def main(argv=sys.argv):
     # we have to send the first time, as the clients like contrail-status etc.
     # expect functional status from all processes
     prog.send_nodemgr_process_status()
+    prog.send_process_state_db(sandesh_global, prog.group_names) # send first list of processes
     gevent.joinall([gevent.spawn(prog.runforever, sandesh_global)])
 
 if __name__ == '__main__':
