@@ -153,6 +153,10 @@ class EventManager:
     rules_data = []
     group_names = []
     process_state_db = {}
+    FAIL_STATUS_DUMMY       = 0x1
+    FAIL_STATUS_DISK_SPACE  = 0x2
+    FAIL_STATUS_SERVER_PORT = 0x4
+    FAIL_STATUS_NTP_SYNC    = 0x8
 
     def __init__(self, rules, node_type='contrail-analytics'):
         self.stdin = sys.stdin
@@ -165,6 +169,10 @@ class EventManager:
         self.node_type = node_type
         self.all_core_file_list = []
         self.core_dir_modified_time = 0
+        self.tick_count = 0
+        self.fail_status_bits = 0
+        self.prev_fail_status_bits = 1
+
         if (node_type == 'contrail-vrouter'):
             os_nova_comp = process_stat(node_type, 'openstack-nova-compute')
             (os_nova_comp_state, error_value) = Popen("openstack-status | grep openstack-nova-compute | cut -d ':' -f2", shell=True, stdout=PIPE).communicate()
@@ -178,11 +186,91 @@ class EventManager:
             sys.stderr.write('Openstack Nova Compute status:' + os_nova_comp.process_state + "\n")
             self.process_state_db['openstack-nova-compute'] = os_nova_comp
 
-        if (node_type == 'contrail-database'):
+    def send_nodemgr_process_status(self):
+        if (self.node_type == 'contrail-config'):
+            from cfgm_common.uve.cfgm_cpuinfo.ttypes \
+                import NodeStatusUVE, NodeStatus
+            from cfgm_common.uve.cfgm_cpuinfo.process_info.ttypes \
+                import ProcessStatus, ProcessState
+            from cfgm_common.uve.cfgm_cpuinfo.process_info.constants import \
+                ProcessStateNames
+            module_id = ModuleNames[Module.CONFIG_NODE_MGR]
+
+        if (self.node_type == 'contrail-control'):
+            from control_node.control_node.ttypes \
+                import NodeStatusUVE, NodeStatus
+            from control_node.control_node.process_info.ttypes \
+                import ProcessStatus, ProcessState
+            from control_node.control_node.process_info.constants import \
+                ProcessStateNames
+            module_id = ModuleNames[Module.CONTROL_NODE_MGR]
+
+        if (self.node_type == 'contrail-vrouter'):
+            from vrouter.vrouter.ttypes import \
+                NodeStatusUVE, NodeStatus
+            from vrouter.vrouter.process_info.ttypes import \
+                ProcessStatus, ProcessState
+            from vrouter.vrouter.process_info.constants import \
+                ProcessStateNames
+            module_id = ModuleNames[Module.COMPUTE_NODE_MGR]
+
+        if (self.node_type == 'contrail-analytics'):
+            from analytics.ttypes import \
+                NodeStatusUVE, NodeStatus
+            from analytics.process_info.ttypes import \
+                ProcessStatus, ProcessState
+            from analytics.process_info.constants import \
+                ProcessStateNames
+            module_id = ModuleNames[Module.ANALYTICS_NODE_MGR]
+
+        if (self.node_type == 'contrail-database'):
+            from database.sandesh.database.ttypes import \
+                NodeStatusUVE, NodeStatus
             from database.sandesh.database.process_info.ttypes import \
-                ProcessState
-            self.disk_space_status = ProcessState.FUNCTIONAL
-            self.server_port_status = ProcessState.FUNCTIONAL
+                ProcessStatus, ProcessState
+            from database.sandesh.database.process_info.constants import \
+                ProcessStateNames
+            module_id = ModuleNames[Module.DATABASE_NODE_MGR]
+ 
+        if (self.prev_fail_status_bits != self.fail_status_bits):
+            self.prev_fail_status_bits = self.fail_status_bits
+            fail_status_bits = self.fail_status_bits
+            instance_id = INSTANCE_ID_DEFAULT
+            if fail_status_bits:
+                state = ProcessStateNames[ProcessState.NON_FUNCTIONAL]
+                description = ""
+                if fail_status_bits & self.FAIL_STATUS_DISK_SPACE:
+                    description += "Disk for analytics db is too low, cassandra stopped."
+                if fail_status_bits & self.FAIL_STATUS_SERVER_PORT:
+                    if description != "":
+                        description += " "
+                    description += "Cassandra state detected DOWN."
+                if fail_status_bits & self.FAIL_STATUS_NTP_SYNC:
+                    if description != "":
+                        description += " "
+                    description += "NTP state unsynchronized."
+            else:
+                state = ProcessStateNames[ProcessState.FUNCTIONAL]
+                description = ''
+            process_status = ProcessStatus(module_id = module_id, instance_id = instance_id, state = state,
+                description = description)
+            process_status_list = []
+            process_status_list.append(process_status)
+            node_status = NodeStatus(name = socket.gethostname(),
+                process_status = process_status_list)
+            node_status_uve = NodeStatusUVE(data = node_status)
+            sys.stderr.write('Sending UVE:' + str(node_status_uve))
+            node_status_uve.send()
+
+    def check_ntp_status(self):
+        ntp_status_cmd = 'ntpq -n -c pe | grep "^*"'
+        proc = Popen(ntp_status_cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        (output, errout) = proc.communicate()
+        if proc.returncode != 0:
+            self.fail_status_bits |= self.FAIL_STATUS_NTP_SYNC
+        else:
+            self.fail_status_bits &= ~self.FAIL_STATUS_NTP_SYNC
+        self.send_nodemgr_process_status()
 
     def send_process_state(self, pname, pstate, pheaders, sandeshconn):
         # update process stats
@@ -252,7 +340,6 @@ class EventManager:
 
         if (send_uve):
             self.send_process_state_db(sandeshconn, [proc_stat.group])
-
 
     # send UVE for updated process state database
     def send_process_state_db(self, sandeshconn, group_names):
@@ -348,45 +435,14 @@ class EventManager:
             usage_stat = DatabaseUsage(data=db_info)
             usage_stat.send()
         
-        from database.sandesh.database.process_info.ttypes import ProcessState
-        if self.disk_space_status == ProcessState.FUNCTIONAL:
-            cassandra_cli_cmd = "cassandra-cli --host " + self.hostip + " --batch  < /dev/null | grep 'Connected to:'"
-            proc = Popen(cassandra_cli_cmd, shell=True)
-            proc.wait()
-
-            from database.sandesh.database.ttypes import \
-                NodeStatusUVE, NodeStatus
-            from database.sandesh.database.process_info.ttypes import \
-                ProcessStatus
-            from database.sandesh.database.process_info.constants import \
-                ProcessStateNames
-     
-            if proc.returncode != 0:
-                if self.server_port_status == ProcessState.FUNCTIONAL:
-                    process_status = ProcessStatus(module_id = ModuleNames[Module.DATABASE_NODE_MGR],
-                            instance_id = INSTANCE_ID_DEFAULT,
-                            state = ProcessStateNames[ProcessState.NON_FUNCTIONAL],
-                            description = "cassandra state detected DOWN")
-                    process_status_list = []
-                    process_status_list.append(process_status)
-                    node_status = NodeStatus(name = socket.gethostname(), process_status = process_status_list)
-                    node_status_uve = NodeStatusUVE(data = node_status)
-                    sys.stderr.write('Sending UVE:' + str(node_status_uve))
-                    node_status_uve.send()
-                    self.server_port_status = ProcessState.NON_FUNCTIONAL
-            else:
-                if self.server_port_status == ProcessState.NON_FUNCTIONAL:
-                    process_status = ProcessStatus(module_id = ModuleNames[Module.DATABASE_NODE_MGR],
-                            instance_id = INSTANCE_ID_DEFAULT,
-                            state = ProcessStateNames[ProcessState.FUNCTIONAL],
-                            description = "")
-                    process_status_list = []
-                    process_status_list.append(process_status)
-                    node_status = NodeStatus(name = socket.gethostname(), process_status = process_status_list)
-                    node_status_uve = NodeStatusUVE(data = node_status)
-                    sys.stderr.write('Sending UVE:' + str(node_status_uve))
-                    node_status_uve.send()
-                    self.server_port_status = ProcessState.FUNCTIONAL
+        cassandra_cli_cmd = "cassandra-cli --host " + self.hostip + " --batch  < /dev/null | grep 'Connected to:'"
+        proc = Popen(cassandra_cli_cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        (output, errout) = proc.communicate()
+        if proc.returncode != 0:
+            self.fail_status_bits |= self.FAIL_STATUS_SERVER_PORT
+        else:
+            self.fail_status_bits &= ~self.FAIL_STATUS_SERVER_PORT
+        self.send_nodemgr_process_status()
 
     # end database_periodic
 
@@ -455,8 +511,12 @@ class EventManager:
             
             # do periodic events
             if headers['eventname'].startswith("TICK_60"):
+                self.tick_count += 1
                 # send other core file
                 self.send_all_core_file(sandeshconn)
+                # typical ntp sync time is about 3, 4 min - first time, we scan only after 5 min
+                if self.tick_count > 5:
+                    self.check_ntp_status()
                 # check for openstack nova compute status
                 if (self.node_type == "contrail-vrouter"):
                     os_nova_comp = self.process_state_db['openstack-nova-compute']
@@ -836,23 +896,11 @@ def main(argv=sys.argv):
 
             cmd_str = "service " + SERVICE_CONTRAIL_DATABASE + " stop"
             (ret_value, error_value) = Popen(cmd_str, shell=True, stdout=PIPE).communicate()
-            process_status = ProcessStatus(module_id = module_name, instance_id = instance_id, state = ProcessStateNames[ProcessState.NON_FUNCTIONAL], description = "Low disk for analytics db, cassandra stopped")
-            process_status_list = []
-            process_status_list.append(process_status)
-            node_status = NodeStatus(name = socket.gethostname(), process_status = process_status_list)
-            node_status_uve = NodeStatusUVE(data = node_status)
-            sys.stderr.write('Sending UVE:' + str(node_status_uve))
-            node_status_uve.send()
-            prog.disk_space_status = ProcessState.NON_FUNCTIONAL
-        else:
-            process_status = ProcessStatus(module_id = module_name, instance_id = instance_id, state = ProcessStateNames[ProcessState.FUNCTIONAL], description = "")
-            process_status_list = []
-            process_status_list.append(process_status)
-            node_status = NodeStatus(name = socket.gethostname(), process_status = process_status_list)
-            node_status_uve = NodeStatusUVE(data = node_status)
-            sys.stderr.write('Sending UVE:' + str(node_status_uve))
-            node_status_uve.send()
+            prog.fail_status_bits |= prog.FAIL_STATUS_DISK_SPACE
 
+    # we have to send the first time, as the clients like contrail-status etc.
+    # expect functional status from all processes
+    prog.send_nodemgr_process_status()
     gevent.joinall([gevent.spawn(prog.runforever, sandesh_global)])
 
 if __name__ == '__main__':
