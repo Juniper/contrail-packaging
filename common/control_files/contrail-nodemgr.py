@@ -36,6 +36,9 @@ import platform
 import select
 import gevent
 import ConfigParser
+import supervisor.xmlrpc
+import xmlrpclib
+
 from ConfigParser import NoOptionError
 
 from supervisor import childutils
@@ -183,6 +186,36 @@ class EventManager:
                 ProcessState
             self.disk_space_status = ProcessState.FUNCTIONAL
             self.server_port_status = ProcessState.FUNCTIONAL
+
+        # Initialize process data structure
+        if (node_type == 'contrail-analytics'):
+            self.supervisor_serverurl = "unix:///tmp/supervisord_analytics.sock"
+        if (node_type == 'contrail-config'):
+            self.supervisor_serverurl = "unix:///tmp/supervisord_config.sock"
+        if (node_type == 'contrail-control'):
+            self.supervisor_serverurl = "unix:///tmp/supervisord_control.sock"
+        if (node_type == 'contrail-vrouter'):
+            self.supervisor_serverurl = "unix:///tmp/supervisord_vrouter.sock"
+        if (node_type == 'contrail-database'):
+            self.supervisor_serverurl = "unix:///tmp/supervisord_database.sock"
+
+        proxy = xmlrpclib.ServerProxy('http://127.0.0.1',
+                transport=supervisor.xmlrpc.SupervisorTransport(None, None, serverurl=self.supervisor_serverurl))
+        # Add all current processes to make sure nothing misses the radar
+        for proc_info in proxy.supervisor.getAllProcessInfo():
+            if (proc_info['name'] != proc_info['group']):
+                proc_name = proc_info['group']+ ":" + proc_info['name']
+            else:
+                proc_name = proc_info['name']
+            process_stat_ent = process_stat(self.node_type, proc_name)
+            process_stat_ent.process_state = "PROCESS_STATE_" + proc_info['statename']
+            if (process_stat_ent.process_state  ==
+                    'PROCESS_STATE_RUNNING'):
+                process_stat_ent.start_time = str(proc_info['start']*1000000)
+                process_stat_ent.start_count += 1
+            self.process_state_db[proc_name] = process_stat_ent
+            sys.stderr.write("\nAdding:" + str(proc_info) + "\n")
+
 
     def send_process_state(self, pname, pstate, pheaders, sandeshconn):
         # update process stats
@@ -853,6 +886,7 @@ def main(argv=sys.argv):
             sys.stderr.write('Sending UVE:' + str(node_status_uve))
             node_status_uve.send()
 
+    prog.send_process_state_db(sandesh_global, prog.group_names) # send first list of processes
     gevent.joinall([gevent.spawn(prog.runforever, sandesh_global)])
 
 if __name__ == '__main__':
