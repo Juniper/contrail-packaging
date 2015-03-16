@@ -343,5 +343,5 @@ class BasePackager(Utils):
                            pkginfo['target']), pkginfo['makeloc'])
         except:
             raise MakeError(sys.exc_info()[1])
-        log.debug('Removing TGZ File (%s) after Make' % tgz_name)
-        os.unlink(tgz_name)
+        #log.debug('Removing TGZ File (%s) after Make' % tgz_name)
+        #os.unlink(tgz_name)
