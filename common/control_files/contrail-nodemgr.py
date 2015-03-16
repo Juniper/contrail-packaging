@@ -381,31 +381,31 @@ class EventManager:
             from cfgm_common.uve.cfgm_cpuinfo.ttypes \
                 import NodeStatusUVE, NodeStatus
             from cfgm_common.uve.cfgm_cpuinfo.process_info.ttypes \
-                import ProcessInfo
+                import ProcessInfo, DiskPartitionUsageStats
 
         if (self.node_type == 'contrail-control'):
             from control_node.control_node.ttypes \
                 import NodeStatusUVE, NodeStatus
             from control_node.control_node.process_info.ttypes \
-                import ProcessInfo
+                import ProcessInfo, DiskPartitionUsageStats
 
         if (self.node_type == 'contrail-vrouter'):
             from vrouter.vrouter.ttypes import \
                 NodeStatusUVE, NodeStatus
             from vrouter.vrouter.process_info.ttypes import \
-                ProcessInfo
+                ProcessInfo, DiskPartitionUsageStats
 
         if (self.node_type == 'contrail-analytics'):
             from analytics.ttypes import \
                 NodeStatusUVE, NodeStatus
             from analytics.process_info.ttypes import \
-                ProcessInfo
+                ProcessInfo, DiskPartitionUsageStats
 
         if (self.node_type == 'contrail-database'):
             from database.sandesh.database.ttypes import \
                 NodeStatusUVE, NodeStatus
             from database.sandesh.database.process_info.ttypes import \
-                ProcessInfo
+                ProcessInfo, DiskPartitionUsageStats
 
         name = socket.gethostname()
         for group in group_names:
@@ -430,10 +430,31 @@ class EventManager:
             if not process_infos:
                 continue
 
+            disk_usage_infos = []
+            partition = subprocess.Popen("df -T | grep -w 'ext2\|ext3\|ext4\|xfs'", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            for line in partition.stdout:
+                partition_name = line.rsplit()[0]
+                partition_type = line.rsplit()[1]
+                partition_space_used_1k = line.rsplit()[3]
+                partition_space_available_1k = line.rsplit()[4]
+                disk_usage_stat = DiskPartitionUsageStats()
+                try:
+                    disk_usage_stat.partition_type = str(partition_type)
+                    disk_usage_stat.partition_name = str(partition_name)
+                    disk_usage_stat.partition_space_used_1k = int(partition_space_used_1k)
+                    disk_usage_stat.partition_space_available_1k = int(partition_space_available_1k)
+                except ValueError:
+                    sys.stderr.write("Failed to get local disk space usage" + "\n")
+                disk_usage_infos.append(disk_usage_stat)
+
+            if not disk_usage_infos:
+                continue
+
             # send node UVE
             node_status = NodeStatus()
             node_status.name = name
             node_status.process_info = process_infos
+            node_status.disk_usage_info = disk_usage_infos
             node_status.all_core_file_list = self.all_core_file_list
             node_status_uve = NodeStatusUVE(data = node_status)
             sys.stderr.write('Sending UVE:' + str(node_status_uve))
@@ -547,6 +568,8 @@ class EventManager:
                 self.tick_count += 1
                 # send other core file
                 self.send_all_core_file(sandeshconn)
+                # send UVE for process state database periodically
+                self.send_process_state_db(sandeshconn, self.group_names)
                 # typical ntp sync time is about 3, 4 min - first time, we scan only after 5 min
                 if self.tick_count > 5:
                     self.check_ntp_status()
