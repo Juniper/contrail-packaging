@@ -381,31 +381,31 @@ class EventManager:
             from cfgm_common.uve.cfgm_cpuinfo.ttypes \
                 import NodeStatusUVE, NodeStatus
             from cfgm_common.uve.cfgm_cpuinfo.process_info.ttypes \
-                import ProcessInfo
+                import ProcessInfo, LocalDiskUsageStats
 
         if (self.node_type == 'contrail-control'):
             from control_node.control_node.ttypes \
                 import NodeStatusUVE, NodeStatus
             from control_node.control_node.process_info.ttypes \
-                import ProcessInfo
+                import ProcessInfo, LocalDiskUsageStats
 
         if (self.node_type == 'contrail-vrouter'):
             from vrouter.vrouter.ttypes import \
                 NodeStatusUVE, NodeStatus
             from vrouter.vrouter.process_info.ttypes import \
-                ProcessInfo
+                ProcessInfo, LocalDiskUsageStats
 
         if (self.node_type == 'contrail-analytics'):
             from analytics.ttypes import \
                 NodeStatusUVE, NodeStatus
             from analytics.process_info.ttypes import \
-                ProcessInfo
+                ProcessInfo, LocalDiskUsageStats
 
         if (self.node_type == 'contrail-database'):
             from database.sandesh.database.ttypes import \
                 NodeStatusUVE, NodeStatus
             from database.sandesh.database.process_info.ttypes import \
-                ProcessInfo
+                ProcessInfo, LocalDiskUsageStats
 
         name = socket.gethostname()
         for group in group_names:
@@ -430,10 +430,28 @@ class EventManager:
             if not process_infos:
                 continue
 
+            local_disk_infos = []
+            (count, error_value) = Popen("set `df -T | grep -m 1 'ext'` && echo $2 | cut -d 't' -f2", shell=True, stdout=PIPE).communicate()
+            for n in range(0, int(count)+1):
+                (partition, error_value) = Popen("df -T | grep " + 'ext' + str(n), shell=True, stdout=PIPE).communicate()
+                if (partition):
+                    (partition_type, error_value) = Popen("set `df -T | grep " + 'ext' + str(n) + "` &&  echo $2", shell=True, stdout=PIPE).communicate()
+                    (local_disk_space_used, error_value) = Popen("set `df -T | grep " + 'ext' + str(n) + "` &&  echo $4", shell=True, stdout=PIPE).communicate()
+                    (local_disk_space_available, error_value) = Popen("set `df -T | grep " + 'ext' + str(n) + "` &&  echo $5", shell=True, stdout=PIPE).communicate()
+                    local_disk_stat = LocalDiskUsageStats()
+                    try:
+                        local_disk_stat.partition_type = partition_type
+                        local_disk_stat.local_disk_space_used = int(local_disk_space_used)
+                        local_disk_stat.local_disk_space_available = int(local_disk_space_available)
+                    except ValueError:
+                        sys.stderr.write("Failed to get local disk space usage" + "\n")
+                    local_disk_infos.append(local_disk_stat)
+
             # send node UVE
             node_status = NodeStatus()
             node_status.name = name
             node_status.process_info = process_infos
+            node_status.local_disk_usage_info = local_disk_infos
             node_status.all_core_file_list = self.all_core_file_list
             node_status_uve = NodeStatusUVE(data = node_status)
             sys.stderr.write('Sending UVE:' + str(node_status_uve))
