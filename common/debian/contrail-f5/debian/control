@@ -1,0 +1,9 @@
+Source: contrail-f5
+Maintainer: builder@juniper.net
+Section: net
+Priority: optional
+
+Package: contrail-f5
+Architecture: all
+Priority: optional
+Description: Big IP interface for f5 load balancer
