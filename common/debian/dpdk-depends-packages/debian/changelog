@@ -1,3 +1,9 @@
+dpdk-depends-packages (0.3-0contrail1) unstable; urgency=low
+
+  * Update QEMU to version 2.2+dfsg-5expubuntu8-contrail1
+
+ -- Michal Dubiel <md@semihalf.com>  Tue, 18 Mar 2015 13:01:10 +0100
+
 dpdk-depends-packages (0.2-0contrail1) unstable; urgency=low
 
   * Add python-libvirt-1.2.7 package
