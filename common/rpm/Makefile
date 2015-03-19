@@ -265,7 +265,7 @@ all: $(PREP) contrail \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
-       ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
+       ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ceilometer-plugin-contrail \
        contrail-vrouter-init contrail-vrouter-common \
        contrail-fabric-utils contrail-test
 
