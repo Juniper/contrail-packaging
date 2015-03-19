@@ -2,6 +2,7 @@ package, md5
 liburcu1_0.7.12-0ubuntu2_amd64.deb, 1172db772c3640310d85518f92ce5aa6
 libvirt0_1.2.7-0ubuntu1~contrail1_amd64.deb, d087f0482bd58d2811abe88d1c1dbc73
 libvirt-bin_1.2.7-0ubuntu1~contrail1_amd64.deb, bf80e4af35f483633dff3c059dbb94ed
+python-libvirt_1.2.7-0ubuntu1~contrail1_amd64.deb, df5a01ebf096f779fbb3612162d32553
 qemu_2.1+dfsg-4ubuntu6~contrail0_amd64.deb, 8c0c62956ae61b3ecbbfff68d17257ac
 qemu-guest-agent_2.1+dfsg-4ubuntu6~contrail0_amd64.deb, 2cf2654286a65b5261e4c68275e47a82
 qemu-kvm_2.1+dfsg-4ubuntu6~contrail0_amd64.deb, 96b77a20edf488950f3c81e3c0c5f2da
