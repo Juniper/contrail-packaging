@@ -7,7 +7,7 @@ SPEC_DIR := $(shell pwd)
 export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export buildroot := $(SB_TOP)/build/noarch/contrail-f5
+export buildroot := $(SB_TOP)/build/debian/contrail-f5
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -24,6 +24,8 @@ endif
 override_dh_auto_build:
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 	(cd ${SB_TOP}; scons contrail-f5)
+
+override_dh_prep:
 
 override_dh_auto_install:
 	(cd ${SB_TOP}/build/noarch/contrail-f5 && python setup.py install --root=$(buildroot) --install-layout=deb)
