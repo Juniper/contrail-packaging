@@ -255,9 +255,13 @@ contrail-test:
 NEUTRON_PLUGIN = neutron-plugin-contrail
 ifeq ($(CONTRAIL_SKU), icehouse)
 CONTRAIL_HEAT = contrail-heat
-CEILOMETER_PLUGIN = ceilometer-plugin-contrail
 else
 CONTRAIL_HEAT = 
+endif
+
+ifneq ($(CONTRAIL_SKU), havana)
+CEILOMETER_PLUGIN = ceilometer-plugin-contrail
+else
 CEILOMETER_PLUGIN =
 endif
 

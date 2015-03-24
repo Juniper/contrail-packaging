@@ -12,8 +12,8 @@ DISTRO_SRCDIR       := $(CPLANE_GIT_ROOT)/../distro/third_party
 DISTRO_BLDDIR       := $(CPLANE_GIT_ROOT)/../distro/openstack
 THIRDPARTY_DIR      := $(CPLANE_GIT_ROOT)/../third_party
 THIRDPARTY_PKGDIR   := $(CPLANE_GIT_ROOT)/../tools/packaging/third_party
-DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu|Red Hat" /etc/issue)
-DISTRO_VER          := $(shell egrep -o "[0-9.]+" /etc/issue)
+DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu|Red Hat" /etc/redhat-release)
+DISTRO_VER          := $(shell egrep -o "[0-9.]+" /etc/redhat-release)
 RPMBLDOPTS          := --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' -bb
 PREP = prep
 PPREP = pprep
@@ -49,7 +49,7 @@ libvirt-devel: libvirt
 libvirt-lock-sanlock: libvirt
 libvirt-python: libvirt
 libvirt-debuginfo: libvirt
-libvirt:
+libvirt: $(PPREP)
 	@echo making rpm for libvirt
 	@echo "Distro is $(DISTRO), DISTRO_VER is $(DISTRO_VER)"
 	if [ "$(DISTRO)" == "Fedora" ]; then \
@@ -58,7 +58,7 @@ libvirt:
 		cd libvirt-0.9.12 && ./configure --localstatedir=/var && \
 		$(MAKE) $(MFLAGS) dist && \
 		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(PKGBLDDIR)' -ta libvirt-0.9.12.tar.gz ; \
-	else if [ "$(DISTRO)" == "CentOS" ] ; then \
+	elif [ "$(DISTRO)" == "CentOS" ] ; then \
             if [ "$(DISTRO_VER)" == "6.4" ] ; then \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt-0.10.2-18.el6.src.rpm $(BUILD_BASE)/SOURCES/ && \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos.patch  $(BUILD_BASE)/SOURCES/ && \
@@ -75,7 +75,7 @@ libvirt:
 		cd $(THIRDPARTY_DIR) && \
 		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
 		-ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
-            else if [ "$(DISTRO_VER)" == "6.5" ] ; then \
+            elif [ "$(DISTRO_VER)" == "6.5" ] ; then \
                 cp $(THIRDPARTY_DIR)/libvirt/libvirt-0.10.2-29.el6.src.rpm $(BUILD_BASE)/SOURCES/ && \
                 cp $(THIRDPARTY_DIR)/libvirt/libvirt.centos65.patch  $(BUILD_BASE)/SOURCES/libvirt.centos.patch && \
                 cd $(BUILD_BASE)/SOURCES && \
@@ -89,10 +89,24 @@ libvirt:
                 cd $(THIRDPARTY_DIR) && \
                 rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
                 -ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
-        fi \
-	fi \
-	fi \
-	fi
+            fi ; \
+	elif [ "$(DISTRO)" == "Red Hat" ] ; then \
+            if [ "$(DISTRO_VER)" == "7.0" ] ; then \
+		cp $(THIRDPARTY_DIR)/libvirt/libvirt-1.2.8-16.el7_1.1.src.rpm $(BUILD_BASE)/SOURCES/ && \
+		cp $(THIRDPARTY_DIR)/libvirt/contrail_rhel70_libvirt_1.2.8.patch  $(BUILD_BASE)/SOURCES/ && \
+		cd $(BUILD_BASE)/SOURCES && \
+		rpm --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+		-i libvirt-1.2.8-16.el7_1.1.src.rpm && \
+		cd $(BUILD_BASE)/SPECS && \
+		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+		-bp libvirt.spec && \
+		cp $(THIRDPARTY_DIR)/libvirt/contrail_rhel70_libvirt_1.2.8.spec.patch  $(BUILD_BASE)/SPECS/ && \
+		patch -p0 -i $(BUILD_BASE)/SPECS/contrail_rhel70_libvirt_1.2.8.spec.patch && \
+		cd $(THIRDPARTY_DIR) && \
+		rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+		-ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
+            fi ;\
+        fi ; #line1
 
 ixgbe-debuginfo: ixgbe
 ixgbe: $(PPREP)
