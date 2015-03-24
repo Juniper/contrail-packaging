@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-server-manager
 Architecture: all
 Maintainer: tsurendra <tsurendra@juniper.net>
-Depends: python , apache2, sqlite, cobbler (>=2.6.3), puppetmaster (>=3.7.3), xinetd, python-pip, python-gevent, dhcp3-server, ntp,autoconf, gcc, bind9, tftp, sendmail, dpkg-dev, syslinux, ipmitool, createrepo, libapache2-mod-wsgi, python-urlgrabber, python-django, selinux-utils, python-simplejson, python-dev, fence-agents
+Depends: python , apache2, sqlite, cobbler (>=2.6.3), puppetmaster (>=3.7.3), xinetd, python-pip, python-gevent, dhcp3-server, ntp,autoconf, gcc, bind9, tftp, sendmail, dpkg-dev, syslinux, ipmitool, createrepo, libapache2-mod-wsgi, python-urlgrabber, python-django, selinux-utils, python-simplejson, python-dev, fence-agents, python-requests
 Section: contrail-server-manager
 Priority: extra
 Description: Contrail Server Manager - Server Package
