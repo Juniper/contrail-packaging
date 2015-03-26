@@ -1,3 +1,9 @@
+dpdk-depends-packages (0.4-0contrail1) precise; urgency=low
+
+  * Update libvirt to version 1.2.12-0ubuntu7-contrail1
+
+ -- Michal Dubiel <md@semihalf.com>  Wed, 25 Mar 2015 18:39:00 +0100
+
 dpdk-depends-packages (0.3-0contrail1) unstable; urgency=low
 
   * Update QEMU to version 2.2+dfsg-5expubuntu8-contrail1
