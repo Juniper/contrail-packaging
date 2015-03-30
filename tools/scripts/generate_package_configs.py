@@ -33,19 +33,14 @@ def get_system_pkg_type():
 
 def get_pkg_name(pkgfile):
     pkgname = None
-    os_ver = platform.dist()[0].lower()
-    if os_ver == 'ubuntu':
-        name_cmd = 'dpkg -I %s | grep " Package: " | cut -d ":" -f2-' % pkgfile
-        ver_cmd  = 'dpkg -I %s | grep " Version: " | cut -d ":" -f2-' % pkgfile
-        erls_cmd = ''
+    if pkgfile.endswith('.deb'):
+        cmd = 'dpkg-deb --showformat=\'${Package}_${Version}\' -W %s' % pkgfile
+    elif pkgfile.endswith('.rpm'):
+        cmd = 'rpm -qp --queryformat "%%{NAME}-%%{VERSION}-%%{RELEASE}" %s' % pkgfile
     else:
-        name_cmd = 'rpm -qp --queryformat "%%{NAME}" %s' % pkgfile
-        ver_cmd = 'rpm -qp --queryformat "%%{VERSION}" %s' % pkgfile
-        rls_cmd = 'rpm -qp --queryformat "%%{RELEASE}" %s' % pkgfile
-        erls_cmd = os.popen(rls_cmd).read()
-    ename_cmd = os.popen(name_cmd)
-    ever_cmd = os.popen(ver_cmd)
-    pkgname = ename_cmd.read().strip() + '_' +  ever_cmd.read().strip() + '_' + erls_cmd.strip()
+        raise RuntimeError('Package (%s) is not an rpm or deb' % pkgfile)
+    cmd_out = os.popen(cmd)
+    pkgname = cmd_out.read().strip()
     
     if not pkgname:
         raise RuntimeError('Retrived Package Name (%s);'\
@@ -54,9 +49,9 @@ def get_pkg_name(pkgfile):
     return pkgname
     
 def get_file_list(pkg_type, dirname):
-    files = fnmatch.filter(os.listdir(dirname), '*.%s' %pkg_type)
+    files = fnmatch.filter(os.listdir(dirname), '*.%s' % pkg_type)
     if len(files) == 0:
-        raise RuntimeError('No %s files in current directory?' %pkg_type)
+        raise RuntimeError('No %s files in current directory?' % pkg_type)
     return files
 
 # Generation
