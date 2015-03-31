@@ -43,7 +43,7 @@ Requires: euca2ools >= 1.0-2contrail
 Requires: m2crypto
 Requires: qpid-cpp-server
 Requires: haproxy
-Requires: rabbitmq-server
+Requires: rabbitmq-server >= 3.5.0-1
 Requires: supervisor
 %if 0%{?rhel} <= 6
 Requires: python-importlib
