@@ -1,4 +1,3 @@
-
 #!/bin/sh
 
 # chkconfig: 2345 99 01
