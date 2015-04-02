@@ -196,7 +196,8 @@ function passenger_install()
 function passenger_install_14()
 {
   apt-get -y install libcurl4-openssl-dev libssl-dev zlib1g-dev apache2-threaded-dev ruby-dev libapr1-dev libaprutil1-dev
-  gem install rack passenger
+  gem install rack
+  gem install passenger --version 4.0.59
   apt-get -y install puppetmaster-passenger="3.7.3-1puppetlabs1"
   service apache2 stop
   if [ -e /etc/apt/preferences.d/00-puppet.pref ]; then
