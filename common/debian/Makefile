@@ -224,6 +224,8 @@ contrail-server-manager-monitoring-deb:
 	rm -rf ${BUILDDIR}
 	mkdir -p ${BUILDDIR}/debian
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-monitoring/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; python ${SB_TOP}/tools/packaging/tools/scripts/add_dependency_version.py \
+        --version ${VERSION} --file debian/control.in) || echo no control.in
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
