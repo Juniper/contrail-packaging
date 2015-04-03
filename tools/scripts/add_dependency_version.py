@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import ConfigParser, os, StringIO, argparse, shutil, tempfile, argparse
 from itertools import ifilterfalse, tee
 
