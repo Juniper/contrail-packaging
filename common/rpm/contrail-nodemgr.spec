@@ -68,6 +68,7 @@ scons -U control-node:node_mgr
 scons -U vrouter:node_mgr
 scons -U opserver:node_mgr
 scons -U database:node_mgr
+scons -U src:nodemgr
 
 if [ $? -ne 0 ] ; then
     echo "build failed"
@@ -82,7 +83,6 @@ pushd %{_builddir}/..
 
 #install files
 install -d -m 755 %{buildroot}%{_bindir}
-install -p -m 755 %{_distropkgdir}/contrail-nodemgr.py %{buildroot}%{_bindir}/contrail-nodemgr
 
 # install pysandesh files
 %define _build_dist %{_builddir}/../build/debug
@@ -115,6 +115,11 @@ pushd node_mgr-0.1dev
 %{__python} setup.py install --root=%{buildroot}
 popd
 
+tar zxf %{_build_dist}/nodemgr/dist/nodemgr-0.1dev.tar.gz
+pushd nodemgr-0.1dev
+%{__python} setup.py install --root=%{buildroot}
+popd
+
 tar zxvf %{_build_dist}/analytics/database/dist/database-0.1dev.tar.gz
 pushd database-0.1dev
 %{__python} setup.py install --root=%{buildroot}
@@ -131,6 +136,8 @@ popd
 %{python_sitelib}/database
 %{python_sitelib}/database-*
 %{python_sitelib}/analytics
+%{python_sitelib}/nodemgr
+%{python_sitelib}/nodemgr-*
 
 %post
 if [ -x /bin/systemctl ]; then

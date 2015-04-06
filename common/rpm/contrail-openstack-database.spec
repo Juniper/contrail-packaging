@@ -35,10 +35,12 @@ Contrail Package Requirements for Contrail Database
 %install
 pushd %{_builddir}/..
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
+install -D -m 755 %{_distropkgdir}/contrail-database-nodemgr.conf %{buildroot}/etc/contrail/contrail-database-nodemgr.conf
 popd
 
 %files
 %{_initddir}
+/etc/contrail/contrail-database-nodemgr.conf
 
 %changelog
 * Tue Aug  6 2013 <ndramesh@juniper.net>

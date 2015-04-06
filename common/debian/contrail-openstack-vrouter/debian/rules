@@ -16,6 +16,7 @@ export buildroot := $(SB_TOP)/build/debian/contrail-openstack-vrouter
 export buildroot := ${SB_TOP}/build/debian/contrail-vrouter-init
 export _confsrcdir := ${SB_TOP}/tools/packaging/common/control_files
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
+export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -28,11 +29,14 @@ endif
 
 %:
 	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
+	dh $@ --tmpdir=$(SB_TOP)/build/debian/contrail-openstack-vrouter --destdir=${SB_TOP}/build/debian
 
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
 override_dh_auto_install: 
+	install -d -m 755 $(SB_TOP)/build/debian/contrail-openstack-vrouter/etc/contrail
+	install -p -m 755 $(_src_config)/contrail-vrouter-nodemgr.conf $(SB_TOP)/build/debian/contrail-openstack-vrouter/etc/contrail/contrail-vrouter-nodemgr.conf
 	
 override_dh_usrlocal:	
 
