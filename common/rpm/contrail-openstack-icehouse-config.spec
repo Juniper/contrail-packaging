@@ -39,7 +39,7 @@ Requires: openstack-nova
 Requires: java-1.7.0-openjdk
 Requires: haproxy
 Requires: keepalived
-Requires: rabbitmq-server >= 3.3.5
+Requires: rabbitmq-server >= 3.5.0
 Requires: python-contrail >= %{_verstr}-%{_relstr}
 Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
 Requires: python-bottle
