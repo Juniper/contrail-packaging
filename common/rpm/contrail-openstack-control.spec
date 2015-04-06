@@ -45,12 +45,14 @@ install -d -m 755 %{buildroot}%{_supervisordir}
 pushd %{_builddir}/..
 
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr-control.ini %{buildroot}%{_supervisordir}/contrail-nodemgr-control.ini
+install -D -m 755 %{_distropkgdir}/contrail-control-nodemgr.conf %{buildroot}/etc/contrail/contrail-control-nodemgr.conf
 
 %files
 %defattr(-,root,root,-)
 %{_supervisordir}
 %defattr(-,contrail,contrail,-)
 %config(noreplace) %{_supervisordir}/contrail-nodemgr-control.ini
+/etc/contrail/contrail-control-nodemgr.conf
 
 %post
 if [ -x /bin/systemctl ]; then
