@@ -14,3 +14,4 @@ fi
 echo $HOST_IP
 sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/sm-monitoring-config.ini
 cat /opt/contrail/server_manager/sm-monitoring-config.ini >> /opt/contrail/server_manager/sm-config.ini
+cat /opt/contrail/server_manager/sm-inventory-config.ini >> /opt/contrail/server_manager/sm-config.ini
