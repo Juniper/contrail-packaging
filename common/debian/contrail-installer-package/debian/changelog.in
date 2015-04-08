@@ -1,4 +1,4 @@
-contrail-install-packages (BUILDTAG) vmahuli; urgency=low
+contrail-installer-package (BUILDTAG) vmahuli; urgency=low
 
   [vmahuli ]
   * debian/changelog: changelog
