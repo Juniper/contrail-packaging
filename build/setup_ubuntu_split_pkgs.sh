@@ -1,26 +1,15 @@
 #!/bin/bash
 
-# backup old directories in case of upgrade
-if [ -d /opt/contrail/contrail_install_packages ]; then
-    mkdir -p /opt/contrail/contrail_install_packages_backup
-    mv /opt/contrail/contrail_install_packages/* /opt/contrail/contrail_install_packages_backup/
-fi
-
 # create shell scripts and put to bin
 mkdir -p /opt/contrail/bin
 
-cd /opt/contrail/contrail_dependents_repo
-DEBIAN_FRONTEND=noninteractive dpkg -i binutils_2.22-6ubuntu1.1_amd64.deb dpkg-dev_1.16.1.2ubuntu7.2_all.deb libdpkg-perl_1.16.1.2ubuntu7.2_all.deb make_3.81-8.1ubuntu1.1_amd64.deb patch_2.6.1-3_amd64.deb python-pip_1.0-1build1_all.deb python-pkg-resources_0.6.24-1ubuntu1_all.deb python-setuptools_0.6.24-1ubuntu1_all.deb
+cd /opt/contrail/contrail_install_packages
+CONTRAIL_DEP_PKG=`ls contrail-dependent-packages_*.deb`
+CONTRAIL_THIRDPARTY_PKG=`ls contrail-thirdparty-packages_*.deb`
+CONTRAIL_OS_PKG=`ls contrail-openstack-packages_*.deb`
+CONTRAIL_PKG=`ls contrail-packages_*.deb`
 
-cd /etc/apt/
-# Allow unauthenticated pacakges to get installed.
-# Do not over-write apt.conf. Instead just append what is necessary
-# retaining other useful configurations such as http::proxy info.
-apt_auth="APT::Get::AllowUnauthenticated \"true\";"
-grep --quiet "$apt_auth" apt.conf
-if [ "$?" != "0" ]; then
-    echo "$apt_auth" >> apt.conf
-fi
+DEBIAN_FRONTEND=noninteractive dpkg -i --force-overwrite $CONTRAIL_DEP_PKG $CONTRAIL_THIRDPARTY_PKG $CONTRAIL_OS_PKG $CONTRAIL_PKG
 
 cd /opt/contrail/contrail_install_repo
 dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
@@ -30,6 +19,8 @@ dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
 
 apt-get update
 
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated --fix-broken install
+
 #install python-software-properties and curl
 DEBIAN_FRONTEND=noninteractive sudo apt-get -y --force-yes --allow-unauthenticated install python-software-properties
 DEBIAN_FRONTEND=noninteractive sudo apt-get -y --force-yes --allow-unauthenticated install curl
@@ -38,8 +29,12 @@ DEBIAN_FRONTEND=noninteractive sudo apt-get -y --force-yes --allow-unauthenticat
 DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-crypto
 DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-netaddr
 DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-paramiko
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install contrail-fabric-utils
-DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install contrail-setup
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install libyaml-0-2
+DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install python-yaml
+
+CONTRAIL_FAB=`ls /opt/contrail/contrail_installer_package/contrail-fabric-utils_*.deb`
+
+DEBIAN_FRONTEND=noninteractive dpkg -i --force-overwrite $CONTRAIL_FAB
 
 # install ecdsa and fabric
 pip install --upgrade --no-deps --index-url='' /opt/contrail/python_packages/ecdsa-0.10.tar.gz
