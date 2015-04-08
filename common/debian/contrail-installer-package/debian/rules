@@ -8,11 +8,11 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/\/build\/debian\/contrail-install-packages//g")
+export SB_TOP := $(shell pwd | sed -re "s/\/build\/debian\/contrail-installer-package//g")
 export DISTRIB_RELEASE = $(shell grep -Po "DISTRIB_RELEASE=\K.*" /etc/lsb-release)
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export buildroot := $(SB_TOP)/build/debian/contrail-install-packages/debian/contrail-install-packages
+export buildroot := $(SB_TOP)/build/debian/contrail-installer-package/debian/contrail-installer-package
 export _contrailopt := /opt/contrail
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
@@ -53,23 +53,23 @@ override_dh_builddeb:
 
 override_dh_auto_install: 
 	# Setup directories
-	@echo "making deb for contrail-install-packages"
+	@echo "making deb for contrail-installer-package"
 	install -d -m 755 $(buildroot)
 	install -d -m 755 $(buildroot)$(_contrailopt)
 	install -d -m 755 $(buildroot)$(_contrailopt)/puppet
-	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_install_packages
+	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_installer_package
 	# Install files
 	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2 | cut -d '~' -f1` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu; fi
-	install -p -m 755 $(SB_TOP)/tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_install_packages/VERSION
-	install -p -m 755 $(SETUP_FILE)  $(buildroot)$(_contrailopt)/contrail_install_packages/setup.sh
-	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_install_packages/sources.list
-	install -p -m 755 $(SB_TOP)/tools/packaging/build/repo_preferences  $(buildroot)$(_contrailopt)/contrail_install_packages/preferences
+	install -p -m 755 $(SB_TOP)/tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_installer_package/VERSION
+	install -p -m 755 $(SETUP_FILE)  $(buildroot)$(_contrailopt)/contrail_installer_package/setup.sh
+	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_installer_package/sources.list
+	install -p -m 755 $(SB_TOP)/tools/packaging/build/repo_preferences  $(buildroot)$(_contrailopt)/contrail_installer_package/preferences
 	# install puppet manifests
 	tar -cvzf $(SB_TOP)/build/contrail-puppet-manifest.tgz -C $(SB_TOP)/tools/puppet .
 	install -p -m 755 $(SB_TOP)/build/contrail-puppet-manifest.tgz $(buildroot)$(_contrailopt)/puppet/contrail-puppet-manifest.tgz
 	# install TGZ file and packages list file
 	# if [ -f $(TGZ_FILE) ]; then echo "Using TGZ FILE = $(TGZ_FILE)"; install -p -m 644 $(TGZ_FILE) $(buildroot)$(_contrailopt)/contrail_install_packages/contrail_debs.tgz; else echo "ERROR: TGZ file containing all debs is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
-	if [ -f $(TGZ_FILE) ]; then echo "Using TGZ FILE = $(TGZ_FILE)"; tar xzf $(TGZ_FILE) -C ${buildroot}${_contrailopt}/contrail_install_packages/ 2>/dev/null; else echo "ERROR: TGZ file containing all rpms is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
+	if [ -f $(TGZ_FILE) ]; then echo "Using TGZ FILE = $(TGZ_FILE)"; tar xzf $(TGZ_FILE) -C ${buildroot}${_contrailopt}/contrail_installer_package/ 2>/dev/null; else echo "ERROR: TGZ file containing all rpms is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
 	
 override_dh_shlibdeps:
 
