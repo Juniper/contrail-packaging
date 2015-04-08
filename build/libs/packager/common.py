@@ -75,9 +75,20 @@ class BasePackager(Utils):
         pkgtypes = list(set(sorted(contrail_pkgs_dict.keys() +
                                    depends_pkgs_dict.keys() +
                                    base_pkgs_dict.keys())))
+
         if 'contrail-install-packages' in pkgtypes:
             pkgtypes.remove('contrail-install-packages')
             pkgtypes = ['contrail-install-packages'] + pkgtypes
+
+        print pkgtypes
+        if 'contrail-packages' in pkgtypes:
+            pkgtypes.remove('contrail-packages')
+            pkgtypes = ['contrail-packages'] + pkgtypes
+            print pkgtypes
+            if 'contrail-install-packages' in pkgtypes:
+                pkgtypes.remove('contrail-install-packages')
+                pkgtypes = pkgtypes + ['contrail-install-packages']
+        print pkgtypes
 
         # create packager stores
         self.create_dir(self.store)
