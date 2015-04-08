@@ -66,7 +66,6 @@ override_dh_auto_install:
 	# Install files
 	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2 | cut -d '~' -f1` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu; fi
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_packages/VERSION
-	install -p -m 755 $(SETUP_FILE)  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
 	install -p -m 755 $(RM_FILE)  $(buildroot)$(_contrailopt)/contrail_packages/remove.sh
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/repo_preferences  $(buildroot)$(_contrailopt)/contrail_packages/preferences
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_packages/sources.list
