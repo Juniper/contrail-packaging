@@ -6,7 +6,9 @@ if [ ! -f /opt/contrail/.contrail_packages ]; then
     sed -i ''$line_num'{/^$/d}' /etc/apt/sources.list
 fi
 
-cd /opt/contrail/contrail_install_repo
-dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+if [ -d /opt/contrail/contrail_install_repo ]; then
+    cd /opt/contrail/contrail_install_repo
+    dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
+fi
 
 echo "You may need to run \"apt-get update\" after de-installing the package..."
