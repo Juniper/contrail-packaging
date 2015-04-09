@@ -1,3 +1,4 @@
+%define         _distropkgdir tools/packaging/common/control_files
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -31,6 +32,9 @@ Requires: librabbitmq
 Contrail Package Requirements for Contrail Openstack vRouter
 
 %install
+install -d -m 755 %{buildroot}%{_contrailetc}
+pushd %{_builddir}/..
+install -D -m 755 %{_distropkgdir}/contrail-vrouter-nodemgr.conf %{buildroot}/etc/contrail/contrail-vrouter-nodemgr.conf
 
 %post
 
@@ -39,6 +43,7 @@ Contrail Package Requirements for Contrail Openstack vRouter
 %postun
 
 %files
+/etc/contrail/contrail-vrouter-nodemgr.conf
 
 %changelog
 * Tue Aug  6 2013 <ndramesh@juniper.net>
