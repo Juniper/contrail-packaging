@@ -1,0 +1,6 @@
+contrail-installer-packages (BUILDTAG) vmahuli; urgency=low
+
+  [vmahuli ]
+  * debian/changelog: changelog
+
+ -- vmahuli <vmahuli@juniper.net>  Mon, 22 Apr 2015 8:00:11 +0800

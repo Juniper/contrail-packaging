@@ -39,7 +39,7 @@ Requires: euca2ools
 Requires: m2crypto
 Requires: qpid-cpp-server
 Requires: haproxy
-Requires: rabbitmq-server >= 3.5.0
+Requires: rabbitmq-server
 Requires: supervisor
 %if 0%{?rhel} <= 6
 Requires: python-importlib
@@ -51,6 +51,7 @@ Requires: openstack-heat-common
 Requires: openstack-heat-engine
 Requires: crudini
 Requires: openstack-utils >= 2014.1-1
+Requires: contrail-nova-networkapi >= %{_verstr}-%{_relstr}
 %endif
 
 %description
