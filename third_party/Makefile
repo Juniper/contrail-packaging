@@ -89,7 +89,21 @@ libvirt: $(PPREP)
                 cd $(THIRDPARTY_DIR) && \
                 rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
                 -ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
-            fi ; \
+            elif [[ "$(DISTRO_VER)" == 7.1.* ]] ; then \
+                cp $(THIRDPARTY_DIR)/libvirt/libvirt-1.2.8-16.el7_1.1.src.rpm $(BUILD_BASE)/SOURCES/ && \
+                cp $(THIRDPARTY_DIR)/libvirt/contrail_rhel70_libvirt_1.2.8.patch  $(BUILD_BASE)/SOURCES/ && \
+                cd $(BUILD_BASE)/SOURCES && \
+                rpm --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+                -i libvirt-1.2.8-16.el7_1.1.src.rpm && \
+                cd $(BUILD_BASE)/SPECS && \
+                rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+                -bp libvirt.spec && \
+                cp $(THIRDPARTY_DIR)/libvirt/contrail_rhel70_libvirt_1.2.8.spec.patch  $(BUILD_BASE)/SPECS/ && \
+                patch -p0 -i $(BUILD_BASE)/SPECS/contrail_rhel70_libvirt_1.2.8.spec.patch && \
+                cd $(THIRDPARTY_DIR) && \
+                rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(BUILD_BASE)' \
+                -ba $(BUILD_BASE)/SPECS/libvirt.spec $(G_TAG); \
+            fi ;\
 	elif [ "$(DISTRO)" == "Red Hat" ] ; then \
             if [ "$(DISTRO_VER)" == "7.0" ] ; then \
 		cp $(THIRDPARTY_DIR)/libvirt/libvirt-1.2.8-16.el7_1.1.src.rpm $(BUILD_BASE)/SOURCES/ && \
