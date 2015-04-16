@@ -44,6 +44,9 @@ override_dh_auto_install:
 	install -D -m 755 $(_src_config)/contrail-mysqlprobe.xinetd $(buildroot)/etc/xinetd.d/contrail-mysqlprobe
 	install -p -m 644 $(SB_TOP)/distro/third_party/cmon-1.2.6-357-64bit-glibc23-mc70.tar.gz $(buildroot)/usr/local
 	cd $(buildroot)/usr/local; tar xzvf cmon-1.2.6-357-64bit-glibc23-mc70.tar.gz -C $(buildroot)/usr/local/; rm -rf cmon-1.2.6-357-64bit-glibc23-mc70.tar.gz
+	install -p -m 644 $(_src_config)/cmon_db.sql $(buildroot)/usr/local/cmon-1.2.6-357-64bit-glibc23-mc70/share/cmon
+	install -p -m 644 $(_src_config)/cmon_data.sql $(buildroot)/usr/local/cmon-1.2.6-357-64bit-glibc23-mc70/share/cmon
+	install -p -m 644 $(_src_config)/cmon $(buildroot)/usr/local/cmon-1.2.6-357-64bit-glibc23-mc70/etc/init.d
 
 override_dh_usrlocal:	
 
