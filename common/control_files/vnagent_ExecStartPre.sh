@@ -42,7 +42,6 @@ function pkt_setup () {
     done
 }
 
-[ -f /etc/contrail/default_pmac ] || error_exit $LINENO "Did you run setup?"
 [ -f /etc/contrail/agent_param ] || error_exit $LINENO "Did you run setup?"
 
 source /etc/contrail/agent_param
