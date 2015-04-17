@@ -1,3 +1,9 @@
+dpdk-depends-packages (0.4-0contrail1) precise; urgency=low
+
+  * Backport patch for supporting non-MSI guest in vhost-user mode
+
+ -- Michal Dubiel <md@semihalf.com>  Thu, 16 Apr 2015 11:29:00 +0100
+
 dpdk-depends-packages (0.3-0contrail1) unstable; urgency=low
 
   * Update QEMU to version 2.2+dfsg-5expubuntu8-contrail1
