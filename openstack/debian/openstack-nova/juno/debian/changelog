@@ -1,14 +1,80 @@
-nova (1:2014.2-0ubuntu1~cloud0.2contrail) trusty-juno; urgency=medium
+nova (1:2014.2.2-0ubuntu1~cloud0.2contrail) trusty-juno; urgency=medium
 
   * Added 2contrail in contrail pacakge.
 
- -- Atul Moge <amoghe@juniper.net>  Tue, 02 Dec 2014 12:56:15 -0300
+ -- Atul Moge <amoghe@juniper.net>  Thu, 16 Apr 2015 12:56:15 -0300
 
-nova (1:2014.2-0ubuntu1~cloud0) trusty-juno; urgency=medium
+nova (1:2014.2.2-0ubuntu1~cloud0) trusty-juno; urgency=medium
 
   * New upstream release for the Ubuntu Cloud Archive.
 
- -- Openstack Ubuntu Testing Bot <openstack-testing-bot@ubuntu.com>  Thu, 16 Oct 2014 12:02:54 -0400
+ -- Openstack Ubuntu Testing Bot <openstack-testing-bot@ubuntu.com>  Fri, 20 Feb 2015 22:25:05 +0000
+
+nova (1:2014.2.2-0ubuntu1) utopic; urgency=medium
+
+  [ Corey Bryant ]
+  * Resynchronize with stable/juno (0bad3b1) (LP: #1418695):
+    - [965fd30] Eventlet green threads not released back to pool
+    - [4349015] Fix unit test failure due to tests sharing mocks
+    - [33e0813] Fix image metadata returned for volumes
+    - [af3af77] Fixes Hyper-V boot from volume live migration
+    - [8c07d42] Add LibvirtGPFSVolumeDriver class
+    - [1e4088f] Truncate encoded instance message to 255 or fewer
+    - [4c1f28a] Fix connecting unnecessary iSCSI sessions issue
+    - [4d91175] Add handling of BadRequest from Neutron
+    - [9ee1a0f] only emit deprecation warnings once
+    - [56e3dd3] Make ec2 auth support v4 signature format
+    - [9f81d9b] Update eventlet API in libvirt driver
+    - [2dec248] Unshelving a volume backed instance doesn't work
+    - [d9bcfab] Return floating_ip['fixed_ip']['instance_uuid'] from neutronv2 API
+    - [5e44c9f] fix pep8 errors that apparently slipped in
+    - [7307dba] Fix disconnecting necessary iSCSI sessions issue
+    - [eb58ed4] libvirt: safe_decode domain.XMLDesc(0) for i18n logging
+    - [ee66c04] Fix ironic delete fails when flavor deleted
+    - [39097d3] Add virtual interface before add fixed IP on nova-network
+    - [46fa995] Fix live migration api stuck when migrate to old nova node
+    - [2da2341] Extends use of ServiceProxy to more methods in HostAPI in cells
+    - [699b467] Don't make a no-op DB call
+    - [8a3b609] Fix libvirt watchdog support
+    - [4dd5080] VMware: fix compute node exception when no hosts in cluster
+    - [0bad3b1] Sync strutils from oslo-incubator for mask_password fix
+  * d/control: Bump minimum python-eventlet to get socket_timeout support.
+    (LP: #1419117).
+
+ -- Chuck Short <zulcss@ubuntu.com>  Mon, 09 Feb 2015 15:38:28 -0500
+
+nova (1:2014.2.1-0ubuntu1) utopic; urgency=medium
+
+  [ Corey Bryant ]
+  * Resynchronize with stable/juno (3136cfc) (LP: #1398952):
+    - [ee00c80] Instances with NUMA will be packed onto hosts
+    - [ccb7ef2] Make Instance.save() update numa_topology
+    - [3d0b946] objects: Makes sure Instance._save methods are called
+    - [27d071f] Add support for fitting instance NUMA nodes onto a host
+    - [6607de4] Add CHAP credentials support
+    - [361ece2] Add legacy to the possible server group policies
+    - [947bc73] Fix exception handling in _get_host_metrics()
+    - [04d6471] Fix for extra_specs KeyError
+    - [9b6699f] Use opportunistic approach for migration testing
+    - [9c3ec16] Clean up iSCSI multipath devices in Post Live Migration
+    - [ce1d1dd] Fix nova-compute start issue after evacuate
+    - [7920cfd] Fix nova evacuate issues for RBD
+    - [f9be946] Run build_and_run_instance in a separate greenthread
+    - [e98738d] Fixes DOS issue in instance list ip filter
+    - [9bb36c3] Keep migration status if instance still resizing
+    - [6ffc2be] Translate 'powervm' hypervisor_type to 'phyp' for scheduling
+    - [c159f91] Use response.text for returning unicode EC2 metadata
+    - [837411a] Add @_retry_on_deadlock to _instance_update()
+    - [d5e970d3] VMware: attach config drive if booting from a volume
+    - [0bda022] libvirt: use six.text_type when setting text node value in guest xml
+    - [3136cfc] Fix XML UnicodeEncode serialization error
+  * d/p/rate-limit-power-sync-tasks.patch: Cherry-picked patch set 11 from
+    https://review.openstack.org/#/c/132263/ (with minor adjustment to test file
+    name).
+  * d/control: Update dependencies based on updates to requirements.txt and
+    test-requirements.txt.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Mon, 08 Dec 2014 13:17:30 -0500
 
 nova (1:2014.2-0ubuntu1) utopic; urgency=medium
 
