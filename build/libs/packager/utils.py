@@ -47,7 +47,9 @@ class Utils(object):
             version = ''.join(re.findall('\d+', os_version))
             os_type = ''.join(re.findall('[^\d|^.|^\s]*', str(os_version).lower()))
             platform_dict['default'] = [os_type, version]
-        platform_dict['formatted'] = ''.join(platform_dict['default'][:2]).replace('.', '')
+        version = platform_dict['default'][1]
+        platform_dict['formatted'] = ''.join([platform_dict['default'][0],
+                                              "".join(version.split('.')[:2])]).replace('.', '')
         return platform_dict
 
     @staticmethod

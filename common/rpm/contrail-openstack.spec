@@ -93,7 +93,6 @@ popd
 %defattr(-,root,root,-)
 %{_sysconfdir}/contrail
 %{_initddir}
-%{_bindir}
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/keystone.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/glance-api.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_openstack_files/glance-registry.ini

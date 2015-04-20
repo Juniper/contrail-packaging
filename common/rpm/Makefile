@@ -61,6 +61,10 @@ contrail-api-extension: $(PREP)
 	@echo making rpm for contrail-api-extension
 	rpmbuild $(RPMBLDOPTS) contrail-api-extension.spec $(G_TAG)
 
+contrail-nova-networkapi: $(PREP)
+	@echo making rpm for contrail-nova-networkapi
+	rpmbuild $(RPMBLDOPTS) contrail-nova-networkapi.spec $(G_TAG)
+
 contrail-api-lib: $(PREP)
 	@echo making rpm for contrail-api-lib
 	rpmbuild $(RPMBLDOPTS) contrail-api-lib.spec $(G_TAG)
@@ -103,15 +107,25 @@ contrail-cloudstack-utils: $(PREP)
 	rpmbuild $(RPMBLDOPTS) contrail-cloudstack-utils.spec $(G_TAG)
 
 # Contrail Openstack stuff
-ifeq ($(CONTRAIL_SKU), icehouse)
+#ifeq ($(CONTRAIL_SKU), havana)
+#contrail-openstack: $(PREP)
+#	@echo making rpm for contrail-openstack
+#	rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG)
+#else
+#contrail-openstack: $(PREP)
+#	@echo making rpm for contrail-openstack
+#	rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse.spec $(G_TAG)
+#endif
+
 contrail-openstack: $(PREP)
-	@echo making rpm for contrail-openstack
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse.spec $(G_TAG)
-else
-contrail-openstack: $(PREP)
-	@echo making rpm for contrail-openstack
-	rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG)
-endif
+	@echo making rpm for contrail-openstack $(CONTRAIL_SKU)
+	if [ "$(CONTRAIL_SKU)" == "havana" ]; then \
+	    rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG) ;\
+	elif [ "$(CONTRAIL_SKU)" == "icehouse" ]; then \
+	    rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse.spec $(G_TAG) ;\
+	else \
+	    rpmbuild $(RPMBLDOPTS) contrail-openstack-juno.spec $(G_TAG) ;\
+	fi
 
 contrail-openstack-ha: $(PREP)
 	@echo making rpm for contrail-openstack-ha
@@ -253,7 +267,7 @@ contrail-test:
 	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz contrail-test
 
 NEUTRON_PLUGIN = neutron-plugin-contrail
-ifeq ($(CONTRAIL_SKU), icehouse)
+ifneq ($(CONTRAIL_SKU), havana)
 CONTRAIL_HEAT = contrail-heat
 else
 CONTRAIL_HEAT = 
@@ -265,12 +279,18 @@ else
 CEILOMETER_PLUGIN =
 endif
 
+ifeq ($(CONTRAIL_SKU), juno)
+CONTRAIL_NOVA_NETWORKAPI = contrail-nova-networkapi
+else
+CONTRAIL_NOVA_NETWORKAPI =
+endif
+
 all: $(PREP) contrail \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
-       contrail-vrouter-init contrail-vrouter-common \
+       contrail-vrouter-init contrail-vrouter-common ${CONTRAIL_NOVA_NETWORKAPI} \
        contrail-fabric-utils contrail-test
 
 server-manager-all: contrail-server-manager contrail-server-manager-monitoring contrail-server-manager-client contrail-web-server-manager
