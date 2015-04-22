@@ -4,9 +4,7 @@ line_num=`cat /etc/apt/sources.list | grep -n contrail_dependents_repo | cut -d 
 sed -i 's%deb file\:\/opt\/contrail\/contrail_dependents_repo \.\/%%' /etc/apt/sources.list
 sed -i ''$line_num'{/^$/d}' /etc/apt/sources.list
 
-if [ -d /opt/contrail/contrail_dependents_repo ]; then
-    cd /opt/contrail/contrail_dependents_repo
-    dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
-fi
+cd /opt/contrail/contrail_dependents_repo
+dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
 
 echo "You may need to run \"apt-get update\" after de-installing the package..."

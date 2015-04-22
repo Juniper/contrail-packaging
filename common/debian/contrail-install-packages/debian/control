@@ -1,5 +1,5 @@
 Source: contrail-install-packages
-Maintainer: vmahuli <vmahuli@juniper.net>
+Maintainer: amoghe <amoghe@juniper.net>
 Section: misc
 Priority: optional
 Standards-Version: 1.0
@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 8)
 
 Package: contrail-install-packages
 Architecture: all
-Maintainer: vmahuli <vmahuli@juniper.net>
+Maintainer: amoghe <amoghe@juniper.net>
 Depends:
 Replaces: contrail-setup
 Section: contrail-install-packages

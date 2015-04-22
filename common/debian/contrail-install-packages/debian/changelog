@@ -1,4 +1,4 @@
-contrail-install-packages (BUILDTAG) amoghe; urgency=low
+contrail-install-packages (1402040750) amoghe; urgency=low
 
   [amoghe ]
   * debian/changelog: changelog

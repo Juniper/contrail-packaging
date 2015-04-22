@@ -159,16 +159,6 @@ ifmap-server: package-ifmap-server
 ifmap-python-client: package-ifmap-python-client
 	@echo "Package ifmap-python client done"
 
-contrail-installer-package: contrail-installer-package-deb
-contrail-installer-package-deb:
-	 $(eval BUILDDIR=${SB_TOP}/build/debian/contrail-installer-package)
-	mkdir -p ${BUILDDIR}
-	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-installer-package/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-	@echo "Wrote: ${BUILDDIR}/../contrail-installer-package_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
-
-contrail-install-packages: contrail-install-packages-deb
 contrail-install-packages-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-install-packages)
 	mkdir -p ${BUILDDIR}
