@@ -287,7 +287,7 @@ class Utils(object):
         dirname = dirname or self.repo_dir
         tgz_prefix = os.path.basename(dirname)
         tgz_name = os.path.join(self.store, 
-                                '%s_%s-%s~%s.tgz' % (tgz_prefix,
+                                '%s_%s-%s-%s.tgz' % (tgz_prefix,
                                 self.branch, self.id, self.sku))
         log.info('Create (%s) file' % tgz_name)
         self.create_tgz(tgz_name, dirname)

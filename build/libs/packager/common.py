@@ -336,7 +336,7 @@ class BasePackager(Utils):
             log.warn('Skipping make %s' % self.meta_pkg)
             return
         tgz_name = os.path.join(self.store,
-                                '%s_%s-%s~%s.tgz' %(self.meta_pkg,
+                                '%s_%s-%s-%s.tgz' %(self.meta_pkg,
                                 self.branch, self.id, self.sku))
         try:
             self.exec_cmd('make CONTRAIL_SKU=%s FILE_LIST=%s TAG=%s %s' %(
