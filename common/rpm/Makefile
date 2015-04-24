@@ -205,6 +205,10 @@ contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
 	rpmbuild $(RPMBLDOPTS) contrail-install-packages.spec  $(G_TAG)
 
+contrail-installer-packages: $(PREP)
+	@echo making rpm for contrail-installer-packages
+	rpmbuild $(RPMBLDOPTS) contrail-installer-packages.spec  $(G_TAG)
+
 contrail-packages: $(PREP)
 	@echo making rpm for contrail-packages
 	rpmbuild $(RPMBLDOPTS) contrail-packages.spec  $(G_TAG)
