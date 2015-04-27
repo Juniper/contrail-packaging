@@ -115,6 +115,19 @@ if [ "$ALL" != "" ]; then
    rm temp.txt
 fi
 
+echo "Starting the install of Contrail Server Manager packages."
+echo "Please make sure the /etc/apt/sources.list file reflects the default sources.list for your version of Ubuntu."
+echo "Sample sources.list files are available at /opt/contrail/contrail_server_manager/."
+echo "Enter Q or q if you wish to quit this install. Press any other key to continue."
+read option
+
+if [[ "$option" == "Q" ]] || [[ "$option" == "q" ]]; then
+    echo "Quitting the install...."
+    exit
+fi
+
+echo "Continuing the install...."
+
 cd /etc/apt/
 # create repo with only local packages
 datetime_string=`date +%Y_%m_%d__%H_%M_%S`
@@ -600,7 +613,17 @@ fi
 if [ "$SMMON" != "" ]; then
   echo "### Begin: Installing Server Manager Monitoring"
   echo "SMMON is $SMMON"
-  gdebi -n $SMMON
+  check=`dpkg --list | grep "contrail-server-manager-monitoring "`
+  if [ "$check" != ""  ]; then
+      gdebi -n $SMMON
+      echo "Sample Configurations for Monitoring and Inventory are available at /opt/contrail/server_manager/sm-monitoring-config.ini and /opt/contrail/server_manager/sm-inventory-config.ini."
+      echo "Sample Configurations for Sandesh is available at /opt/contrail/server_manager/sm-sandesh-config.ini."
+      echo "Please add these to the main server manager configuration at /opt/contrail/server_manager/sm-config.ini to activate these features."
+  else
+      gdebi -n $SMMON
+      cat /opt/contrail/server_manager/sm-sandesh-config.ini >> /opt/contrail/server_manager/sm-config.ini
+      cat /opt/contrail/server_manager/sm-monitoring-config.ini >> /opt/contrail/server_manager/sm-config.ini
+      cat /opt/contrail/server_manager/sm-inventory-config.ini >> /opt/contrail/server_manager/sm-config.ini
   echo "### End: Installing Server Manager Monitoring"
   echo "IMPORTANT: CONFIGURE /ETC/COBBLER/DHCP.TEMPLATE, NAMED.TEMPLATE, SETTINGS TO BRING UP SERVER MANAGER."
   echo "Install log is at /var/log/contrail/install_logs/"
