@@ -38,6 +38,10 @@ ifeq ($(CONTRAIL_SKU),juno)
 SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu_juno.sh
 endif
 
+ifeq ($(CONTRAIL_SKU),kilo)
+SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu_juno.sh
+endif
+
 ifndef SETUP_FILE
 SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu.sh
 endif  
