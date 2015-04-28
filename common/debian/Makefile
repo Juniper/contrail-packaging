@@ -22,6 +22,11 @@ ifeq ($(CONTRAIL_SKU),juno)
     CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
 endif
 
+ifeq ($(CONTRAIL_SKU),kilo)
+    CONTRAIL_OPENSTACK := contrail-openstack-kilo-deb
+    CONTRAIL_HEAT := contrail-heat-deb
+endif
+
 ifeq ($(CONTRAIL_SKU),icehouse)
     CONTRAIL_OPENSTACK := contrail-openstack-icehouse-deb
     CONTRAIL_HEAT := contrail-heat-deb
@@ -314,12 +319,31 @@ contrail-openstack-juno-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
 	rm -rf ${BUILDDIR}
 
+contrail-openstack-kilo-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -R contrail-openstack/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; [ -f debian/control.kilo.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+	  --version $(VERSION) --file debian/control.kilo.in ) || echo no control.kilo.in
+	cp ${BUILDDIR}/debian/control.kilo ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.kilo ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-kilo-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+
 contrail-openstack-dashboard-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard) \
-	mkdir -p ${BUILDDIR}/debian;
-	cp -R ${SB_TOP}/contrail-horizon/* ${BUILDDIR};
-	(cp -R contrail-openstack-dashboard/debian/${CONTRAIL_SKU}/* ${BUILDDIR}/debian);
-	(cd ${BUILDDIR}; fakeroot debian/rules binary);
+	if [ '${CONTRAIL_SKU}' != 'kilo' ]; then \
+		$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard) \
+		mkdir -p ${BUILDDIR}/debian; \
+		cp -R ${SB_TOP}/contrail-horizon/* ${BUILDDIR}; \
+		(cp -R contrail-openstack-dashboard/debian/${CONTRAIL_SKU}/* ${BUILDDIR}/debian); \
+		(cd ${BUILDDIR}; fakeroot debian/rules binary); \
+	fi
 
 contrail-openstack-dashboard-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
@@ -389,13 +413,15 @@ neutron-plugin-contrail-clean:
 	rm -rf ${BUILDDIR};
 
 ceilometer-plugin-contrail-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/ceilometer-plugin-contrail) \
-	mkdir -p ${BUILDDIR}; \
-	cp -R ${SB_TOP}/openstack/ceilometer_plugin/* ${BUILDDIR}; \
-	cp -R ${SB_TOP}/tools/packages/debian/ceilometer-plugin-contrail/debian ${BUILDDIR}/debian; \
-	sed -i 's/VERSION/$(VERSION)/g' ${BUILDDIR}/debian/changelog; \
-	(cd ${BUILDDIR}; fakeroot debian/rules clean); \
-	(cd ${BUILDDIR}; fakeroot debian/rules binary);
+	if [ -d ${SB_TOP}/openstack/ceilometer_plugin ]; then \
+		$(eval BUILDDIR=${SB_TOP}/build/debian/ceilometer-plugin-contrail) \
+		mkdir -p ${BUILDDIR}; \
+		cp -R ${SB_TOP}/openstack/ceilometer_plugin/* ${BUILDDIR}; \
+		cp -R ${SB_TOP}/tools/packages/debian/ceilometer-plugin-contrail/debian ${BUILDDIR}/debian; \
+		sed -i 's/VERSION/$(VERSION)/g' ${BUILDDIR}/debian/changelog; \
+		(cd ${BUILDDIR}; fakeroot debian/rules clean); \
+		(cd ${BUILDDIR}; fakeroot debian/rules binary); \
+	fi
 
 ceilometer-plugin-contrail-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/ceilometer-plugin-contrail) \
