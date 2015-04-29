@@ -29,18 +29,26 @@ class ChangeDepends(object):
             self.control.readfp(self.cfg_fp)
 
     def cset_cond(self, pkg):
-        return 'contrail' in pkg and pkg != 'contrail-vrouter'
+        return '|' not in pkg and 'contrail' in pkg and pkg != 'contrail-vrouter'
+
+    def cset_or_cond(self, pkg):
+        return '|' in pkg and 'contrail' in pkg and pkg != 'contrail-vrouter'
 
     def partition(self, pred, ittr):
         t1, t2 = tee(ittr)
         return filter(bool, ifilterfalse(pred, t1)), filter(pred, t2)
 
+    def add_version_to_or_depends(self, depends):
+        return [dep.strip() + ' (>= %s)' % self._version for dep in depends.split('|')]
+
     def change_config(self):
         dep_list = map(lambda x: x.strip(), self.control.get('dummysection', 'Depends').split(','))
+        dummy_set, ch_or_set = self.partition(self.cset_or_cond, dep_list)
         im_set, ch_set = self.partition(self.cset_cond, dep_list)
         new_set = map(lambda x: x + ' (>= %s)' % self._version, ch_set)
+        new_or_set = map(lambda x: ' | '.join(self.add_version_to_or_depends(x)), ch_or_set)
         self.control.set('dummysection', 'Depends', ',\n    '.join(new_set
-                    + list(im_set)))
+                     + list(new_or_set) + list(im_set)))
 
     def format_key(self, key):
         t = key.split('-')
