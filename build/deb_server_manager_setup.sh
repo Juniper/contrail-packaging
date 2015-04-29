@@ -613,9 +613,11 @@ if [ "$SMMON" != "" ]; then
       cat /opt/contrail/server_manager/sm-sandesh-config.ini >> /opt/contrail/server_manager/sm-config.ini
       cat /opt/contrail/server_manager/sm-monitoring-config.ini >> /opt/contrail/server_manager/sm-config.ini
       cat /opt/contrail/server_manager/sm-inventory-config.ini >> /opt/contrail/server_manager/sm-config.ini
+  fi
   echo "### End: Installing Server Manager Monitoring"
   echo "IMPORTANT: CONFIGURE /ETC/COBBLER/DHCP.TEMPLATE, NAMED.TEMPLATE, SETTINGS TO BRING UP SERVER MANAGER."
   echo "If your install has failed, please make sure the /etc/apt/sources.list file reflects the default sources.list for your version of Ubuntu."
   echo "Sample sources.list files are available at /opt/contrail/contrail_server_manager/."
   echo "Install log is at /var/log/contrail/install_logs/"
 fi
+
