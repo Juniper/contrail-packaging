@@ -1,0 +1,8 @@
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Approved+1: Abhay Joshi <abhayj@juniper.net>
+Code-Review+2: Abhay Joshi <abhayj@juniper.net>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Wed, 29 Apr 2015 20:07:48 -0700
+Reviewed-on: https://review.opencontrail.org/9640
+Project: Juniper/contrail-packaging
+Branch: refs/heads/R2.20
