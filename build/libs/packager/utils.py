@@ -47,7 +47,9 @@ class Utils(object):
             version = ''.join(re.findall('\d+', os_version))
             os_type = ''.join(re.findall('[^\d|^.|^\s]*', str(os_version).lower()))
             platform_dict['default'] = [os_type, version]
-        platform_dict['formatted'] = ''.join(platform_dict['default'][:2]).replace('.', '')
+        version = platform_dict['default'][1]
+        platform_dict['formatted'] = ''.join([platform_dict['default'][0],
+                                              "".join(version.split('.')[:2])]).replace('.', '')
         return platform_dict
 
     @staticmethod
@@ -171,30 +173,63 @@ class Utils(object):
         files = self.get_as_list(files)
         for filename in files:
             if not os.path.isfile(filename):
-                raise RuntimeError('File (%s) is not present' %filename)
+                log.error('File (%s) is not present' %filename)
+                continue
             md5out = self.exec_cmd_out('md5sum %s' %filename)
+            if len(md5out) == 0:
+                continue
             md5dict[filename] = md5out[0].split()[0]
         return md5dict
 
     def check_package_md5(self, pkginfo, location='location'):
+        failed_packages = []
         for pkg in pkginfo.keys():
             pkg_loc = pkginfo[pkg][location]
+
+            # Location is empty. Cant check md5sum
             if pkg_loc is '':
-                raise RuntimeError('Given Location (%s) of the Package'\
-                                   ' (%s) is empty' % (location, pkg))
-            pkgfile = self.get_file_list(pkg_loc, pkginfo[pkg]['file'], True)
-            if len(pkgfile) == 0:
-                raise RuntimeError('Package file for package (%s) is not present in (%s)' %(
-                                    pkg, pkg_loc))
-            pkgfile = self.get_latest_file(pkgfile)
-            actual_md5 = self.get_md5(pkgfile)
-            if actual_md5 is None:
-                raise RuntimeError('MD5 checksum is empty for file (%s)' % pkgfile)
-            if pkginfo[pkg]['md5'] != actual_md5[pkgfile]:
-                raise RuntimeError('MD5 Checksum validation for Package'\
-                                   ' (%s) failed' % (pkgfile))
-            else:
-                pkginfo[pkg]['found_at'] = pkgfile
+                msg = 'Given Location (%s) of the Package (%s) is empty' % (location, pkg)
+                failed_packages.append(msg)
+                log.error(msg)
+                continue
+
+            # No package file found
+            pkgfiles = self.get_file_list(pkg_loc, pkginfo[pkg]['file'], True)
+            if len(pkgfiles) == 0:
+                msg = 'Package file for package (%s) is not present in (%s)' %(
+                       pkg, pkg_loc)
+                failed_packages.append(msg)
+                log.error(msg)
+                continue
+
+            # No MD5 can be retrived
+            md5_info = self.get_md5(pkgfiles)
+            if len(md5_info) == 0:
+                msg = 'MD5 checksum is empty for file (%s).\n' % pkgfiles +\
+                      'Expected (%s) != Actual (%s)' % (pkginfo[pkg]['md5'], None)
+                failed_packages.append(msg)
+                log.error(msg)
+                continue
+
+            # Atleast one of the files matches with expected MD5
+            for filename in md5_info.keys():
+                if pkginfo[pkg]['md5'] == md5_info[filename]:
+                    pkginfo[pkg]['found_at'] = filename
+                else:
+                    log.warn('MD5 checksum mismatch for Package (%s) ' % filename)
+
+            # No match for expected MD5sum
+            if not pkginfo[pkg]['found_at']:
+                for filename in md5_info.keys():
+                    msg = 'MD5 Checksum validation for Package (%s) failed.\n' % filename +\
+                          'Expected (%s) != Actual (%s)' % (
+                          pkginfo[pkg]['md5'], md5_info[filename])
+                    failed_packages.append(msg)
+                    log.error(msg)
+
+        if len(failed_packages) != 0:
+            raise RuntimeError('MD5 Checksum validation failed for below packages... '
+                               'Review Errors; \n%s' % "\n".join(failed_packages))
             
     def get_file_list(self, dirs, pattern, recursion=True):
         ''' get a list of files that matches given pattern '''
@@ -252,7 +287,7 @@ class Utils(object):
         dirname = dirname or self.repo_dir
         tgz_prefix = os.path.basename(dirname)
         tgz_name = os.path.join(self.store, 
-                                '%s_%s-%s~%s.tgz' % (tgz_prefix,
+                                '%s_%s-%s-%s.tgz' % (tgz_prefix,
                                 self.branch, self.id, self.sku))
         log.info('Create (%s) file' % tgz_name)
         self.create_tgz(tgz_name, dirname)
@@ -323,15 +358,16 @@ class Utils(object):
             for pkg in pkgcfg.keys():
                 pkgcfg[pkg]['repo'] = self.repo_dir
 
-    @staticmethod
-    def get_dict_by_item(tdict, titem):
+    def get_dict_by_item(self, tdict, titem):
         matrix = {}
         cfg_itemgetter = operator.itemgetter(titem)
         for key, items in tdict.items():
-            matrix_key = cfg_itemgetter(items)
-            if not matrix.has_key(matrix_key):
-                matrix[matrix_key] = {}
-            matrix[matrix_key].update({key: items})
+            matrix_keys = cfg_itemgetter(items)
+            matrix_keys = self.get_as_list(matrix_keys)
+            for matrix_key in matrix_keys:
+                if not matrix.has_key(matrix_key):
+                    matrix[matrix_key] = {}
+                matrix[matrix_key].update({key: items})
         return matrix
 
     def copy_pkg_files(self, pkginfo, error=True):
