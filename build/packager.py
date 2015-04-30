@@ -196,7 +196,7 @@ class PackagerArgParser(Utils):
         file_ns, rargs = os_parser.parse_known_args(self.unparsed_args)
 
         aparser = argparse.ArgumentParser(parents=[cparser, os_parser],
-                                          formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+                                          formatter_class=argparse.RawTextHelpFormatter,
                                           description=self.desc)
         aparser.add_argument('--version', '-v',
                              action='version',
@@ -209,7 +209,7 @@ class PackagerArgParser(Utils):
         aparser.add_argument('--sku',
                              action='store',
                              default='Derived from manifest sku',
-                             help='Specify Openstack release')
+                             help='Specify Contrail-SKU version')
         aparser.add_argument('--branch',
                              action='store',
                              default='from sandbox/controller/src/base/version.info',
@@ -222,59 +222,71 @@ class PackagerArgParser(Utils):
                              action='store',
                              default='/cs-shared/builder/cache',
                              nargs='+',
-                             help='Base directory location where OS and third\
-                                   party packages are available.\
-                                   packager will check files in \
-                                   base_cache_dir/distribution/sku/. eg\
-                                   /cs-shared/builder/cache/centos64/grizzly/')
+                             help='Base directory location where OS and third '\
+                                   'party packages are available.\n'\
+                                   'packager will check files in '\
+                                   '<cache_base_dir>/os-distribution/contrail-sku/. ' \
+                                   'eg /cs-shared/builder/cache/ubuntu1204/grizzly/ \n' \
+                                   'Multiple cache base dir can be provided like \n'\
+                                   '--cache-base-dir <dir1> <dir2> <dir3> ... <dirN>')
         aparser.add_argument('--absolute-package-dir', '-a',
                              action='store',
                              default=None,
                              nargs='+',
-                             help='Absolute Directory Location where OS and third\
-                                   party packages are available')
+                             help='Absolute Directory Location where OS and third '\
+                                   'party packages are available\n'\
+                                   'Multiple directories can be provided like \n'\
+                                   '--absolute-package-dir <dir1> <dir2> <dir3> ... <dirN>')
         aparser.add_argument('--contrail-package-dir', '-P',
                              action='store',
                              default=None,
                              nargs='+',
-                             help='Directory Location where pre-maked Contrail packages\
-                                   are available')
+                             help='Directory Location where pre-maked Contrail packages '\
+                                   'are available \n'\
+                                   'Multiple directories can be provided like\n'\
+                                   '--contrail-package-dir <dir1> <dir2> <dir3> ... <dirN>')
         aparser.add_argument('--base-package-file', '-b',
                              action='store',
                              default='sandbox/tools/packaging/build/package_configs/<os>/<sku>/base*_packages.cfg',
                              nargs='+',
-                             help='Config files specifying base packages info')
+                             help='Config files specifying base packages info \n'\
+                                  'Multiple package configs can be provided like\n'\
+                                  '--base-package-file <file1> <file2> ... <fileN> ')
         aparser.add_argument('--depends-package-file', '-d',
                              action='store',
                              default='sandbox/tools/packaging/build/package_configs/<os>/<sku>/depends*_packages.cfg',
                              nargs='+',
-                             help='Config files specifying dependant pacakges info')
+                             help='Config files specifying dependant pacakges info\n'\
+                                   'Multiple package files can be provided like \n'\
+                                   '-depends-package-file <file1> <file2> <file3> ... <fileN>')
         aparser.add_argument('--contrail-package-file', '-f',
                              action='store',
                              default='sandbox/tools/packaging/build/package_configs/<os>/<sku>/contrail*_packages.cfg',
                              nargs='+',
-                             help='Config files specifying Contrail packages info')
+                             help='Config files specifying Contrail packages info\n'\
+                                  'Multiple package files can be provided like\n'\
+                                  '--contrail-package-file <file1> <file2> <file3> ... <fileN>')
         aparser.add_argument('--make-targets', '-t',
                              action='store',
                              default=None,
                              nargs='+',
-                             help='List of Contrail make targets to build')
+                             help='List of Contrail make targets to build \n'\
+                                  'Multiple make targets can be provided like \n'\
+                                  '--make-targets <target1> <target2> ... <targetN>')
         aparser.add_argument('--make-targets-file', '-T',
                              action='store',
                              default=None,
-                             help='Line seperated text file containing list of \
-                                   make targets')
+                             help='Line seperated text file containing list of make targets')
         aparser.add_argument('--fail-on-error', '-e',
                              action='store_true',
-                             help='Aborts Packager from continuing when make fails')
+                             help='Abort Packager from continuing on first instance of failure')
         aparser.add_argument('--post-job', '-j',
                              action='store',
                              default=None,
                              help='Script to execute after Packaging is successfully complete')
         aparser.add_argument('--populate-defaults',
                              action='store_true',
-                             help='Populates packager arguments with default values\
-                                   and prints')
+                             help='Populates packager arguments with default values and prints')
         aparser.parse_args(self.unparsed_args)
         self.parser = aparser
 
