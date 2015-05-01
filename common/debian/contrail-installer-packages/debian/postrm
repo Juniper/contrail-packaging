@@ -1,5 +1,6 @@
 # Remove local repo entry from sources.list
 
+echo "Executing Post-Remove procedures"
 grep "deb file:/opt/contrail/contrail_installer_repo ./" /etc/apt/sources.list
 if [ $? != 0 ]; then
     echo "WARNING: local repo from contrail_installer_repo do not exists in sources.list"
@@ -17,4 +18,4 @@ if [ -d /opt/contrail/contrail_installer_repo ]; then
         rm -f /opt/contrail/contrail_installer_repo/Packages.gz
     fi
 fi
-echo 'Execute: apt-get update"
+echo "Execute: apt-get update"
