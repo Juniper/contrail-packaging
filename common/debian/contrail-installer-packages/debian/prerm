@@ -1,0 +1,3 @@
+# To avoid removal of /opt directory
+mkdir -p /opt/
+touch /opt/.to_avoid_removal_of_opt_dir
