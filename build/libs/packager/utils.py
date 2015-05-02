@@ -420,34 +420,3 @@ class Utils(object):
                 if extra_dirs is not None:
                     repo_dirs.extend(extra_dirs)
                 self.copyfiles(pkgfile, repo_dirs)
-
-    def copy_to_artifacts(self):
-        '''Copies rpm or deb files to artifacts directory'''
-        if self.platform == 'ubuntu':
-            builtdirs = [os.path.join(self.git_local_repo, 'build', 'debian'),
-                         os.path.join(self.git_local_repo, 'build', 'packages'),
-                         os.path.join(self.git_local_repo, 'build', 'openstack')]
-            toolsdirs = [os.path.join(self.git_local_repo, 'build', 'tools')]
-            pattern = '*.deb'
-        else:
-            basedir = os.path.join(self.git_local_repo, 'controller', 'build',
-                                   'package-build')
-            builtdirs = [os.path.join(basedir, 'RPMS', 'noarch'),\
-                         os.path.join(basedir, 'RPMS', 'x86_64')]
-            toolsdirs = [os.path.join(basedir, 'TOOLS')]
-            pattern = '*.rpm'
-        for dirname in builtdirs:
-            if not os.path.isdir(dirname):
-                log.warn('Dir (%s) do not exists. Skipping...' %dirname)
-                continue
-            pkgfiles = self.get_file_list(dirname, pattern, False)
-            self.copyfiles(pkgfiles, self.artifacts_dir)
-
-        # copy tools tgz to artifacts-extras
-        for dirname in toolsdirs:
-            if not os.path.isdir(dirname):
-                log.warn('Dir (%s) do not exists. Skipping...' %dirname)
-                continue
-            pkgfiles = self.get_file_list(dirname, '*.tgz', False)
-            self.copyfiles(pkgfiles, self.artifacts_extra_dir)
-

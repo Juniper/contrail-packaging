@@ -36,7 +36,7 @@ class BasePackager(Utils):
         self.abs_pkg_dirs          = self.expanduser(kwargs['absolute_package_dir'])
         self.cache_base_dir        = self.expanduser(kwargs['cache_base_dir'])
         self.contrail_pkg_dirs     = self.expanduser(kwargs.get('contrail_package_dir', None))
-        self.git_local_repo        = self.expanduser(kwargs['git_local_repo']) 
+        self.git_local_repo        = self.expanduser(kwargs['git_local_repo'])
         self.make_targets          = kwargs.get('make_targets', None)
         self.fail_on_error         = kwargs.get('fail_on_error', False)
         self.make_targets_file     = self.expanduser(kwargs.get('make_targets_file', None))
@@ -100,7 +100,7 @@ class BasePackager(Utils):
                                           self.meta_pkg, self.id,
                                           self.pkg_type))
                 self.default_targets = filter(lambda pkg: pkg.endswith('-default-target'),
-                                          self.contrail_pkgs.keys()) 
+                                          self.contrail_pkgs.keys())
                 if base_pkgs_dict.has_key(pkgtype):
                     self.base_pkgs = base_pkgs_dict[pkgtype]
                 if depends_pkgs_dict.has_key(pkgtype):
@@ -118,13 +118,13 @@ class BasePackager(Utils):
                 if self.fail_on_error:
                     raise
         self.create_manifest_with_revision()
-          
+
     def setup_env(self):
         ''' setup basic environment necessary for packager like
             updating config data structures, creating dirs,
             copying package files..etc
         '''
-        
+
         # update repo dir with store dir prefix and get repo list
         self.update_repoinfo(self.base_pkgs, self.depends_pkgs,
                                            self.contrail_pkgs)
@@ -176,7 +176,7 @@ class BasePackager(Utils):
                              pkg, self.contrail_pkg_files))
                     continue
                 self.targets += [pkg]
-       
+
         # Skip building all packages but not those supplied
         # in self.targets and self.meta_pkg
         # Update built loc and create support files
@@ -189,7 +189,7 @@ class BasePackager(Utils):
                 self.contrail_pkgs[target]['builtloc'] = self.contrail_pkg_dirs
         else:
             self.targets = self.targets or self.default_targets
-                    
+
         # OS PKGs and Depends PKGs
         self.check_package_md5(self.base_pkgs)
         self.check_package_md5(self.depends_pkgs)
@@ -208,7 +208,7 @@ class BasePackager(Utils):
             if not self.contrail_pkgs.has_key(target):
                 raise RuntimeError('Target (%s) is not defined in %s' %(
                                     target, self.contrail_pkg_files))
-            cmd = 'make CONTRAIL_SKU=%s TAG=%s FILE_LIST=%s %s' %(self.sku, 
+            cmd = 'make CONTRAIL_SKU=%s TAG=%s FILE_LIST=%s %s' %(self.sku,
                        self.id, self.pkglist_file,
                        self.contrail_pkgs[target]['target'])
             try:
@@ -218,7 +218,7 @@ class BasePackager(Utils):
 
     def verify_built_pkgs_exists(self, targets=None, skips=None,
                                  recursion=True):
-        ''' verify that contrail built packages are created and 
+        ''' verify that contrail built packages are created and
             and available in specific dirs
         '''
         missing = []
@@ -251,10 +251,10 @@ class BasePackager(Utils):
                 else:
                     missing.append(pkg)
                     log.error('Built Package file for Package (%s) is not found @ %s' %(
-                               pkg, self.contrail_pkgs[each]['builtloc'])) 
+                               pkg, self.contrail_pkgs[each]['builtloc']))
         if len(missing) != 0:
             log.error('Package file for One or More built package are not found')
-            raise IOError('Missing Packages: \n%s' %"\n".join(missing)) 
+            raise IOError('Missing Packages: \n%s' %"\n".join(missing))
 
     def create_pkg_list_file(self):
         pkglist = []
@@ -278,7 +278,7 @@ class BasePackager(Utils):
 
     def create_log(self):
         filelist = []
-        filelist_file = os.path.join(self.store_log_dir, 
+        filelist_file = os.path.join(self.store_log_dir,
                                      '%s_file_list.txt' % self.meta_pkg)
         for target in self.contrail_pkgs.keys():
             packages = self.contrail_pkgs[target]['pkgs']
@@ -315,17 +315,17 @@ class BasePackager(Utils):
             fid.flush()
 
         return filename
-        
+
     def createrepo(self, extraargs=''):
         ''' execute create repo '''
         log.info('Executing createrepo in (%s)...' % self.repo_dir)
-        self.exec_cmd('createrepo %s .' % extraargs, wd=self.repo_dir)   
+        self.exec_cmd('createrepo %s .' % extraargs, wd=self.repo_dir)
 
     def cleanup_store(self):
         log.info('Removing Packager repo dir (%s)' % self.repo_dir)
         shutil.rmtree(self.repo_dir)
 
-    def create_contrail_pkg(self, *pkgs): 
+    def create_contrail_pkg(self, *pkgs):
         ''' make meta packages
         '''
         #make final package that holds all other packages
@@ -346,3 +346,37 @@ class BasePackager(Utils):
             raise MakeError(sys.exc_info()[1])
         #log.debug('Removing TGZ File (%s) after Make' % tgz_name)
         #os.unlink(tgz_name)
+
+    def copy_to_artifacts(self):
+        '''Copies rpm or deb files to artifacts directory'''
+        if self.platform == 'ubuntu':
+            builtdirs = [os.path.join(self.git_local_repo, 'build', 'debian'),
+                         os.path.join(self.git_local_repo, 'build', 'packages'),
+                         os.path.join(self.git_local_repo, 'build', 'openstack')]
+            toolsdirs = [os.path.join(self.git_local_repo, 'build', 'tools')]
+            pattern = '*.deb'
+        else:
+            basedir = os.path.join(self.git_local_repo, 'controller', 'build',
+                                   'package-build')
+            builtdirs = [os.path.join(basedir, 'RPMS', 'noarch'),\
+                         os.path.join(basedir, 'RPMS', 'x86_64')]
+            toolsdirs = [os.path.join(basedir, 'TOOLS')]
+            pattern = '*.rpm'
+        for dirname in builtdirs:
+            if not os.path.isdir(dirname):
+                log.warn('Dir (%s) do not exists. Skipping...' %dirname)
+                continue
+            pkgfiles = self.get_file_list(dirname, pattern, False)
+            self.copyfiles(pkgfiles, self.artifacts_dir)
+
+        # copy tools tgz to artifacts-extras
+        for dirname in toolsdirs:
+            if not os.path.isdir(dirname):
+                log.warn('Dir (%s) do not exists. Skipping...' %dirname)
+                continue
+            pkgfiles = self.get_file_list(dirname, '*.tgz', False)
+            self.copyfiles(pkgfiles, self.artifacts_extra_dir)
+
+        # copy package tgz to artifacts dir
+        tgz_files = self.get_file_list(self.store, '*.tgz', False)
+        self.copyfiles(tgz_files, self.artifacts_dir)
