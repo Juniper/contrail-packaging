@@ -258,7 +258,7 @@ cp %{_contrail_smgr_src}server_mgr_err.py %{buildroot}%{_contrailopt}%{_contrail
 cp %{_contrail_smgr_src}openstack_hieradata.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}contrail_defaults.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}server_mgr_mon_base_plugin.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
-cp %{_contrail_smgr_src}role_sequence.json %{buildroot}%{_contrailopt}%{_contrail_smgr}
+cp %{_contrail_smgr_src}role_sequence.json %{buildroot}%{_contrailetc}
 
 cp %{_contrail_smgr_src}utils/send_mail.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
 cp %{_contrail_smgr_src}sm-config.ini %{buildroot}%{_contrailopt}%{_contrail_smgr}
@@ -307,6 +307,7 @@ rm -rf %{buildroot}
 /usr/sbin/*
 /etc/init.d/contrail-server-manager
 %config(noreplace) %{_contrailetc}/tags.ini
+%config(noreplace) %{_contrailetc}/role_sequence.json
 %config(noreplace) %{_contrailetc}/sendmail.cf
 %config(noreplace) %{_contrailetc}/ntp.conf
 %{_contrailetc}/cobbler/*
