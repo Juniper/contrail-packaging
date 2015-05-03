@@ -9,7 +9,7 @@ BUILD_SRC           := $(BUILD_BASE)/SOURCES
 PKGBLDDIR           := $(BUILD_BASE)/BUILD
 DISTRO_PACKAGING    := $(CPLANE_GIT_ROOT)/../distro/python-venv-packaging
 THIRDPARTY_DIR      := $(CPLANE_GIT_ROOT)/../third_party
-DISTRO              := $(shell egrep -o "Fedora|CentOS|Ubuntu" /etc/issue)
+DISTRO              := $(shell egrep -o "Fedora|CentOS|Red Hat" /etc/redhat-release)
 RPMBLDOPTS          := --define '_topdir $(BUILD_BASE)' --define '_builddir $(CPLANE_GIT_ROOT)' -bb
 SB_TOP              := $(CPLANE_GIT_ROOT)/..
 SB_TOPDIR	    := --define '_sbtop $(SB_TOP)'
@@ -283,9 +283,13 @@ else
 CEILOMETER_PLUGIN =
 endif
 
+# Execute contrail-nova-networkapi only for centos-juno
 ifeq ($(CONTRAIL_SKU), juno)
 CONTRAIL_NOVA_NETWORKAPI = contrail-nova-networkapi
 else
+CONTRAIL_NOVA_NETWORKAPI =
+endif
+ifeq($(DISTRO), "Red Hat")
 CONTRAIL_NOVA_NETWORKAPI =
 endif
 
