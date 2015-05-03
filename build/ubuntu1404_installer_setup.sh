@@ -1,8 +1,7 @@
 #! /bin/bash
 
 cd /opt/contrail/contrail_installer_repo
-DEBIAN_FRONTEND=noninteractive dpkg -i binutils_*.deb dpkg-dev_*.deb libdpkg-perl_*.deb \
-                                       make_*.deb patch_*.deb
+DEBIAN_FRONTEND=noninteractive dpkg -i binutils_*.deb dpkg-dev_*.deb libdpkg-perl_*.deb make_*.deb patch_*.deb
 
 #modify /etc/apt/soruces.list/ to add local repo on the top
 grep "deb file:/opt/contrail/contrail_installer_repo ./" /etc/apt/sources.list
@@ -40,7 +39,6 @@ DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated in
 DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install contrail-fabric-utils
 
 # install ecdsa and fabric
-pip install --upgrade --no-deps --index-url='' /opt/contrail/python-packages/ecdsa-0.10.tar.gz
 pip install --upgrade --no-deps --index-url='' /opt/contrail/python-packages/Fabric-1.7.0.tar.gz
 
 #disabled sun-java-jre and sun-java-bin prompt during installation, add oracle license acceptance in debconf
