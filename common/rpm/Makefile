@@ -289,7 +289,7 @@ CONTRAIL_NOVA_NETWORKAPI = contrail-nova-networkapi
 else
 CONTRAIL_NOVA_NETWORKAPI =
 endif
-ifeq ($(DISTRO), "Red Hat")
+ifeq ($(DISTRO),Red Hat)
 CONTRAIL_NOVA_NETWORKAPI =
 endif
 
