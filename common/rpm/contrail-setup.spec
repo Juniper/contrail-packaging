@@ -124,9 +124,9 @@ popd
 %if 0%{?rhel}
 pushd %{_builddir}/../distro/third_party
 tar cvzf %{buildroot}%{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz ./zope.interface-3.7.0 
-install -p -m 644 paramiko-1.11.0.tar.gz %{buildroot}%{_contrailopt}/python_packages/paramiko-1.11.0.tar.gz
-install -p -m 644 pycrypto-2.6.tar.gz %{buildroot}%{_contrailopt}/python_packages/pycrypto-2.6.tar.gz
-install -p -m 644 Fabric-1.7.0.tar.gz %{buildroot}%{_contrailopt}/python_packages/Fabric-1.7.0.tar.gz
+install -p -m 644 paramiko-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/paramiko-*.tar.gz
+install -p -m 644 pycrypto-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/pycrypto-*.tar.gz
+install -p -m 644 Fabric-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/Fabric-*.tar.gz
 popd
 %endif
 
@@ -152,9 +152,9 @@ ln -sbf %{_contrailopt}/bin/* %{_bindir}
 %{_contrailopt}/contrail_packages/README
 %{_contrailopt}/cfgm_utils.tgz
 %{_contrailopt}/dns_scripts.tgz
-%{_contrailopt}/python_packages/paramiko-1.11.0.tar.gz
-%{_contrailopt}/python_packages/Fabric-1.7.0.tar.gz
-%{_contrailopt}/python_packages/pycrypto-2.6.tar.gz
+%{_contrailopt}/python_packages/paramiko-*.tar.gz
+%{_contrailopt}/python_packages/Fabric-*.tar.gz
+%{_contrailopt}/python_packages/pycrypto-*.tar.gz
 %{python_sitelib}/ContrailProvisioning-*.egg-info
 %{python_sitelib}/contrail_provisioning
 %if 0%{?rhel}
