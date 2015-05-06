@@ -43,7 +43,7 @@ DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated in
 DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes --allow-unauthenticated install contrail-setup
 
 # install ecdsa and fabric
-pip install --upgrade --no-deps --index-url='' /opt/contrail/python_packages/Fabric-1.7.0.tar.gz
+pip install --upgrade --no-deps --index-url='' /opt/contrail/python_packages/Fabric-*.tar.gz
 
 #disabled sun-java-jre and sun-java-bin prompt during installation, add oracle license acceptance in debconf
 echo 'sun-java6-plugin shared/accepted-sun-dlj-v1-1 boolean true' | /usr/bin/debconf-set-selections
