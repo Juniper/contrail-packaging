@@ -109,6 +109,7 @@ install -d -m 755 %{buildroot}%{_supervisordir}
 install -d -m 755 %{buildroot}%{_initddir}
 pushd %{_builddir}/..
 install -D -m 755 %{_distropkgdir}/contrail-nodemgr-database.ini %{buildroot}%{_supervisordir}/contrail-nodemgr-database.ini
+install -D -m 755 %{_distropkgdir}/kafka.ini %{buildroot}%{_supervisordir}/kafka.ini
 install -D -m 755 %{_distropkgdir}/contrail-database.rules %{buildroot}%{_supervisordir}/contrail-database.rules
 install -D -m 755 %{_distropkgdir}/contrail-database-nodemgr.conf %{buildroot}/etc/contrail/contrail-database-nodemgr.conf
 popd
@@ -181,6 +182,7 @@ fi
 %{_venv_root}
 %{_supervisordir}/contrail-database.rules
 %{_supervisordir}/contrail-nodemgr-database.ini
+%{_supervisordir}/kafka.ini
 /etc/contrail/contrail-database-nodemgr.conf
 %if 0%{?rhel}
 %{_initddir}/supervisor-database
