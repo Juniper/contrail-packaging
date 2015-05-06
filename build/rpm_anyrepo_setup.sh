@@ -24,6 +24,6 @@ yum -y --disablerepo=* remove python-crypto-2.0.1
 
 #Install basic packages
 yum -y install contrail-setup contrail-fabric-utils python-pip
-pip install /opt/contrail/python_packages/pycrypto-2.6.tar.gz
-pip install /opt/contrail/python_packages/paramiko-1.11.0.tar.gz
-pip install /opt/contrail/python_packages/Fabric-1.7.0.tar.gz
+pip install /opt/contrail/python_packages/pycrypto-*.tar.gz
+pip install /opt/contrail/python_packages/paramiko-*.tar.gz
+pip install /opt/contrail/python_packages/Fabric-*.tar.gz
