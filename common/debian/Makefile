@@ -15,11 +15,13 @@ else
 endif
 
 CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
+CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-deb
 
 ifeq ($(CONTRAIL_SKU),juno)
     CONTRAIL_OPENSTACK := contrail-openstack-juno-deb
     CONTRAIL_HEAT := contrail-heat-deb
     CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
+    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-juno-deb
 endif
 
 ifeq ($(CONTRAIL_SKU),icehouse)
@@ -71,7 +73,7 @@ PACKAGES = \
 	$(CONTRAIL_OPENSTACK_CONFIG) \
 	contrail-openstack-control-deb \
 	contrail-openstack-database-deb \
-	contrail-openstack-vrouter-deb \
+	$(CONTRAIL_OPENSTACK_VROUTER) \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
 	contrail-test-deb \
@@ -483,3 +485,15 @@ contrail-dpdk-kernel-modules-dkms-clean:
 	(cd $(@:-clean=); fakeroot debian/rules clean)
 	(cd $(@:-clean=); rm -rf debian/changelog)
 
+contrail-openstack-vrouter-juno-deb:
+	(cd $(@:-juno-deb=); [ -f debian/control.juno.in ] && python \
+         $(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+           --version $(VERSION) --file debian/control.juno.in ) || echo no control.juno.in
+	(cd $(@:-juno-deb=); cp debian/control.juno debian/control)
+	(cd $(@:-juno-deb=); fakeroot debian/rules clean)
+	(cd $(@:-juno-deb=); fakeroot debian/rules binary)
+
+contrail-openstack-vrouter-juno-clean:
+	(cd $(@:-juno-clean=); fakeroot debian/rules clean)
+	(cd $(@:-juno-clean=); [ -f debian/control.juno.in ] && rm -f debian/control) || \
+                echo no control.juno.in

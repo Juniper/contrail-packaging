@@ -63,6 +63,12 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/cinder-scheduler.initd.supervisord $(buildroot)$(_initddir)/cinder-scheduler.initd.supervisord
 	install -p -m 755 $(_src_config)/heat-api.initd.supervisord $(buildroot)$(_initddir)/heat-api.initd.supervisord
 	install -p -m 755 $(_src_config)/heat-engine.initd.supervisord $(buildroot)$(_initddir)/heat-engine.initd.supervisord
+	install -p -m 755 $(_src_config)/ceilometer-api.initd.supervisord $(buildroot)$(_initddir)/ceilometer-api.initd.supervisord
+	install -p -m 755 $(_src_config)/ceilometer-collector.initd.supervisord $(buildroot)$(_initddir)/ceilometer-collector.initd.supervisord
+	install -p -m 755 $(_src_config)/ceilometer-agent-notification.initd.supervisord $(buildroot)$(_initddir)/ceilometer-agent-notification.initd.supervisord
+	install -p -m 755 $(_src_config)/ceilometer-agent-central.initd.supervisord $(buildroot)$(_initddir)/ceilometer-agent-central.initd.supervisord
+	install -p -m 755 $(_src_config)/ceilometer-alarm-evaluator.initd.supervisord $(buildroot)$(_initddir)/ceilometer-alarm-evaluator.initd.supervisord
+	install -p -m 755 $(_src_config)/ceilometer-alarm-notifier.initd.supervisord $(buildroot)$(_initddir)/ceilometer-alarm-notifier.initd.supervisord
 	# Install supervisord config files
 	install -p -m 755 $(_src_config)/keystone.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/keystone.ini
 	install -p -m 755 $(_src_config)/glance-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/glance-api.ini
@@ -78,6 +84,12 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/nova-novncproxy.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-novncproxy.ini
 	install -p -m 755 $(_src_config)/heat-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/heat-api.ini
 	install -p -m 755 $(_src_config)/heat-engine.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/heat-engine.ini	
+	install -p -m 755 $(_src_config)/ceilometer-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/ceilometer-api.ini
+	install -p -m 755 $(_src_config)/ceilometer-collector.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/ceilometer-collector.ini
+	install -p -m 755 $(_src_config)/ceilometer-agent-notification.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/ceilometer-agent-notification.ini
+	install -p -m 755 $(_src_config)/ceilometer-agent-central.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/ceilometer-agent-central.ini
+	install -p -m 755 $(_src_config)/ceilometer-alarm-evaluator.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/ceilometer-alarm-evaluator.ini
+	install -p -m 755 $(_src_config)/ceilometer-alarm-notifier.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/ceilometer-alarm-notifier.ini
 
 override_dh_usrlocal:	
 
