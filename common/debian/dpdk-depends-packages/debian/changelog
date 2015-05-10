@@ -1,3 +1,11 @@
+dpdk-depends-packages (0.5-0contrail1) precise; urgency=low
+
+  * Remove hack for shared hugepages from qemu
+  * Move to libvirt-1.2.12
+  * Apply patch from Snabbswitch for shared hugepages into libvirt
+
+ -- Michal Dubiel <md@semihalf.com>  Thu, 7 May 2015 12:55:16 +0100
+
 dpdk-depends-packages (0.4-0contrail1) precise; urgency=low
 
   * Backport patch for supporting non-MSI guest in vhost-user mode
