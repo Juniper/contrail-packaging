@@ -60,8 +60,8 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_contrailopt)/python-packages
 
 	# Install files
-	install -p -m 755 $(SB_TOP)/distro/third_party/ecdsa-0.10.tar.gz $(buildroot)$(_contrailopt)/python-packages/ecdsa-0.10.tar.gz
-	install -p -m 755 $(SB_TOP)/distro/third_party/Fabric-1.7.0.tar.gz $(buildroot)$(_contrailopt)/python-packages/Fabric-1.7.0.tar.gz
+	install -p -m 755 $(SB_TOP)/distro/third_party/ecdsa-*.tar.gz $(buildroot)$(_contrailopt)/python-packages/
+	install -p -m 755 $(SB_TOP)/distro/third_party/Fabric-*.tar.gz $(buildroot)$(_contrailopt)/python-packages/
 	install -p -m 755 $(SETUP_FILE)  $(buildroot)$(_contrailopt)/contrail_installer_packages/setup.sh
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/repo_preferences  $(buildroot)$(_contrailopt)/contrail_installer_packages/preferences
 
