@@ -58,9 +58,9 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer_repo
 install -d -m 755 %{buildroot}%{_contrailopt}/python-packages
 
 # install files
-install -p -m 755 %{_builddir}/../distro/third_party/paramiko-1.11.0.tar.gz %{buildroot}%{_contrailopt}/python-packages/paramiko-1.11.0.tar.gz
-install -p -m 755 %{_builddir}/../distro/third_party/pycrypto-2.6.tar.gz %{buildroot}%{_contrailopt}/python-packages/pycrypto-2.6.tar.gz
-install -p -m 755 %{_builddir}/../distro/third_party/Fabric-1.7.0.tar.gz %{buildroot}%{_contrailopt}/python-packages/Fabric-1.7.0.tar.gz
+install -p -m 755 %{_builddir}/../distro/third_party/paramiko-*.tar.gz %{buildroot}%{_contrailopt}/python-packages/
+install -p -m 755 %{_builddir}/../distro/third_party/pycrypto-*.tar.gz %{buildroot}%{_contrailopt}/python-packages/
+install -p -m 755 %{_builddir}/../distro/third_party/Fabric-*.tar.gz %{buildroot}%{_contrailopt}/python-packages/
 
 install -p -m 755 %{SETUP_FILE} %{buildroot}%{_contrailopt}/contrail_installer_packages/setup.sh
 install -p -m 755 %{_builddir}/../tools/packaging/build/contrail-installer.repo %{buildroot}/etc/yum.repos.d/contrail-installer.repo
