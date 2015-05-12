@@ -29,6 +29,7 @@ class BasePackager(Utils):
         self.base_pkg_files        = self.expanduser(kwargs['base_package_file'])
         self.depends_pkg_files     = self.expanduser(kwargs['depends_package_file'])
         self.contrail_pkg_files    = self.expanduser(kwargs['contrail_package_file'])
+        self.package_types         = kwargs.get('package_types', None)
         self.id                    = kwargs.get('build_id', 999)
         self.sku                   = kwargs.get('sku', 'grizzly')
         self.branch                = kwargs.get('branch', 9.9)
@@ -50,6 +51,8 @@ class BasePackager(Utils):
         self.store_log_dir         = os.path.join(self.store, 'package_info')
         self.artifacts_dir         = os.path.join(self.git_local_repo, 'build', 'artifacts')
         self.artifacts_extra_dir   = os.path.join(self.git_local_repo, 'build', 'artifacts_extra')
+        self.sub_pkg_types         = []
+        self.pkg_tgz_name          = ''
         self.default_targets       = []
         self.pkglist_file          = ''
         self.meta_pkg              = ''
@@ -60,6 +63,31 @@ class BasePackager(Utils):
         self.repo_dir              = ''
         self.exec_status           = 0
 
+    def rearrange_types(self, pkgtypes):
+        '''Rearrange a pkgtype if it has a sub_package_type
+           defined so that sub_package_type builds first
+        '''
+        new_pkgtypes = copy.deepcopy(pkgtypes)
+        for pkgtype in pkgtypes:
+            # use dict where pkgtype is defined
+            if pkgtype in self.contrail_pkgs_dict.keys():
+               pkgs_dict = copy.deepcopy(self.contrail_pkgs_dict)
+            elif pkgtype in self.depends_pkgs_dict.keys():
+               pkgs_dict = copy.deepcopy(self.depends_pkgs_dict)
+            if not pkgtype in pkgs_dict[pkgtype].keys():
+                log.warn('No Target for package type (%s) is present in'
+                         ' contrail packages config file' % pkgtype)
+                continue
+            if 'sub_package_type' in pkgs_dict[pkgtype][pkgtype]:
+                sub_package_types = pkgs_dict[pkgtype][pkgtype]['sub_package_type']
+                sub_package_types = self.get_as_list(sub_package_types)
+                for sub_type in sub_package_types:
+                    # move sub package type before current package type
+                    new_pkgtypes.remove(sub_type)
+                    pkg_index = new_pkgtypes.index(pkgtype)
+                    new_pkgtypes.insert(pkg_index, sub_type)
+        return new_pkgtypes
+
     def ks_build(self):
         '''Execute Packager for each package type'''
         # get pkg info
@@ -67,18 +95,27 @@ class BasePackager(Utils):
         base_pkgs = self.parse_cfg_file(self.base_pkg_files)
         depends_pkgs = self.parse_cfg_file(self.depends_pkg_files)
         contrail_pkgs = self.parse_cfg_file(self.contrail_pkg_files, additems)
-        base_pkgs_dict = self.get_dict_by_item(base_pkgs, 'package_type')
-        depends_pkgs_dict = self.get_dict_by_item(depends_pkgs, 'package_type')
-        contrail_pkgs_dict = self.get_dict_by_item(contrail_pkgs, 'package_type')
+        base_pkgs_dict = self.get_dict_by_item(base_pkgs,
+                                               'package_type')
+        self.depends_pkgs_dict = self.get_dict_by_item(depends_pkgs,
+                                                       'package_type')
+        self.contrail_pkgs_dict = self.get_dict_by_item(contrail_pkgs,
+                                                        'package_type')
 
-        # make contrail-install-packages are done first
-        pkgtypes = list(set(sorted(contrail_pkgs_dict.keys() +
-                                   depends_pkgs_dict.keys() +
+        # build for given package_types. if not, find them from
+        # config files
+        if self.package_types:
+            pkgtypes = copy.deepcopy(self.package_types)
+        else:
+            pkgtypes = list(set(sorted(self.contrail_pkgs_dict.keys() +
+                                   self.depends_pkgs_dict.keys() +
                                    base_pkgs_dict.keys())))
-        if 'contrail-install-packages' in pkgtypes:
-            pkgtypes.remove('contrail-install-packages')
-            pkgtypes = ['contrail-install-packages'] + pkgtypes
+            # make contrail-install-packages are done first
+            if 'contrail-install-packages' in pkgtypes:
+                pkgtypes.remove('contrail-install-packages')
+                pkgtypes = ['contrail-install-packages'] + pkgtypes
 
+        pkgtypes = self.rearrange_types(pkgtypes)
         # create packager stores
         self.create_dir(self.store)
         self.create_dir(self.store_log_dir)
@@ -88,10 +125,14 @@ class BasePackager(Utils):
         for pkgtype in pkgtypes:
             try:
                 self.base_pkgs, self.depends_pkgs = {}, {}
+                self.contrail_pkgs = {}
                 self.targets = []
                 self.repo_dir = os.path.join(self.store, pkgtype)
-                self.contrail_pkgs = contrail_pkgs_dict[pkgtype]
+                if pkgtype in self.contrail_pkgs_dict.keys():
+                    self.contrail_pkgs = self.contrail_pkgs_dict[pkgtype]
                 self.meta_pkg = pkgtype
+                self.pkg_tgz_name = '%s_%s-%s-%s.tgz' % (pkgtype,
+                                    self.branch, self.id, self.sku)
                 self.pkglist_file = os.path.join(self.store_log_dir,
                                       '%s_%s_%s_list.txt' % (
                                       self.meta_pkg, self.id, self.pkg_type))
@@ -103,8 +144,12 @@ class BasePackager(Utils):
                                           self.contrail_pkgs.keys())
                 if base_pkgs_dict.has_key(pkgtype):
                     self.base_pkgs = base_pkgs_dict[pkgtype]
-                if depends_pkgs_dict.has_key(pkgtype):
-                    self.depends_pkgs = depends_pkgs_dict[pkgtype]
+                if self.depends_pkgs_dict.has_key(pkgtype):
+                    self.depends_pkgs = self.depends_pkgs_dict[pkgtype]
+                if pkgtype in self.contrail_pkgs.keys():
+                    if 'sub_package_type' in self.contrail_pkgs[pkgtype].keys():
+                        self.sub_pkg_types = self.contrail_pkgs[pkgtype]['sub_package_type']
+                        self.sub_pkg_types = self.get_as_list(self.sub_pkg_types)
                 self.exec_steps()
                 log.info('\n')
                 log.info('Packager Store: %s' % self.store)
@@ -325,6 +370,33 @@ class BasePackager(Utils):
         log.info('Removing Packager repo dir (%s)' % self.repo_dir)
         shutil.rmtree(self.repo_dir)
 
+    def add_sub_pkgs_tgz(self):
+        '''Add sub package type TGZ to its parent repo dir'''
+        if not self.sub_pkg_types:
+            log.warn('No Sub Package type defined for this'
+                     ' package type (%s)' % self.meta_pkg)
+            return
+
+        pkginfo = self.contrail_pkgs.get(self.meta_pkg, None)
+        if not pkginfo:
+            log.warn('Sub Package type cant be identified as'
+                     ' package (%s) info is not specified'
+                     ' in config file' % self.meta_pkg)
+            return
+        if not os.access(self.repo_dir, os.W_OK):
+            raise RuntimeError('Unable to copy sub package tgz'
+                               ' to current package type repo'
+                               ' dir (%s)' % self.repo_dir)
+        for sub_type in self.sub_pkg_types:
+            # find the tgz in self.store. if not available
+            # probably sub_package_type is not executed before
+            # current package type
+            sub_pkg_tgz = self.pkg_tgz_name.split('_')
+            sub_pkg_tgz.remove(sub_pkg_tgz[0])
+            sub_pkg_tgz = sub_type + '_' + sub_pkg_tgz[0]
+            tgzfiles = self.get_file_list(self.store, sub_pkg_tgz, False)
+            self.copyfiles(tgzfiles, self.repo_dir)
+
     def create_contrail_pkg(self, *pkgs):
         ''' make meta packages
         '''
@@ -344,8 +416,6 @@ class BasePackager(Utils):
                            pkginfo['target']), pkginfo['makeloc'])
         except:
             raise MakeError(sys.exc_info()[1])
-        #log.debug('Removing TGZ File (%s) after Make' % tgz_name)
-        #os.unlink(tgz_name)
 
     def copy_to_artifacts(self):
         '''Copies rpm or deb files to artifacts directory'''
