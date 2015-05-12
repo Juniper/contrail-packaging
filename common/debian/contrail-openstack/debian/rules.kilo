@@ -1,0 +1,84 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+SPEC_DIR := $(shell pwd)
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/build\/debian\/(.*)/\1/")
+
+export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+export buildroot := $(SB_TOP)/build/debian/contrail-openstack
+export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
+export _bindir := /usr/bin
+export _initddir := /etc/init.d
+export _initdir := /etc/init
+export _sysconfdir := /etc
+export _mysqllogdir := /var/log/mysql
+export _src_config := $(SB_TOP)/tools/packaging/common/control_files
+
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
+BUILDTAG =
+ifdef TAG
+BUILDTAG = $(SRC_VER)-$(TAG)
+else
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
+endif
+
+%:
+	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
+
+override_dh_auto_build: 
+	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
+
+override_dh_auto_install: 
+	# Install all the directories
+	install -d -m 755 $(buildroot)$(_bindir)
+	install -d -m 755 $(buildroot)$(_initdir)
+	install -d -m 755 $(buildroot)$(_initddir)
+	install -d -m 755 $(buildroot)$(_sysconfdir)
+	install -d -m 755 $(buildroot)$(_mysqllogdir)
+	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
+	# Install supervisord config config files and directories
+	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files
+	install -D -m 755 $(_src_config)/supervisor-openstack.upstart $(buildroot)$(_initdir)/supervisor-openstack.conf
+	install -p -m 755 $(_src_config)/supervisord_openstack.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack.conf
+	# Install supervisor init.d files
+	install -p -m 755 $(_src_config)/keystone.initd.supervisord $(buildroot)$(_initddir)/keystone.initd.supervisord
+	install -p -m 755 $(_src_config)/nova-api.initd.supervisord $(buildroot)$(_initddir)/nova-api.initd.supervisord
+	install -p -m 755 $(_src_config)/nova-scheduler.initd.supervisord $(buildroot)$(_initddir)/nova-scheduler.initd.supervisord
+	install -p -m 755 $(_src_config)/nova-conductor.initd.supervisord $(buildroot)$(_initddir)/nova-conductor.initd.supervisord
+	install -p -m 755 $(_src_config)/nova-console.initd.supervisord $(buildroot)$(_initddir)/nova-console.initd.supervisord
+	install -p -m 755 $(_src_config)/nova-consoleauth.initd.supervisord $(buildroot)$(_initddir)/nova-consoleauth.initd.supervisord
+	install -p -m 755 $(_src_config)/nova-objectstore.initd.supervisord $(buildroot)$(_initddir)/nova-objectstore.initd.supervisord
+	install -p -m 755 $(_src_config)/nova-novncproxy.initd.supervisord $(buildroot)$(_initddir)/nova-novncproxy.initd.supervisord
+	install -p -m 755 $(_src_config)/glance-api.initd.supervisord $(buildroot)$(_initddir)/glance-api.initd.supervisord
+	install -p -m 755 $(_src_config)/glance-registry.initd.supervisord $(buildroot)$(_initddir)/glance-registry.initd.supervisord
+	install -p -m 755 $(_src_config)/cinder-api.initd.supervisord $(buildroot)$(_initddir)/cinder-api.initd.supervisord
+	install -p -m 755 $(_src_config)/cinder-scheduler.initd.supervisord $(buildroot)$(_initddir)/cinder-scheduler.initd.supervisord
+	install -p -m 755 $(_src_config)/heat-api.initd.supervisord $(buildroot)$(_initddir)/heat-api.initd.supervisord
+	install -p -m 755 $(_src_config)/heat-engine.initd.supervisord $(buildroot)$(_initddir)/heat-engine.initd.supervisord
+	# Install supervisord config files
+	install -p -m 755 $(_src_config)/keystone.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/keystone.ini
+	install -p -m 755 $(_src_config)/glance-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/glance-api.ini
+	install -p -m 755 $(_src_config)/glance-registry.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/glance-registry.ini
+	install -p -m 755 $(_src_config)/cinder-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/cinder-api.ini
+	install -p -m 755 $(_src_config)/cinder-scheduler.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/cinder-scheduler.ini
+	install -p -m 755 $(_src_config)/nova-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-api.ini
+	install -p -m 755 $(_src_config)/nova-scheduler.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-scheduler.ini
+	install -p -m 755 $(_src_config)/nova-conductor.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-conductor.ini
+	install -p -m 755 $(_src_config)/nova-console.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-console.ini
+	install -p -m 755 $(_src_config)/nova-consoleauth.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-consoleauth.ini
+	install -p -m 755 $(_src_config)/nova-objectstore.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-objectstore.ini
+	install -p -m 755 $(_src_config)/nova-novncproxy.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-novncproxy.ini
+	install -p -m 755 $(_src_config)/heat-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/heat-api.ini
+	install -p -m 755 $(_src_config)/heat-engine.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/heat-engine.ini	
+
+override_dh_usrlocal:	
+
+override_dh_shlibdeps:
