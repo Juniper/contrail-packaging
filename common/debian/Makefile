@@ -271,6 +271,7 @@ contrail-fabric-utils-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
 	cp -R ${SB_TOP}/third_party/fabric-utils ${BUILDDIR}
 	cp -R contrail-fabric-utils/debian ${BUILDDIR}/debian
+	cp ${BUILDDIR}/debian/control.${SERIES} ${BUILDDIR}/debian/control
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz fabric-utils)
