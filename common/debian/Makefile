@@ -14,17 +14,18 @@ else
   export CONTRAIL_SKU := havana
 endif
 
-CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
+ifeq ($(CONTRAIL_SKU),kilo)
+    CONTRAIL_OPENSTACK := contrail-openstack-kilo-deb
+    CONTRAIL_HEAT := contrail-heat-deb
+    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-kilo-deb
+else
+    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
+endif
 
 ifeq ($(CONTRAIL_SKU),juno)
     CONTRAIL_OPENSTACK := contrail-openstack-juno-deb
     CONTRAIL_HEAT := contrail-heat-deb
     CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
-endif
-
-ifeq ($(CONTRAIL_SKU),kilo)
-    CONTRAIL_OPENSTACK := contrail-openstack-kilo-deb
-    CONTRAIL_HEAT := contrail-heat-deb
 endif
 
 ifeq ($(CONTRAIL_SKU),icehouse)
@@ -345,6 +346,18 @@ contrail-openstack-kilo-deb:
 contrail-openstack-kilo-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
 	rm -rf ${BUILDDIR}
+
+contrail-openstack-config-kilo-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config)
+	(cd ${BUILDDIR}; [ -f debian/control.kilo.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+	  --version $(VERSION) --file debian/control.kilo.in ) || echo no control.kilo.in
+	cp ${BUILDDIR}/debian/control.kilo ${BUILDDIR}/debian/control
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-config-kilo-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config; fakeroot debian/rules clean)
 
 contrail-openstack-dashboard-deb:
 	if [ '${CONTRAIL_SKU}' != 'kilo' ]; then \
