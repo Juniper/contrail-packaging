@@ -267,9 +267,12 @@ class BasePackager(Utils):
             and available in specific dirs
         '''
         missing = []
-        targets = targets if targets else self.contrail_pkgs.keys()
-        targets = list(set(targets) - set(self.get_as_list(skips))) if skips \
-                            else self.get_as_list(targets)
+        targets = targets or self.contrail_pkgs.keys()
+        skips = self.get_as_list(skips)
+        targets = self.get_as_list(targets)
+
+        if skips is not None and targets != skips:
+            targets = list(set(targets) - set(skips))
         for each in targets:
             if not self.contrail_pkgs.get(each, None):
                 log.warn('Package (%s) is not defined in config...'
@@ -406,6 +409,10 @@ class BasePackager(Utils):
             log.warn('Final package (%s) info is not specified'
                      ' in config file' % self.meta_pkg)
             log.warn('Skipping make %s' % self.meta_pkg)
+            return
+        if not pkginfo['target']:
+            log.warn('Final package (%s) info has an empty'
+                     ' target' % self.meta_pkg)
             return
         tgz_name = os.path.join(self.store,
                                 '%s_%s-%s-%s.tgz' %(self.meta_pkg,

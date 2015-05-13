@@ -392,8 +392,11 @@ class Utils(object):
             package data structure to given destination directories
         '''
         targets = targets or self.contrail_pkgs.keys()
-        targets = list(set(targets) - set(self.get_as_list(skips))) if skips \
-                            else self.get_as_list(targets)
+        skips = self.get_as_list(skips)
+        targets = self.get_as_list(targets)
+
+        if skips is not None and targets != skips:
+            targets = list(set(targets) - set(skips))
         if destdirs is not None:
             destdirs = self.get_as_list(destdirs)
         if extra_dirs is not None:

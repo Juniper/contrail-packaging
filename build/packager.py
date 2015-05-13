@@ -214,6 +214,14 @@ class PackagerArgParser(Utils):
                              action='store',
                              default='from sandbox/controller/src/base/version.info',
                              help='Specify GIT branch name')
+        aparser.add_argument('-p', '--package-types',
+                             action='store',
+                             default=None,
+                             nargs='+',
+                             help='One or List of package types which ' \
+                                  'packager has to build\n' \
+                                  'Multiple package types can be provided like \n' \
+                                  '--package-types <type1> <type2> ... <typeN>')
         aparser.add_argument('--store-dir', '-s',
                              action='store',
                              default='sandbox/build/',
