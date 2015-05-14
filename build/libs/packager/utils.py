@@ -144,7 +144,7 @@ class Utils(object):
         
     @staticmethod
     def get_as_list(elm):
-        return [elm] if type(elm) is str else elm
+        return [elm] if type(elm) is str and elm else elm
 
     @staticmethod
     def str_to_list(tstr, force=False):
@@ -392,8 +392,18 @@ class Utils(object):
             package data structure to given destination directories
         '''
         targets = targets or self.contrail_pkgs.keys()
-        targets = list(set(targets) - set(self.get_as_list(skips))) if skips \
-                            else self.get_as_list(targets)
+        skips = self.get_as_list(skips)
+        targets = self.get_as_list(targets)
+        if skips and targets:
+            targets = list(set(targets) - set(skips))
+
+        # Handle virtual targets
+        # Virtual targets wont have targets but it may have
+        # built packages to include in its tgz
+        if not targets and len(self.contrail_pkgs) != 0 and \
+           not self.contrail_pkgs[self.package_type]['target']:
+            targets = self.contrail_pkgs.keys()
+            
         if destdirs is not None:
             destdirs = self.get_as_list(destdirs)
         if extra_dirs is not None:
