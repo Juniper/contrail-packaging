@@ -1,4 +1,5 @@
 %define         _distropkgdir tools/packaging/common/control_files
+%define  _nodemgr_config controller/src/nodemgr
 
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
@@ -36,11 +37,13 @@ Contrail Package Requirements for Contrail Database
 pushd %{_builddir}/..
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
 install -D -m 755 %{_distropkgdir}/contrail-database-nodemgr.conf %{buildroot}/etc/contrail/contrail-database-nodemgr.conf
+install -D -m 755 %{_nodemgr_config}/contrail-database-nodemgr.initd.supervisord %{buildroot}/etc/init.d/contrail-database-nodemgr
 popd
 
 %files
 %{_initddir}
 /etc/contrail/contrail-database-nodemgr.conf
+/etc/init.d/contrail-database-nodemgr
 
 %changelog
 * Tue Aug  6 2013 <ndramesh@juniper.net>

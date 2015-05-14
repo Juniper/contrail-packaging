@@ -1,5 +1,6 @@
 %define         _distropkgdir tools/packaging/common/control_files
 %define         _distrothirdpartydir distro/third_party
+%define         _nodemgr_config controller/src/nodemgr
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -79,6 +80,8 @@ install -D -m 755 %{_distropkgdir}/supervisord_support_service.conf %{buildroot}
 install -D -m 755 %{_distropkgdir}/rabbitmq-server.initd.supervisord %{buildroot}%{_initddir}/rabbitmq-server.initd.supervisord
 install -p -m 755 %{_distropkgdir}/rabbitmq-server.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service_files/rabbitmq-server.ini
 install -D -m 755 %{_distropkgdir}/contrail-config-nodemgr.conf %{buildroot}/etc/contrail/contrail-config-nodemgr.conf
+
+install -D -m 755 %{_nodemgr_config}/contrail-config-nodemgr.initd.supervisord %{buildroot}/etc/init.d/contrail-config-nodemgr
 pushd %{_builddir}
 install -D -m 755 src/config/schema-transformer/ifmap_view.py %{buildroot}%{_bindir}/ifmap_view.py
 #install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py
@@ -111,6 +114,7 @@ popd
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-nodemgr-config.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_support_service_files/rabbitmq-server.ini
 /etc/contrail/contrail-config-nodemgr.conf
+/etc/init.d/contrail-config-nodemgr
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then

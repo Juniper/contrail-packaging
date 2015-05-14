@@ -19,6 +19,7 @@ export _initddir := /etc/init.d
 export _initdir := /etc/init
 export _sysconfdir := /etc
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
+export _nodemgr_config := $(SB_TOP)/controller/src/nodemgr
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -46,6 +47,7 @@ override_dh_auto_install:
 	# install supervisord ini, upstart, conf and rules files
 	install -p -m 755 $(_src_config)/contrail-nodemgr-analytics.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-nodemgr-analytics.ini
 	install -p -m 755 $(_src_config)/contrail-analytics-nodemgr.conf $(buildroot)/$(_sysconfdir)/contrail/contrail-analytics-nodemgr.conf
+	install -p -m 755 $(_nodemgr_config)/contrail-analytics-nodemgr.initd.supervisord $(buildroot)$(_initddir)/contrail-analytics-nodemgr
 
 override_dh_usrlocal:	
 
