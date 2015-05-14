@@ -37,6 +37,7 @@ Source1: supervisord_contrail_database.initd
 Source2: supervisord_database.conf
 Source3: contrail-database.initd
 Source4: kafka.initd
+Source5: contrail-database-nodemgr.initd
 
 %description
 Contrail Database package
@@ -121,6 +122,7 @@ install -D -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/supervisor-d
 install -D -m 755 %{SOURCE2} %{buildroot}%{_sysconfdir}/contrail/supervisord_database.conf
 install -D -m 755 %{SOURCE3} %{buildroot}%{_sysconfdir}/rc.d/init.d/contrail-database
 install -D -m 755 %{SOURCE4} %{buildroot}%{_sysconfdir}/rc.d/init.d/kafka
+install -D -m 755 %{SOURCE5} %{buildroot}%{_sysconfdir}/rc.d/init.d/contrail-database-nodemgr
 
 
 pushd %{buildroot}
@@ -190,6 +192,7 @@ fi
 %{_sysconfdir}/rc.d/init.d/kafka
 %{_sysconfdir}/rc.d/init.d/supervisor-database
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_database.conf
+%{_sysconfdir}/rc.d/init.d/contrail-database-nodemgr
 
 %changelog
 * Wed Dec 12 2012 Pedro Marques <roque@build02> - 
