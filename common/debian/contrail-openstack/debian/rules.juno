@@ -62,6 +62,7 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/cinder-api.initd.supervisord $(buildroot)$(_initddir)/cinder-api.initd.supervisord
 	install -p -m 755 $(_src_config)/cinder-scheduler.initd.supervisord $(buildroot)$(_initddir)/cinder-scheduler.initd.supervisord
 	install -p -m 755 $(_src_config)/heat-api.initd.supervisord $(buildroot)$(_initddir)/heat-api.initd.supervisord
+	install -p -m 755 $(_src_config)/heat-api-cfn.initd.supervisord $(buildroot)$(_initddir)/heat-api-cfn.initd.supervisord
 	install -p -m 755 $(_src_config)/heat-engine.initd.supervisord $(buildroot)$(_initddir)/heat-engine.initd.supervisord
 	# Install supervisord config files
 	install -p -m 755 $(_src_config)/keystone.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/keystone.ini
@@ -77,6 +78,7 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/nova-objectstore.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-objectstore.ini
 	install -p -m 755 $(_src_config)/nova-novncproxy.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-novncproxy.ini
 	install -p -m 755 $(_src_config)/heat-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/heat-api.ini
+	install -p -m 755 $(_src_config)/heat-api-cfn.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/heat-api-cfn.ini
 	install -p -m 755 $(_src_config)/heat-engine.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/heat-engine.ini	
 
 override_dh_usrlocal:	
