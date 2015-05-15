@@ -56,6 +56,7 @@ class BasePackager(Utils):
         self.default_targets       = []
         self.pkglist_file          = ''
         self.meta_pkg              = ''
+        self.package_type          = ''
         self.packager_dir          = os.getcwd()
         self.base_pkgs             = {}
         self.depends_pkgs          = {}
@@ -82,10 +83,12 @@ class BasePackager(Utils):
                 sub_package_types = pkgs_dict[pkgtype][pkgtype]['sub_package_type']
                 sub_package_types = self.get_as_list(sub_package_types)
                 for sub_type in sub_package_types:
-                    # move sub package type before current package type
-                    new_pkgtypes.remove(sub_type)
+                    sub_index = new_pkgtypes.index(sub_type)
                     pkg_index = new_pkgtypes.index(pkgtype)
-                    new_pkgtypes.insert(pkg_index, sub_type)
+                    # move sub package type before current package type
+                    if sub_index > pkg_index:
+                        new_pkgtypes.remove(sub_type)
+                        new_pkgtypes.insert(pkg_index, sub_type)
         return new_pkgtypes
 
     def ks_build(self):
@@ -123,22 +126,25 @@ class BasePackager(Utils):
         self.create_dir(self.artifacts_extra_dir)
 
         for pkgtype in pkgtypes:
+            self.package_type = pkgtype
+            self.meta_pkg = pkgtype
+            self.sub_pkg_types = []
+            log.info('Executing Build for Package Type (%s)' % pkgtype)
             try:
                 self.base_pkgs, self.depends_pkgs = {}, {}
                 self.contrail_pkgs = {}
                 self.targets = []
                 self.repo_dir = os.path.join(self.store, pkgtype)
-                if pkgtype in self.contrail_pkgs_dict.keys():
-                    self.contrail_pkgs = self.contrail_pkgs_dict[pkgtype]
-                self.meta_pkg = pkgtype
-                self.pkg_tgz_name = '%s_%s-%s-%s.tgz' % (pkgtype,
+                if self.package_type in self.contrail_pkgs_dict.keys():
+                    self.contrail_pkgs = self.contrail_pkgs_dict[self.package_type]
+                self.pkg_tgz_name = '%s_%s-%s-%s.tgz' % (self.package_type,
                                     self.branch, self.id, self.sku)
                 self.pkglist_file = os.path.join(self.store_log_dir,
                                       '%s_%s_%s_list.txt' % (
-                                      self.meta_pkg, self.id, self.pkg_type))
+                                      self.package_type, self.id, self.pkg_type))
                 self.pkglist_thirdparty = os.path.join(self.store_log_dir,
                                           '%s_%s_%s_thirdparty.txt' % (
-                                          self.meta_pkg, self.id,
+                                          self.package_type, self.id,
                                           self.pkg_type))
                 self.default_targets = filter(lambda pkg: pkg.endswith('-default-target'),
                                           self.contrail_pkgs.keys())
@@ -267,9 +273,19 @@ class BasePackager(Utils):
             and available in specific dirs
         '''
         missing = []
-        targets = targets if targets else self.contrail_pkgs.keys()
-        targets = list(set(targets) - set(self.get_as_list(skips))) if skips \
-                            else self.get_as_list(targets)
+        targets = targets or self.contrail_pkgs.keys()
+        skips = self.get_as_list(skips)
+        targets = self.get_as_list(targets)
+        if skips and targets:
+            targets = list(set(targets) - set(skips))
+
+        # Handle virtual targets
+        # Virtual targets wont have targets but it may have
+        # built packages to include in its tgz
+        if not targets and len(self.contrail_pkgs) != 0 and \
+           not self.contrail_pkgs[self.package_type]['target']:
+            targets = self.contrail_pkgs.keys()
+
         for each in targets:
             if not self.contrail_pkgs.get(each, None):
                 log.warn('Package (%s) is not defined in config...'
@@ -324,7 +340,7 @@ class BasePackager(Utils):
     def create_log(self):
         filelist = []
         filelist_file = os.path.join(self.store_log_dir,
-                                     '%s_file_list.txt' % self.meta_pkg)
+                                     '%s_file_list.txt' % self.package_type)
         for target in self.contrail_pkgs.keys():
             packages = self.contrail_pkgs[target]['pkgs']
             packages = [packages] if type(packages) is str else packages
@@ -372,16 +388,17 @@ class BasePackager(Utils):
 
     def add_sub_pkgs_tgz(self):
         '''Add sub package type TGZ to its parent repo dir'''
+        missing = []
         if not self.sub_pkg_types:
             log.warn('No Sub Package type defined for this'
-                     ' package type (%s)' % self.meta_pkg)
+                     ' package type (%s)' % self.package_type)
             return
 
-        pkginfo = self.contrail_pkgs.get(self.meta_pkg, None)
+        pkginfo = self.contrail_pkgs.get(self.package_type, None)
         if not pkginfo:
             log.warn('Sub Package type cant be identified as'
-                     ' package (%s) info is not specified'
-                     ' in config file' % self.meta_pkg)
+                     ' a target for package type (%s) info is not specified'
+                     ' in config file' % self.package_type)
             return
         if not os.access(self.repo_dir, os.W_OK):
             raise RuntimeError('Unable to copy sub package tgz'
@@ -395,7 +412,13 @@ class BasePackager(Utils):
             sub_pkg_tgz.remove(sub_pkg_tgz[0])
             sub_pkg_tgz = sub_type + '_' + sub_pkg_tgz[0]
             tgzfiles = self.get_file_list(self.store, sub_pkg_tgz, False)
-            self.copyfiles(tgzfiles, self.repo_dir)
+            if len(tgzfiles) != 0:
+                self.copyfiles(tgzfiles, self.repo_dir)
+            else:
+                log.warn('Missing Sub packages TGZ File (%s)' % sub_pkg_tgz)
+                missing.append(sub_pkg_tgz)
+        if len(missing) != 0:
+            raise RuntimeError('Missing Sub Package TGZ files: \n%s' % "\n".join(missing))
 
     def create_contrail_pkg(self, *pkgs):
         ''' make meta packages
@@ -407,12 +430,14 @@ class BasePackager(Utils):
                      ' in config file' % self.meta_pkg)
             log.warn('Skipping make %s' % self.meta_pkg)
             return
-        tgz_name = os.path.join(self.store,
-                                '%s_%s-%s-%s.tgz' %(self.meta_pkg,
-                                self.branch, self.id, self.sku))
+        if not pkginfo['target']:
+            log.warn('Final package (%s) info has an empty'
+                     ' target' % self.meta_pkg)
+            return
         try:
+            tgz_file = os.path.join(self.store, self.pkg_tgz_name)
             self.exec_cmd('make CONTRAIL_SKU=%s FILE_LIST=%s TAG=%s %s' %(
-                           self.sku, tgz_name, self.id,
+                           self.sku, tgz_file, self.id,
                            pkginfo['target']), pkginfo['makeloc'])
         except:
             raise MakeError(sys.exc_info()[1])
