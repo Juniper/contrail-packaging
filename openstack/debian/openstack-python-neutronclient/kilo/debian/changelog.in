@@ -1,14 +1,31 @@
-python-neutronclient (1:2.3.8-0ubuntu1~cloud0.2contrail) trusty-juno; urgency=medium
+python-neutronclient (1:2.3.11-0ubuntu1~cloud0.2contrail) trusty-kilo; urgency=medium
 
   * Added 2contrail for contrail pacakge
 
- -- -- Atul Moghe <amoghe@juniper.net>  Thue, 7 Oct 2014 16:33:40 -0400
+ -- -- Atul Moghe <amoghe@juniper.net>  Tue, 12 May 2015 16:33:40 -0400
 
-python-neutronclient (1:2.3.8-0ubuntu1~cloud0) trusty-juno; urgency=medium
+python-neutronclient (1:2.3.11-0ubuntu1~cloud0) trusty-kilo; urgency=medium
 
   * New upstream release for the Ubuntu Cloud Archive.
 
- -- Openstack Ubuntu Testing Bot <openstack-testing-bot@ubuntu.com>  Fri, 19 Sep 2014 03:10:30 -0400
+ -- Openstack Ubuntu Testing Bot <openstack-testing-bot@ubuntu.com>  Thu, 19 Mar 2015 11:12:57 +0000
+
+python-neutronclient (1:2.3.11-0ubuntu1) vivid; urgency=medium
+
+  * New upstream release. 
+  * debian/control: Update dependencies.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Thu, 12 Mar 2015 11:22:08 -0400
+
+python-neutronclient (1:2.3.9-0ubuntu1) vivid; urgency=medium
+
+  * New upstream release.
+  * Open up for vivid.
+  * debian/control: 
+    - Update bzr branches. 
+    - Add python-requests-mock as a build dependency.
+
+ -- Chuck Short <zulcss@ubuntu.com>  Wed, 12 Nov 2014 10:00:53 -0500
 
 python-neutronclient (1:2.3.8-0ubuntu1) utopic; urgency=medium
 
