@@ -283,13 +283,10 @@ else
 CEILOMETER_PLUGIN =
 endif
 
-# Execute contrail-nova-networkapi only for centos-juno
+# Execute contrail-nova-networkapi only for juno
 ifeq ($(CONTRAIL_SKU), juno)
 CONTRAIL_NOVA_NETWORKAPI = contrail-nova-networkapi
 else
-CONTRAIL_NOVA_NETWORKAPI =
-endif
-ifeq ($(DISTRO),Red Hat)
 CONTRAIL_NOVA_NETWORKAPI =
 endif
 
