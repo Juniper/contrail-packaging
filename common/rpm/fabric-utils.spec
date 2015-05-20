@@ -31,6 +31,8 @@ Contrail Fabric Utilities for cluster management
 
 BuildRequires:  systemd-units
 Requires: python-yaml
+Requires: python-netaddr
+Requires: python-pip
 
 %prep
 ## if [ ! -d contrail-fabric-utils]; then
