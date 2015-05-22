@@ -37,6 +37,11 @@ ifeq ($(CONTRAIL_SKU),icehouse)
         CONTRAIL_VRDPDK_KMOD := contrail-dpdk-kernel-modules-dkms-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
     endif
+    ifeq ($(SERIES),trusty)
+        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
+        CONTRAIL_VRDPDK_KMOD := contrail-dpdk-kernel-modules-dkms-deb
+        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
+    endif
 endif
 
 ifeq ($(CONTRAIL_SKU),havana)
