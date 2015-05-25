@@ -34,7 +34,7 @@ URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
 Requires:	redis
-Requires:	nodejs >= 0.8.15-1%{?dist}
+Requires:	nodejs >= 0.8.15-1
 Requires:	supervisor
 
 Obsoletes:      contrail-webui
