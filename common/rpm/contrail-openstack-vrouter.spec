@@ -1,5 +1,5 @@
 %define         _distropkgdir tools/packaging/common/control_files
-%define         _nodemgr_config controller/src/nodemgr
+%define         _nodemgr_config controller/src/nodemgr/vrouter_nodemgr
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -36,7 +36,7 @@ Contrail Package Requirements for Contrail Openstack vRouter
 install -d -m 755 %{buildroot}/etc/contrail
 install -d -m 755 %{buildroot}/etc/init.d
 pushd %{_builddir}/..
-install -D -m 755 %{_distropkgdir}/contrail-vrouter-nodemgr.conf %{buildroot}/etc/contrail/contrail-vrouter-nodemgr.conf
+install -D -m 755 %{_nodemgr_config}/contrail-vrouter-nodemgr.conf %{buildroot}/etc/contrail/contrail-vrouter-nodemgr.conf
 install -D -m 755 %{_nodemgr_config}/contrail-vrouter-nodemgr.initd.supervisord %{buildroot}/etc/init.d/contrail-vrouter-nodemgr
 
 %post
