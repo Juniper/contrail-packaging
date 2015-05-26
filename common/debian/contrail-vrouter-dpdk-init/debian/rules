@@ -12,6 +12,7 @@ export _confsrcdir := ${SB_TOP}/tools/packaging/common/control_files
 
 export _supervisorconf := /etc/contrail/supervisord_vrouter_files
 export _opt_bin := /opt/contrail/bin
+export _nodemgr_config := $(SB_TOP)/controller/src/nodemgr/vrouter_nodemgr
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -35,7 +36,7 @@ override_dh_auto_install:
 	install -d -m 755 ${buildroot}${_supervisorconf}
 	install -d -m 755 ${buildroot}/var/log/contrail
 	install -p -m 644 $(_confsrcdir)/core-pattern.upstart ${buildroot}/etc/init/core-pattern.conf
-	install -p -m 644 $(_confsrcdir)/contrail-nodemgr-vrouter.ini ${buildroot}${_supervisorconf}
+	install -p -m 644 $(_nodemgr_config)/contrail-nodemgr-vrouter.ini ${buildroot}${_supervisorconf}
 	install -p -m 644 $(_confsrcdir)/contrail-vrouter-dpdk.ini ${buildroot}${_supervisorconf}
 	install -p -m 644 $(_confsrcdir)/contrail-vrouter.rules ${buildroot}${_supervisorconf}
 	install -p -m 755 $(_confsrcdir)/vrouter-dpdk-pre-start.sh ${buildroot}${_opt_bin}/vrouter-pre-start.sh

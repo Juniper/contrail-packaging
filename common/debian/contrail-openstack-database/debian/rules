@@ -19,7 +19,7 @@ export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 export _bindir := /usr/bin
 export _datadir := /usr/share
 export _sysconfdir := /etc
-export _nodemgr_config := $(SB_TOP)/controller/src/nodemgr/
+export _nodemgr_config := $(SB_TOP)/controller/src/nodemgr/database_nodemgr
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -49,8 +49,8 @@ override_dh_auto_install:
 	install -D -m 755 $(_nodemgr_config)/contrail-database-nodemgr.initd.supervisord $(buildroot)$(_sysconfdir)/init.d/contrail-database-nodemgr
 	install -D -m 755 $(_src_config)/kafka.initd $(buildroot)$(_sysconfdir)/init.d/kafka
 	install -D -m 755 $(_src_config)/contrail-database.rules $(buildroot)$(_sysconfdir)/contrail/supervisord_database_files/contrail-database.rules
-	install -D -m 755 $(_src_config)/contrail-nodemgr-database.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_database_files/contrail-nodemgr-database.ini
-	install -p -m 755 $(_src_config)/contrail-database-nodemgr.conf $(buildroot)$(_sysconfdir)/contrail/contrail-database-nodemgr.conf
+	install -D -m 755 $(_nodemgr_config)/contrail-nodemgr-database.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_database_files/contrail-nodemgr-database.ini
+	install -p -m 755 $(_nodemgr_config)/contrail-database-nodemgr.conf $(buildroot)$(_sysconfdir)/contrail/contrail-database-nodemgr.conf
 	
 override_dh_shlibdeps: 
 

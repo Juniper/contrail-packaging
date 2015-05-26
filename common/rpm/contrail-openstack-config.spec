@@ -1,6 +1,6 @@
 %define         _distropkgdir tools/packaging/common/control_files
 %define         _distrothirdpartydir distro/third_party
-%define         _nodemgr_config controller/src/nodemgr
+%define         _nodemgr_config controller/src/nodemgr/config_nodemgr
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -72,14 +72,14 @@ popd
 pushd %{_builddir}/..
 install -D -m 755 %{_distropkgdir}/ifmap.initd.supervisord %{buildroot}%{_initddir}/ifmap
 install -p -m 755 %{_distropkgdir}/ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
-install -p -m 755 %{_distropkgdir}/contrail-nodemgr-config.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-nodemgr-config.ini
+install -p -m 755 %{_nodemgr_config}/contrail-nodemgr-config.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-nodemgr-config.ini
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service_files
 install -D -m 755 %{_distropkgdir}/supervisor-support-service.initd %{buildroot}%{_initddir}/supervisor-support-service
 install -D -m 755 %{_distropkgdir}/supervisord_support_service.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service.conf
 install -D -m 755 %{_distropkgdir}/rabbitmq-server.initd.supervisord %{buildroot}%{_initddir}/rabbitmq-server.initd.supervisord
 install -p -m 755 %{_distropkgdir}/rabbitmq-server.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service_files/rabbitmq-server.ini
-install -D -m 755 %{_distropkgdir}/contrail-config-nodemgr.conf %{buildroot}/etc/contrail/contrail-config-nodemgr.conf
+install -D -m 755 %{_nodemgr_config}/contrail-config-nodemgr.conf %{buildroot}/etc/contrail/contrail-config-nodemgr.conf
 
 install -D -m 755 %{_nodemgr_config}/contrail-config-nodemgr.initd.supervisord %{buildroot}/etc/init.d/contrail-config-nodemgr
 pushd %{_builddir}

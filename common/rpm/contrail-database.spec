@@ -4,6 +4,7 @@
 %define  _venvtr       --prefix=%{_venv_root}
 %define  _pyver        %( %{__python} -c "import sys; print '%s.%s' % sys.version_info[0:2]" )
 %define  _pysitepkg    /lib/python%{_pyver}/site-packages
+%define  _nodemgr_config controller/src/nodemgr/database_nodemgr
 
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
@@ -108,9 +109,9 @@ popd
 install -d -m 755 %{buildroot}%{_supervisordir}
 install -d -m 755 %{buildroot}%{_initddir}
 pushd %{_builddir}/..
-install -D -m 755 %{_distropkgdir}/contrail-nodemgr-database.ini %{buildroot}%{_supervisordir}/contrail-nodemgr-database.ini
+install -D -m 755 %{_nodemgr_config}/contrail-nodemgr-database.ini %{buildroot}%{_supervisordir}/contrail-nodemgr-database.ini
 install -D -m 755 %{_distropkgdir}/contrail-database.rules %{buildroot}%{_supervisordir}/contrail-database.rules
-install -D -m 755 %{_distropkgdir}/contrail-database-nodemgr.conf %{buildroot}/etc/contrail/contrail-database-nodemgr.conf
+install -D -m 755 %{_nodemgr_config}/contrail-database-nodemgr.conf %{buildroot}/etc/contrail/contrail-database-nodemgr.conf
 popd
 
 %if 0%{?rhel}
