@@ -41,7 +41,6 @@ Requires: python-importlib
 %endif
 Requires: euca2ools >= 1.0-2contrail
 Requires: m2crypto
-Requires: openstack-nova
 Requires: java-1.7.0-openjdk
 Requires: haproxy
 Requires: keepalived

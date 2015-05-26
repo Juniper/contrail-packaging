@@ -35,7 +35,6 @@ Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: python-zope-interface
 Requires: euca2ools
 Requires: m2crypto
-Requires: openstack-nova
 Requires: java-1.7.0-openjdk
 Requires: haproxy
 Requires: keepalived
