@@ -3,7 +3,7 @@
 %define         _contrailutils /opt/contrail/utils
 %define         _supervisordir /etc/contrail/supervisord_analytics_files
 %define         _distropkgdir tools/packaging/common/control_files
-%define         _nodemgr_config controller/src/nodemgr
+%define         _nodemgr_config controller/src/nodemgr/analytics_nodemgr
 
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
@@ -50,8 +50,8 @@ install -d -m 755 %{buildroot}%{_initddir}
 #install wrapper scripts for supervisord
 pushd %{_builddir}/..
 #install .ini files for supervisord
-install -p -m 755 %{_distropkgdir}/contrail-nodemgr-analytics.ini %{buildroot}%{_supervisordir}/contrail-nodemgr-analytics.ini
-install -D -m 755 %{_distropkgdir}/contrail-analytics-nodemgr.conf %{buildroot}/etc/contrail/contrail-analytics-nodemgr.conf
+install -p -m 755 %{_nodemgr_config}/contrail-analytics-nodemgr.ini %{buildroot}%{_supervisordir}/contrail-analytics-nodemgr.ini
+install -D -m 755 %{_nodemgr_config}/contrail-analytics-nodemgr.conf %{buildroot}/etc/contrail/contrail-analytics-nodemgr.conf
 install -D -m 755 %{_nodemgr_config}/contrail-analytics-nodemgr.initd.supervisord %{buildroot}/etc/init.d/contrail-analytics-nodemgr
 
 for f in $(find %{buildroot} -type f -exec grep -l '^#!%{__python}' {} \; ); do
@@ -63,7 +63,7 @@ done
 
 %files
 %defattr(-, root, root)
-%config(noreplace) %{_supervisordir}/contrail-nodemgr-analytics.ini
+%config(noreplace) %{_supervisordir}/contrail-analytics-nodemgr.ini
 /etc/contrail/contrail-analytics-nodemgr.conf
 /etc/init.d/contrail-analytics-nodemgr
 
