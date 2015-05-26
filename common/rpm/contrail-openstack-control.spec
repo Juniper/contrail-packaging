@@ -2,6 +2,7 @@
 %define         _contrailcontrol /opt/contrail/control-node
 %define         _supervisordir /etc/contrail/supervisord_control_files
 %define         _distropkgdir tools/packaging/common/control_files
+%define         _nodemgr_config controller/src/nodemgr
 
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
@@ -41,11 +42,13 @@ Contrail Package Requirements for Control Node
 install -d -m 755 %{buildroot}%{_contrailetc}
 install -d -m 755 %{buildroot}%{_contrailcontrol}
 install -d -m 755 %{buildroot}%{_supervisordir}
+install -d -m 755 %{buildroot}/etc/init.d
 
 pushd %{_builddir}/..
 
 install -p -m 755 %{_distropkgdir}/contrail-nodemgr-control.ini %{buildroot}%{_supervisordir}/contrail-nodemgr-control.ini
 install -D -m 755 %{_distropkgdir}/contrail-control-nodemgr.conf %{buildroot}/etc/contrail/contrail-control-nodemgr.conf
+install -D -m 755 %{_nodemgr_config}/contrail-control-nodemgr.initd.supervisord %{buildroot}/etc/init.d/contrail-control-nodemgr
 
 %files
 %defattr(-,root,root,-)
@@ -53,6 +56,7 @@ install -D -m 755 %{_distropkgdir}/contrail-control-nodemgr.conf %{buildroot}/et
 %defattr(-,contrail,contrail,-)
 %config(noreplace) %{_supervisordir}/contrail-nodemgr-control.ini
 /etc/contrail/contrail-control-nodemgr.conf
+/etc/init.d/contrail-control-nodemgr
 
 %post
 if [ -x /bin/systemctl ]; then
