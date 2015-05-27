@@ -20,6 +20,12 @@ pre-start script
   if status libvirt-bin; then
     start wait-for-state WAIT_FOR=libvirt-bin WAIT_STATE=running WAITER=nova-compute
   fi
+
+  # Check to see if openvswitch plugin in use by checking
+  # status of cleanup upstart configuration
+  if status neutron-ovs-cleanup; then
+    start wait-for-state WAIT_FOR=neutron-ovs-cleanup WAIT_STATE=running WAITER=nova-compute
+  fi
 end script
 
 exec start-stop-daemon --start --chuid nova --exec /usr/bin/nova-compute -- --config-file=/etc/nova/nova.conf --config-file=/etc/nova/nova-compute.conf
