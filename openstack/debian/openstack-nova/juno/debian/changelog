@@ -1,14 +1,58 @@
-nova (1:2014.2.2-0ubuntu1~cloud0.2contrail) trusty-juno; urgency=medium
+nova (1:2014.2.3-0ubuntu1~cloud0.2contrail) trusty-juno; urgency=medium
 
   * Added 2contrail in contrail pacakge.
 
- -- Atul Moge <amoghe@juniper.net>  Thu, 16 Apr 2015 12:56:15 -0300
+ -- Atul Moge <amoghe@juniper.net>  Tue, 26 May 2015 12:56:15 -0300
 
-nova (1:2014.2.2-0ubuntu1~cloud0) trusty-juno; urgency=medium
+nova (1:2014.2.3-0ubuntu1~cloud0) trusty-juno; urgency=medium
 
   * New upstream release for the Ubuntu Cloud Archive.
 
- -- Openstack Ubuntu Testing Bot <openstack-testing-bot@ubuntu.com>  Fri, 20 Feb 2015 22:25:05 +0000
+ -- Openstack Ubuntu Testing Bot <openstack-testing-bot@ubuntu.com>  Mon, 11 May 2015 08:49:15 +0000
+
+nova (1:2014.2.3-0ubuntu1) utopic; urgency=medium
+
+  * Resynchronize with stable/juno (4fdd83f) (LP: #1443429)
+    - [af85403] Fixes Hyper-V: configdrive is not migrated to destination
+    - [db827c7] Handle nova-network tuple format in legacy RPC calls
+    - [85d335d] fix the websocket_bad_token test
+    - [b29c8e0] Changed target version of NovaCompute object during Service backport
+    - [7c4be65] libvirt: partial fix for live-migration with config drive
+    - [5a0711d] libvirt: Fixes live migration for volume backed instances
+    - [6f479a4] Don't create block device mappings in the API cell
+    - [34f029e] libvirt: make default value of numa cell memory to 0 when not defined
+    - [b4e3e87] Compute: catch more specific exception for _get_instance_nw_info
+    - [676ba7b] Websocket Proxy should verify Origin header
+    - [8c377b2] Fix kwargs['instance'] KeyError in @reverts_task_state decorator
+    - [6c86f8e] Stop stacktracing in _get_filter_uuid
+    - [a761c61] VMware: prevent exception with migrate_disk_and_power_off
+    - [33dcffc] Handle MessagingException in unshelving instance
+    - [f9bcf74] Handle 404 in os-baremetal-nodes GET
+    - [b904b0b] Compute: Catch binding failed exception while init host
+    - [b3f80bd] Make tests use sha256 as openssl default digest algorithm
+    - [86efb1d] Transform IPAddress to string when creating port
+    - [40b19d9] Fixes Hyper-V configdrive network injection issue
+    - [ae0c898] Make code compatible with v4 auth and workaround webob bug.
+    - [de1b33d] Fixes interfaces template identification issue
+    - [42cae28] libvirt: Make sure volumes are well detected during block migration
+    - [acb0cc0] Hyper-V: Fix retrieving console logs on live migration
+    - [7a30e35] Use reasonable timeout for rpc service_update()
+    - [7da8a1c] boot instance with same net-id for multiple --nic
+    - [fd36262] Fixes Hyper-V should log a clear error message
+    - [ae47935] Allow instances to attach to shared external nets
+    - [e7828d9] Fix live migration RPC compatibility with older versions
+    - [4ea3c18] Support macvtap for vif_type being hw_veb
+    - [acefbcb] VMware: fix exception when multiple compute nodes are running
+  * debian/patches/disable-websockify-tests.patch: Refreshed
+
+ -- Chuck Short <zulcss@ubuntu.com>  Tue, 21 Apr 2015 09:28:44 -0400
+
+nova (1:2014.2.2-0ubuntu2) utopic; urgency=medium
+
+  [ Edward Hope-Morley ]
+  * Fixed race between nova-compute and neutron-ovs-cleanup (LP: #1420572)
+
+ -- Corey Bryant <corey.bryant@canonical.com>  Mon, 30 Mar 2015 09:43:24 -0400
 
 nova (1:2014.2.2-0ubuntu1) utopic; urgency=medium
 
