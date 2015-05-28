@@ -125,6 +125,21 @@ _dpdk_conf_read() {
         echo "$(date): Error reading ${AGENT_CONF}: no vhost device defined"
         exit 1
     fi
+
+    ## check for VLANs
+    _vlan_file="/proc/net/vlan/${DPDK_PHY}"
+    DPDK_VLAN_IF=""
+    DPDK_VLAN_ID=""
+    DPDK_VLAN_DEV=""
+    if [ -f "${_vlan_file}" ]; then
+        DPDK_VLAN_IF="${DPDK_PHY}"
+        DPDK_VLAN_ID=`cat ${_vlan_file} | grep "VID:" | head -1 | awk '{print $3}'`
+        DPDK_VLAN_DEV=`cat ${_vlan_file} | grep "Device:" | head -1 | awk '{print $2}'`
+        if [ -n "${DPDK_VLAN_DEV}" ]; then
+            ## use raw device and pass VLAN ID as a parameter
+            DPDK_PHY="${DPDK_VLAN_DEV}"
+        fi
+    fi
 }
 
 ##
@@ -141,18 +156,19 @@ _is_vrouter_dpdk_running() {
 ## Start vRouter/DPDK
 ##
 vrouter_dpdk_start() {
+    echo "$(date): Starting vRouter/DPDK..."
+
     _dpdk_conf_read
 
     # remove rte configuration file if vRouter has crashed
     rm -f ${DPDK_RTE_CONFIG}
 
-    echo "$(date): Starting vRouter/DPDK..."
     service ${VROUTER_SERVICE} start
     loops=0
     # wait for vRouter/DPDK to start
     while ! _is_vrouter_dpdk_running
     do
-        sleep 1
+        sleep 5
         loops=$(($loops + 1))
         if [ $loops -ge 60 ]; then
             echo "$(date): Error starting ${VROUTER_SERVICE} service: vRouter/DPDK is not running"
@@ -164,7 +180,7 @@ vrouter_dpdk_start() {
     loops=0
     while [ ! -L /sys/class/net/${DPDK_VHOST} ]
     do
-        sleep 1
+        sleep 2
         loops=$(($loops + 1))
         if [ $loops -ge 10 ]; then
             echo "$(date): Error Agent configuring ${DPDK_VHOST}: interface does not exist"
@@ -205,6 +221,7 @@ vrouter_dpdk_start() {
             echo "$(date): Error adding ${DPDK_VHOST} interface"
         fi
     fi
+    echo "$(date): Done starting vRouter/DPDK."
     return 0
 }
 
@@ -222,46 +239,50 @@ _dpdk_system_bond_info_collect() {
 
     _dpdk_conf_read
 
-    BOND_DIR="/sys/class/net/${DPDK_PHY}/bonding"
+    bond_dir="/sys/class/net/${DPDK_PHY}/bonding"
     DPDK_BOND_MODE=""
     DPDK_BOND_POLICY=""
     DPDK_BOND_SLAVES=""
-    if [ -d ${BOND_DIR} ]; then
-        DPDK_BOND_MODE=`cat ${BOND_DIR}/mode | awk '{print $2}'`
-        DPDK_BOND_POLICY=`cat ${BOND_DIR}/xmit_hash_policy | awk '{print $2}'`
-        DPDK_BOND_SLAVES=`cat ${BOND_DIR}/slaves | tr ' ' '\n' | sort | tr '\n' ' '`
+    if [ -d ${bond_dir} ]; then
+        DPDK_BOND_MODE=`cat ${bond_dir}/mode | awk '{print $2}'`
+        DPDK_BOND_POLICY=`cat ${bond_dir}/xmit_hash_policy | awk '{print $1}'`
+        DPDK_BOND_SLAVES=`cat ${bond_dir}/slaves | tr ' ' '\n' | sort | tr '\n' ' '`
         DPDK_BOND_SLAVES="${DPDK_BOND_SLAVES% }"
     else
+        # put the physical interface into the list, so we can use the
+        # same code to bind/unbind the interface
         DPDK_BOND_SLAVES="${DPDK_PHY}"
     fi
 
     ## Map Linux values to DPDK
     case "${DPDK_BOND_POLICY}" in
-        "0") DPDK_BOND_POLICY="l2";;
-        "1") DPDK_BOND_POLICY="l34";;
+        "layer2") DPDK_BOND_POLICY="l2";;
+        "layer3+4") DPDK_BOND_POLICY="l34";;
+        "layer2+3") DPDK_BOND_POLICY="l23";;
+        # DPDK 2.0 does not support inner packet hashing
+        "encap2+3") DPDK_BOND_POLICY="l23";;
+        "encap3+4") DPDK_BOND_POLICY="l34";;
     esac
 
     DPDK_BOND_PCIS=""
     DPDK_BOND_NUMA=""
     DPDK_BOND_MAC=""
     ## Bond Members
-    for SLAVE in ${DPDK_BOND_SLAVES}; do
-        SLAVE_DIR="/sys/class/net/${SLAVE}"
+    for slave in ${DPDK_BOND_SLAVES}; do
+        slave_dir="/sys/class/net/${slave}"
 
-        SLAVE_PCI=`readlink ${SLAVE_DIR}/device`
-        SLAVE_PCI=${SLAVE_PCI##*/}
-        SLAVE_NUMA=`cat ${SLAVE_DIR}/device/numa_node`
-        SLAVE_MAC=`cat ${SLAVE_DIR}/address`
-        SLAVE_DRIVER=""
-        if [ -n "${SLAVE_PCI}" ]; then
-            SLAVE_DRIVER=`lspci -vmmks ${SLAVE_PCI} | grep 'Module:' | cut -f 2`
-            DPDK_BOND_PCIS="${DPDK_BOND_PCIS} ${SLAVE_PCI}"
+        slave_pci=`readlink ${slave_dir}/device`
+        slave_pci=${slave_pci##*/}
+        slave_numa=`cat ${slave_dir}/device/numa_node`
+        slave_mac=`cat ${slave_dir}/address`
+        if [ -n "${slave_pci}" ]; then
+            DPDK_BOND_PCIS="${DPDK_BOND_PCIS} ${slave_pci}"
         fi
         if [ -z "${DPDK_BOND_NUMA}" ]; then
-            DPDK_BOND_NUMA="${SLAVE_NUMA}"
+            DPDK_BOND_NUMA="${slave_numa}"
         fi
         if [ -z "${DPDK_BOND_MAC}" ]; then
-            DPDK_BOND_MAC="${SLAVE_MAC}"
+            DPDK_BOND_MAC="${slave_mac}"
         fi
     done
     DPDK_BOND_PCIS="${DPDK_BOND_PCIS# }"
@@ -273,23 +294,37 @@ _dpdk_system_bond_info_collect() {
 _dpdk_vrouter_ini_update() {
     _dpdk_system_bond_info_collect
 
-    DPDK_VDEV=""
+    dpdk_vdev=""
     if [ -n "${DPDK_BOND_MODE}" -a -n "${DPDK_BOND_NUMA}" ]; then
-        echo "${0##*/}: updating ${VROUTER_DPDK_INI}..."
+        echo "${0##*/}: updating bonding configuration in ${VROUTER_DPDK_INI}..."
 
-        DPDK_VDEV="--vdev \"eth_bond_${DPDK_PHY},mode=${DPDK_BOND_MODE}"
-        DPDK_VDEV="${DPDK_VDEV},xmit_policy=${DPDK_BOND_POLICY}"
-        DPDK_VDEV="${DPDK_VDEV},socket_id=${DPDK_BOND_NUMA}"
+        dpdk_vdev="--vdev \"eth_bond_${DPDK_PHY},mode=${DPDK_BOND_MODE}"
+        dpdk_vdev="${dpdk_vdev},xmit_policy=${DPDK_BOND_POLICY}"
+        dpdk_vdev="${dpdk_vdev},socket_id=${DPDK_BOND_NUMA}"
         for SLAVE in ${DPDK_BOND_PCIS}; do
-            DPDK_VDEV="${DPDK_VDEV},slave=${SLAVE}"
+            dpdk_vdev="${dpdk_vdev},slave=${SLAVE}"
         done
-        DPDK_VDEV="${DPDK_VDEV}\""
+        dpdk_vdev="${dpdk_vdev}\""
 
         ## update the ini file
-        sed -ri.bak \
+        sed -ri.bond.bak \
             -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
             -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
-            -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1 ${DPDK_VDEV}/" \
+            -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1 ${dpdk_vdev}/" \
+             ${VROUTER_DPDK_INI}
+    fi
+
+    dpdk_vlan=""
+    if [ -n "${DPDK_VLAN_ID}" ]; then
+        echo "${0##*/}: updating VLAN configuration in ${VROUTER_DPDK_INI}..."
+
+        dpdk_vlan="--vlan \"${DPDK_VLAN_ID}\""
+
+        ## update the ini file
+        sed -ri.vlan.bak \
+            -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan +\"[^"]+\"|--vlan +[^ ]+)(.*) *$/\1\3/' \
+            -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan +\"[^"]+\"|--vlan +[^ ]+)(.*) *$/\1\3/' \
+            -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1 ${dpdk_vlan}/" \
              ${VROUTER_DPDK_INI}
     fi
 }
@@ -299,9 +334,11 @@ _dpdk_vrouter_ini_update() {
 ## The function is used in pre/post start scripts
 ##
 vrouter_dpdk_if_bind() {
+    echo "$(date): Binding interfaces to DPDK drivers..."
+
     _dpdk_conf_read
 
-    if [ ! -s /sys/class/net/${DPDK_PHY}/address ]; then
+    if [ ! -f /sys/class/net/${DPDK_PHY}/address ]; then
         echo "$(date): Error binding physical interface ${DPDK_PHY}: device found"
         ${DPDK_BIND} --status
         return 1
@@ -314,12 +351,14 @@ vrouter_dpdk_if_bind() {
     _dpdk_system_bond_info_collect
     _dpdk_vrouter_ini_update
     # bind physical device(s) to DPDK driver
-    for SLAVE in ${DPDK_BOND_SLAVES}; do
-        echo "Binding device ${SLAVE} to DPDK igb_uio driver..."
-        ${DPDK_BIND} --force --bind=igb_uio ${SLAVE}
+    for slave in ${DPDK_BOND_SLAVES}; do
+        echo "Binding device ${slave} to DPDK igb_uio driver..."
+        ${DPDK_BIND} --force --bind=igb_uio ${slave}
     done
 
     ${DPDK_BIND} --status
+
+    echo "$(date): Done binding interfaces."
 }
 
 ##
@@ -352,14 +391,14 @@ _dpdk_vrouter_ini_bond_info_collect() {
 
     ## Look up a driver name for all the devices
     DPDK_BOND_PCI_NAMES=""
-    for SLAVE_PCI in ${DPDK_BOND_PCIS}; do
-        SLAVE_PCI_NAME=`echo ${SLAVE_PCI} | tr ':.' '_'`
-        if [ -n "${SLAVE_PCI_NAME}" ]; then
-            DPDK_BOND_PCI_NAMES="${DPDK_BOND_PCI_NAMES} ${SLAVE_PCI_NAME}"
+    for slave_pci in ${DPDK_BOND_PCIS}; do
+        slave_pci_name=`echo ${slave_pci} | tr ':.' '_'`
+        if [ -n "${slave_pci_name}" ]; then
+            DPDK_BOND_PCI_NAMES="${DPDK_BOND_PCI_NAMES} ${slave_pci_name}"
         fi
-        SLAVE_DRIVER=`lspci -vmmks ${SLAVE_PCI} | grep 'Module:' | cut -f 2`
-        eval DPDK_BOND_${SLAVE_PCI_NAME}_PCI="${SLAVE_PCI}"
-        eval DPDK_BOND_${SLAVE_PCI_NAME}_DRIVER="${SLAVE_DRIVER}"
+        slave_driver=`lspci -vmmks ${slave_pci} | grep 'Module:' | cut -f 2`
+        eval DPDK_BOND_${slave_pci_name}_PCI="${slave_pci}"
+        eval DPDK_BOND_${slave_pci_name}_DRIVER="${slave_driver}"
     done
     DPDK_BOND_PCI_NAMES="${DPDK_BOND_PCI_NAMES# }"
 }
@@ -369,12 +408,14 @@ _dpdk_vrouter_ini_bond_info_collect() {
 ## The function is used in pre/post start scripts
 ##
 vrouter_dpdk_if_unbind() {
+    echo "$(date): Unbinding interfaces back to system drivers..."
+
     _dpdk_conf_read
     echo "$(date): Waiting for vRouter/DPDK to stop..."
     loops=0
     while _is_vrouter_dpdk_running
     do
-        sleep 1
+        sleep 2
         loops=$(($loops + 1))
         if [ $loops -ge 60 ]; then
             echo "$(date): Error stopping ${VROUTER_SERVICE} service: vRouter/DPDK is still running"
@@ -384,16 +425,18 @@ vrouter_dpdk_if_unbind() {
 
     _dpdk_vrouter_ini_bond_info_collect
 
-    for SLAVE_PCI_NAME in ${DPDK_BOND_PCI_NAMES}; do
-        eval SLAVE_PCI=\${DPDK_BOND_${SLAVE_PCI_NAME}_PCI}
-        eval SLAVE_DRIVER=\${DPDK_BOND_${SLAVE_PCI_NAME}_DRIVER}
+    for slave_pci_name in ${DPDK_BOND_PCI_NAMES}; do
+        eval slave_pci=\${DPDK_BOND_${slave_pci_name}_PCI}
+        eval slave_driver=\${DPDK_BOND_${slave_pci_name}_DRIVER}
 
-        echo "Binding PCI device ${SLAVE_PCI} back to ${SLAVE_DRIVER} driver..."
-        ${DPDK_BIND} --force --bind=${SLAVE_DRIVER} ${SLAVE_PCI}
+        echo "Binding PCI device ${slave_pci} back to ${slave_driver} driver..."
+        ${DPDK_BIND} --force --bind=${slave_driver} ${slave_pci}
     done
 
     ${DPDK_BIND} --status
 
     rmmod rte_kni
     rmmod igb_uio
+
+    echo "$(date): Done unbinding interfaces."
 }
