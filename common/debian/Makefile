@@ -87,7 +87,9 @@ PACKAGES = \
 	$(CONTRAIL_HEAT) \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
+	contrail-vmware-config-deb \
 	contrail-vmware-utils-deb \
+	contrail-vmware-vrouter-deb \
 	contrail-f5-deb \
 	$(CONTRAIL_VRDPDK_KMOD)
 
