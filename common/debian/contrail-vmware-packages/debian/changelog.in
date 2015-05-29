@@ -1,0 +1,6 @@
+contrail-vmware-packages (BUILDTAG) amudha; urgency=low
+
+  [amudha ]
+  * debian/changelog: changelog
+
+ -- amudha <amudha@juniper.net>  Tue, 10 Nov 2015 8:00:11 +0800

@@ -66,11 +66,11 @@ PACKAGES = \
         contrail-vrouter-common-deb \
         $(CONTRAIL_VRDPDK_BIN) \
         $(CONTRAIL_VRDPDK_INIT) \
-	contrail-web-core-deb \
+    contrail-web-core-deb \
 	contrail-web-controller-deb \
 	contrail-web-server-manager-deb \
 	contrail-nodemgr-deb \
-	contrail-setup-deb \
+    contrail-setup-deb \
 	$(CONTRAIL_OPENSTACK) \
 	contrail-openstack-ha-deb \
 	contrail-openstack-analytics-deb \
@@ -87,12 +87,43 @@ PACKAGES = \
 	$(CONTRAIL_HEAT) \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
-	contrail-vmware-utils-deb \
 	contrail-f5-deb \
 	$(CONTRAIL_VRDPDK_KMOD)
 
 all: ${PACKAGES}
-	@echo "Build complete"
+    @echo "Build complete"
+
+PACKAGES_VMWARE = \
+    contrail \
+    ifmap-server \
+    ifmap-python-client \
+    contrail-vrouter-init-deb \
+    contrail-vrouter-common-deb \
+    $(CONTRAIL_VRDPDK_BIN) \
+    $(CONTRAIL_VRDPDK_INIT) \
+    contrail-web-core-deb \
+    contrail-web-controller-deb \
+    contrail-web-server-manager-deb \
+    contrail-nodemgr-deb \
+    contrail-setup-deb \
+    contrail-openstack-ha-deb \
+    contrail-openstack-analytics-deb \
+    contrail-openstack-control-deb \
+    contrail-openstack-database-deb \
+    contrail-openstack-webui-deb \
+    contrail-fabric-utils-deb \
+    contrail-test-deb \
+    libvirt-deb \
+    $(CONTRAIL_HEAT) \
+    $(CEILOMETER_PLUGIN) \
+    contrail-f5-deb \
+    $(CONTRAIL_VRDPDK_KMOD) \
+    contrail-vmware-config-deb \
+    contrail-vmware-utils-deb \
+    contrail-vmware-vrouter-deb
+
+all_vmware: ${PACKAGES_VMWARE}
+    @echo "Build complete"     
 
 server-manager-all: contrail-server-manager-deb \
                     contrail-server-manager-client-deb \
@@ -218,6 +249,15 @@ contrail-thirdparty-packages-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 	@echo "Wrote: ${BUILDDIR}/../contrail-thirdparty-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
+
+contrail-vmware-packages: contrail-vmware-packages-deb
+contrail-vmware-packages-deb:
+     $(eval BUILDDIR=${SB_TOP}/build/debian/contrail-vmware-packages
+     mkdir -p ${BUILDDIR}
+     cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-vmware-packages/debian ${BUILDDIR}
+     (cd ${BUILDDIR}; fakeroot debian/rules clean)
+     (cd ${BUILDDIR}; fakeroot debian/rules binary)
+     @echo "Wrote: ${BUILDDIR}/../contrail-vmware-packages_$(VERSION)~$(CONTRAIL_SKU)_all.deb"
 
 contrail-server-manager-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager)
