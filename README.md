@@ -1,5 +1,6 @@
 contrail-packaging
 ==================
+Testing lp bug repo exceptions
 
 Contrail VNC packaging
 ----------------------
