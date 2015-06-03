@@ -36,13 +36,13 @@ override_dh_auto_install:
 	install -d -m 755 ${buildroot}/var/log/contrail
 	install -p -m 644 $(_confsrcdir)/core-pattern.upstart ${buildroot}/etc/init/core-pattern.conf
 	install -p -m 644 $(_confsrcdir)/contrail-nodemgr-vrouter.ini ${buildroot}${_supervisorconf}
-	install -p -m 644 $(_confsrcdir)/contrail-vrouter-dpdk.ini ${buildroot}${_supervisorconf}
+	install -p -m 644 ./contrail-vrouter-dpdk.ini ${buildroot}${_supervisorconf}
 	install -p -m 644 $(_confsrcdir)/contrail-vrouter.rules ${buildroot}${_supervisorconf}
-	install -p -m 755 $(_confsrcdir)/vrouter-dpdk-pre-start.sh ${buildroot}${_opt_bin}/vrouter-pre-start.sh
+	install -p -m 755 ./vrouter-dpdk-pre-start.sh ${buildroot}${_opt_bin}/vrouter-pre-start.sh
 	install -p -m 755 $(_confsrcdir)/vrouter-pre-start.sh ${buildroot}${_opt_bin}/vrouter-post-start.sh
 	install -p -m 755 $(_confsrcdir)/vrouter-pre-stop.sh ${buildroot}${_opt_bin}
-	install -p -m 755 $(_confsrcdir)/vrouter-dpdk-post-stop.sh ${buildroot}${_opt_bin}/vrouter-post-stop.sh
-	install -p -m 755 $(_confsrcdir)/dpdk_nic_bind.py ${buildroot}${_opt_bin}
+	install -p -m 755 ./vrouter-dpdk-post-stop.sh ${buildroot}${_opt_bin}/vrouter-post-stop.sh
+	install -p -m 755 ./dpdk_nic_bind.py ${buildroot}${_opt_bin}
 	install -p -m 755 $(_confsrcdir)/vnagent_param_setup_ubuntu.sh ${buildroot}${_opt_bin}/vnagent_param_setup.sh
 	install -p -m 755 $(_confsrcdir)/if-vhost0 ${buildroot}${_opt_bin}
 	install -p -m 755 $(_confsrcdir)/vrouter-functions.sh ${buildroot}${_opt_bin}
