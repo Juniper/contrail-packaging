@@ -1,4 +1,4 @@
-contrail-dpdk-kernel-modules-dkms (VERSION) stable; urgency=low
+contrail-dpdk-kernel-modules-dkms (2.0.0) stable; urgency=low
 
   * Automatically packaged by DKMS.
 
