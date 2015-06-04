@@ -17,7 +17,7 @@ cd /etc/apt/
 # Do not over-write apt.conf. Instead just append what is necessary
 # retaining other useful configurations such as http::proxy info.
 apt_auth="APT::Get::AllowUnauthenticated \"true\";"
-grep --quiet "$apt_auth" apt.conf
+grep --quiet "^$apt_auth" apt.conf
 if [ "$?" != "0" ]; then
     echo "$apt_auth" >> apt.conf
 fi
