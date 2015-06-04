@@ -23,7 +23,7 @@ cp sources.list sources.list.$datetime_string
 echo "deb file:/opt/contrail/contrail_install_repo ./" > local_repo
 
 #modify /etc/apt/soruces.list/ to add local repo on the top
-grep "deb file:/opt/contrail/contrail_install_repo ./" sources.list
+grep "^deb file:/opt/contrail/contrail_install_repo ./" sources.list
 
 if [ $? != 0 ]; then  
      cat local_repo sources.list > new_sources.list
@@ -34,7 +34,7 @@ fi
 # Do not over-write apt.conf. Instead just append what is necessary
 # retaining other useful configurations such as http::proxy info.
 apt_auth="APT::Get::AllowUnauthenticated \"true\";"
-grep --quiet "$apt_auth" apt.conf
+grep --quiet "^$apt_auth" apt.conf
 if [ "$?" != "0" ]; then
     echo "$apt_auth" >> apt.conf
 fi
