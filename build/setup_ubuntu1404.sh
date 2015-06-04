@@ -17,7 +17,7 @@ cd /opt/contrail/contrail_install_repo
 DEBIAN_FRONTEND=noninteractive dpkg -i binutils_*.deb make_*.deb libdpkg-perl_*.deb patch_*.deb dpkg-dev_*.deb
 
 #modify /etc/apt/soruces.list/ to add local repo on the top
-grep "deb file:/opt/contrail/contrail_install_repo ./" /etc/apt/sources.list
+grep "^deb file:/opt/contrail/contrail_install_repo ./" /etc/apt/sources.list
 if [ $? != 0 ]; then
     datetime_string=`date +%Y_%m_%d__%H_%M_%S`
     cp /etc/apt/sources.list /etc/apt/sources.list.$datetime_string
@@ -29,7 +29,7 @@ fi
 # Do not over-write apt.conf. Instead just append what is necessary
 # retaining other useful configurations such as http::proxy info.
 apt_auth="APT::Get::AllowUnauthenticated \"true\";"
-grep --quiet "$apt_auth" /etc/apt/apt.conf
+grep --quiet "^$apt_auth" /etc/apt/apt.conf
 if [ "$?" != "0" ]; then
     echo "$apt_auth" >> /etc/apt/apt.conf
 fi
