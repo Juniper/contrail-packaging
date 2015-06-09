@@ -4,6 +4,11 @@ if [ $? ];then
     sed -i '/^exit 0/i  /opt/contrail/bin/contrail-bootstrap-galera.sh &' /etc/rc.local
 fi
 
+grep "sysctl -p" /etc/rc.local> /dev/null 2>&1
+if [ $? ];then
+    sed -i '/^exit 0/i  sysctl -p' /etc/rc.local
+fi
+
 grep "contrail-mysqlprobe" /etc/services> /dev/null 2>&1
 if [ $? ];then
     echo "# Local services" >> /etc/services
