@@ -1,0 +1,10 @@
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Approved+1: Ashish Ranjan <aranjan@juniper.net>
+Code-Review+1: Sanju <asanju@gmail.com>
+Approved+1: Sunil Bakhru <sbakhru@juniper.net>
+Code-Review+2: Sunil Bakhru <sbakhru@juniper.net>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Tue, 09 Jun 2015 04:00:14 -0700
+Reviewed-on: https://review.opencontrail.org/11155
+Project: Juniper/contrail-packaging
+Branch: refs/heads/R2.20
