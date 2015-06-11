@@ -59,13 +59,6 @@ Contrail Package Requirements for Contrail Config
 
 %install
 pushd %{_builddir}/..
-pushd %{_distrothirdpartydir}/kazoo
-%{__python} setup.py install --root=%{buildroot} 
-popd
-
-pushd %{_distrothirdpartydir}/ncclient
-%{__python} setup.py install --root=%{buildroot} 
-popd
 
 pushd %{_builddir}/..
 install -D -m 755 %{_distropkgdir}/ifmap.initd.supervisord %{buildroot}%{_initddir}/ifmap
@@ -96,10 +89,6 @@ popd
 
 %files
 %defattr(-,root,root,-)
-%{python_sitelib}/kazoo
-%{python_sitelib}/kazoo-*
-%{python_sitelib}/ncclient
-%{python_sitelib}/ncclient-*
 #/usr/share/doc/python-vnc_cfg_api_server
 %{_sysconfdir}/contrail
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
