@@ -34,7 +34,10 @@ ifeq ($(CONTRAIL_SKU),icehouse)
     CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
     ifeq ($(SERIES),precise)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
-        CONTRAIL_VRDPDK_KMOD := contrail-dpdk-kernel-modules-dkms-deb
+        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
+    endif
+    ifeq ($(SERIES),trusty)
+        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
     endif
 endif
@@ -514,12 +517,5 @@ dpdk-depends-packages-deb:
 	(cd $(@:-deb=); fakeroot debian/rules binary)
 
 contrail-dpdk-kernel-modules-dkms-deb:
-	(cd $(@:-deb=); sed -re "1 s/VERSION/$(VERSION)/" \
-	    debian/changelog.in > debian/changelog)
 	(cd $(@:-deb=); fakeroot debian/rules clean)
 	(cd $(@:-deb=); fakeroot debian/rules binary)
-
-contrail-dpdk-kernel-modules-dkms-clean:
-	(cd $(@:-clean=); fakeroot debian/rules clean)
-	(cd $(@:-clean=); rm -rf debian/changelog)
-

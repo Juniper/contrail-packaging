@@ -1,3 +1,16 @@
+dpdk-depends-packages (14.04-contrail1) trusty; urgency=low
+
+  * New versioning policy: 14.04-contrailN for Ubuntu Trusty, 12.04-contrailN
+    for Ubuntu precise.
+
+ -- Michal Dubiel <md@semihalf.com>  Thu, 11 Jun 2015 13:25:13 +0100
+
+dpdk-depends-packages (0.6-0contrail1) trusty; urgency=low
+
+  * Initial version for Ubuntu 14.04.
+
+ -- Michal Dubiel <md@semihalf.com>  Thu, 22 May 2015 12:05:12 +0100
+
 dpdk-depends-packages (0.5-0contrail1) precise; urgency=low
 
   * Remove hack for shared hugepages from qemu
