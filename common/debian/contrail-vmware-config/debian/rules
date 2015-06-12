@@ -20,8 +20,6 @@ export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
-TAG = 2598
-
 BUILDTAG =
 ifdef TAG
 BUILDTAG = $(SRC_VER)-$(TAG)
