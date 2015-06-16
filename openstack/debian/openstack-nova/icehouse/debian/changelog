@@ -1,3 +1,9 @@
+nova (1:2014.1.3-0ubuntu1~cloud0.3contrail) trusty; urgency=high
+
+  * Added 3contrail in contrail pacakge.
+
+ -- Sanju Abraham <sanjua@juniper.net>  Mon, 08 Jun 2015 14:14:15 -0300
+
 nova (1:2014.1.3-0ubuntu1~cloud0.2contrail) trusty; urgency=high
 
   * Added 2contrail in contrail pacakge.
