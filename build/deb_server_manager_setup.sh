@@ -473,6 +473,31 @@ if [ "$SM" != "" ]; then
     echo "bind_master: $LOCALHOSTIP" >> /etc/cobbler/settings
   fi
 
+  HOSTNAME=`hostname`
+  grep "$HOSTIP " /etc/hosts
+  if [ $? != 0 ]; then
+    if [ "$DOMAIN" != "" ]; then
+      sed -i "1s#^#${HOSTIP} ${HOSTNAME} ${HOSTNAME}.${DOMAIN}\n#g" /etc/hosts
+    else
+      sed -i "1s#^#${HOSTIP} ${HOSTNAME}\n#g" /etc/hosts
+    fi
+  else
+    grep "$HOSTIP .*$HOSTNAME.*" /etc/hosts
+    if [ $? != 0 ]; then
+      if [ "$DOMAIN" != "" ]; then
+        sed -i "/^${HOSTIP}/ s/$/ ${HOSTNAME} ${HOSTNAME}.${DOMAIN}/g" /etc/hosts
+      else
+        sed -i "/^${HOSTIP}/ s/$/ ${HOSTNAME}/g" /etc/hosts
+      fi
+    fi
+    if [ "$DOMAIN" != "" ]; then
+      grep "$HOSTIP .*$HOSTNAME\.$DOMAIN.*" /etc/hosts
+      if [ $? != 0 ]; then
+        sed -i "/^${HOSTIP}/ s/$/ ${HOSTNAME}.${DOMAIN}/g" /etc/hosts
+      fi
+    fi
+  fi
+
   if [ "$PASSENGER" != "no"  ]; then
     passenger_install
   fi
