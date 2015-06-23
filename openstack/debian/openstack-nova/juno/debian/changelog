@@ -1,3 +1,12 @@
+nova (1:2014.2.3-0ubuntu1~cloud0.3contrail) trusty-juno; urgency=medium
+
+  * Cherry picked fix from review https://review.openstack.org/#/c/142124/
+  * diff in https://git.openstack.org/cgit/openstack/nova/commit/?id=8ba2d8ea527e6d3b4699482ff4567010c1cdc990
+  * Launchpad - https://bugs.launchpad.net/nova/+bug/1402574
+  * Added 3contrail in contrail pacakge.
+
+ -- Sanju Abraham <sanjua@juniper.net>  Mon, Jun 22  2015 12:56:15 -0300
+
 nova (1:2014.2.3-0ubuntu1~cloud0.2contrail) trusty-juno; urgency=medium
 
   * Added 2contrail in contrail pacakge.
