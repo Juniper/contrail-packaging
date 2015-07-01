@@ -42,6 +42,17 @@ ifeq ($(CONTRAIL_SKU),icehouse)
     endif
 endif
 
+ifeq ($(CONTRAIL_SKU), vcenter)
+    ifeq ($(SERIES),precise)
+        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
+        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
+    endif
+    ifeq ($(SERIES),trusty)
+        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
+        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
+    endif
+endif
+
 ifeq ($(CONTRAIL_SKU),havana)
     CONTRAIL_OPENSTACK := contrail-openstack-deb
 endif
@@ -90,12 +101,41 @@ PACKAGES = \
 	$(CONTRAIL_HEAT) \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
-	contrail-vmware-utils-deb \
 	contrail-f5-deb \
 	$(CONTRAIL_VRDPDK_KMOD)
 
 all: ${PACKAGES}
 	@echo "Build complete"
+
+PACKAGES_VMWARE = \
+        contrail \
+        ifmap-server \
+        ifmap-python-client \
+        contrail-vrouter-init-deb \
+        contrail-vrouter-common-deb \
+        $(CONTRAIL_VRDPDK_BIN) \
+        $(CONTRAIL_VRDPDK_INIT) \
+        contrail-web-core-deb \
+        contrail-web-controller-deb \
+        contrail-web-server-manager-deb \
+        contrail-nodemgr-deb \
+        contrail-setup-deb \
+        contrail-openstack-ha-deb \
+        contrail-openstack-analytics-deb \
+        contrail-openstack-control-deb \
+        contrail-openstack-database-deb \
+        contrail-openstack-webui-deb \
+        contrail-fabric-utils-deb \
+        contrail-test-deb \
+        libvirt-deb \
+        contrail-f5-deb \
+        $(CONTRAIL_VRDPDK_KMOD) \
+        contrail-vmware-config-deb \
+        contrail-vmware-utils-deb \
+        contrail-vmware-vrouter-deb 
+
+all_vmware: ${PACKAGES_VMWARE}
+        @echo "Build complete"
 
 server-manager-all: contrail-server-manager-deb \
                     contrail-server-manager-client-deb \
