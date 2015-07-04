@@ -1,6 +1,9 @@
 # view contents of rpm file: rpm -qlp <filename>.rpm
 
 %define		_contrailwebsrc 	/usr/src/contrail/contrail-web-server-manager
+%define     _contrailetc    /etc/contrail
+%define     _distropkgdir tools/packaging/common/control_files
+%define     _supervisordir /etc/contrail/supervisord_webui_sm_files
 
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
@@ -40,11 +43,29 @@ Contrail Web Server Manager UI package
 %install
 rm -rf %{buildroot}%{_contrailwebsrc}
 mkdir -p %{buildroot}%{_contrailwebsrc}
+mkdir -p %{buildroot}%{_contrailetc}
+mkdir -p %{buildroot}%{_servicedir}
+mkdir -p %{buildroot}%{_initddir}
 
 pushd %{_builddir}/..
 cp -r -p contrail-web-server-manager/* %{buildroot}%{_contrailwebsrc}/
+cp -r -p contrail-web-core/config/config.global.js %{buildroot}%{_contrailetc}/config.global.sm.js
+
+%if 0%{?fedora} >= 17
+cp -p %{_distropkgdir}/supervisor-webui-sm.service  %{buildroot}%{_servicedir}/supervisor-webui-sm.service
+%endif
+%if 0%{?rhel}
+install -p -m 755 %{_distropkgdir}/supervisor-webui-sm.initd %{buildroot}%{_initddir}/supervisor-webui-sm
+install -p -m 755 %{_distropkgdir}/contrail-webui-sm.initd.supervisord          %{buildroot}%{_initddir}/contrail-webui-sm
+install -p -m 755 %{_distropkgdir}/contrail-webui-middleware-sm.initd.supervisord %{buildroot}%{_initddir}/contrail-webui-middleware-sm    
+%endif
 
 ln -s %{_libdir}/node_modules %{buildroot}%{_contrailwebsrc}/node_modules
+#install .ini files for supervisord
+install -d -m 755 %{buildroot}%{_supervisordir}
+install -p -m 755 %{_distropkgdir}/supervisord_webui_sm.conf %{buildroot}%{_contrailetc}/supervisord_webui_sm.conf
+install -p -m 755 %{_distropkgdir}/contrail-webui-sm.ini %{buildroot}%{_supervisordir}/contrail-webui-sm.ini
+install -p -m 755 %{_distropkgdir}/contrail-webui-middleware-sm.ini %{buildroot}%{_supervisordir}/contrail-webui-middleware-sm.ini
 
 %clean
 rm -rf %{buildroot}
@@ -53,6 +74,8 @@ rm -rf %{_specdir}/contrail-web-server-manager.spec
 %files
 %defattr(-,root,root)
 %{_contrailwebsrc}/*
+%{_contrailetc}/*
+%{_initddir}/*
 
 %post
 mkdir -p /var/log/contrail/

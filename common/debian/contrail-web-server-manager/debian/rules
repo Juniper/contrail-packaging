@@ -19,7 +19,7 @@ export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export _contrailwebsrc := /usr/src/contrail/contrail-web-server-manager
 export _libdir := /usr/lib64
 export _contrailetc := /etc/contrail
-export _supervisordir := /etc/contrail/supervisord_webui_files
+export _supervisordir := /etc/contrail/supervisord_webui_sm_files
 export _initdir := /etc/init
 export _initddir := /etc/init.d
 export _contraillog := /var/log/contrail
@@ -53,15 +53,17 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_contrailetc)
 	install -d -m 755 $(buildroot)$(_initdir)
 	install -d -m 755 $(buildroot)$(_initddir)
+	# Server Manager config file
+	cp -r -p $(SB_TOP)/contrail-web-core/config/config.global.js $(buildroot)/$(_contrailetc)/config.global.sm.js
 	# supervisord conf file
-	install -p -m 755 $(_distropkgdir)/supervisord_webui.conf $(buildroot)/$(_contrailetc)/supervisord_webui.conf
+	install -p -m 755 $(_distropkgdir)/supervisord_webui_sm.conf $(buildroot)/$(_contrailetc)/supervisord_webui_sm.conf
 	# supervisord upstart file
-	install -p -m 755 $(_distropkgdir)/supervisor-webui.upstart $(buildroot)$(_initdir)/supervisor-webui.conf
+	install -p -m 755 $(_distropkgdir)/supervisor-webui-sm.upstart $(buildroot)$(_initdir)/supervisor-webui-sm.conf
 	# supervisord ini files
-	install -p -m 755 $(_distropkgdir)/contrail-webui.ini $(buildroot)/$(_supervisordir)/contrail-webui.ini
-	install -p -m 755 $(_distropkgdir)/contrail-webui-middleware.ini $(buildroot)/$(_supervisordir)/contrail-webui-middleware.ini
+	install -p -m 755 $(_distropkgdir)/contrail-webui-sm.ini $(buildroot)/$(_supervisordir)/contrail-webui-sm.ini
+	install -p -m 755 $(_distropkgdir)/contrail-webui-middleware-sm.ini $(buildroot)/$(_supervisordir)/contrail-webui-middleware-sm.ini
 	# init scripts for service command
-	install -p -m 755 $(_distropkgdir)/contrail-webui.initd.supervisord $(buildroot)/$(_initddir)/contrail-webui
-	install -p -m 755 $(_distropkgdir)/contrail-webui-middleware.initd.supervisord $(buildroot)/$(_initddir)/contrail-webui-middleware
+	install -p -m 755 $(_distropkgdir)/contrail-webui-sm.initd.supervisord $(buildroot)/$(_initddir)/contrail-webui-sm
+	install -p -m 755 $(_distropkgdir)/contrail-webui-middleware-sm.initd.supervisord $(buildroot)/$(_initddir)/contrail-webui-middleware-sm
 
 override_dh_shlibdeps:
