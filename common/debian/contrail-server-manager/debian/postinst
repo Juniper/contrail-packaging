@@ -37,7 +37,7 @@ mkdir -p /var/www/html/contrail
 mkdir -p /var/www/html/contrail/config_file
 mkdir -p /var/www/html/contrail/images
 mkdir -p /var/log/contrail-server-manager
-mkdir -p /var/log/contrail-server-manager/provision
+mkdir -m 777 -p /var/log/contrail-server-manager/provision
 mkdir -p /etc/mail/
 cp /etc/contrail_smgr/sendmail.cf /etc/mail/
 
