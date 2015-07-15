@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+
+echo "running post install"
+
+setup_smgrcliapp.sh
