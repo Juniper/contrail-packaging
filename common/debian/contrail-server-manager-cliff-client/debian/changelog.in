@@ -1,0 +1,6 @@
+contrail-server-manager-cliff-client (BUILDTAG) nitishk; urgency=low
+
+  [nitishk ]
+  * debian/changelog: changelog
+
+ -- nitishk <nitishk@juniper.net> Mon Jul 13 14:20:51 PDT 2015 
