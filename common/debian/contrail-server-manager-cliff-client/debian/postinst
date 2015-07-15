@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+
+echo "running post install"
+
+/opt/contrail/bin/setup_server_manager_client.sh
