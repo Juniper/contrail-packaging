@@ -16,6 +16,7 @@ echo "$arrow This install is being logged at: $log_file"
 ALL=""
 SM=""
 SMCLIENT=""
+SMCLIFFCLIENT=""
 HOSTIP=""
 SMMON=""
 NOSMMON=""
@@ -40,6 +41,7 @@ function usage()
     echo "--nosm-mon"
     echo "--sm"
     echo "--sm-client"
+    echo "--sm-cliff-client"
     echo "--webui"
     echo "--sm-mon"
     echo "--hostip=<HOSTIP>"
@@ -158,6 +160,7 @@ while [ "$1" != "" ]; do
 	    WEBUI="contrail-web-server-manager"
 	    WEBCORE="contrail-web-core"
 	    SMCLIENT="contrail-server-manager-client"
+	    SMCLIFFCLIENT="contrail-server-manager-cliff-client"
 	    SMMON="contrail-server-manager-monitoring"
             ;;
 	--smlite)
@@ -181,6 +184,9 @@ while [ "$1" != "" ]; do
             ;;
         --sm-client)
 	    SMCLIENT="contrail-server-manager-client"
+            ;;
+        --sm-cliff-client)
+	    SMCLIFFCLIENT="contrail-server-manager-cliff-client"
             ;;
         --hostip)
             HOSTIP=$VALUE
@@ -300,6 +306,14 @@ if [ "$SMCLIENT" != "" ]; then
   apt-get -y install contrail-server-manager-client >> $log_file 2>&1
   apt-get -y install -f >> $log_file 2>&1
   echo "$arrow Completed Installing Server Manager Client"
+fi
+
+if [ "$SMCLIFFCLIENT" != "" ]; then
+  echo "$arrow Server Manager Cliff Client"
+  echo "$space$arrow$install_str Server Manager Cliff Client"
+  apt-get -y install contrail-server-manager-cliff-client >> $log_file 2>&1
+  apt-get -y install -f >> $log_file 2>&1
+  echo "$arrow Completed Installing Server Manager Cliff Client"
 fi
 
 if [ "$WEBUI" != "" ] && [ "$NOWEBUI" == "" ]; then
