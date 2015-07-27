@@ -192,11 +192,11 @@ vrouter_dpdk_start() {
     if [ ! -L /sys/class/net/${DPDK_VHOST} ]; then
         echo "$(date): Creating ${DPDK_VHOST} interface with vif utility..."
 
-        if [ -z "${DPDK_PHY_MAC}"]; then
+        if [ -z "${DPDK_PHY_MAC}" ]; then
             echo "Error reading ${AGENT_CONF}: physical MAC address is not defined"
             return 1
         fi
-        if [ -z "${DPDK_PHY_PCI}"]; then
+        if [ -z "${DPDK_PHY_PCI}" ]; then
             echo "Error reading ${AGENT_CONF}: physical PCI address is not defined"
             return 1
         fi
@@ -298,7 +298,7 @@ _dpdk_vrouter_ini_update() {
     if [ -n "${DPDK_BOND_MODE}" -a -n "${DPDK_BOND_NUMA}" ]; then
         echo "${0##*/}: updating bonding configuration in ${VROUTER_DPDK_INI}..."
 
-        dpdk_vdev="--vdev \"eth_bond_${DPDK_PHY},mode=${DPDK_BOND_MODE}"
+        dpdk_vdev=" --vdev \"eth_bond_${DPDK_PHY},mode=${DPDK_BOND_MODE}"
         dpdk_vdev="${dpdk_vdev},xmit_policy=${DPDK_BOND_POLICY}"
         dpdk_vdev="${dpdk_vdev},socket_id=${DPDK_BOND_NUMA}"
         for SLAVE in ${DPDK_BOND_PCIS}; do
@@ -306,27 +306,29 @@ _dpdk_vrouter_ini_update() {
         done
         dpdk_vdev="${dpdk_vdev}\""
 
-        ## update the ini file
-        sed -ri.bond.bak \
-            -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
-            -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
-            -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1 ${dpdk_vdev}/" \
-             ${VROUTER_DPDK_INI}
     fi
+    ## always update the ini file, so we remove vdev argument
+    ## whenever Linux configuration has changed
+    sed -ri.bond.bak \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
+        -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vdev}/" \
+         ${VROUTER_DPDK_INI}
 
     dpdk_vlan=""
     if [ -n "${DPDK_VLAN_ID}" ]; then
         echo "${0##*/}: updating VLAN configuration in ${VROUTER_DPDK_INI}..."
 
-        dpdk_vlan="--vlan \"${DPDK_VLAN_ID}\""
+        dpdk_vlan=" --vlan \"${DPDK_VLAN_ID}\""
 
-        ## update the ini file
-        sed -ri.vlan.bak \
-            -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan +\"[^"]+\"|--vlan +[^ ]+)(.*) *$/\1\3/' \
-            -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan +\"[^"]+\"|--vlan +[^ ]+)(.*) *$/\1\3/' \
-            -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1 ${dpdk_vlan}/" \
-             ${VROUTER_DPDK_INI}
     fi
+    ## always update the ini file, so we remove vlan argument
+    ## whenever Linux configuration has changed
+    sed -ri.vlan.bak \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan +\"[^"]+\"|--vlan +[^ ]+)(.*) *$/\1\3/' \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan +\"[^"]+\"|--vlan +[^ ]+)(.*) *$/\1\3/' \
+        -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vlan}/" \
+         ${VROUTER_DPDK_INI}
 }
 
 ##
@@ -425,6 +427,8 @@ vrouter_dpdk_if_unbind() {
 
     _dpdk_vrouter_ini_bond_info_collect
 
+    ## make sure igb_uio is loaded otherwise DPDK_BIND will not work
+    modprobe igb_uio
     for slave_pci_name in ${DPDK_BOND_PCI_NAMES}; do
         eval slave_pci=\${DPDK_BOND_${slave_pci_name}_PCI}
         eval slave_driver=\${DPDK_BOND_${slave_pci_name}_DRIVER}
