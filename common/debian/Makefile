@@ -101,8 +101,6 @@ PACKAGES = \
 	$(CONTRAIL_HEAT) \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
-	contrail-f5-deb \
-	$(CONTRAIL_VRDPDK_KMOD)
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -128,8 +126,6 @@ PACKAGES_VMWARE = \
         contrail-fabric-utils-deb \
         contrail-test-deb \
         libvirt-deb \
-        contrail-f5-deb \
-        $(CONTRAIL_VRDPDK_KMOD) \
         contrail-vmware-config-deb \
         contrail-vmware-utils-deb \
         contrail-vmware-vrouter-deb 
@@ -551,11 +547,3 @@ contrail-vrouter-deb: contrail-libs-deb
 		(cd contrail-vrouter; fakeroot debian/rules clean); \
 		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
 	fi
-
-dpdk-depends-packages-deb:
-	(cd $(@:-deb=); fakeroot debian/rules clean)
-	(cd $(@:-deb=); fakeroot debian/rules binary)
-
-contrail-dpdk-kernel-modules-dkms-deb:
-	(cd $(@:-deb=); fakeroot debian/rules clean)
-	(cd $(@:-deb=); fakeroot debian/rules binary)
