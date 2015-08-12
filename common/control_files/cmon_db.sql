@@ -2368,7 +2368,7 @@ CREATE TABLE IF NOT EXISTS `mysql_server` (
   UNIQUE KEY `hostname` (`hostname`,`port`),
   KEY `cid` (`cid`,`serverid`),
   KEY `cid2` (`cid`,`nodeid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
 
