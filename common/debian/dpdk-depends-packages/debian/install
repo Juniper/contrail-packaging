@@ -1,2 +1,0 @@
-setup.sh opt/contrail/contrail_packages_dpdk/
-remove.sh opt/contrail/contrail_packages_dpdk/
