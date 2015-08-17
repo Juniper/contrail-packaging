@@ -319,14 +319,14 @@ _dpdk_vrouter_ini_update() {
     if [ -n "${DPDK_VLAN_ID}" ]; then
         echo "${0##*/}: updating VLAN configuration in ${VROUTER_DPDK_INI}..."
 
-        dpdk_vlan=" --vlan \"${DPDK_VLAN_ID}\""
+        dpdk_vlan=" --vlan_tci \"${DPDK_VLAN_ID}\" --vlan_fwd_intf_name \"${DPDK_PHY}\""
 
     fi
     ## always update the ini file, so we remove vlan argument
     ## whenever Linux configuration has changed
     sed -ri.vlan.bak \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan +\"[^"]+\"|--vlan +[^ ]+)(.*) *$/\1\3/' \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan +\"[^"]+\"|--vlan +[^ ]+)(.*) *$/\1\3/' \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_tci +\"[^"]+\" --vlan_fwd_intf_name +\"[^"]+\"|--vlan_tci +[^ ]+ --vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/' \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_tci +\"[^"]+\" --vlan_fwd_intf_name +\"[^"]+\"|--vlan_tci +[^ ]+ --vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/' \
         -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vlan}/" \
          ${VROUTER_DPDK_INI}
 }
