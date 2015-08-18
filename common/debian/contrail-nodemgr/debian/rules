@@ -51,6 +51,5 @@ override_dh_auto_install:
 	(cd ${_python_dist}; tar zxvf ${SB_TOP}/build/debug/analytics/database/dist/database-0.1dev.tar.gz; cd database-0.1dev; python setup.py install --root=${buildroot} --install-layout=deb)
 #	install etc files
 	install -d -m 755 $(buildroot)$(_contrailetc)
-	install -p -m 644 ${SB_TOP}/tools/packaging/common/control_files/vrouter_nodemgr_param $(buildroot)$(_contrailetc)/vrouter_nodemgr_param
 
 override_dh_shlibdeps:
