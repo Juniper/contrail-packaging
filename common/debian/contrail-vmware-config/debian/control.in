@@ -23,5 +23,5 @@ Depends:
  python-bottle,
  ifmap-server,
  ifmap-python-client,
- keepalived (>=1.2.13-1) | keepalived (>=1.2.13-0~276~ubuntu14.04.1)
+ keepalived (=1:1.2.13-1~bpo70+1) | keepalived (=1.2.13-0~276~ubuntu14.04.1)
 Description: Contrail Vmware Config composite debian package
