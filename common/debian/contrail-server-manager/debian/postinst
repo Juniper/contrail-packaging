@@ -7,6 +7,17 @@ echo "running post install"
 
 cp -r /etc/contrail_smgr/cobbler /etc/
 cp -r /etc/contrail_smgr/puppet /etc/
+
+if ! grep  -q "^\[tor_certs\]$" /etc/puppet/fileserver.conf ; then
+echo "
+[tor_certs]
+    path /etc/contrail_smgr/puppet/ssl
+    allow *
+" >> /etc/puppet/fileserver.conf
+fi
+
+mkdir -p /etc/contrail_smgr/puppet/ssl
+
 if [ -f /etc/cobbler/distro_signatures.json ]; then
     mv /etc/cobbler/distro_signatures.json /etc/cobbler/distro_signatures.json-save
 fi
