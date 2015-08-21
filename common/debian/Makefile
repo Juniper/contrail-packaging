@@ -124,14 +124,10 @@ PACKAGES_VMWARE = \
         $(CONTRAIL_VRDPDK_KMOD) \
         contrail-vmware-config-deb \
         contrail-vmware-utils-deb \
-        contrail-vmware-vrouter-deb \
-        contrail-install-vcenter-plugin
+        contrail-vmware-vrouter-deb 
 
 all_vmware: ${PACKAGES_VMWARE}
 	@echo "Build complete"
-
-contrail-install-vcenter-plugin:
-	(cd vcenter-plugin && make all)
 
 server-manager-all: contrail-server-manager-deb \
                     contrail-server-manager-client-deb \
