@@ -83,7 +83,6 @@ PACKAGES = \
 	contrail-web-core-deb \
 	contrail-web-controller-deb \
 	contrail-web-server-manager-deb \
-	contrail-nodemgr-deb \
 	contrail-setup-deb \
 	$(CONTRAIL_OPENSTACK) \
 	contrail-openstack-ha-deb \
@@ -117,7 +116,6 @@ PACKAGES_VMWARE = \
         contrail-web-core-deb \
         contrail-web-controller-deb \
         contrail-web-server-manager-deb \
-        contrail-nodemgr-deb \
         contrail-setup-deb \
         contrail-openstack-ha-deb \
         contrail-openstack-analytics-deb \
