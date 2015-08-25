@@ -5,41 +5,31 @@ set -e
 
 echo "running post install"
 
-cp -r /etc/contrail_smgr/cobbler /etc/
+#cp -r /etc/contrail_smgr/cobbler /etc/
 cp -r /etc/contrail_smgr/puppet /etc/
-
-if ! grep  -q "^\[tor_certs\]$" /etc/puppet/fileserver.conf ; then
-echo "
-[tor_certs]
-    path /etc/contrail_smgr/puppet/ssl
-    allow *
-" >> /etc/puppet/fileserver.conf
-fi
-
-mkdir -p /etc/contrail_smgr/puppet/ssl
-
-if [ -f /etc/cobbler/distro_signatures.json ]; then
-    mv /etc/cobbler/distro_signatures.json /etc/cobbler/distro_signatures.json-save
-fi
-if [ -f /var/lib/cobbler/distro_signatures.json ]; then
-    mv /var/lib/cobbler/distro_signatures.json /var/lib/cobbler/distro_signatures.json-save
-fi
-cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /etc/cobbler/distro_signatures.json
-cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /var/lib/cobbler/distro_signatures.json
-cd /etc/contrail_smgr/contrail-centos-repo
-createrepo .
-cd /etc/contrail_smgr/contrail-redhat-repo
-createrepo .
+#if [ -f /etc/cobbler/distro_signatures.json ]; then
+#    mv /etc/cobbler/distro_signatures.json /etc/cobbler/distro_signatures.json-save
+#fi
+#if [ -f /var/lib/cobbler/distro_signatures.json ]; then
+#    mv /var/lib/cobbler/distro_signatures.json /var/lib/cobbler/distro_signatures.json-save
+#fi
+#cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /etc/cobbler/distro_signatures.json
+#cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /var/lib/cobbler/distro_signatures.json
+#cd /etc/contrail_smgr/contrail-centos-repo
+#createrepo .
+#cd /etc/contrail_smgr/contrail-redhat-repo
+#createrepo .
 
 # Copy cobbler boot.cfg template file for esxi5.5
-cp -f /etc/contrail_smgr/cobbler/bootcfg_esxi55.template /etc/cobbler/pxe
+#cp -f /etc/contrail_smgr/cobbler/bootcfg_esxi55.template /etc/cobbler/pxe
 
 # Copy cobbler pxesystem template file for esxi
-mv /etc/cobbler/pxe/pxesystem_esxi.template /etc/cobbler/pxe/pxesystem_esxi.template-save
-cp /etc/contrail_smgr/cobbler/pxesystem_esxi.template /etc/cobbler/pxe
+#mv /etc/cobbler/pxe/pxesystem_esxi.template /etc/cobbler/pxe/pxesystem_esxi.template-save
+#cp /etc/contrail_smgr/cobbler/pxesystem_esxi.template /etc/cobbler/pxe
 #cp /etc/contrail_smgr/cobbler/dhcp.template.u /etc/cobbler/dhcp.template
-cp /etc/contrail_smgr/cobbler/named.template.u /etc/cobbler/named.template
-cp /etc/contrail_smgr/cobbler/named.conf.options.u /etc/bind/named.conf.options
+#cp /etc/contrail_smgr/cobbler/named.template.u /etc/cobbler/named.template
+#cp /etc/contrail_smgr/cobbler/named.conf.options.u /etc/bind/named.conf.options
+
 cp /etc/contrail_smgr/smgr.conf /etc/apache2/sites-available/
 
 mkdir -p /var/www/html
@@ -62,7 +52,7 @@ cp /etc/contrail_smgr/ntp.conf /etc/ntp.conf
 mkdir -p /var/www/html/contrail
 mkdir -p /var/www/html/thirdparty_packages
 
-cp -u /etc/puppet/puppet_init_rd /srv/www/cobbler/aux/puppet
+#cp -u /etc/puppet/puppet_init_rd /srv/www/cobbler/aux/puppet
 easy_install argparse
 easy_install paramiko
 easy_install pycrypto
@@ -70,13 +60,13 @@ easy_install ordereddict
 
 mkdir -p /etc/contrail_smgr/images/
 
-sed -i 's/puppet_auto_setup: 0/puppet_auto_setup: 1/g' /etc/cobbler/settings
-sed -i 's/sign_puppet_certs_automatically: 0/sign_puppet_certs_automatically: 1/g' /etc/cobbler/settings
+#sed -i 's/puppet_auto_setup: 0/puppet_auto_setup: 1/g' /etc/cobbler/settings
+#sed -i 's/sign_puppet_certs_automatically: 0/sign_puppet_certs_automatically: 1/g' /etc/cobbler/settings
 
-sed -i 's/remove_old_puppet_certs_automatically: 0/remove_old_puppet_certs_automatically: 1/g' /etc/cobbler/settings
-sed -i 's/manage_dhcp: 0/manage_dhcp: 1/g' /etc/cobbler/settings
-sed -i 's/manage_dns: 0/manage_dns: 1/g' /etc/cobbler/settings
-sed -i 's|webdir: /var/www/cobbler|webdir: /srv/www/cobbler|g' /etc/cobbler/settings
+#sed -i 's/remove_old_puppet_certs_automatically: 0/remove_old_puppet_certs_automatically: 1/g' /etc/cobbler/settings
+#sed -i 's/manage_dhcp: 0/manage_dhcp: 1/g' /etc/cobbler/settings
+#sed -i 's/manage_dns: 0/manage_dns: 1/g' /etc/cobbler/settings
+#sed -i 's|webdir: /var/www/cobbler|webdir: /srv/www/cobbler|g' /etc/cobbler/settings
 rel=`lsb_release -r`
 if [[ "$rel" == *"14.04"* ]]; then
     echo "Not seding files for 14.04"
@@ -94,10 +84,10 @@ fi
 echo $HOST_IP
 
 # Set IP address in cobbler settings file
-sed -i "s/__\$IPADDRESS__/$HOST_IP/" /etc/cobbler/settings
+#sed -i "s/__\$IPADDRESS__/$HOST_IP/" /etc/cobbler/settings
 update-rc.d contrail-server-manager defaults
 #/sbin/chkconfig --add contrail-server-manager
-sed -i "s/module = authn_.*/module = authn_testing/g" /etc/cobbler/modules.conf
+#sed -i "s/module = authn_.*/module = authn_testing/g" /etc/cobbler/modules.conf
 
 # Set IP address in server manager configuration file.
 sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
@@ -105,15 +95,15 @@ sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
 # Set IP Address in smgr_dhcp_event.py DHCP hook.
 sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/smgr_dhcp_event.py
 
-sed -i "s/cobbler_username         = cobbler/cobbler_username         = testing/g" /opt/contrail/server_manager/sm-config.ini
-sed -i "s/cobbler_password         = cobbler/cobbler_password         = testing/g" /opt/contrail/server_manager/sm-config.ini
+#sed -i "s/cobbler_username         = cobbler/cobbler_username         = testing/g" /opt/contrail/server_manager/sm-config.ini
+#sed -i "s/cobbler_password         = cobbler/cobbler_password         = testing/g" /opt/contrail/server_manager/sm-config.ini
 #sed -i 's:"/var/named":"/var/cache/bind":g' /etc/cobbler/named.template
 #sed -i 's:/var/named/data:/var/cache/bind:g' /etc/cobbler/named.template
 #sed -i 's:data/named.run:named.run:g' /etc/cobbler/named.template
 
 service apache2 restart
 service xinetd restart
-service cobblerd restart
+#service cobblerd restart
 
 set +e
 POSTFIX_CHECK=$(dpkg -l | grep postfix)
@@ -132,5 +122,5 @@ dpkg-scanpackages . | gzip -9c > Packages.gz
 
 update-rc.d apache2 defaults
 update-rc.d xinetd defaults
-update-rc.d cobblerd defaults
+#update-rc.d cobblerd defaults
 #update-rc.d puppetmaster defaults
