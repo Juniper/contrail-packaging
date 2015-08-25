@@ -135,7 +135,9 @@ contrail-install-vcenter-plugin:
 	(cd vcenter-plugin && make all)
 
 server-manager-all: contrail-server-manager-deb \
+                    contrail-server-manager-lite-deb \
                     contrail-server-manager-client-deb \
+                    contrail-server-manager-cliff-client-deb \
                     contrail-server-manager-monitoring-deb \
                     contrail-server-manager-installer-deb
 
@@ -267,6 +269,14 @@ contrail-server-manager-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
+contrail-server-manager-lite-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-lite)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-lite/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
 contrail-server-manager-client-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-client)
 	rm -rf ${BUILDDIR}
@@ -274,6 +284,17 @@ contrail-server-manager-client-deb:
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-client/debian ${BUILDDIR}
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-server-manager-cliff-client-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-cliff-client)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	@echo "$(VERSION)" > $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/contrail_version.txt
+	@echo "$(CONTRAIL_SKU)" > $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/contrail_sku.txt
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-cliff-client/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+	(mkdir -p $(SB_TOP)/build/tools/; cp $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/servermanagercli-$(VERSION)-$(CONTRAIL_SKU).tar.gz $(SB_TOP)/build/tools/)
 
 contrail-server-manager-monitoring-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-monitoring)

@@ -2,11 +2,33 @@
 
 set -e
 
-
 echo "running post install"
+HOST_IP_LIST=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp'`
+HOST_IP=`echo $HOST_IP_LIST | cut -d' ' -f1`
+if [ -f /opt/contrail/contrail_server_manager/IP.txt ];
+then
+   HOST_IP=$(cat /opt/contrail/contrail_server_manager/IP.txt) 
+fi
+echo $HOST_IP
+DOMAIN=`hostname -d`
+rel=`lsb_release -r`
 
-cp -r /etc/contrail_smgr/cobbler /etc/
-cp -r /etc/contrail_smgr/puppet /etc/
+# Stage I - Install required packages
+easy_install argparse
+easy_install paramiko
+easy_install pycrypto
+easy_install ordereddict
+easy_install pycurl
+pip install xmltodict
+
+# Stage 2: Copy config files into place
+
+# Copy cobbler pxesystem template file for esxi
+mv /etc/cobbler/pxe/pxesystem_esxi.template /etc/cobbler/pxe/pxesystem_esxi.template-save
+cp /etc/contrail_smgr/cobbler/pxesystem_esxi.template /etc/cobbler/pxe
+# Copy cobbler boot.cfg template file for esxi5.5
+cp -f /etc/contrail_smgr/cobbler/bootcfg_esxi55.template /etc/cobbler/pxe
+# Backup all the distro_signatures files
 if [ -f /etc/cobbler/distro_signatures.json ]; then
     mv /etc/cobbler/distro_signatures.json /etc/cobbler/distro_signatures.json-save
 fi
@@ -15,107 +37,116 @@ if [ -f /var/lib/cobbler/distro_signatures.json ]; then
 fi
 cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /etc/cobbler/distro_signatures.json
 cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /var/lib/cobbler/distro_signatures.json
-cd /etc/contrail_smgr/contrail-centos-repo
-createrepo .
-cd /etc/contrail_smgr/contrail-redhat-repo
-createrepo .
 
-# Copy cobbler boot.cfg template file for esxi5.5
-cp -f /etc/contrail_smgr/cobbler/bootcfg_esxi55.template /etc/cobbler/pxe
+cp /etc/contrail_smgr/smgr.conf /etc/apache2/sites-available/
 
-# Copy cobbler pxesystem template file for esxi
-mv /etc/cobbler/pxe/pxesystem_esxi.template /etc/cobbler/pxe/pxesystem_esxi.template-save
-cp /etc/contrail_smgr/cobbler/pxesystem_esxi.template /etc/cobbler/pxe
-#cp /etc/contrail_smgr/cobbler/dhcp.template.u /etc/cobbler/dhcp.template
-cp /etc/contrail_smgr/cobbler/named.template.u /etc/cobbler/named.template
-cp /etc/contrail_smgr/cobbler/named.conf.options.u /etc/bind/named.conf.options
-
-mkdir -p /var/www/html
-mkdir -p /var/www/html/kickstarts
 cp -r /etc/contrail_smgr/kickstarts /var/www/html/
-mkdir -p /var/www/html/contrail
-mkdir -p /var/www/html/contrail/config_file
-mkdir -p /var/www/html/contrail/images
-mkdir -p /var/log/contrail-server-manager
-mkdir -p /etc/mail/
-cp /etc/contrail_smgr/sendmail.cf /etc/mail/
 
-# Saving and replacing default NTP configuration (Server Manager node acts as NTP Server for Cluster)
-mv /etc/ntp.conf /etc/ntp.conf.default
-cp /etc/contrail_smgr/ntp.conf /etc/ntp.conf
+#cp /etc/contrail_smgr/sendmail.cf /etc/mail/
+#mv /etc/ntp.conf /etc/ntp.conf.default
+#cp /etc/contrail_smgr/ntp.conf /etc/ntp.conf
+chown -R puppet:puppet /var/log/contrail-server-manager/provision
+# Copying the specific puppet conf files needed for provisioning:
+cp /etc/contrail_smgr/puppet/auth.conf /etc/puppet/
+cp /etc/contrail_smgr/puppet/autosign.conf /etc/puppet/
+cp /etc/contrail_smgr/puppet/fileserver.conf /etc/puppet/
+cp /etc/contrail_smgr/puppet/hiera.yaml /etc/puppet/
+cp /etc/contrail_smgr/puppet/puppet.conf /etc/puppet/
+cp -r /etc/contrail_smgr/puppet/environments /etc/puppet/
+cp -u /etc/contrail_smgr/puppet/puppet_init_rd /srv/www/cobbler/aux/puppet
 
-#cp /usr/bin/server_manager/dhcp.template /etc/cobbler/
-#cp -r /usr/bin/server_manager/kickstarts /var/www/html/
-mkdir -p /var/www/html/contrail
-mkdir -p /var/www/html/thirdparty_packages
-
-cp -u /etc/puppet/puppet_init_rd /srv/www/cobbler/aux/puppet
-easy_install argparse
-easy_install paramiko
-easy_install pycrypto
-easy_install ordereddict
-
-mkdir -p /etc/contrail_smgr/images/
-
+# Stage 3 : Setting configs manually
+# Adding server and Public DNS to /etc/resolv.conf if not present
+set +e
+grep "nameserver $HOST_IP" /etc/resolv.conf
+if [ $? != 0 ]; then
+  echo "nameserver $HOST_IP" >> /etc/resolv.conf
+fi
+grep "nameserver 8.8.8.8" /etc/resolv.conf
+if [ $? != 0 ]; then
+  echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+fi
 sed -i 's/puppet_auto_setup: 0/puppet_auto_setup: 1/g' /etc/cobbler/settings
 sed -i 's/sign_puppet_certs_automatically: 0/sign_puppet_certs_automatically: 1/g' /etc/cobbler/settings
-
 sed -i 's/remove_old_puppet_certs_automatically: 0/remove_old_puppet_certs_automatically: 1/g' /etc/cobbler/settings
 sed -i 's/manage_dhcp: 0/manage_dhcp: 1/g' /etc/cobbler/settings
 sed -i 's/manage_dns: 0/manage_dns: 1/g' /etc/cobbler/settings
+sed -i 's/pxe_just_once: 0/pxe_just_once: 1/g' /etc/cobbler/settings
 sed -i 's|webdir: /var/www/cobbler|webdir: /srv/www/cobbler|g' /etc/cobbler/settings
-rel=`lsb_release -r`
-if [[ "$rel" == *"14.04"* ]]; then
-    echo "Not seding files for 14.04"
-else
-    sed -i ':a;N;$!ba;s:DocumentRoot /var/www\n:DocumentRoot /var/www/html\n:g' /etc/apache2/sites-available/default
-    sed -i 's:<Directory /var/www/>:<Directory /var/www/html/>:g' /etc/apache2/sites-available/default
-fi
-
-HOST_IP_LIST=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp'`
-HOST_IP=`echo $HOST_IP_LIST | cut -d' ' -f1`
-if [ -f /opt/contrail/contrail_server_manager/IP.txt ];
-then
-   HOST_IP=$(cat /opt/contrail/contrail_server_manager/IP.txt) 
-fi
-echo $HOST_IP
-
 # Set IP address in cobbler settings file
-sed -i "s/__\$IPADDRESS__/$HOST_IP/" /etc/cobbler/settings
-update-rc.d contrail-server-manager defaults
-#/sbin/chkconfig --add contrail-server-manager
+sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /etc/cobbler/settings
+sed -i "s/bind_master:.*/bind_master: $HOST_IP/g" /etc/cobbler/settings
+sed -i "s/next_server:.*/next_server: $HOST_IP/g" /etc/cobbler/settings
+sed -i "s/server:.*/server: $HOST_IP/g" /etc/cobbler/settings
 sed -i "s/module = authn_.*/module = authn_testing/g" /etc/cobbler/modules.conf
 
+set -e
+
+if [[ "$rel" == *"14.04"* ]]; then
+ 
+  # Cobbler config for 14.04
+  mkdir -p /etc/apache2/conf-available/
+  cp /opt/contrail/contrail_server_manager/cobbler_14.conf /etc/apache2/conf.d/cobbler.conf
+  cp /opt/contrail/contrail_server_manager/cobbler_web_14.conf /etc/apache2/conf.d/cobbler_web.conf
+  cp /opt/contrail/contrail_server_manager/cobbler_14.conf /etc/cobbler/cobbler.conf
+  cp /opt/contrail/contrail_server_manager/cobbler_web_14.conf /etc/cobbler/cobbler_web.conf
+  cp /etc/apache2/conf.d/cobbler.conf /etc/apache2/conf-available/
+  cp /etc/apache2/conf.d/cobbler_web.conf /etc/apache2/conf-available/
+  a2enconf cobbler cobbler_web
+  cp -r /srv/www/cobbler /var/www/cobbler
+  cp -r /srv/www/cobbler_webui_content /var/www/cobbler_webui_content
+  chmod 777 /var/lib/cobbler/webui_sessions/
+  # The secret key file can be brought in by SM install - only need to sed the key into settings.py as below
+  SECRET_KEY=$(python -c 'import re;from random import choice; import sys; sys.stdout.write(re.escape("".join([choice("abcdefghijklmnopqrstuvwxyz0123456789^&*(-_=+)") for i in range(100)])))')
+  sed -i "s/^SECRET_KEY = .*/SECRET_KEY = '${SECRET_KEY}'/" /usr/share/cobbler/web/settings.py
+else
+  sed -i ':a;N;$!ba;s:DocumentRoot /var/www\n:DocumentRoot /var/www/html\n:g' /etc/apache2/sites-available/default
+  sed -i 's:<Directory /var/www/>:<Directory /var/www/html/>:g' /etc/apache2/sites-available/default
+ 
+  # Cobbler config for 12.04
+  a2enmod version
+  setenforce 0
+  cp -r /srv/www/cobbler /var/www/cobbler
+  cp -r /srv/www/cobbler_webui_content /var/www/cobbler_webui_content
+  cp /opt/contrail/contrail_server_manager/cobbler.conf /etc/apache2/conf.d/
+  cp /opt/contrail/contrail_server_manager/cobbler_web.conf /etc/apache2/conf.d/
+  cp /opt/contrail/contrail_server_manager/cobbler.conf /etc/cobbler/
+  cp /opt/contrail/contrail_server_manager/cobbler_web.conf /etc/cobbler/
+  sed -i "s/django.conf.urls /django.conf.urls.defaults /g" /usr/share/cobbler/web/cobbler_web/urls.py
+  chmod 777 /var/lib/cobbler/webui_sessions/
+fi
+a2ensite smgr.conf
+a2enmod proxy
+a2enmod proxy_http
+a2enmod wsgi
+a2dismod mpm_event
+a2enmod mpm_worker
+
+update-rc.d contrail-server-manager defaults
 # Set IP address in server manager configuration file.
 sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
-
 # Set IP Address in smgr_dhcp_event.py DHCP hook.
 sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/smgr_dhcp_event.py
-
 sed -i "s/cobbler_username         = cobbler/cobbler_username         = testing/g" /opt/contrail/server_manager/sm-config.ini
 sed -i "s/cobbler_password         = cobbler/cobbler_password         = testing/g" /opt/contrail/server_manager/sm-config.ini
 #sed -i 's:"/var/named":"/var/cache/bind":g' /etc/cobbler/named.template
 #sed -i 's:/var/named/data:/var/cache/bind:g' /etc/cobbler/named.template
 #sed -i 's:data/named.run:named.run:g' /etc/cobbler/named.template
 
-service apache2 restart
-service xinetd restart
-service cobblerd restart
-
-POSTFIX_CHECK=$(dpkg -l \grep postfix)
+set +e
+POSTFIX_CHECK=$(dpkg -l | grep postfix)
 if [ "$INSTALLED" != "" ]; then
     service postfix stop
 fi
+set -e
 service sendmail restart
 
-#chkconfig apache2 on
-#chkconfig puppetmaster on
-#chkconfig contrail_smgrd on
-
-cd /var/www/html/thirdparty_packages
+pushd /var/www/html/thirdparty_packages
 dpkg-scanpackages . | gzip -9c > Packages.gz
-
+popd
 update-rc.d apache2 defaults
 update-rc.d xinetd defaults
 update-rc.d cobblerd defaults
-update-rc.d puppetmaster defaults
+service apache2 restart
+service xinetd restart
+service cobblerd restart

@@ -13,7 +13,7 @@ export SB_TOP := $(shell pwd | sed -re "s/\/build\/debian\/contrail-server-manag
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export src_path := $(SB_TOP)/tools/contrail-server-manager/src/
 export build_root := $(SB_TOP)/build/debian/contrail-server-manager-client/debian/contrail-server-manager-client
-
+export contrail_provisioning_path := $(SB_TOP)/tools/provisioning/contrail_provisioning
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
 BUILDTAG =
@@ -41,7 +41,9 @@ override_dh_auto_install:
 	cp -r $(src_path)/client/*.py $(build_root)/opt/contrail/server_manager/client/
 	cp -r $(src_path)/client/*.json $(build_root)/opt/contrail/server_manager/client/
 	cp -r $(src_path)/client/server-manager $(build_root)/opt/contrail/server_manager/client/
-	cp -r $(src_path)/client/sm-client-config.ini  $(build_root)/opt/contrail/server_manager/client/
+	install -p -m 755 $(src_path)/client/sm-client-config.ini  $(build_root)/opt/contrail/server_manager/client/
+	install -p -m 755 $(src_path)/kickstarts/interface_setup.py $(build_root)/opt/contrail/server_manager/client/interface_setup.py
+	install -p -m 755 $(contrail_provisioning_path)/common/staticroute_setup.py $(build_root)/opt/contrail/server_manager/client/staticroute_setup.py
 
 override_dh_shlibdeps:
 
