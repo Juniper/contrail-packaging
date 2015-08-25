@@ -1,0 +1,7 @@
+Package: *
+Pin: origin ""
+Pin-Priority: 990
+
+Package: *
+Pin: release o=Debian
+Pin-Priority: -10

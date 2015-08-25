@@ -130,6 +130,7 @@ all_vmware: ${PACKAGES_VMWARE}
 	@echo "Build complete"
 
 server-manager-all: contrail-server-manager-deb \
+                    contrail-server-manager-lite-deb \
                     contrail-server-manager-client-deb \
                     contrail-server-manager-monitoring-deb \
                     contrail-server-manager-installer-deb
@@ -259,6 +260,14 @@ contrail-server-manager-deb:
 	rm -rf ${BUILDDIR}
 	mkdir -p ${BUILDDIR}/debian
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-server-manager-lite-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-lite)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-lite/debian ${BUILDDIR}
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 

@@ -9,10 +9,11 @@
 export DH_VERBOSE=1
 
 SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/\/build\/debian\/contrail-server-manager//g")
+export SB_TOP := $(shell pwd | sed -re "s/\/build\/debian\/contrail-server-manager-lite//g")
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export src_path := $(SB_TOP)/tools/contrail-server-manager/src/
-export build_root := $(SB_TOP)/build/debian/contrail-server-manager/debian/contrail-server-manager
+#export src_path := /build/pmiriyala/r22_smlite_1/src/
+export build_root := $(SB_TOP)/build/debian/contrail-server-manager-lite/debian/contrail-server-manager-lite
 #python_version := $(PYTHONPATH=$(PYTHONPATH):$(build_root)/../tools/packaging/tools/scripts/ python -c "import sys; print '%s.%s' % sys.version_info[0:2]")
 #python_dir := python$(python_version)
 python_version=$(shell python -c "import sys; print '%s.%s' % sys.version_info[0:2]")
@@ -100,7 +101,6 @@ override_dh_auto_install:
 	cp -r $(src_path)/server_mgr_validations.py $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/role_sequence.json $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/smgr.conf $(build_root)/etc/contrail_smgr/
-
 	
 	cp -r $(src_path)/third_party/bottle.py  $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/utils/send_mail.py $(build_root)/opt/contrail/server_manager/
@@ -111,7 +111,7 @@ override_dh_auto_install:
 	cp -r $(src_path)/tags.ini  $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/logger.conf $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/contrail-server-manager.u $(build_root)/etc/init.d/contrail-server-manager
-	cp -r $(src_path)/contrail-server-manager.start.u  $(build_root)/usr/sbin/contrail-server-manager
+	cp -r $(src_path)/contrail-server-manager-lite.start.u  $(build_root)/usr/sbin/contrail-server-manager
 	cp -r $(src_path)/utils/sendmail.cf $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/ntp.conf $(build_root)/etc/contrail_smgr/
 	
