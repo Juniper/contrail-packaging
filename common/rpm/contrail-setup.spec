@@ -152,13 +152,13 @@ ln -sbf %{_contrailopt}/bin/* %{_bindir}
 %{_contrailopt}/contrail_packages/README
 %{_contrailopt}/cfgm_utils.tgz
 %{_contrailopt}/dns_scripts.tgz
-%{_contrailopt}/python_packages/paramiko-*.tar.gz
-%{_contrailopt}/python_packages/Fabric-*.tar.gz
-%{_contrailopt}/python_packages/pycrypto-*.tar.gz
 %{python_sitelib}/ContrailProvisioning-*.egg-info
 %{python_sitelib}/contrail_provisioning
 %if 0%{?rhel}
 %{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz
+%{_contrailopt}/python_packages/paramiko-*.tar.gz
+%{_contrailopt}/python_packages/Fabric-*.tar.gz
+%{_contrailopt}/python_packages/pycrypto-*.tar.gz
 %endif
 %if 0%{?_fileList:1}
     /etc/contrail/rpm_list.txt
