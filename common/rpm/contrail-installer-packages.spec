@@ -52,7 +52,6 @@ Contrail Installer Packages - Contains packages to install contrail-fabric
 rm -rf %{buildroot}
 install -d -m 755 %{buildroot}%{_contrailopt}
 install -d -m 755 %{buildroot}/etc/
-install -d -m 755 %{buildroot}/etc/yum.repos.d/
 install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer_packages
 install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer_repo
 install -d -m 755 %{buildroot}%{_contrailopt}/python-packages
@@ -63,7 +62,15 @@ install -p -m 755 %{_builddir}/../distro/third_party/pycrypto-*.tar.gz %{buildro
 install -p -m 755 %{_builddir}/../distro/third_party/Fabric-*.tar.gz %{buildroot}%{_contrailopt}/python-packages/
 
 install -p -m 755 %{SETUP_FILE} %{buildroot}%{_contrailopt}/contrail_installer_packages/setup.sh
+%if 0%{?rhel}
+install -d -m 755 %{buildroot}/etc/yum.repos.d/
 install -p -m 755 %{_builddir}/../tools/packaging/build/contrail-installer.repo %{buildroot}/etc/yum.repos.d/contrail-installer.repo
+%endif
+%if 0%{?suse_version}
+install -d -m 755 %{buildroot}/etc/zypp/repos.d/
+install -p -m 755 %{_builddir}/../tools/packaging/build/contrail-installer.repo %{buildroot}/etc/zypp/repos.d/contrail-installer.repo
+%endif
+
 
 if [ -f %{_flist} ]; then \
     echo "Using TGZ FILE = %{_flist}"; \
@@ -77,7 +84,13 @@ fi
 %files
 %defattr(-, root, root)
 /opt/*
+%if 0%{?rhel}
 /etc/yum.repos.d/*
+%endif
+%if 0%{?suse_version}
+etc/zypp/repos.d/*
+%endif
+
 
 %changelog
 * Wed Apr 22 2015 - npchandran@juniper.net

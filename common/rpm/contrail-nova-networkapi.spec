@@ -23,8 +23,11 @@ Group:		Applications/System
 License:	Commercial
 URL:		http://www.juniper.net/
 Vendor:		Juniper Network Inc
-
-BuildRequires:	python2-devel	
+%if 0%{?rhel}
+BuildRequires: python2-devel
+%else
+BuildRequires: python-devel
+%endif
 BuildRequires:	python-setuptools
 #Requires:	
 
