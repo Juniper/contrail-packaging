@@ -1,7 +1,12 @@
 #!/bin/bash
 
+repopath=/etc/yum.repos.d/
+if [ -d /etc/zypp/repos.d ]; then
+    repopath=/etc/zypp/repos.d/
+fi
+
 # create contrail installer repo
-cat << __EOT__ > /etc/yum.repos.d/contrail-install.repo
+cat << __EOT__ > $repopath/contrail-install.repo
 [contrail_install_repo]
 name=contrail_install_repo
 baseurl=file:///opt/contrail/contrail_install_repo/
