@@ -480,7 +480,9 @@ if [ "$SM" != "" ]; then
   apt-get update
 
   #apt-get --no-install-recommends -y install curl
+  if [ ${rel[1]} == "14.04"  ]; then
   apt-get --no-install-recommends -y install libpython2.7=2.7.6-8ubuntu0.2
+  fi
   # Install puppet packages
   if [ -d /var/lib/puppet/ssl ]; then
       mv /var/lib/puppet/ssl /var/lib/puppet/ssl_$(date +"%d_%m_%y_%H_%M_%S")
