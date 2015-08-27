@@ -43,7 +43,8 @@ class BasePackager(Utils):
         self.make_targets_file     = self.expanduser(kwargs.get('make_targets_file', None))
         pkg_types                  = {'ubuntu': 'deb', 'centos': 'rpm', \
                                       'redhatenterpriselinuxserver': 'rpm', 'fedora': 'rpm',
-                                      'centoslinux': 'rpm'}
+                                      'centoslinux': 'rpm',
+                                      'suselinuxenterpriseserver': 'rpm'}
         platform                   = self.get_platform_info(kwargs['os_version'])
         self.platform              = platform['default'][0]
         self.cache_subdir          = platform['formatted']
