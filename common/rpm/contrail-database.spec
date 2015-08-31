@@ -134,6 +134,7 @@ done
 popd
 
 %post
+chkconfig contrail-database on
 # this is upgrade from 1.02 release to newer i.e cassandra 1.1.7 to 1.2.11
 if [ -f /usr/share/cassandra/conf/cassandra.yaml.rpmsave ]; then
     CASSANDRA_CONF_OLD=/usr/share/cassandra/conf/cassandra.yaml.rpmsave
