@@ -83,6 +83,7 @@ override_dh_auto_install:
 	# Copy/install files
 	install -p -m 755 $(src_path)/reprepro/conf/distributions $(build_root)/opt/contrail/server_manager/reprepro/conf/distributions
 	install -p -m 755 $(src_path)/reprepro/conf/override $(build_root)/opt/contrail/server_manager/reprepro/conf/override
+	install -p 755 $(src_path)/kickstarts/interface_setup.py $(build_root)/opt/contrail/server_manager/client/interface_setup.py
 	cp -r $(src_path)/server_mgr_main.py $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/server_mgr_db.py  $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/server_mgr_cobbler.py  $(build_root)/opt/contrail/server_manager/
