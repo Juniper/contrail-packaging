@@ -263,7 +263,6 @@ if [ "$SM" != "" ]; then
     fi
   else
     if [ "$SMLITE" != "" ]; then
-  echo "Installing Server Manager Lite Package"
        echo "$space$arrow$install_str Server Manager Lite"
        apt-get -y install contrail-server-manager-lite >> $log_file 2>&1
        echo "$space$space$arrow Starting Server Manager Lite Service"

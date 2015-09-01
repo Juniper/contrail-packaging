@@ -18,6 +18,8 @@ easy_install argparse
 easy_install paramiko
 easy_install pycrypto
 easy_install ordereddict
+easy_install pycurl
+pip install xmltodict
 
 # Stage 2: Copy config files into place
 
