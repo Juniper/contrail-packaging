@@ -22,7 +22,7 @@ cp -r /etc/contrail_smgr/kickstarts /var/www/html/
 cp /etc/contrail_smgr/sendmail.cf.sample /etc/mail/sendmail.cf
 mv /etc/ntp.conf /etc/ntp.conf.default
 cp /etc/contrail_smgr/ntp.conf.sample /etc/ntp.conf
-
+chown -R puppet:puppet /var/log/contrail-server-manger/provision
 easy_install argparse
 easy_install paramiko
 easy_install pycrypto
