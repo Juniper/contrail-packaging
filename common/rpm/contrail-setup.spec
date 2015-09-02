@@ -49,6 +49,9 @@ Requires:	    openstack-utils
 #Requires:	    python-Fabric
 Requires:	    python-crypto
 %endif
+%if 0%{?suse_version}
+Requires:           python-pycrypto
+%endif
 %if 0%{?rhel}
 Requires:	    python-argparse
 Requires:	    gdb
