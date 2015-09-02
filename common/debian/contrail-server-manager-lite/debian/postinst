@@ -27,6 +27,8 @@ easy_install argparse
 easy_install paramiko
 easy_install pycrypto
 easy_install ordereddict
+easy_install pycurl
+pip install xmltodict
 
 # Copying the specific puppet conf files needed for provisioning:
 cp /etc/contrail_smgr/puppet/auth.conf /etc/puppet/
