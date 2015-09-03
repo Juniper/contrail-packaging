@@ -51,6 +51,19 @@ function usage()
 function setup_smgr_repos()
 {
 
+  echo "$space$arrow Cleaning up existing sources.list and Server Manager sources file"
+  local_repo="deb file:/opt/contrail/contrail_server_manager ./"
+  set +e
+  grep --quiet "$local_repo" /etc/apt/sources.list
+  exit_status=$?
+  if [ $exit_status == "0" ]; then
+    sed -i "s|$local_repo||g" /etc/apt/sources.list
+  fi
+  if [ -f /etc/apt/sources.list.d/smgr_sources.list ]; then
+    rm /etc/apt/sources.list.d/smgr_sources.list
+  fi
+  set -e
+
   # Push this to makefile - Copy only the file we need into installer.
   if [ ${rel[1]} == "14.04"  ]; then
     cp /opt/contrail/contrail_server_manager/ubuntu_14_04_1_sources.list /etc/apt/sources.list.d/smgr_sources.list
@@ -75,6 +88,8 @@ function setup_smgr_repos()
   dpkg-scanpackages . | gzip -9c > Packages.gz | >> $log_file 2>&1
   popd >> $log_file 2>&1
  
+  rm /tmp/local_repo
+  rm /tmp/new_smgr_sources.list
   echo "deb file:/opt/contrail/contrail_server_manager ./" > /tmp/local_repo
   cat /tmp/local_repo /etc/apt/sources.list.d/smgr_sources.list > /tmp/new_smgr_sources.list
   mv /tmp/new_smgr_sources.list /etc/apt/sources.list.d/smgr_sources.list
