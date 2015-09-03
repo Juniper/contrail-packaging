@@ -48,9 +48,20 @@ function usage()
     echo ""
 }
 
-function setup_smgr_repos()
+function cleanup_smgr_repos()
 {
 
+  echo "$space$arrow Cleaning up existing sources.list and Server Manager sources file"
+  local_repo="deb file:/opt/contrail/contrail_server_manager ./"
+  sed -i "s|$local_repo||g" /etc/apt/sources.list
+  if [ -f /etc/apt/sources.list.d/smgr_sources.list ]; then
+    rm /etc/apt/sources.list.d/smgr_sources.list
+  fi
+
+}
+
+function setup_smgr_repos()
+{
   # Push this to makefile - Copy only the file we need into installer.
   if [ ${rel[1]} == "14.04"  ]; then
     cp /opt/contrail/contrail_server_manager/ubuntu_14_04_1_sources.list /etc/apt/sources.list.d/smgr_sources.list
@@ -85,8 +96,8 @@ function setup_smgr_repos()
   apt_auth="APT::Get::AllowUnauthenticated \"true\";"
   set +e
   grep --quiet "$apt_auth" /etc/apt/apt.conf
-  set -e
   exit_status=$?
+  set -e
   if [ $exit_status != "0" ]; then
     echo "$apt_auth" >> /etc/apt/apt.conf
   fi
@@ -188,6 +199,7 @@ while [ "$1" != "" ]; do
     shift
 done
 
+cleanup_smgr_repos
 setup_smgr_repos
 
 if [ "$SM" != "" ]; then
@@ -299,7 +311,7 @@ if [ "$WEBUI" != "" ] && [ "$NOWEBUI" == "" ]; then
   echo "$arrow Completed Installing Web Server Manager"
 fi
 
-if [ "$SMMON" != "" ]; then
+if [ "$SMMON" != "" ] && [ "$NOSMMON" == "" ]; then
   echo "$arrow Server Manager Monitoring"
   echo "$space$arrow$install_str Server Manager Monitoring"
   apt-get -y install contrail-server-manager-monitoring >> $log_file 2>&1
