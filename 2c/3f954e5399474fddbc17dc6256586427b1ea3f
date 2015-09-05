@@ -1,0 +1,8 @@
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Approved+1: prasad miriyala <pmiriyala@juniper.net>
+Code-Review+2: prasad miriyala <pmiriyala@juniper.net>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Fri, 04 Sep 2015 20:26:36 -0700
+Reviewed-on: https://review.opencontrail.org/13596
+Project: Juniper/contrail-packaging
+Branch: refs/heads/R2.22-dev
