@@ -26,6 +26,10 @@ ifeq ($(CONTRAIL_SKU),juno)
     CONTRAIL_OPENSTACK := contrail-openstack-juno-deb
     CONTRAIL_HEAT := contrail-heat-deb
     CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
+    ifeq ($(SERIES),trusty)
+        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
+        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
+    endif
 endif
 
 ifeq ($(CONTRAIL_SKU),icehouse)
