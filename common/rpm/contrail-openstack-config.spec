@@ -37,9 +37,6 @@ Requires: mysql-server
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: python-zope-interface
-%if 0%{?rhel} 
-Requires: python-importlib
-%endif
 Requires: euca2ools >= 1.0-2contrail
 Requires: m2crypto
 Requires: java-1.7.0-openjdk
@@ -51,7 +48,7 @@ Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
 Requires: ifmap-server >= 0.3.2-2contrail
 Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
 Requires: python-contrail >= %{_verstr}-%{_relstr}
-%if 0%{?rhel} <= 6
+%if 0%{?rhel} && 0%{?rhel} <= 6
 Requires: python-importlib
 %endif
 

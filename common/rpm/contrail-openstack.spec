@@ -36,16 +36,13 @@ Requires: memcached
 Requires: openstack-nova-novncproxy = 2013.2-2contrail
 Requires: python-glance
 Requires: python-glanceclient
-%if 0%{?rhel} 
-Requires: python-importlib
-%endif
 Requires: euca2ools >= 1.0-2contrail
 Requires: m2crypto
 Requires: qpid-cpp-server
 Requires: haproxy
 Requires: rabbitmq-server >= 3.5.0
 Requires: supervisor
-%if 0%{?rhel} <= 6
+%if 0%{?rhel} && 0%{?rhel} <= 6
 Requires: python-importlib
 %endif
 

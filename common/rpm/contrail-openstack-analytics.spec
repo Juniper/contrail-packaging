@@ -32,7 +32,7 @@ Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
 Requires: python-contrail >= %{_verstr}-%{_relstr}
-%if 0%{?rhel} <= 6
+%if 0%{?rhel} && 0%{?rhel} <= 6
 Requires: python-importlib
 %endif
 

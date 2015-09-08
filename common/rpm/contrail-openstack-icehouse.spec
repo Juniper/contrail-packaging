@@ -41,7 +41,7 @@ Requires: qpid-cpp-server
 Requires: haproxy
 Requires: rabbitmq-server >= 3.5.0
 Requires: supervisor
-%if 0%{?rhel} <= 6
+%if 0%{?rhel} && 0%{?rhel} <= 6
 Requires: python-importlib
 %endif
 %if 0%{?centos} >= 6
