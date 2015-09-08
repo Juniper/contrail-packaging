@@ -39,7 +39,7 @@ contrail vrouter init packages provides init files
 install -d -m 755 %{buildroot}%{_opt_bin}
 install -d -m 755 %{buildroot}%{_contrailetc}
 install -d -m 755 %{buildroot}%{_supervisordir}
-install -d -m 755 %{buildroot}/etc/rc.d/init.d
+install -d -m 755 %{buildroot}/%{_initddir}
 install -d -m 777 %{buildroot}/var/log/contrail
 pushd %{_builddir}/..
 install -p -m 644 %{_nodemgr_config}/contrail-vrouter-nodemgr.ini %{buildroot}%{_supervisordir}

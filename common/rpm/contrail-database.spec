@@ -118,10 +118,10 @@ popd
 install -D -m 755 %{_distropkgdir}/supervisord_contrail_database.initd          %{buildroot}%{_initddir}/supervisor-database
 %endif
 
-install -D -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/supervisor-database
+install -D -m 755 %{SOURCE1} %{buildroot}%{_initddir}/supervisor-database
 install -D -m 755 %{SOURCE2} %{buildroot}%{_sysconfdir}/contrail/supervisord_database.conf
-install -D -m 755 %{SOURCE3} %{buildroot}%{_sysconfdir}/rc.d/init.d/contrail-database
-install -D -m 755 %{SOURCE4} %{buildroot}%{_sysconfdir}/rc.d/init.d/kafka
+install -D -m 755 %{SOURCE3} %{buildroot}%{_initddir}/contrail-database
+install -D -m 755 %{SOURCE4} %{buildroot}%{_initddir}/kafka
 
 
 pushd %{buildroot}
@@ -187,9 +187,9 @@ fi
 %{_initddir}/supervisor-database
 %endif
 %doc
-%{_sysconfdir}/rc.d/init.d/contrail-database
-%{_sysconfdir}/rc.d/init.d/kafka
-%{_sysconfdir}/rc.d/init.d/supervisor-database
+%{_initddir}/contrail-database
+%{_initddir}/kafka
+%{_initddir}/supervisor-database
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_database.conf
 
 %changelog
