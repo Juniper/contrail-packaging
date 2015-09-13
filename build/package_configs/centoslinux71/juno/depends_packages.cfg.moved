@@ -1078,13 +1078,9 @@ md5   = b28aad6f2a9c6710b3d7d5eb5c783c53
 file  = nmap-ncat-6.40-4.el7.x86_64.rpm
 md5   = a6488dc316d1d38b3a18ae3af305d83b
 
-[nodejs-0.10.33-1.el7]
-file  = nodejs-0.10.33-1.el7.x86_64.rpm
-md5   = bbbeb811432cdbd8a5fa89de6cd7b6c5
-
-[nodejs-0.8.15-1.el7]
-file  = nodejs-0.8.15-1.el7.x86_64.rpm
-md5   = a8c1a3218a692a6588eff1c24f9c2515
+[nodejs-0.10.35-1.el7]
+file  = nodejs-0.10.35-1contrail.el7.x86_64.rpm
+md5   = 788131e83c0dc24b64f5623c9c11e7f4
 package_type = contrail-install-packages, contrail-thirdparty-packages
 
 [novnc-0.5.1-2.el7]

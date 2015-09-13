@@ -411,7 +411,7 @@ if [ "$SM" != "" ]; then
     apt-get -y install puppetmaster="3.7.3-1puppetlabs1"
     service puppetmaster stop
     service apache2 start
-    gdebi -n nodejs_0.8.15-1contrail1_amd64.deb
+    gdebi -n nodejs_0.10.35-1contrail1_amd64.deb
   else
     wget https://apt.puppetlabs.com/puppetlabs-release-precise.deb
     gdebi -n puppetlabs-release-precise.deb
@@ -419,7 +419,7 @@ if [ "$SM" != "" ]; then
     apt-get -y install puppet-common="3.7.3-1puppetlabs1"
     apt-get -y install puppetmaster-common="3.7.3-1puppetlabs1"
     apt-get -y install puppetmaster="3.7.3-1puppetlabs1"
-    gdebi -n nodejs_0.8.15-1contrail1_amd64.deb
+    gdebi -n nodejs_0.10.35-1contrail1_amd64.deb
   fi
 
   if [ -e /etc/init.d/apparmor ]; then
