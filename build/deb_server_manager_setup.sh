@@ -219,7 +219,9 @@ if [ "$SM" != "" ]; then
     apt-get --no-install-recommends -y install libpython2.7=2.7.6-8ubuntu0.2 >> $log_file 2>&1
   fi
   apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppet-common="3.7.3-1puppetlabs1" puppetmaster-common="3.7.3-1puppetlabs1" >> $log_file 2>&1
+  cp /opt/contrail/contrail_server_manager/puppet.conf /etc/puppet/
   apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install nodejs=0.8.15-1contrail1 >> $log_file 2>&1
+
   if [ "$CERT_NAME" != "" ]; then
     host=$CERT_NAME
     echo "$space$arrow Creating puppet certificate with name $host"

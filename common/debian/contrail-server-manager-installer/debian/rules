@@ -74,7 +74,7 @@ override_dh_auto_install:
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/cobbler_web.conf  $(buildroot)$(_contrailopt)/contrail_server_manager/cobbler_web.conf
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/cobbler_14.conf  $(buildroot)$(_contrailopt)/contrail_server_manager/cobbler_14.conf
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/cobbler_web_14.conf  $(buildroot)$(_contrailopt)/contrail_server_manager/cobbler_web_14.conf
-
+	cp $(src_path)/puppet/puppet.conf $(buildroot)$(_contrailopt)/contrail_server_manager/puppet.conf
 	# install TGZ file and packages list file
 	if [ -f $(TGZ_FILE) ]; then echo "Using TGZ FILE = $(TGZ_FILE)"; install -p -m 644 $(TGZ_FILE) $(buildroot)$(_contrailopt)/contrail_server_manager/contrail_server_manager_packages.tgz; else echo "ERROR: TGZ file containing all debs is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
 override_dh_shlibdeps:
