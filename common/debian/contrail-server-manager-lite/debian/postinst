@@ -96,6 +96,8 @@ update-rc.d apache2 defaults
 update-rc.d xinetd defaults
 
 a2ensite smgr.conf
+a2dismod mpm_event
+a2enmod mpm_worker
 
 service apache2 restart
 service xinetd restart
