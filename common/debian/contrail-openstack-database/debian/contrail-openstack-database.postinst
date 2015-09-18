@@ -4,6 +4,7 @@ if [ "$1" = "configure" -a -z "$2" ]; then
     echo "Running Postinst for contrail-openstack-database install.."
     sudo service cassandra stop
     sudo rm -rf /var/lib/cassandra
-    sudo rm -rf /etc/init.d/cassandra
+    sudo update-rc.d cassandra disable
+    sudo update-rc.d contrail-database defaults
 fi
 echo "Postinst for contrail-openstack-database done"
