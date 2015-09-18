@@ -58,6 +58,9 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	rm -rf $(buildroot)
+	mkdir -p $(buildroot)
+	mkdir -p $(buildroot)$(_contrailopt)
+	mkdir -p $(buildroot)$(_contrailopt)/contrail_server_manager
 	# Setup directories
 	@echo "making deb for contrail-server-manager-installer"
 	install -d -m 755 $(buildroot)
