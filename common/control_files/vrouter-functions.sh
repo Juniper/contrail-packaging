@@ -18,6 +18,7 @@ function pkt_setup () {
         fi
         echo $str > $f/rps_cpus
     done
+    ifconfig $1 up
 }
 
 function insert_vrouter() {
