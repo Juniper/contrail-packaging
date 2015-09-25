@@ -1,0 +1,8 @@
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Approved+1: Karl Klashinsky <klash@juniper.net>
+Code-Review+2: Karl Klashinsky <klash@juniper.net>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Fri, 25 Sep 2015 07:39:25 -0700
+Reviewed-on: https://review.opencontrail.org/13970
+Project: Juniper/contrail-packaging
+Branch: refs/heads/R2.0
