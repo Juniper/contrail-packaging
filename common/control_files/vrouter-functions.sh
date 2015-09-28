@@ -104,6 +104,7 @@ _dpdk_conf_read() {
     AGENT_CONF="${CONFIG}"
     VROUTER_DPDK_INI=/etc/contrail/supervisord_vrouter_files/contrail-vrouter-dpdk.ini
     DPDK_NETLINK_TCP_PORT=20914
+    DPDK_MEM_PER_SOCKET="256"
 
     if [ ! -s ${AGENT_CONF} ]; then
         echo "$(date): Error reading ${AGENT_CONF}: file does not exist"
@@ -295,6 +296,7 @@ _dpdk_system_bond_info_collect() {
 _dpdk_vrouter_ini_update() {
     _dpdk_system_bond_info_collect
 
+    ## update virtual device (bond) configuration
     dpdk_vdev=""
     if [ -n "${DPDK_BOND_MODE}" -a -n "${DPDK_BOND_NUMA}" ]; then
         echo "${0##*/}: updating bonding configuration in ${VROUTER_DPDK_INI}..."
@@ -306,7 +308,6 @@ _dpdk_vrouter_ini_update() {
             dpdk_vdev="${dpdk_vdev},slave=${SLAVE}"
         done
         dpdk_vdev="${dpdk_vdev}\""
-
     fi
     ## always update the ini file, so we remove vdev argument
     ## whenever Linux configuration has changed
@@ -316,19 +317,45 @@ _dpdk_vrouter_ini_update() {
         -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vdev}/" \
          ${VROUTER_DPDK_INI}
 
+
+    ## update VLAN configuration
     dpdk_vlan=""
+    dpdk_vlan_name=""
     if [ -n "${DPDK_VLAN_ID}" ]; then
         echo "${0##*/}: updating VLAN configuration in ${VROUTER_DPDK_INI}..."
-
-        dpdk_vlan=" --vlan_tci \"${DPDK_VLAN_ID}\" --vlan_fwd_intf_name \"${DPDK_PHY}\""
-
+        dpdk_vlan=" --vlan_tci \"${DPDK_VLAN_ID}\""
+        dpdk_vlan_name=" --vlan_fwd_intf_name \"${DPDK_PHY}\""
     fi
-    ## always update the ini file, so we remove vlan argument
-    ## whenever Linux configuration has changed
     sed -ri.vlan.bak \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_tci +\"[^"]+\" --vlan_fwd_intf_name +\"[^"]+\"|--vlan_tci +[^ ]+ --vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/' \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_tci +\"[^"]+\" --vlan_fwd_intf_name +\"[^"]+\"|--vlan_tci +[^ ]+ --vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/' \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_tci +\"[^"]+\"|--vlan_tci +[^ ]+)(.*) *$/\1\3/' \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_tci +\"[^"]+\"|--vlan_tci +[^ ]+)(.*) *$/\1\3/' \
         -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vlan}/" \
+         ${VROUTER_DPDK_INI}
+    sed -ri.vlan.bak \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_fwd_intf_name +\"[^"]+\"|--vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/' \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_fwd_intf_name +\"[^"]+\"|--vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/' \
+        -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vlan_name}/" \
+         ${VROUTER_DPDK_INI}
+
+    ## allocate memory on each NUMA node
+    dpdk_socket_mem=""
+    for _numa_node in /sys/devices/system/node/node*/hugepages
+    do
+        if [ -z "${dpdk_socket_mem}" ]; then
+            dpdk_socket_mem="${DPDK_MEM_PER_SOCKET}"
+        else
+            dpdk_socket_mem="${dpdk_socket_mem},${DPDK_MEM_PER_SOCKET}"
+        fi
+    done
+    if [ -n "${dpdk_socket_mem}" ]; then
+        echo "${0##*/}: updating per socket memory allocation in ${VROUTER_DPDK_INI}..."
+        dpdk_socket_mem=" --socket-mem ${dpdk_socket_mem}"
+    fi
+    ## update the ini file
+    sed -ri.vlan.bak \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--socket-mem +\"[^"]+\"|--socket-mem +[^ ]+)(.*) *$/\1\3/' \
+        -e 's/(^ *command *=.*vrouter-dpdk.*) (--socket-mem +\"[^"]+\"|--socket-mem +[^ ]+)(.*) *$/\1\3/' \
+        -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_socket_mem}/" \
          ${VROUTER_DPDK_INI}
 }
 
