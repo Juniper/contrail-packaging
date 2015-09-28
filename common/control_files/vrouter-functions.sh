@@ -98,6 +98,7 @@ _dpdk_conf_read() {
     _DPDK_CONF_READ=1
 
     ## global vRouter/DPDK configuration
+    DPDK_BINDING_DRIVER_DATA='/var/run/vrouter'
     DPDK_BIND="/opt/contrail/bin/dpdk_nic_bind.py"
     DPDK_RTE_CONFIG="/run/.rte_config"
     VROUTER_SERVICE="supervisor-vrouter"
@@ -380,6 +381,15 @@ vrouter_dpdk_if_bind() {
 
     _dpdk_system_bond_info_collect
     _dpdk_vrouter_ini_update
+
+    mkdir -p ${DPDK_BINDING_DRIVER_DATA}
+    for slave_pci in ${DPDK_BOND_PCIS}; do
+        if [ ! -e ${DPDK_BINDING_DRIVER_DATA}/${slave_pci} ]; then
+            echo "Adding lspci data to ${DPDK_BINDING_DRIVER_DATA}/${slave_pci}"
+            `lspci -vmmks ${slave_pci} > ${DPDK_BINDING_DRIVER_DATA}/${slave_pci}`
+        fi
+    done
+
     # bind physical device(s) to DPDK driver
     for slave in ${DPDK_BOND_SLAVES}; do
         echo "Binding device ${slave} to DPDK igb_uio driver..."
@@ -426,9 +436,7 @@ _dpdk_vrouter_ini_bond_info_collect() {
         if [ -n "${slave_pci_name}" ]; then
             DPDK_BOND_PCI_NAMES="${DPDK_BOND_PCI_NAMES} ${slave_pci_name}"
         fi
-        slave_driver=`lspci -vmmks ${slave_pci} | grep 'Module:' | cut -f 2`
         eval DPDK_BOND_${slave_pci_name}_PCI="${slave_pci}"
-        eval DPDK_BOND_${slave_pci_name}_DRIVER="${slave_driver}"
     done
     DPDK_BOND_PCI_NAMES="${DPDK_BOND_PCI_NAMES# }"
 }
@@ -459,8 +467,7 @@ vrouter_dpdk_if_unbind() {
     modprobe igb_uio
     for slave_pci_name in ${DPDK_BOND_PCI_NAMES}; do
         eval slave_pci=\${DPDK_BOND_${slave_pci_name}_PCI}
-        eval slave_driver=\${DPDK_BOND_${slave_pci_name}_DRIVER}
-
+        slave_driver=`grep "Driver:" /var/run/vrouter/${slave_pci} | cut -f 2 | tr -d ['\n\r']`
         echo "Binding PCI device ${slave_pci} back to ${slave_driver} driver..."
         ${DPDK_BIND} --force --bind=${slave_driver} ${slave_pci}
     done
