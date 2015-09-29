@@ -467,9 +467,10 @@ vrouter_dpdk_if_unbind() {
     modprobe igb_uio
     for slave_pci_name in ${DPDK_BOND_PCI_NAMES}; do
         eval slave_pci=\${DPDK_BOND_${slave_pci_name}_PCI}
-        slave_driver=`grep "Driver:" /var/run/vrouter/${slave_pci} | cut -f 2 | tr -d ['\n\r']`
+        slave_driver=`grep "Driver:" ${DPDK_BINDING_DRIVER_DATA}/${slave_pci} | cut -f 2 | tr -d ['\n\r']`
         echo "Binding PCI device ${slave_pci} back to ${slave_driver} driver..."
         ${DPDK_BIND} --force --bind=${slave_driver} ${slave_pci}
+        rm ${DPDK_BINDING_DRIVER_DATA}/${slave_pci}
     done
 
     ${DPDK_BIND} --status
