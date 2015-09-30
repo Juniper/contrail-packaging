@@ -312,7 +312,7 @@ _dpdk_vrouter_ini_update() {
     fi
     ## always update the ini file, so we remove vdev argument
     ## whenever Linux configuration has changed
-    sed -ri.bond.bak \
+    sed -ri.bak \
         -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
         -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
         -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vdev}/" \
@@ -327,12 +327,12 @@ _dpdk_vrouter_ini_update() {
         dpdk_vlan=" --vlan_tci \"${DPDK_VLAN_ID}\""
         dpdk_vlan_name=" --vlan_fwd_intf_name \"${DPDK_PHY}\""
     fi
-    sed -ri.vlan.bak \
+    sed -ri.bak \
         -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_tci +\"[^"]+\"|--vlan_tci +[^ ]+)(.*) *$/\1\3/' \
         -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_tci +\"[^"]+\"|--vlan_tci +[^ ]+)(.*) *$/\1\3/' \
         -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vlan}/" \
          ${VROUTER_DPDK_INI}
-    sed -ri.vlan.bak \
+    sed -ri.bak \
         -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_fwd_intf_name +\"[^"]+\"|--vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/' \
         -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_fwd_intf_name +\"[^"]+\"|--vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/' \
         -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vlan_name}/" \
@@ -353,7 +353,7 @@ _dpdk_vrouter_ini_update() {
         dpdk_socket_mem=" --socket-mem ${dpdk_socket_mem}"
     fi
     ## update the ini file
-    sed -ri.vlan.bak \
+    sed -ri.bak \
         -e 's/(^ *command *=.*vrouter-dpdk.*) (--socket-mem +\"[^"]+\"|--socket-mem +[^ ]+)(.*) *$/\1\3/' \
         -e 's/(^ *command *=.*vrouter-dpdk.*) (--socket-mem +\"[^"]+\"|--socket-mem +[^ ]+)(.*) *$/\1\3/' \
         -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_socket_mem}/" \
@@ -370,7 +370,7 @@ vrouter_dpdk_if_bind() {
     _dpdk_conf_read
 
     if [ ! -f /sys/class/net/${DPDK_PHY}/address ]; then
-        echo "$(date): Error binding physical interface ${DPDK_PHY}: device found"
+        echo "$(date): Error binding physical interface ${DPDK_PHY}: device not found"
         ${DPDK_BIND} --status
         return 1
     fi
@@ -395,6 +395,11 @@ vrouter_dpdk_if_bind() {
         echo "Binding device ${slave} to DPDK igb_uio driver..."
         ${DPDK_BIND} --force --bind=igb_uio ${slave}
     done
+
+    if [ -n "${DPDK_BOND_MODE}" ]; then
+        echo "${0##*/}: removing bond interface from Linux..."
+        ifdown "${DPDK_PHY}"
+    fi
 
     ${DPDK_BIND} --status
 
