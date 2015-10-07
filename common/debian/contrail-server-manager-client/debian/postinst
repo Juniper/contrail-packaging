@@ -13,10 +13,6 @@ then
 fi
 echo $HOST_IP
 sed -i "s/listen_ip_addr = .*/listen_ip_addr = $HOST_IP/g" /opt/contrail/server_manager/client/sm-client-config.ini
-easy_install argparse
-easy_install pycurl
-easy_install pip
-pip install xmltodict
 
 if [ -e /usr/bin/server-manager ]; then
 	unlink /usr/bin/server-manager
