@@ -74,6 +74,18 @@ function setup_smgr_repos()
     exit
   fi
 
+  # Allow unauthenticated pacakges to get installed.
+  # Do not over-write apt.conf. Instead just append what is necessary
+  # retaining other useful configurations such as http::proxy info.
+  apt_auth="APT::Get::AllowUnauthenticated \"true\";"
+  set +e
+  grep --quiet "$apt_auth" /etc/apt/apt.conf
+  exit_status=$?
+  set -e
+  if [ $exit_status != "0" ]; then
+    echo "$apt_auth" >> /etc/apt/apt.conf
+  fi
+
   echo "$space$arrow Setting up the repositories for Server Manager Install"
   apt-get update >> $log_file 2>&1
 
@@ -91,18 +103,6 @@ function setup_smgr_repos()
   echo "deb file:/opt/contrail/contrail_server_manager ./" > /tmp/local_repo
   cat /tmp/local_repo /etc/apt/sources.list.d/smgr_sources.list > /tmp/new_smgr_sources.list
   mv /tmp/new_smgr_sources.list /etc/apt/sources.list.d/smgr_sources.list
-
-  # Allow unauthenticated pacakges to get installed.
-  # Do not over-write apt.conf. Instead just append what is necessary
-  # retaining other useful configurations such as http::proxy info.
-  apt_auth="APT::Get::AllowUnauthenticated \"true\";"
-  set +e
-  grep --quiet "$apt_auth" /etc/apt/apt.conf
-  exit_status=$?
-  set -e
-  if [ $exit_status != "0" ]; then
-    echo "$apt_auth" >> /etc/apt/apt.conf
-  fi
 
   puppet_list_file="/etc/apt/sources.list.d/puppet.list"
   passenger_list_file="/etc/apt/sources.list.d/passenger.list"
