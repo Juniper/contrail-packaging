@@ -16,6 +16,8 @@ CLEANUP_PUPPET_AGENT=""
 NO_LOCAL_REPO=1
 LOCAL_REPO_DIR=/opt/contrail/contrail_local_repo
 CLUSTER_ID=""
+NO_SM_MON=""
+NO_SM_WEBUI=""
 
 space="    "
 arrow="---->"
@@ -31,6 +33,8 @@ function usage()
     echo -e  "\t-ni|--no-install-sm-lite"
     echo -e "\t-cp|--cleanup-puppet-agent"
     echo -e "\t-nr|--no-local-repo"
+    echo -e "\t-nm|--no-sm-mon"
+    echo -e "\t-nw|--no-sm-webui"
     echo -e "\t-cid|--cluster-id <cluster-id>"
     echo ""
 }
@@ -58,6 +62,12 @@ case $key in
     ;;
     -ni|--no-install-sm-lite)
     INSTALL_SM_LITE=""
+    ;;
+    -nm|--no-sm-mon)
+    NO_SM_MON="--nosm-mon"
+    ;;
+    -nw|--no-sm-webui)
+    NO_SM_WEBUI="--nowebui"
     ;;
     -cp|--no-cleanup-puppet-agent)
     CLEANUP_PUPPET_AGENT="cleanup_puppet_agent"
@@ -162,7 +172,7 @@ if [ "$INSTALL_SM_LITE" != "" ]; then
 
    echo "$arrow Install server manager without cobbler option"
    pushd /opt/contrail/contrail_server_manager >> $log_file 2>&1
-   ./setup.sh --all --smlite --nowebui --nosm-mon
+   ./setup.sh --all --smlite ${NO_SM_MON} ${NO_SM_WEBUI}
    popd >> $log_file 2>&1
 fi 
 
