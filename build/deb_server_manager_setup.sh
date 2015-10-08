@@ -74,24 +74,6 @@ function setup_smgr_repos()
     exit
   fi
 
-  echo "$space$arrow Setting up the repositories for Server Manager Install"
-  apt-get update >> $log_file 2>&1
-
-  echo "$space$arrow Installing dependent packages for Setting up repos"
-  #scan pkgs in local repo and create Packages.gz
-  apt-get --no-install-recommends -y install dpkg-dev >> $log_file 2>&1
-  # Dependencies to add apt-repos
-  apt-get --no-install-recommends -y install python-software-properties debmirror >> $log_file 2>&1
-  apt-get --no-install-recommends -y install software-properties-common >> $log_file 2>&1
-
-  pushd /opt/contrail/contrail_server_manager >> $log_file 2>&1
-  dpkg-scanpackages . | gzip -9c > Packages.gz | >> $log_file 2>&1
-  popd >> $log_file 2>&1
- 
-  echo "deb file:/opt/contrail/contrail_server_manager ./" > /tmp/local_repo
-  cat /tmp/local_repo /etc/apt/sources.list.d/smgr_sources.list > /tmp/new_smgr_sources.list
-  mv /tmp/new_smgr_sources.list /etc/apt/sources.list.d/smgr_sources.list
-
   # Allow unauthenticated pacakges to get installed.
   # Do not over-write apt.conf. Instead just append what is necessary
   # retaining other useful configurations such as http::proxy info.
@@ -103,6 +85,24 @@ function setup_smgr_repos()
   if [ $exit_status != "0" ]; then
     echo "$apt_auth" >> /etc/apt/apt.conf
   fi
+
+  echo "$space$arrow Setting up the repositories for Server Manager Install"
+  apt-get update >> $log_file 2>&1
+
+  echo "$space$arrow Installing dependent packages for Setting up repos"
+  #scan pkgs in local repo and create Packages.gz
+  apt-get --no-install-recommends -y --force-yes install dpkg-dev >> $log_file 2>&1
+  # Dependencies to add apt-repos
+  apt-get --no-install-recommends -y --force-yes install python-software-properties debmirror >> $log_file 2>&1
+  apt-get --no-install-recommends -y --force-yes install software-properties-common >> $log_file 2>&1
+
+  pushd /opt/contrail/contrail_server_manager >> $log_file 2>&1
+  dpkg-scanpackages . | gzip -9c > Packages.gz | >> $log_file 2>&1
+  popd >> $log_file 2>&1
+ 
+  echo "deb file:/opt/contrail/contrail_server_manager ./" > /tmp/local_repo
+  cat /tmp/local_repo /etc/apt/sources.list.d/smgr_sources.list > /tmp/new_smgr_sources.list
+  mv /tmp/new_smgr_sources.list /etc/apt/sources.list.d/smgr_sources.list
 
   puppet_list_file="/etc/apt/sources.list.d/puppet.list"
   passenger_list_file="/etc/apt/sources.list.d/passenger.list"
@@ -222,7 +222,7 @@ if [ "$SM" != "" ]; then
   fi
   #To be Removed after local repo additions
   if [ ${rel[1]} == "14.04"  ]; then
-    apt-get --no-install-recommends -y install libpython2.7=2.7.6-8ubuntu0.2 >> $log_file 2>&1
+    apt-get --no-install-recommends -y --force-yes install libpython2.7=2.7.6-8ubuntu0.2 >> $log_file 2>&1
   fi
   apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppet-common="3.7.3-1puppetlabs1" puppetmaster-common="3.7.3-1puppetlabs1" >> $log_file 2>&1
   cp /opt/contrail/contrail_server_manager/puppet.conf /etc/puppet/
@@ -260,7 +260,7 @@ if [ "$SM" != "" ]; then
     echo "$space$arrow Upgrading Server Manager"
     if [ "$SMLITE" != "" ]; then
        echo "$space$arrow$install_str Server Manager Lite"
-       apt-get -y install contrail-server-manager-lite >> $log_file 2>&1
+       apt-get -y --force-yes install contrail-server-manager-lite >> $log_file 2>&1
        apt-get -y install -f >> $log_file 2>&1
        echo "$space$space$arrow Starting Server Manager Lite Service"
        service contrail-server-manager restart
@@ -277,22 +277,22 @@ if [ "$SM" != "" ]; then
           dpkg -P --force-all contrail-server-manager >> $log_file 2>&1
        fi
        echo "$space$arrow$install_str Server Manager"
-       apt-get -y install cobbler="2.6.3-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
-       apt-get -y install contrail-server-manager >> $log_file 2>&1
+       apt-get -y --force-yes install cobbler="2.6.3-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
+       apt-get -y --force-yes install contrail-server-manager >> $log_file 2>&1
        apt-get -y install -f >> $log_file 2>&1
     fi
   else
     if [ "$SMLITE" != "" ]; then
        echo "$space$arrow$install_str Server Manager Lite"
-       apt-get -y install contrail-server-manager-lite >> $log_file 2>&1
+       apt-get -y --force-yes install contrail-server-manager-lite >> $log_file 2>&1
        echo "$space$space$arrow Starting Server Manager Lite Service"
        service contrail-server-manager restart
        sleep 5
        service contrail-server-manager status
     else
       echo "$space$arrow$install_str Server Manager"
-      apt-get -y install cobbler="2.6.3-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
-      apt-get -y install contrail-server-manager >> $log_file 2>&1
+      apt-get -y --force-yes install cobbler="2.6.3-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
+      apt-get -y --force-yes install contrail-server-manager >> $log_file 2>&1
     fi
     apt-get -y install -f >> $log_file 2>&1
   fi
@@ -303,7 +303,7 @@ fi
 if [ "$SMCLIENT" != "" ]; then
   echo "$arrow Server Manager Client"
   echo "$space$arrow$install_str Server Manager Client"
-  apt-get -y install contrail-server-manager-client >> $log_file 2>&1
+  apt-get -y --force-yes install contrail-server-manager-client >> $log_file 2>&1
   apt-get -y install -f >> $log_file 2>&1
   echo "$arrow Completed Installing Server Manager Client"
 fi
@@ -311,7 +311,7 @@ fi
 if [ "$SMCLIFFCLIENT" != "" ]; then
   echo "$arrow Server Manager Cliff Client"
   echo "$space$arrow$install_str Server Manager Cliff Client"
-  apt-get -y install contrail-server-manager-cliff-client >> $log_file 2>&1
+  apt-get -y --force-yes install contrail-server-manager-cliff-client >> $log_file 2>&1
   apt-get -y install -f >> $log_file 2>&1
   echo "$arrow Completed Installing Server Manager Cliff Client"
 fi
@@ -320,9 +320,9 @@ if [ "$WEBUI" != "" ] && [ "$NOWEBUI" == "" ]; then
   echo "$arrow Web Server Manager"
   # install webui
   echo "$space$arrow$install_str Contrail Web Core"
-  apt-get -y install contrail-web-core >> $log_file 2>&1
+  apt-get -y --force-yes install contrail-web-core >> $log_file 2>&1
   echo "$space$arrow$install_str Contrail Web Server Manager"
-  apt-get -y install contrail-web-server-manager >> $log_file 2>&1
+  apt-get -y --force-yes install contrail-web-server-manager >> $log_file 2>&1
   apt-get -y install -f >> $log_file 2>&1
   echo "$arrow Completed Installing Web Server Manager"
 fi
@@ -330,7 +330,7 @@ fi
 if [ "$SMMON" != "" ] && [ "$NOSMMON" == "" ]; then
   echo "$arrow Server Manager Monitoring"
   echo "$space$arrow$install_str Server Manager Monitoring"
-  apt-get -y install contrail-server-manager-monitoring >> $log_file 2>&1
+  apt-get -y --force-yes install contrail-server-manager-monitoring >> $log_file 2>&1
   apt-get -y install -f >> $log_file 2>&1
   if [ "$check_upgrade" != ""  ]; then
       echo "Sample Configurations for Monitoring and Inventory are available at /opt/contrail/server_manager/sm-monitoring-config.ini and /opt/contrail/server_manager/sm-inventory-config.ini."
