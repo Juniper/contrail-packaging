@@ -92,7 +92,8 @@ PACKAGES = \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
 	contrail-f5-deb \
-	$(CONTRAIL_VRDPDK_KMOD)
+	$(CONTRAIL_VRDPDK_KMOD) \
+	contrail-vmware-utils-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
