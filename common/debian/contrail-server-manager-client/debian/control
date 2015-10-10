@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-server-manager-client
 Architecture: all
 Maintainer: ts <tsurendra@juniper.net>
-Depends: python, python-paramiko
+Depends: python, python-paramiko, python-xmltodict, python-pycurl
 Section: contrail-server-manager-client
 Priority: extra
 Description: Contrail Server Manager - Client Package
