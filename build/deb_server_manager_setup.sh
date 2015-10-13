@@ -190,8 +190,8 @@ while [ "$1" != "" ]; do
             ;;
         --hostip)
             HOSTIP=$VALUE
-            rm -rf /opt/contrail/contrail-server-manager/IP.txt
-            echo $HOSTIP >> /opt/contrail/contrail-server-manager/IP.txt 
+            rm -rf /opt/contrail/contrail_server_manager/IP.txt
+            echo $HOSTIP >> /opt/contrail/contrail_server_manager/IP.txt 
             ;;
         --cert-name)
             CERT_NAME=$VALUE
