@@ -33,6 +33,7 @@ class BasePackager(Utils):
         self.id                    = kwargs.get('build_id', 999)
         self.sku                   = kwargs.get('sku', 'grizzly')
         self.branch                = kwargs.get('branch', 9.9)
+        self.copy_use_hard_link    = kwargs.get('copy_use_hard_link', False)
         self.store                 = self.expanduser(kwargs['store_dir'])
         self.abs_pkg_dirs          = self.expanduser(kwargs['absolute_package_dir'])
         self.cache_base_dir        = self.expanduser(kwargs['cache_base_dir'])
