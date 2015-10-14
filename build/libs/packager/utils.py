@@ -66,13 +66,20 @@ class Utils(object):
                 os.makedirs(dirname)
         return dirname
 
-
-    def copyfiles(self, files, dirs):
+    def copyfiles(self, files, dirs, as_link=True):
         files = self.get_as_list(files)
         dirs  = self.get_as_list(dirs)
         copyiter = itertools.product(files, dirs)
         for item in copyiter:
-            shutil.copy2(*item)
+            dst = os.path.join(item[1], os.path.basename(item[0]))
+            if as_link and self.copy_use_hard_link:
+                log.debug('copy_as_hard_link %s %s' % (item[0], dst))
+                if os.path.exists(dst):
+                    log.error('copy_as_hard_link: destination exists: %s, removing before link' % dst)
+                    os.unlink(dst)
+                os.link(item[0], dst)
+            else:
+                shutil.copy2(*item)
             
     def read_async(self, fd):
         '''read data from a file descriptor, ignoring EAGAIN errors'''
@@ -384,7 +391,7 @@ class Utils(object):
                     continue
             pkgfile = pkginfo[pkg]['found_at']
             destdirs = pkginfo[pkg]['repo']
-            self.copyfiles(pkgfile, destdirs)
+            self.copyfiles(pkgfile, destdirs, as_link=False)
 
     def copy_built_pkg_files(self, targets=None, destdirs=None, 
                              extra_dirs=None, skips=None, error=True):
