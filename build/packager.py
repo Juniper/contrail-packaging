@@ -75,6 +75,7 @@ class PackagerArgParser(Utils):
             'build_id'              : random.randint(1000, 9999), 
             'sku'                   : skuname,
             'branch'                : None, 
+            'copy_use_hard_link'    : False,
             'store_dir'             : os.path.join(git_local_repo, 'build'),
             'absolute_package_dir'  : None,
             'contrail_package_dir'  : None,
@@ -267,6 +268,9 @@ class PackagerArgParser(Utils):
         aparser.add_argument('--fail-on-error', '-e',
                              action='store_true',
                              help='Aborts Packager from continuing when make fails')
+        aparser.add_argument('--copy-use-hard-link', '-l',
+                             action='store_true',
+                             help='Use hard links instead of cp when duplicating artifacts like .tgz, .deb, and .rpm')
         aparser.add_argument('--post-job', '-j',
                              action='store',
                              default=None,
