@@ -14,6 +14,7 @@ export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export src_path := $(SB_TOP)/tools/contrail-server-manager/src/
 #export src_path := /build/pmiriyala/r22_smlite_1/src/
 export build_root := $(SB_TOP)/build/debian/contrail-server-manager-lite/debian/contrail-server-manager-lite
+export contrail_provisioning_path := $(SB_TOP)/tools/provisioning/contrail_provisioning
 #python_version := $(PYTHONPATH=$(PYTHONPATH):$(build_root)/../tools/packaging/tools/scripts/ python -c "import sys; print '%s.%s' % sys.version_info[0:2]")
 #python_dir := python$(python_version)
 python_version=$(shell python -c "import sys; print '%s.%s' % sys.version_info[0:2]")
@@ -121,6 +122,8 @@ override_dh_auto_install:
 	cp -r $(src_path)/contrail-server-manager-lite.start.u  $(build_root)/usr/sbin/contrail-server-manager
 	cp -r $(src_path)/puppet  $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/kickstarts  $(build_root)/etc/contrail_smgr/
+	install -p -m 755 $(contrail_provisioning_path)/common/staticroute_setup.py \
+$(build_root)/etc/contrail_smgr/kickstarts/staticroute_setup.py
 	
 	$(src_path)/../../../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file $(pkg_file) \
  --destination-dir $(build_root)/var/www/html/thirdparty_packages \
