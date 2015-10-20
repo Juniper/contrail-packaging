@@ -10,6 +10,7 @@ start_time=$(date +"%s")
 
 SOURCES_LIST="sources_list"
 TESTBED="testbed.py"
+DEFAULT_DOMAIN=""
 CONTRAIL_PKG=""
 INSTALL_SM_LITE="install_sm_lite"
 CLEANUP_PUPPET_AGENT=""
@@ -30,6 +31,7 @@ function usage()
     echo -e "\t-h --help"
     echo -e "\t-c|--contrail-package <pkg>"
     echo -e "\t-t|--testbed <testbed.py>"
+    echo -e "\t-d|--default-domain <domain name>"
     echo -e  "\t-ni|--no-install-sm-lite"
     echo -e "\t-cp|--cleanup-puppet-agent"
     echo -e "\t-nr|--no-local-repo"
@@ -55,6 +57,10 @@ case $key in
     ;;
     -t|--testbed)
     TESTBED="$2"
+    shift # past argument
+    ;;
+    -d|--default-domain)
+    DEFAULT_DOMAIN="$2"
     shift # past argument
     ;;
     -nr|--no-local-repo)
@@ -195,6 +201,9 @@ if [[ $LOCAL_REPO_MOUNTED -eq 1 ]]; then
 fi
 
 echo "$arrow Adding server manager objects to server manager database"
+if [ "$DEFAULT_DOMAIN" != "" ] && [ -f /opt/contrail/server_manager/client/sm-client-config.ini ]; then
+   sed -i "s|domain =.*|domain = ${DEFAULT_DOMAIN}|g" /opt/contrail/server_manager/client/sm-client-config.ini
+fi
 # Create package, cluster, server objects
 server-manager add image -f image.json 
 server-manager add cluster -f cluster.json 
