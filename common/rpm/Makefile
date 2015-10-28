@@ -135,15 +135,17 @@ contrail-openstack-analytics: $(PREP)
 	@echo making rpm for contrail-openstack-analytics
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-analytics.spec $(G_TAG)
 
-ifeq ($(CONTRAIL_SKU), havana)
 contrail-openstack-config: $(PREP)
 	@echo making rpm for contrail-openstack-config
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-config.spec $(G_TAG)
-else
-contrail-openstack-config: $(PREP)
-	@echo making rpm for contrail-openstack-config
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse-config.spec $(G_TAG)
-endif
+	if [ "$(CONTRAIL_SKU)" == "havana" ]; then \
+	    rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-config.spec $(G_TAG) ;\
+	elif [ "$(CONTRAIL_SKU)" == "icehouse" ]; then \
+	    rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse-config.spec $(G_TAG) ;\
+	elif [ "$(CONTRAIL_SKU)" == "juno" ]; then \
+	    rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse-config.spec $(G_TAG) ;\
+	else \
+	    rpmbuild $(RPMBLDOPTS) contrail-openstack-config-common.spec $(G_TAG) ;\
+	fi
 
 contrail-openstack-control: $(PREP)
 	@echo making rpm for contrail-openstack-control
