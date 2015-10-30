@@ -133,10 +133,27 @@ PACKAGES_VMWARE = \
 	contrail-f5-deb \
         contrail-vmware-config-deb \
         contrail-vmware-utils-deb \
-        contrail-vmware-vrouter-deb
+        contrail-vmware-vrouter-deb \
+	contrail-install-vcenter-plugin
 
 all_vmware: ${PACKAGES_VMWARE}
 	@echo "Build complete"
+
+VCENTER_PLUGIN_DEB := /github-build/mainline/LATEST/vcenter-plugin/juno/store/sandbox/build/contrail-install-vcenter-plugin*.deb
+PATH_TO_VCENTER_PLUGIN := "$(VCENTER_PLUGIN)"
+
+ifeq ("$(wildcard $(PATH_TO_VCENTER_PLUGIN))","")
+VCENTER_PLUGIN = TRUE
+else
+VCENTER_PLUGIN = FALSE
+endif
+
+contrail-install-vcenter-plugin:
+ifeq ($(VCENTER_PLUGIN), TRUE)
+        (cd vcenter-plugin && mkdir build && cp $(VCENTER_PLUGIN_DEB) build)
+else
+        (cd vcenter-plugin && make all)
+endif
 
 server-manager-all: contrail-server-manager-deb \
                     contrail-server-manager-lite-deb \
