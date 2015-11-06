@@ -29,7 +29,11 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
+%if 0%{?el6}
 Requires: cassandra12
+%else
+Requires: cassandra21
+%endif
 Requires: supervisor
 Requires: java-1.7.0-openjdk
 Requires: kafka
@@ -134,8 +138,13 @@ done
 popd
 
 %post
+if [ "$1" = "1" ]; then
+  service cassandra stop
+  rm -rf /var/lib/cassandra
+fi
 chkconfig cassandra off
 chkconfig contrail-database on
+
 # this is upgrade from 1.02 release to newer i.e cassandra 1.1.7 to 1.2.11
 if [ -f /usr/share/cassandra/conf/cassandra.yaml.rpmsave ]; then
     CASSANDRA_CONF_OLD=/usr/share/cassandra/conf/cassandra.yaml.rpmsave
