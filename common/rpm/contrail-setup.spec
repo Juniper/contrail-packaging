@@ -39,7 +39,6 @@ URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
 Requires:	    tar
-Requires:	    python-pip
 Requires:	    python-netifaces
 Requires:	    gcc
 Requires:	    python-devel
@@ -56,9 +55,22 @@ Requires:           python-pycrypto
 Requires:	    python-argparse
 Requires:	    gdb
 %endif
+
 %if 0%{?rhel} > 6
 Requires:           net-tools
 %endif
+
+# depends on python-pip on all centos and rhel-icehouse
+%if 0%{?centos} >= 6
+Requires:           python-pip
+%else
+%if 0%{?rhel} > 6
+%if "%{_skuTag}" == "icehouse"
+Requires:           python-pip
+%endif
+%endif
+%endif
+
 %if 0%{?_is_centos65} == 1
 Requires:           kexec-tools
 %endif
@@ -124,13 +136,26 @@ tar zxf dist/ContrailProvisioning-0.1dev.tar.gz
 cd ContrailProvisioning-0.1dev
 %{__python} setup.py install --root=%{buildroot} --install-scripts %{_contrailopt}/bin/
 popd
-%if 0%{?rhel}
+
+# package pip tar.gz files only for all centos and rhel-icehouse
+%if 0%{?centos} >= 6
 pushd %{_builddir}/../distro/third_party
-tar cvzf %{buildroot}%{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz ./zope.interface-3.7.0 
+tar cvzf %{buildroot}%{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz ./zope.interface-3.7.0
 install -p -m 644 paramiko-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/
 install -p -m 644 pycrypto-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/
 install -p -m 644 Fabric-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/
 popd
+%else
+%if 0%{?rhel} > 6
+%if "%{_skuTag}" == "icehouse"
+pushd %{_builddir}/../distro/third_party
+tar cvzf %{buildroot}%{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz ./zope.interface-3.7.0
+install -p -m 644 paramiko-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/
+install -p -m 644 pycrypto-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/
+install -p -m 644 Fabric-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/
+popd
+%endif
+%endif
 %endif
 
 install -d -m 755 %{buildroot}/etc/contrail
@@ -157,12 +182,24 @@ ln -sbf %{_contrailopt}/bin/* %{_bindir}
 %{_contrailopt}/dns_scripts.tgz
 %{python_sitelib}/ContrailProvisioning-*.egg-info
 %{python_sitelib}/contrail_provisioning
-%if 0%{?rhel}
+
+#include tar.gz files only for all centos and rhel-icehouse
+%if 0%{?centos} >= 6
+%{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz
+%{_contrailopt}/python_packages/paramiko-*.tar.gz
+%{_contrailopt}/python_packages/Fabric-*.tar.gz
+%{_contrailopt}/python_packages/pycrypto-*.tar.gz
+%else
+%if 0%{?rhel} > 6
+%if "%{_skuTag}" == "icehouse"
 %{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz
 %{_contrailopt}/python_packages/paramiko-*.tar.gz
 %{_contrailopt}/python_packages/Fabric-*.tar.gz
 %{_contrailopt}/python_packages/pycrypto-*.tar.gz
 %endif
+%endif
+%endif
+
 %if 0%{?_fileList:1}
     /etc/contrail/rpm_list.txt
 %endif
@@ -170,4 +207,5 @@ ln -sbf %{_contrailopt}/bin/* %{_bindir}
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
 
 %changelog
-
+* Mon Jan 25 2016 Nagendra Maynattamai <npchandran@juniper.net>
+- For Rhel7/Juno or higher 1. Removed Dependency for python-pip, 2. Dont package sources of fabric, paramiko, pycrypto and zope as tgz
