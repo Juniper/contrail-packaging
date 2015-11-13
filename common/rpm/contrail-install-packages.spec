@@ -52,7 +52,7 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_packages
 
 # install files
 pushd %{_builddir}/..
-if [ "%{?dist}" == ".el7" ]; then \
+if [ "%{?dist}" == ".el7" ] && [ "%{_skuTag}" != "icehouse" ]; then \
 install -p -m 755 tools/packaging/build/rpm_anyrepo_setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh.new ;\
 else \
 install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh.new ;\

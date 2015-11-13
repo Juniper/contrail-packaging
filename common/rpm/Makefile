@@ -135,15 +135,15 @@ contrail-openstack-analytics: $(PREP)
 	@echo making rpm for contrail-openstack-analytics
 	rpmbuild $(RPMBLDOPTS) contrail-openstack-analytics.spec $(G_TAG)
 
-ifeq ($(CONTRAIL_SKU), havana)
-contrail-openstack-config: $(PREP)
-	@echo making rpm for contrail-openstack-config
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-config.spec $(G_TAG)
-else
-contrail-openstack-config: $(PREP)
-	@echo making rpm for contrail-openstack-config
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse-config.spec $(G_TAG)
-endif
+contrail-openstack: $(PREP)
+	@echo making rpm for contrail-openstack $(CONTRAIL_SKU)
+	if [ "$(CONTRAIL_SKU)" == "havana" ]; then \
+	    rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG) ;\
+	elif [ "$(CONTRAIL_SKU)" == "icehouse" ]; then \
+	    rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse.spec $(G_TAG) ;\
+	else \
+	    rpmbuild $(RPMBLDOPTS) contrail-openstack-juno.spec $(G_TAG) ;\
+	fi
 
 contrail-openstack-control: $(PREP)
 	@echo making rpm for contrail-openstack-control
@@ -283,12 +283,8 @@ else
 CEILOMETER_PLUGIN =
 endif
 
-# Execute contrail-nova-networkapi only for juno
-ifeq ($(CONTRAIL_SKU), juno)
-CONTRAIL_NOVA_NETWORKAPI = contrail-nova-networkapi
-else
-CONTRAIL_NOVA_NETWORKAPI =
-endif
+# Execute contrail-nova-networkapi only from juno release
+CONTRAIL_NOVA_NETWORKAPI = $(shell [[ "juno kilo" =~ ${CONTRAIL_SKU} ]] && echo "contrail-nova-networkapi" || echo )
 
 all: $(PREP) contrail \
        contrail-interface-name ifmap-python-client \
