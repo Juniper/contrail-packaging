@@ -26,13 +26,26 @@ License:	    Commercial
 
 Source0:            git_root
 
-%description
-Contrail Fabric Utilities for cluster management
-
 BuildRequires:  systemd-units
 Requires: python-yaml
 Requires: python-netaddr
-Requires: python-pip
+
+%if 0%{?centos} >= 6
+%if "%{_skuTag}" == "juno"
+Requires:           python-pip
+%endif
+%else
+%if 0%{?rhel} > 6
+%if "%{_skuTag}" == "icehouse"
+Requires:           python-pip
+%else
+Requires:           python-Fabric
+%endif
+%endif
+%endif
+
+%description
+Contrail Fabric Utilities for cluster management
 
 %prep
 ## if [ ! -d contrail-fabric-utils]; then
@@ -75,4 +88,5 @@ popd
 
 
 %changelog
-
+* Mon Jan 25 2016 Nagendra Maynattamai <npchandran@juniper.net>
+- For Rhel7/Juno or higher 1. Removed Dependency for python-pip, 2. Add dependency to python-Fabric
