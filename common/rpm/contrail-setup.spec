@@ -39,7 +39,6 @@ URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
 Requires:	    tar
-Requires:	    python-pip
 Requires:	    python-netifaces
 Requires:	    gcc
 Requires:	    python-devel
@@ -56,9 +55,18 @@ Requires:           python-pycrypto
 Requires:	    python-argparse
 Requires:	    gdb
 %endif
+
 %if 0%{?rhel} > 6
 Requires:           net-tools
+%if "%{_skuTag}" == "icehouse"
+Requires:           python-pip
 %endif
+%endif
+
+%if 0%{?centos} >= 6
+Requires:           python-pip
+%endif
+
 %if 0%{?_is_centos65} == 1
 Requires:           kexec-tools
 %endif
@@ -157,12 +165,23 @@ ln -sbf %{_contrailopt}/bin/* %{_bindir}
 %{_contrailopt}/dns_scripts.tgz
 %{python_sitelib}/ContrailProvisioning-*.egg-info
 %{python_sitelib}/contrail_provisioning
-%if 0%{?rhel}
+
+%if 0%{?rhel} >= 7
+%if "%{_skuTag}" == "icehouse"
 %{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz
 %{_contrailopt}/python_packages/paramiko-*.tar.gz
 %{_contrailopt}/python_packages/Fabric-*.tar.gz
 %{_contrailopt}/python_packages/pycrypto-*.tar.gz
 %endif
+%endif
+
+%if 0%{?centos} >= 6
+%{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz
+%{_contrailopt}/python_packages/paramiko-*.tar.gz
+%{_contrailopt}/python_packages/Fabric-*.tar.gz
+%{_contrailopt}/python_packages/pycrypto-*.tar.gz
+%endif
+
 %if 0%{?_fileList:1}
     /etc/contrail/rpm_list.txt
 %endif
@@ -170,4 +189,5 @@ ln -sbf %{_contrailopt}/bin/* %{_bindir}
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
 
 %changelog
-
+* Mon Jan 25 2016 Nagendra Maynattamai <npchandran@juniper.net>
+- For Rhel7/Juno or higher 1. Removed Dependency for python-pip, 2. Dont package sources of fabric, paramiko, pycrypto and zope as tgz
