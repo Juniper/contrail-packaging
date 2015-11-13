@@ -1,4 +1,5 @@
 %define         _distropkgdir tools/packaging/common/control_files
+%define         _sku     %{_skuTag}
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -23,7 +24,10 @@ Vendor:             Juniper Networks Inc
 BuildArch: noarch
 
 Requires: contrail-vrouter-common >= %{_verstr}-%{_relstr}
+# contrail-nova-vif not required from Kilo onwards
+%if %{_skuTag} == "havana" || %{_skuTag} == "icehouse" || %{_skuTag} == "juno"
 Requires: contrail-nova-vif >= %{_verstr}-%{_relstr}
+%endif
 Requires: openstack-nova-compute
 Requires: openstack-utils
 Requires: librabbitmq
