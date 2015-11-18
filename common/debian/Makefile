@@ -144,8 +144,7 @@ server-manager-all: contrail-server-manager-deb \
                     contrail-server-manager-cliff-client-deb \
                     contrail-server-manager-monitoring-deb \
                     contrail-server-manager-installer-deb \
-                    contrail-server-manager-client-tgz \
-                    contrail-server-manager-cliff-client-tgz
+                    contrail-server-manager-client-tgz
 
 clean: $(PACKAGES:%-deb=%-clean)
 	@echo "Clean"
@@ -271,10 +270,6 @@ contrail-server-manager-client-tgz:
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/tools/contrail-server-manager/src/client/ && tar -czf $(SB_TOP)/build/tools/contrail-server-manager-client-$(VERSION)~$(CONTRAIL_SKU).tgz *)
         @echo "Wrote: $(SB_TOP)/build/tools/contrail-server-manager-client-$(VERSION)~$(CONTRAIL_SKU).tgz"
 
-contrail-server-manager-cliff-client-tgz:
-	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/tools/contrail-server-manager/src/smgr_cliff_client/ && tar -czf $(SB_TOP)/build/tools/contrail-server-manager-cliff-client-$(VERSION)~$(CONTRAIL_SKU).tgz *)
-        @echo "Wrote: $(SB_TOP)/build/tools/contrail-server-manager-cliff-client-$(VERSION)~$(CONTRAIL_SKU).tgz"
-
 contrail-server-manager-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager)
 	rm -rf ${BUILDDIR}
@@ -308,7 +303,7 @@ contrail-server-manager-cliff-client-deb:
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-cliff-client/debian ${BUILDDIR}
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-	(mkdir -p $(SB_TOP)/build/tools/; cp $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/servermanagercli-$(VERSION)-$(CONTRAIL_SKU).tar.gz $(SB_TOP)/build/tools/)
+	(mkdir -p $(SB_TOP)/build/tools/; cp $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/servermanagercli-$(VERSION)-$(CONTRAIL_SKU).tar.gz $(SB_TOP)/build/tools/contrail-server-manager-cliff-client-$(VERSION)~$(CONTRAIL_SKU).tgz)
 
 contrail-server-manager-monitoring-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-monitoring)
