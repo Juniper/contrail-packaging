@@ -289,7 +289,7 @@ contrail-server-manager-cliff-client-deb:
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-cliff-client/debian ${BUILDDIR}
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-	(mkdir -p $(SB_TOP)/build/tools/; cp $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/servermanagercli-$(VERSION)-$(CONTRAIL_SKU).tar.gz $(SB_TOP)/build/tools/)
+	(mkdir -p $(SB_TOP)/build/tools/; cp $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/servermanagercli-$(VERSION)-$(CONTRAIL_SKU).tar.gz $(SB_TOP)/build/tools/contrail-server-manager-cliff-client-$(VERSION)~$(CONTRAIL_SKU).tgz)
 
 contrail-server-manager-monitoring-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-monitoring)
