@@ -45,6 +45,16 @@ Source:		%{name}
 Contrail Web UI package
 
 %prep
+command -v node >/dev/null 2>&1 || {
+    command -v nodejs >/dev/null 2>&1 || {
+        echo >&2 "contrail-web-core build requires node/nodejs.  Aborting.";
+        exit 1;
+    }
+}
+command -v npm >/dev/null 2>&1 || {
+    echo >&2 "contrail-web-core UT requires npm. Aborting.";
+    exit 1;
+}
 
 #%setup -n %{name}
 %build
