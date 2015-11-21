@@ -63,6 +63,7 @@ install -p -m 755 %{_builddir}/../build/contrail-puppet-manifest.tgz %{buildroot
 
 if [ -f %{_flist} ]; then echo "Using TGZ FILE = %{_flist}"; install -p -m 644 %{_flist} %{buildroot}%{_contrailopt}/contrail_packages/contrail_rpms.tgz; else echo "ERROR: TGZ file containing all rpms is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
 
+%post
 # To solve the upgrade issue, in 1.10, setup.sh was packaged in contrail-setup and contrail-packages
 # So when upgrading contrail-packages, it will fail, we will need to use rpm -iU --force to upgrade
 # To avoid this and use yum localinstall this post section is added

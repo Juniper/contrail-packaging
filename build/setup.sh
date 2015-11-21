@@ -34,7 +34,7 @@ cp /opt/contrail/contrail_packages/helpers/* /opt/contrail/bin/
 yum -y --disablerepo=* remove python-crypto-2.0.1
 
 #Install basic packages 
-yum -y --disablerepo=* --enablerepo=contrail_install_repo install contrail-setup contrail-fabric-utils
+yum -y install contrail-setup contrail-fabric-utils
 
 # Use pip command after installing contrail-fabric-utils
 pip install /opt/contrail/python_packages/pycrypto-*.tar.gz
