@@ -63,7 +63,7 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_contrailopt)/puppet
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_packages
 	# Install files
-	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2 | cut -d '~' -f1` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu; fi
+	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2 | cut -d '~' -f1` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_packages/VERSION
 	install -p -m 755 $(SETUP_FILE)  $(buildroot)$(_contrailopt)/contrail_packages/setup.sh
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_packages/sources.list
@@ -73,7 +73,7 @@ override_dh_auto_install:
 	install -p -m 755 $(SB_TOP)/build/contrail-puppet-manifest.tgz $(buildroot)$(_contrailopt)/puppet/contrail-puppet-manifest.tgz
 	# install TGZ file and packages list file
 	if [ -f $(TGZ_FILE) ]; then echo "Using TGZ FILE = $(TGZ_FILE)"; install -p -m 644 $(TGZ_FILE) $(buildroot)$(_contrailopt)/contrail_packages/contrail_debs.tgz; else echo "ERROR: TGZ file containing all debs is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
-	
+
 override_dh_shlibdeps:
 
 override_dh_usrlocal:   
