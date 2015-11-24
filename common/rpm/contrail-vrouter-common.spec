@@ -45,6 +45,10 @@ Requires: contrail-vrouter-init >= %{_verstr}-%{_relstr}
 Requires: python-opencontrail-vrouter-netns >= %{_verstr}-%{_relstr}
 %endif
 
+%if 0%{?centos} >= 7
+Requires: python-websocket-client >= 0.14.1
+%endif
+
 %if 0%{?rhel}
 Requires: tunctl
 %endif
