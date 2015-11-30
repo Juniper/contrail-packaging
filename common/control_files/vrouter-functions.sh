@@ -129,6 +129,19 @@ _dpdk_conf_read() {
         exit 1
     fi
 
+    loops=0
+    # Waiting for interface, we should wait
+    # for interface in case of rebinding interface from dpdk (igb_uio) driver to kernel driver
+    while [ ! -e /sys/class/net/${DPDK_PHY} ]
+    do
+        sleep 2
+        loops=$(($loops + 1))
+        if [ $loops -ge 10 ]; then
+            echo "$(date): ${DPDK_PHY} interface: Does not exist."
+            return 1
+        fi
+    done
+
     ## check for VLANs
     _vlan_file="/proc/net/vlan/${DPDK_PHY}"
     DPDK_VLAN_IF=""
