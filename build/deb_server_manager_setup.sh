@@ -280,6 +280,10 @@ if [ "$SM" != "" ]; then
        apt-get -y install cobbler="2.6.3-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
        apt-get -y install contrail-server-manager >> $log_file 2>&1
        apt-get -y install -f >> $log_file 2>&1
+       # Stopping webui service that uses old name
+       if [ -f /etc/init/supervisor-webui.conf  ]; then
+          service supervisor-webui stop >> $log_file 2>&1 # TODO : Remove for 3.0 release
+       fi
     fi
   else
     if [ "$SMLITE" != "" ]; then
