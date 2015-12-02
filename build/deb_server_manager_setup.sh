@@ -324,9 +324,9 @@ if [ "$WEBUI" != "" ] && [ "$NOWEBUI" == "" ]; then
   echo "$arrow Web Server Manager"
   # install webui
   echo "$space$arrow$install_str Contrail Web Core"
-  apt-get -y install contrail-web-core >> $log_file 2>&1
+  apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install contrail-web-core >> $log_file 2>&1
   echo "$space$arrow$install_str Contrail Web Server Manager"
-  apt-get -y install contrail-web-server-manager >> $log_file 2>&1
+  apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install contrail-web-server-manager >> $log_file 2>&1
   apt-get -y install -f >> $log_file 2>&1
   echo "$arrow Completed Installing Web Server Manager"
 fi
