@@ -14,6 +14,8 @@ else
   export CONTRAIL_SKU := havana
 endif
 
+CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
+
 ifeq ($(CONTRAIL_SKU),kilo)
     CONTRAIL_OPENSTACK := contrail-openstack-kilo-deb
     CONTRAIL_HEAT := contrail-heat-deb
@@ -25,7 +27,6 @@ endif
 ifeq ($(CONTRAIL_SKU),juno)
     CONTRAIL_OPENSTACK := contrail-openstack-juno-deb
     CONTRAIL_HEAT := contrail-heat-deb
-    CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
     ifeq ($(SERIES),trusty)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
@@ -35,7 +36,6 @@ endif
 ifeq ($(CONTRAIL_SKU),icehouse)
     CONTRAIL_OPENSTACK := contrail-openstack-icehouse-deb
     CONTRAIL_HEAT := contrail-heat-deb
-    CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
     ifeq ($(SERIES),precise)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
@@ -47,6 +47,7 @@ ifeq ($(CONTRAIL_SKU),icehouse)
 endif
 
 ifeq ($(CONTRAIL_SKU), vcenter)
+    CEILOMETER_PLUGIN :=
     ifeq ($(SERIES),precise)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
@@ -58,6 +59,7 @@ ifeq ($(CONTRAIL_SKU), vcenter)
 endif
 
 ifeq ($(CONTRAIL_SKU),havana)
+    CEILOMETER_PLUGIN :=
     CONTRAIL_OPENSTACK := contrail-openstack-deb
 endif
 
