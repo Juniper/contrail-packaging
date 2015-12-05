@@ -140,6 +140,14 @@ function setup_smgr_repos()
 
 }
 
+function cleanup_passenger()
+{
+  echo "$space$arrow Cleaning up passenger for Server Manager Ugrade"
+  if [ -f /etc/apache2/mods-enabled/passenger.conf ]; then
+    a2dismod passenger >> $log_file 2>&1
+  fi
+  service apache2 restart >> $log_file 2>&1
+}
 
 if [ "$#" -eq 0 ]; then
    usage
@@ -220,7 +228,19 @@ if [ "$SM" != "" ]; then
       echo "$space$arrow Puppet agent certificates have been moved to /var/lib/puppet/ssl_$datetime_string"
       mv /var/lib/puppet/ssl /var/lib/puppet/ssl_$datetime_string
   fi
-  #To be Removed after local repo additions
+   # Check if this is an upgrade
+  if [ "$SMLITE" != "" ]; then
+      check_upgrade=`dpkg --list | grep "contrail-server-manager-lite " || true`
+  else
+      check_upgrade=`dpkg --list | grep "contrail-server-manager " || true`
+  fi
+
+  if [ "$check_upgrade" != ""  ]; then
+    #  Cleanup old Passenger Manual Install so that it doesn't collide with new package
+    cleanup_passenger
+  fi
+
+  #TODO: To be Removed after local repo additions
   if [ ${rel[1]} == "14.04"  ]; then
     apt-get --no-install-recommends -y install libpython2.7=2.7.6-8ubuntu0.2 >> $log_file 2>&1
   fi
@@ -246,13 +266,6 @@ if [ "$SM" != "" ]; then
   if [ -e /etc/init.d/apparmor ]; then
     /etc/init.d/apparmor stop >> $log_file 2>&1
     update-rc.d -f apparmor remove >> $log_file 2>&1
-  fi
-
-  # Check if this is an upgrade
-  if [ "$SMLITE" != "" ]; then
-      check_upgrade=`dpkg --list | grep "contrail-server-manager-lite " || true`
-  else
-      check_upgrade=`dpkg --list | grep "contrail-server-manager " || true`
   fi
 
   if [ "$check_upgrade" != ""  ]; then
