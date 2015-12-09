@@ -1,0 +1,35 @@
+From 6b40fc8b18d0294ca68cc53aaea158bf622371cf Mon Sep 17 00:00:00 2001
+From: James Page <james.page@ubuntu.com>
+Date: Thu, 16 Oct 2014 09:57:16 +0100
+Subject: [PATCH] Deal with neutron and nova-network data formats
+
+The Floating IP model returned via the Neutron v2 API is different to
+that provided by the Nova Network API; check to see if instance uuid
+is present in the top level of the Floating IP data and use that if
+found.
+
+Resolves missing server uuids in 'nova floating-ip-list' when used
+with Neutron networking.
+
+Change-Id: I82671546e40dbb06a2854d6ff6448beab7bbd763
+Closes-Bug: #1380965
+---
+ nova/api/openstack/compute/contrib/floating_ips.py |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+--- a/nova/api/openstack/compute/contrib/floating_ips.py
++++ b/nova/api/openstack/compute/contrib/floating_ips.py
+@@ -45,7 +45,12 @@ def _translate_floating_ip_view(floating
+     except (TypeError, KeyError, AttributeError):
+         result['fixed_ip'] = None
+     try:
+-        result['instance_id'] = floating_ip['fixed_ip']['instance_uuid']
++        # NOTE(jamespage) neutron based data uses a slight different
++        # underlying data format - use that if present
++        if 'instance' in floating_ip:
++            result['instance_id'] = floating_ip['instance']['uuid']
++        else:
++            result['instance_id'] = floating_ip['fixed_ip']['instance_uuid']
+     except (TypeError, KeyError, AttributeError):
+         result['instance_id'] = None
+     return {'floating_ip': result}

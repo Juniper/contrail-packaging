@@ -1,0 +1,31 @@
+--- a/nova/tests/unit/virt/libvirt/test_driver.py
++++ b/nova/tests/unit/virt/libvirt/test_driver.py
+@@ -1032,7 +1032,7 @@ class LibvirtConnTestCase(test.NoDBTestC
+         self.assertEqual(1, cfg.vcpus)
+         self.assertEqual(vm_mode.EXE, cfg.os_type)
+         self.assertEqual("/sbin/init", cfg.os_init_path)
+-        self.assertEqual("console=tty0 console=ttyS0", cfg.os_cmdline)
++        self.assertEqual("console=tty0 console=ttyS0 console=ttyAMA0", cfg.os_cmdline)
+         self.assertIsNone(cfg.os_root)
+         self.assertEqual(3, len(cfg.devices))
+         self.assertIsInstance(cfg.devices[0],
+@@ -1058,7 +1058,7 @@ class LibvirtConnTestCase(test.NoDBTestC
+         self.assertEqual(1, cfg.vcpus)
+         self.assertEqual(vm_mode.EXE, cfg.os_type)
+         self.assertEqual("/sbin/init", cfg.os_init_path)
+-        self.assertEqual("console=tty0 console=ttyS0", cfg.os_cmdline)
++        self.assertEqual("console=tty0 console=ttyS0 console=ttyAMA0", cfg.os_cmdline)
+         self.assertIsNone(cfg.os_root)
+         self.assertEqual(3, len(cfg.devices))
+         self.assertIsInstance(cfg.devices[0],
+--- a/nova/virt/libvirt/driver.py
++++ b/nova/virt/libvirt/driver.py
+@@ -290,7 +290,7 @@ DISABLE_PREFIX = 'AUTO: '
+ DISABLE_REASON_UNDEFINED = None
+ 
+ # Guest config console string
+-CONSOLE = "console=tty0 console=ttyS0"
++CONSOLE = "console=tty0 console=ttyS0 console=ttyAMA0"
+ 
+ GuestNumaConfig = collections.namedtuple(
+     'GuestNumaConfig', ['cpuset', 'cputune', 'numaconfig', 'numatune'])
