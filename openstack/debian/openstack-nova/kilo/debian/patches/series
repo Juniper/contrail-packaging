@@ -1,0 +1,9 @@
+# Ubuntu specific patches below here. Note these can be dropped eventually.
+arm-console-patch.patch
+update-run-tests.patch
+disable-websockify-tests.patch
+neutron-floating-ip-list.patch
+skip-cinder-tests.patch
+#rate-limit-power-syncs.patch
+skip-ubuntu-tests.patch
+skip-proxy-test.patch
