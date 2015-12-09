@@ -105,7 +105,7 @@ _dpdk_conf_read() {
     AGENT_CONF="${CONFIG}"
     VROUTER_DPDK_INI=/etc/contrail/supervisord_vrouter_files/contrail-vrouter-dpdk.ini
     DPDK_NETLINK_TCP_PORT=20914
-    DPDK_MEM_PER_SOCKET="256"
+    DPDK_MEM_PER_SOCKET="1024"
 
     if [ ! -s ${AGENT_CONF} ]; then
         echo "$(date): Error reading ${AGENT_CONF}: file does not exist"
