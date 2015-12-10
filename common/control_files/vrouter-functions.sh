@@ -192,6 +192,17 @@ vrouter_dpdk_start() {
         fi
     done
 
+    # Include huge pages in core dump of contrail-vrouter-dpdk process
+    pid=$(pidof contrail-vrouter-dpdk)
+    if [ -f /proc/$pid/coredump_filter ]; then
+            cdump_filter=`cat /proc/$pid/coredump_filter`
+            cdump_filter=$((0x40 | 0x$cdump_filter))
+            echo $cdump_filter > /proc/$pid/coredump_filter
+    else
+            cdump_filter=0x73
+            echo $cdump_filter > /proc/$pid/coredump_filter
+    fi
+
     echo "$(date): Waiting for Agent to configure ${DPDK_VHOST}..."
     loops=0
     while [ ! -L /sys/class/net/${DPDK_VHOST} ]
