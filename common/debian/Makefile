@@ -135,10 +135,16 @@ PACKAGES_VMWARE = \
 	contrail-f5-deb \
         contrail-vmware-config-deb \
         contrail-vmware-utils-deb \
-        contrail-vmware-vrouter-deb
+        contrail-vmware-vrouter-deb \
+	contrail-install-vcenter-plugin
 
 all_vmware: ${PACKAGES_VMWARE}
 	@echo "Build complete"
+
+# Building vcenter-plugin 
+contrail-install-vcenter-plugin:
+	(cd vcenter-plugin && make all)
+#end vcenter-plugin build
 
 server-manager-all: contrail-server-manager-deb \
                     contrail-server-manager-lite-deb \
