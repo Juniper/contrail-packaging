@@ -20,19 +20,17 @@ Version:	    %{_verstr}
 Release:	    %{_relstr}
 Summary:	    Contrail Fabric Utilities%{?_gitVer}
 BuildArch:          noarch
-
 Group:		    Applications/System
 License:	    Commercial
-
 Source0:            git_root
-
-%description
-Contrail Fabric Utilities for cluster management
 
 BuildRequires:  systemd-units
 Requires: python-yaml
+Requires: python-Fabric
 Requires: python-netaddr
-Requires: python-pip
+
+%description
+Contrail Fabric Utilities for cluster management
 
 %prep
 ## if [ ! -d contrail-fabric-utils]; then
