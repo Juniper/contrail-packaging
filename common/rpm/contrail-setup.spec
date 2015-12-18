@@ -39,7 +39,6 @@ URL:                http://www.juniper.net/
 Vendor:             Juniper Networks Inc
 
 Requires:	    tar
-Requires:	    python-pip
 Requires:	    python-netifaces
 Requires:	    gcc
 Requires:	    python-devel
@@ -124,14 +123,6 @@ tar zxf dist/ContrailProvisioning-0.1dev.tar.gz
 cd ContrailProvisioning-0.1dev
 %{__python} setup.py install --root=%{buildroot} --install-scripts %{_contrailopt}/bin/
 popd
-%if 0%{?rhel}
-pushd %{_builddir}/../distro/third_party
-tar cvzf %{buildroot}%{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz ./zope.interface-3.7.0 
-install -p -m 644 paramiko-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/
-install -p -m 644 pycrypto-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/
-install -p -m 644 Fabric-*.tar.gz %{buildroot}%{_contrailopt}/python_packages/
-popd
-%endif
 
 install -d -m 755 %{buildroot}/etc/contrail
 if [ %{_flist} = None ]; then 
@@ -157,12 +148,6 @@ ln -sbf %{_contrailopt}/bin/* %{_bindir}
 %{_contrailopt}/dns_scripts.tgz
 %{python_sitelib}/ContrailProvisioning-*.egg-info
 %{python_sitelib}/contrail_provisioning
-%if 0%{?rhel}
-%{_contrailopt}/python_packages/zope.interface-3.7.0.tar.gz
-%{_contrailopt}/python_packages/paramiko-*.tar.gz
-%{_contrailopt}/python_packages/Fabric-*.tar.gz
-%{_contrailopt}/python_packages/pycrypto-*.tar.gz
-%endif
 %if 0%{?_fileList:1}
     /etc/contrail/rpm_list.txt
 %endif
@@ -170,4 +155,5 @@ ln -sbf %{_contrailopt}/bin/* %{_bindir}
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
 
 %changelog
-
+* Mon Dec 14 2015 Nagendra Maynattamai <npchandran@juniper.net>
+- Removed 1. Dependency for python-pip, 2. Dont package sources of fabric, paramiko, pycrypto and zope as tgz
