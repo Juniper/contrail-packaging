@@ -84,7 +84,7 @@ class BasePackager(Utils):
             if 'sub_package_type' in pkgs_dict[pkgtype][pkgtype]:
                 sub_package_types = pkgs_dict[pkgtype][pkgtype]['sub_package_type']
                 sub_package_types = self.get_as_list(sub_package_types)
-                for sub_type in sub_package_types:
+                for sub_type in filter(None, sub_package_types):
                     sub_index = new_pkgtypes.index(sub_type)
                     pkg_index = new_pkgtypes.index(pkgtype)
                     # move sub package type before current package type
