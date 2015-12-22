@@ -107,7 +107,8 @@ PACKAGES = \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
 	contrail-f5-deb \
-	contrail-vmware-utils-deb
+	contrail-vmware-utils-deb \
+	contrail-puppet-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -586,3 +587,14 @@ contrail-vrouter-deb: contrail-libs-deb
 		(cd contrail-vrouter; fakeroot debian/rules clean); \
 		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
 	fi
+
+contrail-puppet-deb:
+	mkdir -p $(SB_TOP)/build/debian/$(@:-deb=)
+	cp -R $(SB_TOP)/tools/contrail-server-manager/build/debian/contrail-puppet/debian $(SB_TOP)/build/debian/$(@:-deb=)/
+	chmod u+x $(SB_TOP)/build/debian/$(@:-deb=)/debian/rules
+	(cd $(SB_TOP)/build/debian/$(@:-deb=); fakeroot debian/rules clean)
+	(cd $(SB_TOP)/build/debian/$(@:-deb=); fakeroot debian/rules binary)
+
+contrail-puppet-clean:
+	(cd $(SB_TOP)/build/debian/$(@:-clean=); fakeroot debian/rules clean)
+	(rm -rf $(SB_TOP)/build/debian/$(@:-clean=))
