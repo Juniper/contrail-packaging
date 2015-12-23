@@ -1,0 +1,11 @@
+common/debian/contrail-*/debian/*.debhelper.log
+common/debian/contrail-openstack-*/debian/changelog
+common/debian/contrail-openstack-*/debian/control
+common/debian/contrail-openstack-*/debian/files
+
+storage/debian/contrail-*/debian/*.debhelper.log
+storage/debian/contrail-*/debian/changelog
+storage/debian/contrail-*/debian/files
+
+*.substvars
+*.pyc
