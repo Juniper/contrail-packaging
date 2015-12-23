@@ -20,6 +20,10 @@ ifeq ($(CONTRAIL_SKU),kilo)
     CONTRAIL_OPENSTACK := contrail-openstack-kilo-deb
     CONTRAIL_HEAT := contrail-heat-deb
     CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-kilo-deb
+    ifeq ($(SERIES),trusty)
+        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
+        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
+    endif
 else
     CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 endif
