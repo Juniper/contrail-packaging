@@ -1,5 +1,16 @@
 #!/bin/tcsh -f
 
+#################################################################################
+#                                                                               #
+#                      Vinay Mahuli                                             #
+#                      January 2015                                              #
+#                      add-branch                                               #
+#                                                                               #
+#       This script is used to add branch to gerrit repo which gets reflected   #
+#       in git repo.                                                            #
+#                                                                               #
+#################################################################################
+
 if ($#argv != 1) then
    echo "Usage: add-branch <repo-list-file> \n"
    echo "<repo-list-file> should have 1 or more lines in following format:"
