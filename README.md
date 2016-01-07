@@ -69,6 +69,3 @@ How to Package
     ./packager.py --build-id 1234 --sku grizzly --contrail-package-file <file1>
     ./packager.py --build-id 1234 --sku grizzly --contrail-package-file <file1> <file2>
     
-    
-
-
