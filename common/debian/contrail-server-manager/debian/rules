@@ -94,6 +94,7 @@ override_dh_auto_install:
 	# Copy/install files - Python scripts
 	cp -r $(src_path)/server_mgr_main.py $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/server_mgr_db.py  $(build_root)/opt/contrail/server_manager/
+	cp -r $(src_path)/server_mgr_utils.py  $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/server_mgr_cobbler.py  $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/server_mgr_status.py  $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/server_mgr_puppet.py  $(build_root)/opt/contrail/server_manager/
