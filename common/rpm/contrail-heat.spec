@@ -34,6 +34,5 @@ popd
 %files
 %defattr(-,root,root,-)
 %{python_sitelib}/contrail_heat*
-/usr/lib/heat
 
 %post
