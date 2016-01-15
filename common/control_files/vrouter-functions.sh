@@ -306,7 +306,12 @@ _dpdk_system_bond_info_collect() {
             DPDK_BOND_PCIS="${DPDK_BOND_PCIS} ${slave_pci}"
         fi
         if [ -z "${DPDK_BOND_NUMA}" ]; then
-            DPDK_BOND_NUMA="${slave_numa}"
+            # DPDK EAL for bond interface interprets -1 as 255
+            if [ "${slave_numa}" -eq -1 ]; then
+                DPDK_BOND_NUMA=0
+            else
+                DPDK_BOND_NUMA="${slave_numa}"
+            fi
         fi
         if [ -z "${DPDK_BOND_MAC}" ]; then
             DPDK_BOND_MAC="${slave_mac}"
