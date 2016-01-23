@@ -1,3 +1,14 @@
+python-neutronclient (1:2.3.11-0ubuntu1~cloud0.3contrail) trusty-kilo; urgency=medium
+
+  * cherry-pick lbaasv2 specific fixes from upstream neutronclient
+  * Closes-Bugs: 1430541, 1426246, 1426253
+  * Partially-Implements: lbaas-ssl-termination
+  * commit-ids: aa0c39fe2d2b1cd6d83987644928fe5c8811789e
+  * 6e4841359d50c31bffea00b74269e94a05e2442a
+  * 4e98615d1612f011041be011f411e5115a269f8b
+
+ -- -- Atul Moghe <amoghe@juniper.net>  Wed, 20 Jan 2016 16:33:40 -0400
+
 python-neutronclient (1:2.3.11-0ubuntu1~cloud0.2contrail) trusty-kilo; urgency=medium
 
   * Added 2contrail for contrail pacakge
