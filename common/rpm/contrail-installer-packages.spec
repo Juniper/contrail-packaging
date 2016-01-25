@@ -25,10 +25,18 @@
 %define         _sku      None
 %endif
 
-%if "%{?dist}" == ".el7"
-%define SETUP_FILE %{_builddir}/../tools/packaging/build/rpm_installer_redhat_setup.sh
-%else
+%if %{?centos} > 6
+%if "%{_skuTag}" == "juno"
 %define SETUP_FILE %{_builddir}/../tools/packaging/build/rpm_installer_setup.sh
+%else
+%define SETUP_FILE %{_builddir}/../tools/packaging/build/rpm_installer_redhat_setup.sh
+%endif
+%else
+%if "%{_skuTag}" == "icehouse"
+%define SETUP_FILE %{_builddir}/../tools/packaging/build/rpm_installer_setup.sh
+%else
+%define SETUP_FILE %{_builddir}/../tools/packaging/build/rpm_installer_redhat_setup.sh
+%endif
 %endif
 
 
@@ -54,14 +62,16 @@ install -d -m 755 %{buildroot}%{_contrailopt}
 install -d -m 755 %{buildroot}/etc/
 install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer_packages
 install -d -m 755 %{buildroot}%{_contrailopt}/contrail_installer_repo
-install -d -m 755 %{buildroot}%{_contrailopt}/python-packages
 
-# install files
-install -p -m 755 %{_builddir}/../distro/third_party/paramiko-*.tar.gz %{buildroot}%{_contrailopt}/python-packages/
-install -p -m 755 %{_builddir}/../distro/third_party/pycrypto-*.tar.gz %{buildroot}%{_contrailopt}/python-packages/
-install -p -m 755 %{_builddir}/../distro/third_party/Fabric-*.tar.gz %{buildroot}%{_contrailopt}/python-packages/
+if [ %{?centos} > 6 ] && [ "%{_skuTag}" == "juno" ]; then \
+install -d -m 755 %{buildroot}%{_contrailopt}/python-packages \
+install -p -m 755 %{_builddir}/../distro/third_party/paramiko-*.tar.gz %{buildroot}%{_contrailopt}/python-packages/ \
+install -p -m 755 %{_builddir}/../distro/third_party/pycrypto-*.tar.gz %{buildroot}%{_contrailopt}/python-packages/ \
+install -p -m 755 %{_builddir}/../distro/third_party/Fabric-*.tar.gz %{buildroot}%{_contrailopt}/python-packages/ \
+fi
 
 install -p -m 755 %{SETUP_FILE} %{buildroot}%{_contrailopt}/contrail_installer_packages/setup.sh
+
 %if 0%{?rhel}
 install -d -m 755 %{buildroot}/etc/yum.repos.d/
 install -p -m 755 %{_builddir}/../tools/packaging/build/contrail-installer.repo %{buildroot}/etc/yum.repos.d/contrail-installer.repo
@@ -95,3 +105,5 @@ etc/zypp/repos.d/*
 %changelog
 * Wed Apr 22 2015 - npchandran@juniper.net
 - Initial build
+* Mon Jan 25 2016 - npchandran@juniper.net
+- pip packages are not packaged in centos7/kilo and rhel7/juno onwards
