@@ -52,11 +52,8 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_packages
 
 # install files
 pushd %{_builddir}/..
-if [ "%{?dist}" == ".el7" ]; then \
-install -p -m 755 tools/packaging/build/rpm_anyrepo_setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh.new ;\
-else \
-install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh.new ;\
-fi
+install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh.new
+
 # Install puppet manifests
 tar -cvzf %{_builddir}/../build/contrail-puppet-manifest.tgz -C %{_builddir}/../tools/puppet .
 install -p -m 755 %{_builddir}/../build/contrail-puppet-manifest.tgz %{buildroot}%{_contrailopt}/puppet/contrail-puppet-manifest.tgz
@@ -79,4 +76,6 @@ fi
 %{_contrailopt}/puppet/contrail-puppet-manifest.tgz
 
 %changelog
+* Mon Jan 25 2016 - npchandran@juniper.net
+- Removing pip related steps in contrail cloud packages
 
