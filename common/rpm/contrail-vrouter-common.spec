@@ -40,10 +40,7 @@ Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
 Requires: contrail-vrouter-init >= %{_verstr}-%{_relstr}
-
-%if 0%{?centos}
 Requires: python-opencontrail-vrouter-netns >= %{_verstr}-%{_relstr}
-%endif
 
 %if 0%{?centos} >= 7
 Requires: python-websocket-client >= 0.14.1
