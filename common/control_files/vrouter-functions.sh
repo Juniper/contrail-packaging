@@ -179,8 +179,8 @@ vrouter_dpdk_start() {
     # remove rte configuration file if vRouter has crashed
     rm -f ${DPDK_RTE_CONFIG}
 
-    # set maximum socket buffer size to (max hold flows entries * 9060 bytes)
-    sysctl -w net.core.wmem_max=9277440
+    # set maximum socket buffer size to (max hold flows entries * 9160 bytes)
+    sysctl -w net.core.wmem_max=9160000
 
     service ${VROUTER_SERVICE} start
     loops=0
