@@ -510,5 +510,8 @@ vrouter_dpdk_if_unbind() {
     rmmod rte_kni
     rmmod igb_uio
 
+    echo "$(date): Re-initialize networking."
+    ifdown --all && ifup --all -X ${DEVICE}
+
     echo "$(date): Done unbinding interfaces."
 }
