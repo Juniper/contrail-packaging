@@ -26,7 +26,6 @@ License:	    Commercial
 
 Source0:            git_root
 
-BuildRequires:  systemd-units
 Requires: python-yaml
 Requires: python-netaddr
 
