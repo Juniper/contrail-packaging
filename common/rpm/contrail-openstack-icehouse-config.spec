@@ -25,6 +25,9 @@ BuildArch: noarch
 
 #Requires: contrail-api-lib
 Requires: contrail-config >= %{_verstr}-%{_relstr}
+#python-neutron requires python-oslo-serialization, but that doesn't
+#have dependency, adding it here as workaround
+Requires: python-oslo-serialization
 Requires: openstack-neutron
 Requires: neutron-plugin-contrail >= %{_verstr}-%{_relstr}
 Requires: python-novaclient
