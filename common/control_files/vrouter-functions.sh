@@ -182,7 +182,6 @@ vrouter_dpdk_start() {
     # set maximum socket buffer size to (max hold flows entries * 9160 bytes)
     sysctl -w net.core.wmem_max=9160000
 
-    service ${VROUTER_SERVICE} start
     loops=0
     # wait for vRouter/DPDK to start
     while ! _is_vrouter_dpdk_running
