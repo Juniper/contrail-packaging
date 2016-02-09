@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Phony script as nothing to do in DPDK vRouter case. Just satisfy other
+# scripts by self existence.
