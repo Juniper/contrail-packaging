@@ -516,7 +516,21 @@ vrouter_dpdk_if_unbind() {
     rmmod igb_uio
 
     echo "$(date): Re-initialize networking."
-    ifdown --all && ifup --all -X ${DEVICE}
+    for iface in $(ifquery --list);
+    do
+        if ifquery $iface | grep -i "bond";
+        then
+            ifdown $iface
+         fi
+    done
+ 
+    for iface in $(ifquery --list);
+    do
+        if ifquery $iface | grep -i "bond";
+        then
+            ifup $iface
+         fi
+    done
 
     echo "$(date): Done unbinding interfaces."
 }
