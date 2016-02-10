@@ -1,0 +1,10 @@
+Verified+2: opencontrail-admin <ci-admin@opencontrail.org>
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Code-Review+2: ted ghose <rintu@hotmail.com>
+Approved+1: Ashish Ranjan <aranjan@juniper.net>
+Code-Review-1: David Peet <dpeet@juniper.net>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Tue, 09 Feb 2016 18:33:50 -0800
+Reviewed-on: https://review.opencontrail.org/16975
+Project: Juniper/contrail-packaging
+Branch: refs/heads/master
