@@ -129,19 +129,6 @@ _dpdk_conf_read() {
         exit 1
     fi
 
-    loops=0
-    # Waiting for interface, we should wait
-    # for interface in case of rebinding interface from dpdk (igb_uio) driver to kernel driver
-    while [ ! -e /sys/class/net/${DPDK_PHY} ]
-    do
-        sleep 2
-        loops=$(($loops + 1))
-        if [ $loops -ge 10 ]; then
-            echo "$(date): ${DPDK_PHY} interface: Does not exist."
-            return 1
-        fi
-    done
-
     ## check for VLANs
     _vlan_file="/proc/net/vlan/${DPDK_PHY}"
     DPDK_VLAN_IF=""
@@ -399,13 +386,28 @@ _dpdk_vrouter_ini_update() {
 vrouter_dpdk_if_bind() {
     echo "$(date): Binding interfaces to DPDK drivers..."
 
-    _dpdk_conf_read
+    # TODO: This is a very ugly hack that works around the race between vRouter
+    # start and network interfaces set up. There were observed cases when the
+    # vRouter had started before the bond0 interface was created, which led to
+    # an error as DPDK could not bind to the non-existing interface.
+    # However, this code is only a TEMPORARY HACK. In overall the entire file
+    # is nothing more than a set of ugly or very ugly hacks and should be
+    # rewritten as soon as possible. All functions depend on each other, there
+    # is no way to add any functionality other than introducing yet another
+    # hack before it is refactored.
+    DPDK_PHY=$(cat $CONFIG | sed -nr 's/^\s*physical_interface\s*=\s*(\S+)\b/\1/p')
+    loops=0
+    while [ ! -e /sys/class/net/${DPDK_PHY} ]; do
+        sleep 2
+        loops=$(($loops + 1))
+        if [ $loops -ge 60 ]; then
+            echo "$(date): Error binding physical interface ${DPDK_PHY}: device not found"
+            ${DPDK_BIND} --status
+            return 1
+        fi
+    done
 
-    if [ ! -f /sys/class/net/${DPDK_PHY}/address ]; then
-        echo "$(date): Error binding physical interface ${DPDK_PHY}: device not found"
-        ${DPDK_BIND} --status
-        return 1
-    fi
+    _dpdk_conf_read
 
     modprobe igb_uio
     # multiple kthreads for port monitoring
