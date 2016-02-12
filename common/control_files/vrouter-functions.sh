@@ -129,6 +129,10 @@ _dpdk_conf_read() {
         exit 1
     fi
 
+    # TODO: Remove this waiting loop as the _dpdk_conf_read() is used also when
+    # the vRouter is already started. In that case, there is no entry under
+    # /sys/class/net/${DPDK_PHY} and this code unnecessarily adds 20s of a
+    # delay, enlarging the start/stop time of the supervisor-vrouter service.
     loops=0
     # Waiting for interface, we should wait
     # for interface in case of rebinding interface from dpdk (igb_uio) driver to kernel driver
@@ -398,13 +402,25 @@ _dpdk_vrouter_ini_update() {
 vrouter_dpdk_if_bind() {
     echo "$(date): Binding interfaces to DPDK drivers..."
 
-    _dpdk_conf_read
+    # TODO: This is a temporary workaround for the race between vRouter
+    # start and network interfaces set up. There were observed cases when the
+    # vRouter had started before the bond0 interface was created, which led to
+    # an error as DPDK could not bind to the non-existing interface. In
+    # overall, cleanup of the functions in this file should be done to
+    # eliminate such workarounds.
+    DPDK_PHY=$(cat $CONFIG | sed -nr 's/^\s*physical_interface\s*=\s*(\S+)\b/\1/p')
+    loops=0
+    while [ ! -e /sys/class/net/${DPDK_PHY} ]; do
+        sleep 2
+        loops=$(($loops + 1))
+        if [ $loops -ge 60 ]; then
+            echo "$(date): Error binding physical interface ${DPDK_PHY}: device not found"
+            ${DPDK_BIND} --status
+            return 1
+        fi
+    done
 
-    if [ ! -f /sys/class/net/${DPDK_PHY}/address ]; then
-        echo "$(date): Error binding physical interface ${DPDK_PHY}: device not found"
-        ${DPDK_BIND} --status
-        return 1
-    fi
+    _dpdk_conf_read
 
     modprobe igb_uio
     # multiple kthreads for port monitoring
