@@ -16,6 +16,18 @@ endif
 
 CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
 
+ifeq ($(CONTRAIL_SKU),liberty)
+    CONTRAIL_OPENSTACK := contrail-openstack-liberty-deb
+    CONTRAIL_HEAT := contrail-heat-deb
+    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-liberty-deb
+    ifeq ($(SERIES),trusty)
+        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
+        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
+    endif
+else
+    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
+endif
+
 ifeq ($(CONTRAIL_SKU),kilo)
     CONTRAIL_OPENSTACK := contrail-openstack-kilo-deb
     CONTRAIL_HEAT := contrail-heat-deb
@@ -24,8 +36,6 @@ ifeq ($(CONTRAIL_SKU),kilo)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
     endif
-else
-    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 endif
 
 ifeq ($(CONTRAIL_SKU),juno)
@@ -431,6 +441,23 @@ contrail-openstack-kilo-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
 	rm -rf ${BUILDDIR}
 
+contrail-openstack-liberty-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -R contrail-openstack/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; [ -f debian/control.liberty.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+	--version $(VERSION) --file debian/control.liberty.in ) || echo no control.liberty.in
+	cp ${BUILDDIR}/debian/control.liberty ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.liberty ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-liberty-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+
 contrail-openstack-config-kilo-deb:
 	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config)
 	(cd ${BUILDDIR}; [ -f debian/control.kilo.in ] && python \
@@ -441,6 +468,18 @@ contrail-openstack-config-kilo-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 contrail-openstack-config-kilo-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config; fakeroot debian/rules clean)
+
+contrail-openstack-config-liberty-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config)
+	(cd ${BUILDDIR}; [ -f debian/control.liberty.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+	  --version $(VERSION) --file debian/control.liberty.in ) || echo no control.liberty.in
+	cp ${BUILDDIR}/debian/control.liberty ${BUILDDIR}/debian/control
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-config-liberty-clean:
 	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config; fakeroot debian/rules clean)
 
 contrail-openstack-dashboard-deb:

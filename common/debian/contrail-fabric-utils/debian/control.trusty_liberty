@@ -1,0 +1,19 @@
+Source: contrail-fabric-utils
+Maintainer: amoghe <amoghe@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends: debhelper (>= 8)
+
+Package: contrail-fabric-utils
+Architecture: all
+Maintainer: amoghe <amoghe@juniper.net>
+Depends: python-yaml,
+         python-pip,
+         python-netaddr,
+         python-paramiko (>=1.14.0),
+         python-ecdsa (>=0.11),
+Section: contrail-fabric-utils
+Priority: extra
+Description: Contrail Fabric Utilities for cluster management
+
