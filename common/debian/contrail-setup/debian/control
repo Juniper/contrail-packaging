@@ -17,7 +17,8 @@ Depends: tar,
     ifenslave-2.6,
     vlan,
     python-iniparse,
-    python-support
+    python-support,
+    crudini
 # Replaces some files in /opt/contrail/contrail_packages/ created by contrail-install-packages.
 # Replaces some files in /opt/contrail/bin/ created by contrail-openstack-ha
 Replaces: contrail-install-packages, contrail-openstack-ha

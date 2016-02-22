@@ -44,6 +44,7 @@ Requires:	    gcc
 Requires:	    python-devel
 Requires:	    python-netaddr
 Requires:	    openstack-utils
+Requires:       crudini
 %if 0%{?fedora} >= 17
 #Requires:	    python-Fabric
 Requires:	    python-crypto
