@@ -55,6 +55,8 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_initddir)
 	# Server Manager config file
 	install -p -m 755 $(SB_TOP)/contrail-web-core/config/config.global.js $(buildroot)/$(_contrailetc)/config.global.sm.js
+	perl -pi -e '{ s/opencontrail-logo/juniper-networks-logo/g; }' $(buildroot)/$(_contrailetc)/config.global.sm.js
+	perl -pi -e '{ s/opencontrail-favicon/juniper-networks-favicon/g; }' $(buildroot)/$(_contrailetc)/config.global.sm.js
 	# supervisord conf file
 	install -p -m 755 $(_distropkgdir)/supervisord_webui_sm.conf $(buildroot)/$(_contrailetc)/supervisord_webui_sm.conf
 	# supervisord upstart file
