@@ -1,0 +1,9 @@
+Approved+1: opencontrail-admin <ci-admin@opencontrail.org>
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Code-Review+2: Ignatious Johnson Christopher <ijohnson@juniper.net>
+Approved+1: Karl Klashinsky <klash@juniper.net>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Tue, 23 Feb 2016 12:43:00 -0800
+Reviewed-on: https://review.opencontrail.org/17613
+Project: Juniper/contrail-packaging
+Branch: refs/heads/R3.0
