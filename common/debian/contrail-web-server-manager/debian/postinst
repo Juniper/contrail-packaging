@@ -119,8 +119,8 @@ sed -i "s|module.exports =.*|module.exports = config;|g" $WEBUI_CONF_FILE
 sed -i "s/config.featurePkg.webController.enable = .*/config.featurePkg.webController.enable = false;/g" $WEBUI_CONF_FILE
 sed -i "s/config.featurePkg.webStorage.enable = .*/config.featurePkg.webStorage.enable = false;/g" $WEBUI_CONF_FILE
 
-sed -i "s/config.http_port = .*/config.http_port = '8145';/g" $WEBUI_CONF_FILE
-sed -i "s/config.https_port = .*/config.https_port = '8143';/g" $WEBUI_CONF_FILE
+sed -i "s/config.http_port = .*/config.http_port = '9080';/g" $WEBUI_CONF_FILE
+sed -i "s/config.https_port = .*/config.https_port = '9143';/g" $WEBUI_CONF_FILE
 sed -i "s/config.jobServer.server_port = .*/config.jobServer.server_port = '3004';/g" $WEBUI_CONF_FILE
 sed -i "s/config.kue.ui_port = .*/config.kue.ui_port = '3006'/g" $WEBUI_CONF_FILE
 
