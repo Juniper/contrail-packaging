@@ -493,7 +493,7 @@ contrail-openstack-config-liberty-clean:
 	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config; fakeroot debian/rules clean)
 
 contrail-openstack-dashboard-deb:
-	if [ '${CONTRAIL_SKU}' != 'liberty' ]; then \
+	if [ -d ${SB_TOP}/contrail-horizon ]; then \
 		$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard) \
 		mkdir -p ${BUILDDIR}/debian; \
 		cp -R ${SB_TOP}/contrail-horizon/* ${BUILDDIR}; \
