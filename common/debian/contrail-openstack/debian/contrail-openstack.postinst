@@ -5,9 +5,9 @@ for svc in keystone nova-api nova-scheduler nova-conductor nova-console\
     if [ -f /etc/init/$svc.conf ]; then
         service $svc stop || true
         mv /etc/init/$svc.conf /etc/init/$svc.conf.backup
-    fi
-    if [ -f /etc/init.d/$svc ]; then
-        mv /etc/init.d/$svc /etc/init.d/$svc.backup
+        if [ -f /etc/init.d/$svc ]; then
+            mv /etc/init.d/$svc /etc/init.d/$svc.backup
+        fi
     fi
     if [ -f /etc/init.d/$svc.initd.supervisord ]; then
         mv /etc/init.d/$svc.initd.supervisord /etc/init.d/$svc
