@@ -3,11 +3,16 @@ for svc in keystone nova-api nova-scheduler nova-conductor nova-console\
            nova-consoleauth nova-objectstore nova-novncproxy glance-api\
            glance-registry cinder-api cinder-scheduler heat-engine heat-api heat-api-cfn ; do
     if [ -f /etc/init/$svc.conf ]; then
+        # Service stop is required for SM provisioing; because SM does
+        # installation of contrail-openstack after provisioning
+        # with native openstack packages
         service $svc stop || true
         mv /etc/init/$svc.conf /etc/init/$svc.conf.backup
-    fi
-    if [ -f /etc/init.d/$svc ]; then
-        mv /etc/init.d/$svc /etc/init.d/$svc.backup
+        # Move only in case of fresh install, if /etc/init/$svc.conf exists
+        # it is a fresh install case
+        if [ -f /etc/init.d/$svc ]; then
+            mv /etc/init.d/$svc /etc/init.d/$svc.backup
+        fi
     fi
     if [ -f /etc/init.d/$svc.initd.supervisord ]; then
         mv /etc/init.d/$svc.initd.supervisord /etc/init.d/$svc
