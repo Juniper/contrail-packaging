@@ -781,9 +781,9 @@ md5   = b529406534f53b01137b43aff7d17791
 file  = json-c-0.11-4.el7_0.x86_64.rpm
 md5   = 31736cbc9ff03d3600f286be1fabb540
 
-[kafka-2.10-0.9.0.0_SNAPSHOT]
-file  = kafka-2.10-0.9.0.0_SNAPSHOT.0contrail0.el7.x86_64.rpm
-md5   = 3b0864872aaa91690cde2829e1d55637
+[kafka-2.11-0.9.0.1.0contrail0.el7]
+file           = kafka-2.11-0.9.0.1.0contrail0.el7.x86_64.rpm
+md5            = 9514e5bd9f7a7f02a3ca0c2642430973
 package_type  = contrail-install-packages
 
 [kbd-legacy_1.15.5_11.el7]
