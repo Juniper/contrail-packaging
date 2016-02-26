@@ -144,6 +144,23 @@ service sendmail restart
 pushd /var/www/html/thirdparty_packages
 dpkg-scanpackages . | gzip -9c > Packages.gz
 popd
+
+for f in /etc/cobbler/power/*.template; do
+if ! grep -q '#for \$fact' $f; then
+cat << EOT >> $f
+#for \$fact, \$value in  \$ks_meta.items()
+  #if \$fact=='ipmi_interface' and \$value == 'lanplus'
+    lanplus
+  #elif \$fact=='ipmi_interface' and \$value=='lan'
+    lan
+  #else
+    #pass
+  #end if
+#end for
+EOT
+fi
+done
+
 update-rc.d apache2 defaults
 update-rc.d xinetd defaults
 update-rc.d cobblerd defaults
