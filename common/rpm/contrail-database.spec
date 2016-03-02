@@ -36,7 +36,7 @@ Requires: cassandra21
 %endif
 Requires: supervisor
 Requires: java-1.7.0-openjdk
-Requires: kafka
+Requires: kafka >= 2.11
 
 Source1: supervisord_contrail_database.initd
 Source2: supervisord_database.conf
