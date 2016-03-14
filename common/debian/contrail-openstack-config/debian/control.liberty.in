@@ -3,30 +3,32 @@ Maintainer: rrugge <rrugge@juniper.net>
 Section: misc
 Priority: optional
 Standards-Version: 1.0
-Build-Depends: 
+Build-Depends:
 
 Package: contrail-openstack-config
 Architecture: all
-Depends: contrail-nodemgr (>= 3.0.0.0-5156),
-    contrail-lib (>= 3.0.0.0-5156),
-    contrail-config (>= 3.0.0.0-5156),
-    contrail-f5 (>= 3.0.0.0-5156),
-    neutron-plugin-contrail (>= 3.0.0.0-5156),
-    contrail-setup (>= 3.0.0.0-5156),
-    contrail-utils (>= 3.0.0.0-5156),
-    contrail-config-openstack (>= 3.0.0.0-5156),
-    supervisor,
-    neutron-server,
-    python-neutron-lbaas,
-    python-novaclient,
-    python-keystoneclient,
-    haproxy (>=1.5.4-1ppa1~precise),
-    euca2ools,
-    rabbitmq-server,
-    python-qpid,
-    python-iniparse,
-    python-bottle,
-    ifmap-server,
-    ifmap-python-client,
-    keepalived (>=1.2.13-1) | keepalived (>=1.2.13-0~276~ubuntu14.04.1)
+Maintainer: rrugge <rrugge@juniper.net>
+Depends:
+ supervisor,
+ contrail-nodemgr,
+ contrail-lib,
+ contrail-config,
+ contrail-f5,
+ neutron-plugin-contrail,
+ neutron-server,
+ python-neutron-lbaas,
+ python-novaclient,
+ python-keystoneclient,
+ contrail-setup,
+ contrail-utils,
+ haproxy (>=1.5.4-1ppa1~precise),
+ euca2ools,
+ rabbitmq-server,
+ python-qpid,
+ python-iniparse,
+ python-bottle,
+ ifmap-server,
+ ifmap-python-client,
+ contrail-config-openstack,
+ keepalived (>=1.2.13-1) | keepalived (>=1.2.13-0~276~ubuntu14.04.1)
 Description: Contrail Openstack Config composite debian package
