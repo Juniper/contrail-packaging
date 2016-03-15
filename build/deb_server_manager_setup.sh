@@ -216,6 +216,7 @@ done
 cleanup_smgr_repos
 setup_smgr_repos
 
+RESTART_SERVER_MANAGER="0"
 if [ "$SM" != "" ]; then
   echo "$arrow Server Manager"
 
@@ -273,14 +274,11 @@ if [ "$SM" != "" ]; then
   if [ "$check_upgrade" != ""  ]; then
     # Upgrade
     echo "$space$arrow Upgrading Server Manager"
+    RESTART_SERVER_MANAGER="1"
     if [ "$SMLITE" != "" ]; then
        echo "$space$arrow$install_str Server Manager Lite"
        apt-get -y install contrail-server-manager-lite >> $log_file 2>&1
        apt-get -y install -f >> $log_file 2>&1
-       echo "$space$space$arrow Starting Server Manager Lite Service"
-       service contrail-server-manager restart
-       sleep 5
-       service contrail-server-manager status
     else
        cv=`cobbler --version`
        cv=( $cv  )
@@ -296,19 +294,18 @@ if [ "$SM" != "" ]; then
        apt-get -y install contrail-server-manager >> $log_file 2>&1
        apt-get -y install -f >> $log_file 2>&1
        # Stopping webui service that uses old name
+       if [ -f /etc/init.d/supervisor-webui ]; then
        old_webui_status=`service supervisor-webui status | awk '{print $2}' | cut -d'/' -f 1`
-       if [ $old_webui_status != "stop"  ]; then
-          service supervisor-webui stop >> $log_file 2>&1 # TODO : Remove for 3.0 release
+         if [ $old_webui_status != "stop"  ]; then
+            service supervisor-webui stop >> $log_file 2>&1 # TODO : Remove for 3.0 release
+         fi
        fi
     fi
   else
     if [ "$SMLITE" != "" ]; then
        echo "$space$arrow$install_str Server Manager Lite"
        apt-get -y install contrail-server-manager-lite >> $log_file 2>&1
-       echo "$space$space$arrow Starting Server Manager Lite Service"
-       service contrail-server-manager restart
-       sleep 5
-       service contrail-server-manager status
+       RESTART_SERVER_MANAGER="1"
     else
       echo "$space$arrow$install_str Server Manager"
       apt-get -y install cobbler="2.6.3-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
@@ -362,6 +359,16 @@ if [ "$SMMON" != "" ] && [ "$NOSMMON" == "" ]; then
       cat /opt/contrail/server_manager/sm-inventory-config.ini >> /opt/contrail/server_manager/sm-config.ini
   fi
   echo "$arrow Completed Installing Server Manager Monitoring"
+fi
+
+if [ "x$RESTART_SERVER_MANAGER" == "x1" ]; then
+  if [ "$SMLITE" != "" ]; then
+    echo "$space$space$arrow Starting Server Manager Lite Service"
+  else
+    echo "$space$space$arrow Starting Server Manager Service"
+  fi
+  service contrail-server-manager restart >> $log_file 2>&1
+  sleep 5
 fi
 
 # Should we remove Puppet/Passenger sources.list.d files also?
