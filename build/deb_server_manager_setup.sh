@@ -295,9 +295,13 @@ if [ "$SM" != "" ]; then
        apt-get -y install cobbler="2.6.3-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
        apt-get -y install contrail-server-manager >> $log_file 2>&1
        apt-get -y install -f >> $log_file 2>&1
+       echo "$space$space$arrow Re-starting Server Manager Service"
+       service contrail-server-manager restart  >> $log_file 2>&1
+       sleep 5
        # Stopping webui service that uses old name
        old_webui_status=`service supervisor-webui status | awk '{print $2}' | cut -d'/' -f 1`
-       if [ $old_webui_status != "stop"  ]; then
+       # adding "x" both side to tackle cases, when old_webui_status is empty
+       if [ "x$old_webui_status" != "xstop"  ]; then
           service supervisor-webui stop >> $log_file 2>&1 # TODO : Remove for 3.0 release
        fi
     fi
