@@ -2081,6 +2081,11 @@ md5   = 326143409019965bed1bef2d6e8b8fa0
 file  = python-jsonschema-2.3.0-1.el7ost.noarch.rpm
 md5   = 7dcee27a91bf51c999f2f0c3df71ce7d
 
+[python-kafka-1.0.1-0contrail0.el7.noarch]
+file           = python-kafka-1.0.1-0contrail0.el7.noarch.rpm
+md5            = ac166cc3e5fd6d5f44f3070443f2ef26
+package_type   = contrail-install-packages
+
 [python-kafka-python-0.9.4-1.1.noarch]
 file  = python-kafka-python-0.9.4-1.1.noarch.rpm
 md5   = d6901cbe82f61880ba7c741f65e68fb3
