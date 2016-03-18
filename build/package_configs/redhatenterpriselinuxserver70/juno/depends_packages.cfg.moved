@@ -2339,6 +2339,11 @@ md5   = 0f28e4f50f87c0213280819e1890daf0
 file  = python-stevedore-1.1.0-1.el7ost.noarch.rpm
 md5   = 08d0420ed56388d1dff52b699d2cbc0e
 
+[python-sseclient-0.0.11-0contrail0]
+file  = python-sseclient-0.0.11-0contrail0.el7.noarch.rpm
+md5   = 6459fb0be6021030504a9509649c796c
+package_type = contrail-install-packages
+
 [python-suds_0.4.1_5.el7]
 file  = python-suds-0.4.1-5.el7.noarch.rpm
 md5   = 082b27c1bb25bd7e0454251c5f11bb13
