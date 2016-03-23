@@ -1,0 +1,41 @@
+From 27bbef87c4f0830c04844b1e4b0b2619a9e37530 Mon Sep 17 00:00:00 2001
+From: James Page <james.page@ubuntu.com>
+Date: Fri, 27 Feb 2015 11:27:30 +0000
+Subject: [PATCH] Handle return code 2 from blkid calls
+
+blkid returns code 2 if the requested TYPE key is not found
+for the specified device.
+
+Ensure that this situation is handled correctly; blkid will
+not return any data, so the return value will be empty.
+
+Change-Id: I38cd7b53cdfd694c0eba1b6054d8e4c33759b0b8
+Closes-Bug: #1426324
+---
+ nova/tests/unit/virt/disk/vfs/test_localfs.py |    3 ++-
+ nova/virt/disk/vfs/localfs.py                 |    3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+--- a/nova/tests/unit/virt/disk/vfs/test_localfs.py
++++ b/nova/tests/unit/virt/disk/vfs/test_localfs.py
+@@ -416,7 +416,8 @@ class VirtDiskVFSLocalFSTest(test.NoDBTe
+         execute.assert_called_once_with('blkid', '-o',
+                                         'value', '-s',
+                                         'TYPE', '/dev/xyz',
+-                                        run_as_root=True)
++                                        run_as_root=True,
++                                        check_exit_code=[0, 2])
+ 
+     @mock.patch.object(tempfile, 'mkdtemp')
+     @mock.patch.object(nova.virt.disk.mount.nbd, 'NbdMount')
+--- a/nova/virt/disk/vfs/localfs.py
++++ b/nova/virt/disk/vfs/localfs.py
+@@ -164,6 +164,7 @@ class VFSLocalFS(vfs.VFS):
+             out, err = utils.execute('blkid', '-o',
+                                      'value', '-s',
+                                      'TYPE', self.mount.device,
+-                                     run_as_root=True)
++                                     run_as_root=True,
++                                     check_exit_code=[0, 2])
+             return out.strip()
+         return ""

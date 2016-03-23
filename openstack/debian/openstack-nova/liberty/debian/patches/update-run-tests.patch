@@ -1,0 +1,22 @@
+Description: Update run_tests.sh to show results.
+Author: Chuck Short <zulcss@ubuntu.com>
+Forwarded: not-needed
+
+--- a/run_tests.sh
++++ b/run_tests.sh
+@@ -140,14 +140,7 @@ function run_tests {
+     ${wrapper} python setup.py egg_info
+   fi
+   echo "Running \`${wrapper} $TESTRTESTS\`"
+-  if ${wrapper} which subunit-2to1 >/dev/null 2>&1
+-  then
+-    # subunit-2to1 is present, testr subunit stream should be in version 2
+-    # format. Convert to version one before colorizing.
+-    bash -c "${wrapper} $TESTRTESTS | ${wrapper} subunit-2to1 | ${wrapper} tools/colorizer.py"
+-  else
+-    bash -c "${wrapper} $TESTRTESTS | ${wrapper} tools/colorizer.py"
+-  fi
++  bash -c "${wrapper} $TESTRTESTS | ${wrapper} subunit2pyunit"
+   RESULT=$?
+   set -e
+ 

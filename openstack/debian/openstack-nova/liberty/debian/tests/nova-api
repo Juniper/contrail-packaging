@@ -1,0 +1,19 @@
+#!/bin/bash
+#-----------------
+# Testing nova-api
+#-----------------
+set -e
+DAEMONS=('nova-api-metadata' 'nova-api-os-compute' 'nova-api-ec2')
+
+for daemon in "${DAEMONS[@]}"; do
+    apt-get install -y $daemon 2>&1 > /dev/null
+
+    if pidof -x $daemon > /dev/null; then
+        echo "OK"
+    else
+        echo "ERROR: ${daemon} IS NOT RUNNING"
+        exit 1
+    fi
+
+    apt-get remove -y $daemon 2>&1 > /dev/null
+done

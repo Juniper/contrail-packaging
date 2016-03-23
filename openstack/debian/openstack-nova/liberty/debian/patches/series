@@ -1,0 +1,8 @@
+# Ubuntu specific patches below here. Note these can be dropped eventually.
+arm-console-patch.patch
+update-run-tests.patch
+disable-websockify-tests.patch
+neutron-floating-ip-list.patch
+skip-cinder-tests.patch
+ignore-proxies.patch
+disable-sphinxcontrib.seqdiag.patch
