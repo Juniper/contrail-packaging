@@ -17,6 +17,7 @@ CLEANUP_PUPPET_AGENT=""
 NO_LOCAL_REPO=1
 LOCAL_REPO_DIR=/opt/contrail/contrail_local_repo
 CLUSTER_ID=""
+NOEXTERNALREPOS=""
 NO_SM_MON=""
 NO_SM_WEBUI=""
 SM_WEBUI_PORT=9003
@@ -85,6 +86,9 @@ case $key in
     -cid|--cluster-id)
     CLUSTER_ID="$2"
     shift # past argument
+    ;;
+    --no-external-repos)
+    NOEXTERNALREPOS="True"
     ;;
     -h|--help)
     usage
@@ -182,7 +186,10 @@ if [ "$INSTALL_SM_LITE" != "" ]; then
 
    echo "$arrow Install server manager without cobbler option"
    pushd /opt/contrail/contrail_server_manager >> $log_file 2>&1
-   ./setup.sh --all --smlite ${NO_SM_MON} ${NO_SM_WEBUI}
+   if [ ! -z "$NOEXTERNALREPOS" ]; then
+       optional_args="--no-external-repos"
+   fi
+   ./setup.sh --all --smlite ${NO_SM_MON} ${NO_SM_WEBUI} $optional_args
    popd >> $log_file 2>&1
 fi 
 
