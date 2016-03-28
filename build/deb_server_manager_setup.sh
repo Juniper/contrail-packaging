@@ -237,7 +237,9 @@ if [ "$SM" != "" ]; then
 
   if [ "$check_upgrade" != ""  ]; then
     #  Cleanup old Passenger Manual Install so that it doesn't collide with new package
-    cleanup_passenger
+    passenger_upgrade_version="2.22"
+    contrail_server_manager_version=`dpkg -l | grep "contrail-server-manager " | awk '{print $3}' | cut -d'-' -f 1`
+    awk -v n1=$passenger_upgrade_version -v n2=$contrail_server_manager_version 'BEGIN{ if (n1>n2) cleanup_passenger}'
   fi
 
   #TODO: To be Removed after local repo additions
@@ -294,7 +296,8 @@ if [ "$SM" != "" ]; then
        apt-get -y install contrail-server-manager >> $log_file 2>&1
        apt-get -y install -f >> $log_file 2>&1
        # Stopping webui service that uses old name
-       if [ -f /etc/init/supervisor-webui.conf  ]; then
+       old_webui_status=`service supervisor-webui status | awk '{print $2}' | cut -d'/' -f 1`
+       if [ $old_webui_status != "stop"  ]; then
           service supervisor-webui stop >> $log_file 2>&1 # TODO : Remove for 3.0 release
        fi
     fi
