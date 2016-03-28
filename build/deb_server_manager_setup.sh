@@ -25,6 +25,7 @@ NOWEBUI=""
 WEBCORE=""
 CERT_NAME=""
 SMLITE=""
+NOEXTERNALREPOS=""
 HOST_IP_LIST=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp'`
 HOSTIP=`echo $HOST_IP_LIST | cut -d' ' -f1`
 rel=`lsb_release -r`
@@ -62,18 +63,9 @@ function cleanup_smgr_repos()
 
 }
 
-function setup_smgr_repos()
+function setup_apt_conf()
 {
-  # Push this to makefile - Copy only the file we need into installer.
-  if [ ${rel[1]} == "14.04"  ]; then
-    cp /opt/contrail/contrail_server_manager/ubuntu_14_04_1_sources.list /etc/apt/sources.list.d/smgr_sources.list
-  elif [ ${rel[1]} == "12.04"  ]; then
-    cp /opt/contrail/contrail_server_manager/ubuntu_12_04_3_sources.list /etc/apt/sources.list.d/smgr_sources.list
-  else
-    echo "$space$arrow This version of Ubuntu ${rel[1]} is not supported"
-    exit
-  fi
-
+  echo "$space$arrow Allow Install of Unauthenticated APT packages"
   # Allow unauthenticated pacakges to get installed.
   # Do not over-write apt.conf. Instead just append what is necessary
   # retaining other useful configurations such as http::proxy info.
@@ -86,23 +78,53 @@ function setup_smgr_repos()
     echo "$apt_auth" >> /etc/apt/apt.conf
   fi
 
-  echo "$space$arrow Setting up the repositories for Server Manager Install"
+  set +e
   apt-get update >> $log_file 2>&1
+  set -e
+}
 
-  echo "$space$arrow Installing dependent packages for Setting up repos"
+
+function setup_smgr_repos()
+{
+
+  echo "$space$arrow Installing dependent packages for Setting up Smgr repos"
   #scan pkgs in local repo and create Packages.gz
   apt-get --no-install-recommends -y install dpkg-dev >> $log_file 2>&1
-  # Dependencies to add apt-repos
-  apt-get --no-install-recommends -y install python-software-properties debmirror >> $log_file 2>&1
-  apt-get --no-install-recommends -y install software-properties-common >> $log_file 2>&1
 
   pushd /opt/contrail/contrail_server_manager >> $log_file 2>&1
   dpkg-scanpackages . | gzip -9c > Packages.gz | >> $log_file 2>&1
   popd >> $log_file 2>&1
- 
+
   echo "deb file:/opt/contrail/contrail_server_manager ./" > /tmp/local_repo
   cat /tmp/local_repo /etc/apt/sources.list.d/smgr_sources.list > /tmp/new_smgr_sources.list
   mv /tmp/new_smgr_sources.list /etc/apt/sources.list.d/smgr_sources.list
+
+  set +e
+  apt-get update >> $log_file 2>&1
+  set -e
+
+}
+
+function setup_internet_repos()
+{
+  echo "$space$arrow Setting up Internet Repos"
+  # Push this to makefile - Copy only the file we need into installer.
+  if [ ${rel[1]} == "14.04"  ]; then
+    cp /opt/contrail/contrail_server_manager/ubuntu_14_04_1_sources.list /etc/apt/sources.list.d/smgr_sources.list
+  elif [ ${rel[1]} == "12.04"  ]; then
+    cp /opt/contrail/contrail_server_manager/ubuntu_12_04_3_sources.list /etc/apt/sources.list.d/smgr_sources.list
+  else
+    echo "$space$arrow This version of Ubuntu ${rel[1]} is not supported"
+    exit
+  fi
+
+  set +e
+  apt-get update >> $log_file 2>&1
+  set -e
+
+  # Dependencies to add apt-repos
+  apt-get --no-install-recommends -y install python-software-properties debmirror >> $log_file 2>&1
+  apt-get --no-install-recommends -y install software-properties-common >> $log_file 2>&1
 
   puppet_list_file="/etc/apt/sources.list.d/puppet.list"
   passenger_list_file="/etc/apt/sources.list.d/passenger.list"
@@ -136,7 +158,10 @@ function setup_smgr_repos()
       add-apt-repository "deb http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/ ./" >> $log_file 2>&1
     fi
   fi
+
+  set +e
   apt-get update >> $log_file 2>&1
+  set -e
 
 }
 
@@ -199,10 +224,13 @@ while [ "$1" != "" ]; do
         --hostip)
             HOSTIP=$VALUE
             rm -rf /opt/contrail/contrail_server_manager/IP.txt
-            echo $HOSTIP >> /opt/contrail/contrail_server_manager/IP.txt 
+            echo $HOSTIP >> /opt/contrail/contrail_server_manager/IP.txt
             ;;
         --cert-name)
             CERT_NAME=$VALUE
+            ;;
+        --no-external-repos)
+            NOEXTERNALREPOS="TRUE"
             ;;
         *)
             echo "ERROR: unknown parameter \"$PARAM\""
@@ -214,6 +242,12 @@ while [ "$1" != "" ]; do
 done
 
 cleanup_smgr_repos
+setup_apt_conf
+if [ "$NOEXTERNALREPOS" == "" ]; then
+  setup_internet_repos
+else
+  touch /etc/apt/sources.list.d/smgr_sources.list
+fi
 setup_smgr_repos
 
 RESTART_SERVER_MANAGER=""
@@ -373,7 +407,7 @@ fi
 
 # Should we remove Puppet/Passenger sources.list.d files also?
 echo "$arrow Reverting Repos to old state"
-rm -f /etc/apt/sources.list.d/puppet.list >> $log_file 2>&1 
+rm -f /etc/apt/sources.list.d/puppet.list >> $log_file 2>&1
 rm -f /etc/apt/sources.list.d/passenger.list >> $log_file 2>&1
 rm -f /etc/apt/sources.list.d/smgr_sources.list >> $log_file 2>&1
 apt-get update >> $log_file 2>&1
