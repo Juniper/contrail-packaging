@@ -1,0 +1,5 @@
+coverage
+setuptools-git
+babel
+websockify
+wsgiref

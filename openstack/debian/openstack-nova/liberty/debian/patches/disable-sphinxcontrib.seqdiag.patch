@@ -1,0 +1,10 @@
+--- a/doc/source/conf.py
++++ b/doc/source/conf.py
+@@ -33,7 +33,6 @@
+               'sphinx.ext.graphviz',
+               'oslosphinx',
+               "ext.support_matrix",
+-              'sphinxcontrib.seqdiag',
+               ]
+ 
+ todo_include_todos = True
