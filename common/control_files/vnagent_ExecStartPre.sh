@@ -50,7 +50,8 @@ source /etc/contrail/agent_param
 source $VHOST_CFG
 
 function insert_vrouter() {
-    insmod $kmod
+    depmod -a
+    modprobe $kmod
     if [ $? != 0 ]
     then
         echo "$(date) : Error inserting vrouter module"
