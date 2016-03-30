@@ -17,7 +17,7 @@ echo CONFIG=$CONFIG >> $CFG_FILE
 prog=/usr/bin/contrail-vrouter-agent
 echo prog=$prog >> $CFG_FILE
 
-kmod=/lib/modules/${OS_VER}/extra/net/vrouter/vrouter.ko
+kmod=vrouter
 echo kmod=$kmod >> $CFG_FILE
 
 pname=$(basename $prog)
