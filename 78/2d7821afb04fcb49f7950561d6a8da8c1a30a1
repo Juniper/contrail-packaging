@@ -1,0 +1,8 @@
+Approved+1: opencontrail-admin <ci-admin@opencontrail.org>
+Code-Review+2: opencontrail-admin <ci-admin@opencontrail.org>
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Thu, 31 Mar 2016 00:01:22 -0700
+Reviewed-on: https://review.opencontrail.org/18612
+Project: Juniper/contrail-packaging
+Branch: refs/heads/R2.22.x
