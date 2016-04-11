@@ -8,5 +8,5 @@ Build-Depends:
 Package: contrail-openstack-database
 Architecture: all
 Maintainer: rrugge <rrugge@juniper.net>
-Depends: zookeeper, contrail-nodemgr, supervisor, contrail-setup, contrail-utils, cassandra (>= 2.1.9), kafka (>= 2.11)
+Depends: zookeeper, contrail-nodemgr, supervisor, contrail-setup, contrail-utils, cassandra (>= 2.2.5), kafka (>= 2.11)
 Description: Contrail Openstack database composite debian package
