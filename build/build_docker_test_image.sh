@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 to_build=${@:-'contrail-test contrail-test-ci'}
 TEST_ARTIFACT=${TEST_ARTIFACT:-$(readlink -f build/artifacts_extra/contrail-test2-*~$1.tgz)}
