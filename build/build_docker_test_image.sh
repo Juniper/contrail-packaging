@@ -11,11 +11,15 @@ export SSHPASS=c0ntrail123
 
 tmp=$(mktemp -d)
 tar zxv -C $tmp -f $TEST_CI_ARTIFACT contrail-test-ci/install.sh
-for build in contrail-test contrail-test-ci
-do
-    bash $tmp/contrail-test-ci/install.sh docker-build --test-artifact $TEST_ARTIFACT \
-	--ci-artifact $TEST_CI_ARTIFACT --fab-artifact $FABRIC_UTILS_ARTIFACT \
-	-u ssh://${IPADDRESS}/${CONTRAIL_PACKAGE_DEB} --export $DOCKER_IMAGE_EXPORT_PATH $build
-    [ $? = 0 ] && touch ci_docker_build_successful 
-done
-rm -fr $tmp
+bash -x $tmp/contrail-test-ci/install.sh docker-build --test-artifact $TEST_ARTIFACT \
+--ci-artifact $TEST_CI_ARTIFACT --fab-artifact $FABRIC_UTILS_ARTIFACT \
+-u ssh://${IPADDRESS}/${CONTRAIL_PACKAGE_DEB} --export $DOCKER_IMAGE_EXPORT_PATH contrail-test-ci
+[ $? = 0 ] && touch ci_docker_build_contrail_test_ci_successful
+
+bash -x $tmp/contrail-test-ci/install.sh docker-build --test-artifact $TEST_ARTIFACT \
+--ci-artifact $TEST_CI_ARTIFACT --fab-artifact $FABRIC_UTILS_ARTIFACT \
+-u ssh://${IPADDRESS}/${CONTRAIL_PACKAGE_DEB} --export $DOCKER_IMAGE_EXPORT_PATH contrail-test
+[ $? = 0 ] && touch ci_docker_build_contrail_test_successful
+
+rm -rf $tmp
+[ $? = 0 ] && echo "Docker build completed!"
