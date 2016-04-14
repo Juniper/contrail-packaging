@@ -6,7 +6,8 @@ TEST_CI_ARTIFACT=${TEST_CI_ARTIFACT:-$(readlink -f build/artifacts_extra/contrai
 FABRIC_UTILS_ARTIFACT=${FABRIC_UTILS_ARTIFACT:-$(readlink -f build/artifacts_extra/contrail-fabric-utils-*~$1.tgz)}
 CONTRAIL_PACKAGE_DEB=${CONTRAIL_PACKAGE_DEB:-$(readlink -f build/artifacts/contrail-install-packages*~$1_all.deb)}
 DOCKER_IMAGE_EXPORT_PATH=${DOCKER_IMAGE_EXPORT_PATH:-$(readlink -f build/artifacts/)}
-IPADDRESS=${IPADDRESS:-$(ip a show docker0 | awk '/inet / {split ($2,a,"/"); print a[1]}')}
+#IPADDRESS=${IPADDRESS:-$(ip a show docker0 | awk '/inet / {split ($2,a,"/"); print a[1]}')}
+IPADDRESS="172.17.0.1"
 export SSHPASS=c0ntrail123
 
 tmp=$(mktemp -d)
