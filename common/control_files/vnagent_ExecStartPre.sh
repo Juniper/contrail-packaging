@@ -40,6 +40,7 @@ function pkt_setup () {
         fi
         echo $str > $f/rps_cpus
     done
+    ifconfig $1 up
 }
 
 [ -f /etc/contrail/default_pmac ] || error_exit $LINENO "Did you run setup?"
