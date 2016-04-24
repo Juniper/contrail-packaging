@@ -1,9 +1,7 @@
 contrail-packaging
 ==================
-
 Contrail VNC packaging
 ----------------------
-
 build
 -----
     Contains packager scripts
