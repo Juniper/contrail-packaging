@@ -1,13 +1,10 @@
 contrail-packaging
 ==================
-
 Contrail VNC packaging
 ----------------------
-
 build
 -----
     Contains packager scripts
-
 common
 ------
     Contains Makefiles, Spec files, Rules files and Control files for contrail packages
