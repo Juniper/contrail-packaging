@@ -1,7 +1,8 @@
 echo "Running Postinst for contrail-openstack"
 for svc in keystone nova-api nova-scheduler nova-conductor nova-console\
            nova-consoleauth nova-objectstore nova-novncproxy glance-api\
-           glance-registry cinder-api cinder-scheduler heat-engine heat-api heat-api-cfn ; do
+           glance-registry cinder-api cinder-scheduler heat-engine heat-api heat-api-cfn\
+           barbican-api barbican-worker barbican-keystone-listener ; do
     if [ -f /etc/init/$svc.conf ]; then
         # Service stop is required for SM provisioing; because SM does
         # installation of contrail-openstack after provisioning
