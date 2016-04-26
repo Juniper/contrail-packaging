@@ -28,5 +28,5 @@ set +e
 source /usr/local/jenkins/slave_scripts/ci-infra/ci-utils.sh
 DOCKER_IMAGE=`ls build/artifacts/docker-image-contrail-test-*.gz 2>/dev/null`
 if [ $? = 0 ]; then
-    retry sshpass -p c0ntrail123 rsync -acz --no-owner --no-group $DOCKER_IMAGE ci-admin@10.84.5.31:$CI_IMAGE_DIR
+    retry sshpass -p c0ntrail123 rsync -acz --no-owner --no-group $DOCKER_IMAGE ci-admin@10.84.5.39:$CI_IMAGE_DIR
 fi
