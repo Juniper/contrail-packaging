@@ -539,9 +539,20 @@ vrouter_dpdk_if_unbind() {
          fi
     done
  
+    # Make the bond slaves up
+    # Bond slaves with automatically make the bond master up
     for iface in $(ifquery --list);
     do
-        if ifquery $iface | grep -i "bond";
+        if ifquery $iface | grep -i "bond-master:";
+        then
+            ifup $iface
+        fi
+    done
+
+    # Make other interfaces up (which are still down)
+    for iface in $(ifquery --list);
+    do
+        if ! ifquery --state $iface;
         then
             ifup $iface
          fi
