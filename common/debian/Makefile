@@ -20,6 +20,7 @@ ifeq ($(CONTRAIL_SKU),liberty)
     CONTRAIL_OPENSTACK := contrail-openstack-liberty-deb
     CONTRAIL_HEAT := contrail-heat-deb
     CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-liberty-deb
+    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-liberty-deb
     ifeq ($(SERIES),trusty)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
@@ -32,6 +33,7 @@ ifeq ($(CONTRAIL_SKU),kilo)
     CONTRAIL_OPENSTACK := contrail-openstack-kilo-deb
     CONTRAIL_HEAT := contrail-heat-deb
     CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-kilo-deb
+    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-deb
     ifeq ($(SERIES),trusty)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
@@ -41,6 +43,7 @@ endif
 ifeq ($(CONTRAIL_SKU),juno)
     CONTRAIL_OPENSTACK := contrail-openstack-juno-deb
     CONTRAIL_HEAT := contrail-heat-deb
+    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-deb
     ifeq ($(SERIES),trusty)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
@@ -50,6 +53,7 @@ endif
 ifeq ($(CONTRAIL_SKU),icehouse)
     CONTRAIL_OPENSTACK := contrail-openstack-icehouse-deb
     CONTRAIL_HEAT := contrail-heat-deb
+    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-deb
     ifeq ($(SERIES),precise)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
@@ -75,6 +79,7 @@ endif
 ifeq ($(CONTRAIL_SKU),havana)
     CEILOMETER_PLUGIN :=
     CONTRAIL_OPENSTACK := contrail-openstack-deb
+    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-deb
 endif
 
 KVERS ?= $(shell uname -r)
@@ -96,8 +101,8 @@ PACKAGES = \
         ifmap-python-client \
         contrail-nova-vif-deb \
         contrail-nova-networkapi-deb \
-        contrail-vrouter-init-deb \
-        contrail-vrouter-common-deb \
+	contrail-vrouter-init-deb \
+	contrail-vrouter-common-deb \
         $(CONTRAIL_VRDPDK_BIN) \
         $(CONTRAIL_VRDPDK_INIT) \
 	contrail-web-core-deb \
@@ -110,6 +115,7 @@ PACKAGES = \
 	$(CONTRAIL_OPENSTACK_CONFIG) \
 	contrail-openstack-control-deb \
 	contrail-openstack-database-deb \
+	$(CONTRAIL_OPENSTACK_VROUTER) \
 	contrail-openstack-vrouter-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
@@ -517,6 +523,18 @@ contrail-ostack-dashboard-deb:
 contrail-ostack-dashboard-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-ostack-dashboard)
 	rm -rf ${BUILDDIR}
+
+contrail-openstack-vrouter-liberty-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter)
+	(cd ${BUILDDIR}; [ -f debian/control.liberty.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.liberty.in ) || echo no control.liberty.in
+	cp ${BUILDDIR}/debian/control.liberty ${BUILDDIR}/debian/control
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-vrouter-liberty-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter; fakeroot debian/rules clean)
 
 libvirt-deb:
 	$(eval LIBDIR=${SB_TOP}/third_party/libvirt)
