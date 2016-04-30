@@ -8,7 +8,7 @@ Build-Depends:
 Package: contrail-openstack
 Architecture: all
 Maintainer: rrugge <rrugge@juniper.net>
-Depends: python-contrail, openstack-dashboard, contrail-openstack-dashboard, glance, keystone, nova-api, nova-common, nova-conductor, nova-console, nova-objectstore, nova-scheduler, cinder-api, cinder-common, cinder-scheduler, mysql-server-wsrep, libssl0.9.8, contrail-setup, contrail-utils, memcached, nova-novncproxy, nova-consoleauth, python-m2crypto, haproxy, rabbitmq-server (>= 3.5.0-1), apache2, libapache2-mod-wsgi, python-memcache, python-iniparse, python-qpid, euca2ools, nfs-common, supervisor, rabbitmq-server, heat-api, heat-api-cfn, heat-engine, heat-common, python-extras, python-heat, python-mimeparse, python-testtools, contrail-heat, contrail-nova-networkapi
+Depends: python-contrail, openstack-dashboard, contrail-openstack-dashboard, glance, keystone, nova-api, nova-common, nova-conductor, nova-console, nova-objectstore, nova-scheduler, cinder-api, cinder-common, cinder-scheduler, mysql-server-wsrep, libssl0.9.8, contrail-setup, contrail-utils, memcached, nova-novncproxy, nova-consoleauth, python-m2crypto, haproxy, rabbitmq-server (>= 3.5.0-1), apache2, libapache2-mod-wsgi, python-memcache, python-iniparse, python-qpid, euca2ools, nfs-common, supervisor, rabbitmq-server, heat-api, heat-api-cfn, heat-engine, heat-common, python-extras, python-heat, python-mimeparse, python-testtools, contrail-heat, contrail-nova-networkapi, barbican-api, barbican-worker
 Section: contrail-openstack
 Priority: extra
 Description: Contrail Openstack composite debian package
