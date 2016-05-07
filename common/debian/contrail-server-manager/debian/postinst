@@ -15,7 +15,7 @@ rel=`lsb_release -r`
 
 # Stage I - Install required packages
 easy_install argparse
-easy_install paramiko
+easy_install paramiko==1.17.0
 easy_install pycrypto
 easy_install ordereddict
 easy_install pycurl
