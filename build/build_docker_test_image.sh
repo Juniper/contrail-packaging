@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 to_build=${@:-'contrail-test contrail-test-ci'}
-TEST_ARTIFACT=${TEST_ARTIFACT:-$(readlink -f build/artifacts_extra/contrail-test2-*~$1.tgz)}
+TEST_ARTIFACT=${TEST_ARTIFACT:-$(readlink -f build/artifacts_extra/contrail-test-*~$1.tgz)}
 TEST_CI_ARTIFACT=${TEST_CI_ARTIFACT:-$(readlink -f build/artifacts_extra/contrail-test-ci-*~$1.tgz)}
 FABRIC_UTILS_ARTIFACT=${FABRIC_UTILS_ARTIFACT:-$(readlink -f build/artifacts_extra/contrail-fabric-utils-*~$1.tgz)}
 CONTRAIL_PACKAGE_DEB=${CONTRAIL_PACKAGE_DEB:-$(readlink -f build/artifacts/contrail-install-packages*~$1_all.deb)}

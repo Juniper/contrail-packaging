@@ -395,12 +395,8 @@ contrail-test-deb:
 contrail-test-deb:
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test)
 	@echo "Wrote: $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz"
-	if [ '${CONTRAIL_SKU}' != 'vcenter' ]; then \
-		(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/tools/; tar -cvzf $(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test-ci); \
-		echo "Wrote: $(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz"; \
-		(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/artifacts_extra/contrail-test2-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test); \
-		echo "Wrote: $(SB_TOP)/build/artifacts_extra/contrail-test2-$(VERSION)~$(CONTRAIL_SKU).tgz"; \
-	fi
+	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/tools/; tar -cvzf $(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test-ci); \
+	echo "Wrote: $(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz"; \
 
 contrail-test-clean:
 	$(eval TGZ_FILE=$(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz)
