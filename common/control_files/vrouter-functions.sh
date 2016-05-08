@@ -339,7 +339,7 @@ _dpdk_vrouter_ini_update() {
 
         dpdk_vdev=" --vdev \"eth_bond_${DPDK_PHY},mode=${DPDK_BOND_MODE}"
         dpdk_vdev="${dpdk_vdev},xmit_policy=${DPDK_BOND_POLICY}"
-        dpdk_vdev="${dpdk_vdev},socket_id=${DPDK_BOND_NUMA}"
+        dpdk_vdev="${dpdk_vdev},socket_id=${DPDK_BOND_NUMA},mac=${DPDK_BOND_MAC}"
         for SLAVE in ${DPDK_BOND_PCIS}; do
             dpdk_vdev="${dpdk_vdev},slave=${SLAVE}"
         done
@@ -396,6 +396,34 @@ _dpdk_vrouter_ini_update() {
 }
 
 ##
+## Wait till bond interface is up and all slaves attached
+##
+_dpdk_wait_for_bond_ready() {
+    bond_dir="/sys/class/net/${DPDK_PHY}/bonding"
+    for iface in $(ifquery --list); do
+        ifquery $iface | grep "bond-master" | grep ${DPDK_PHY}
+        if [ $? -eq 0  ];
+        then
+            timeout=0
+            # Wait upto 60 sec till the interface is enslaved
+            while [ $timeout -lt 60 ];
+            do
+                cat ${bond_dir}/slaves | grep $iface
+                if [ $? -ne 0 ];
+                then
+                    echo "Waiting for interface $iface to be ready"
+                    sleep 1
+                else
+                    echo "Slave interface $iface ready"
+                    break
+                fi
+                timeout=$(expr $timeout + 1)
+            done
+        fi
+    done
+}
+
+##
 ## Bind vRouter/DPDK Interface(s) to DPDK Drivers
 ## The function is used in pre/post start scripts
 ##
@@ -426,6 +454,7 @@ vrouter_dpdk_if_bind() {
     # multiple kthreads for port monitoring
     modprobe rte_kni kthread_mode=multiple
 
+    _dpdk_wait_for_bond_ready
     _dpdk_system_bond_info_collect
     _dpdk_vrouter_ini_update
 
