@@ -82,6 +82,14 @@ ifeq ($(CONTRAIL_SKU),havana)
     CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-deb
 endif
 
+ifeq ($(CONTRAIL_SKU),havana)
+    CONTRAIL_VCENTER_PLUGIN :=
+else ifeq ($(CONTRAIL_SKU),icehouse)
+    CONTRAIL_VCENTER_PLUGIN :=
+else 
+    CONTRAIL_VCENTER_PLUGIN := contrail-install-vcenter-plugin
+endif
+
 KVERS ?= $(shell uname -r)
 ifndef CONTRAIL_VERSION
 VERSION = 
@@ -128,7 +136,8 @@ PACKAGES = \
 	$(CEILOMETER_PLUGIN) \
 	contrail-f5-deb \
 	contrail-vmware-utils-deb \
-	contrail-puppet-deb
+	contrail-puppet-deb \
+	$(CONTRAIL_VCENTER_PLUGIN)
 
 all: ${PACKAGES}
 	@echo "Build complete"
