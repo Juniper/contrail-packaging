@@ -128,7 +128,8 @@ PACKAGES = \
 	$(CEILOMETER_PLUGIN) \
 	contrail-f5-deb \
 	contrail-vmware-utils-deb \
-	contrail-puppet-deb
+	contrail-puppet-deb \
+	contrail-install-vcenter-plugin
 
 all: ${PACKAGES}
 	@echo "Build complete"
