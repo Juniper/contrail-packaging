@@ -16,6 +16,19 @@ endif
 
 CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
 
+ifeq ($(CONTRAIL_SKU),mitaka)
+    CONTRAIL_OPENSTACK := contrail-openstack-mitaka-deb
+    CONTRAIL_HEAT := contrail-heat-deb
+    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-mitaka-deb
+    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-mitaka-deb
+    ifeq ($(SERIES),trusty)
+        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
+        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
+    endif
+else
+    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
+endif
+
 ifeq ($(CONTRAIL_SKU),liberty)
     CONTRAIL_OPENSTACK := contrail-openstack-liberty-deb
     CONTRAIL_HEAT := contrail-heat-deb
@@ -392,9 +405,6 @@ contrail-fabric-utils-clean:
 contrail-test-deb:
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test)
 	@echo "Wrote: $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz"
-contrail-test-deb:
-	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test)
-	@echo "Wrote: $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz"
 	if [ '${CONTRAIL_SKU}' != 'vcenter' ]; then \
 		(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/tools/; tar -cvzf $(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test-ci); \
 		echo "Wrote: $(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz"; \
@@ -474,6 +484,23 @@ contrail-openstack-liberty-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
 	rm -rf ${BUILDDIR}
 
+contrail-openstack-mitaka-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -R contrail-openstack/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; [ -f debian/control.mitaka.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.mitaka.in ) || echo no control.mitaka.in
+	cp ${BUILDDIR}/debian/control.mitaka ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.mitaka ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-mitaka-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+
 contrail-openstack-config-kilo-deb:
 	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config)
 	(cd ${BUILDDIR}; [ -f debian/control.kilo.in ] && python \
@@ -496,6 +523,18 @@ contrail-openstack-config-liberty-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 contrail-openstack-config-liberty-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config; fakeroot debian/rules clean)
+
+contrail-openstack-config-mitaka-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config)
+	(cd ${BUILDDIR}; [ -f debian/control.mitaka.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.mitaka.in ) || echo no control.mitaka.in
+	cp ${BUILDDIR}/debian/control.mitaka ${BUILDDIR}/debian/control
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-config-mitaka-clean:
 	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config; fakeroot debian/rules clean)
 
 contrail-openstack-dashboard-deb:
@@ -534,6 +573,18 @@ contrail-openstack-vrouter-liberty-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 contrail-openstack-vrouter-liberty-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter; fakeroot debian/rules clean)
+
+contrail-openstack-vrouter-mitaka-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter)
+	(cd ${BUILDDIR}; [ -f debian/control.mitaka.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.mitaka.in ) || echo no control.mitaka.in
+	cp ${BUILDDIR}/debian/control.mitaka ${BUILDDIR}/debian/control
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-vrouter-mitaka-clean:
 	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter; fakeroot debian/rules clean)
 
 libvirt-deb:

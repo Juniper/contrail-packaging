@@ -1,6 +1,6 @@
 echo "Running Postinst for contrail-openstack"
 for svc in keystone nova-api nova-scheduler nova-conductor nova-console\
-           nova-consoleauth nova-objectstore nova-novncproxy glance-api\
+           nova-consoleauth nova-novncproxy glance-api\
            glance-registry cinder-api cinder-scheduler heat-engine heat-api heat-api-cfn\
            barbican-api barbican-worker ; do
     if [ -f /etc/init/$svc.conf ]; then
