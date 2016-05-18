@@ -1,0 +1,5 @@
+version=3
+# Since we use EPOC, and we want to move away 2012.x, we use
+# uversionmangle...
+opts="uversionmangle=s/^2012/0.0./" \
+https://github.com/openstack/python-neutronclient/tags .*/(\d[\d\.]+)\.tar\.gz

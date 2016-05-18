@@ -1,0 +1,6 @@
+# Overwrite jquery.js from upstream tarball with a link to jquery.js
+# Overwrite underscore.js from upstream tarball with a link to underscore.min.js
+# provided by Underscore Debian package
+# provided by jQuery Debian package
+/usr/share/javascript/jquery/jquery.js usr/share/doc/nova-doc/html/_static/jquery.js
+/usr/share/javascript/underscore/underscore.min.js usr/share/doc/nova-doc/html/_static/underscore.js
