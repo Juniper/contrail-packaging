@@ -33,7 +33,6 @@ Requires: contrail-nova-vif >= %{_verstr}-%{_relstr}
 
 Requires: openstack-nova-compute
 Requires: openstack-utils
-Requires: librabbitmq
 
 %description
 Contrail Package Requirements for Contrail Openstack vRouter
