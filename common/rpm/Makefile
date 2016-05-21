@@ -286,7 +286,7 @@ CEILOMETER_PLUGIN =
 endif
 
 # Execute contrail-nova-networkapi only from juno release
-CONTRAIL_NOVA_NETWORKAPI = $(shell [[ "juno kilo" =~ ${CONTRAIL_SKU} ]] && echo "contrail-nova-networkapi" || echo )
+CONTRAIL_NOVA_NETWORKAPI = $(shell [[ "juno kilo liberty" =~ ${CONTRAIL_SKU} ]] && echo "contrail-nova-networkapi" || echo )
 
 all: $(PREP) contrail \
        contrail-interface-name ifmap-python-client \
