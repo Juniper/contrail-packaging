@@ -1,3 +1,9 @@
+python-neutronclient (1:4.1.1-2~cloud0.2contrail) trusty-mitaka; urgency=medium
+
+  * Added 2contrail for contrail openstack python-neutronclient
+
+ -- Amudha R <amudha@juniper.net>  Thu, 19 May 2016 14:26:34 +0000
+
 python-neutronclient (1:4.1.1-2~cloud0) trusty-mitaka; urgency=medium
 
   * New update for the Ubuntu Cloud Archive.

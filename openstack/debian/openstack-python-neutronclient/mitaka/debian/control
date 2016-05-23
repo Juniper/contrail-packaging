@@ -56,6 +56,8 @@ Depends: python-babel,
          python-requests (>= 2.8.1),
          python-simplejson (>= 2.2.0),
          python-six (>= 1.9.0),
+         ${misc:Depends},
+         ${python:Depends},
 Description: client API library for Neutron - Python 2.7
  Neutron provides an API to dynamically request and configure virtual networks.
  These networks connect "interfaces" from other OpenStack services (e.g., vNICs
