@@ -30,7 +30,12 @@ script
 end script
 
 pre-stop script
-    supervisorctl -s unix:///tmp/supervisord_database.sock stop all
-    supervisorctl -s unix:///tmp/supervisord_database.sock shutdown
+    if [ -e /tmp/supervisord_database.sock ]; then
+	supervisorctl -s unix:///tmp/supervisord_database.sock stop all
+	supervisorctl -s unix:///tmp/supervisord_database.sock shutdown
+    else
+	supervisorctl -s unix:///var/run/supervisord_database.sock stop all
+	supervisorctl -s unix:///var/run/supervisord_database.sock shutdown
+    fi
 end script
 
