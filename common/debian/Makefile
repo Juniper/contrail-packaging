@@ -25,8 +25,6 @@ ifeq ($(CONTRAIL_SKU),mitaka)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
     endif
-else
-    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 endif
 
 ifeq ($(CONTRAIL_SKU),liberty)
@@ -38,8 +36,6 @@ ifeq ($(CONTRAIL_SKU),liberty)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
     endif
-else
-    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 endif
 
 ifeq ($(CONTRAIL_SKU),kilo)
