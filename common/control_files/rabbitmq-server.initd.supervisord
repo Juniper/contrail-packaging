@@ -3,4 +3,9 @@
 # chkconfig: 2345 99 01
 # description: Juniper Network Virtualization API
 
-supervisorctl -s unix:///tmp/supervisord_support_service.sock ${1} `basename ${0}`
+sock_file=/tmp/supervisord_support_service.sock
+if [ -e "$sock_file" ]; then
+    supervisorctl -s unix:///tmp/supervisord_support_service.sock ${1} `basename ${0}`
+else
+    supervisorctl -s unix:///var/run/supervisord_support_service.sock ${1} `basename ${0}`
+fi
