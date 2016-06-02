@@ -53,6 +53,7 @@ Requires: crudini
 Requires: openstack-utils >= 2014.1-1
 Requires: contrail-nova-networkapi >= %{_verstr}-%{_relstr}
 Requires: openstack-heat-api-cfn
+Requires: python-openstackclient
 %endif
 
 %description
