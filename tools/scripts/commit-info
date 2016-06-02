@@ -49,8 +49,6 @@ function parse_arguments() {
     [ "x$os" = "x" ] && os=ubuntu-12-04
     [ "x$release" = "x" ] && usage
     [ "x$build" = "x" ] && usage
-    [ "$os" != "centos64_os" -a "$os" != "ubuntu-12-04" -a "$os" != "centos65" ] && usage
-    [ "$sku" != "havana" -a "$sku" != "icehouse" ] && usage
 
     build1=`echo $build | cut -d ',' -f1`
     build2=`echo $build | cut -d ',' -f2`
