@@ -16,6 +16,7 @@ Depends:
  contrail-f5,
  contrail-setup,
  contrail-utils,
+ contrail-config-vmware,
  haproxy (>=1.5.4-1ppa1~precise),
  rabbitmq-server,
  python-qpid,
