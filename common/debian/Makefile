@@ -15,6 +15,7 @@ else
 endif
 
 CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
+CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 
 ifeq ($(CONTRAIL_SKU),mitaka)
     CONTRAIL_OPENSTACK := contrail-openstack-mitaka-deb
@@ -25,8 +26,6 @@ ifeq ($(CONTRAIL_SKU),mitaka)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
     endif
-else
-    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 endif
 
 ifeq ($(CONTRAIL_SKU),liberty)
@@ -38,8 +37,6 @@ ifeq ($(CONTRAIL_SKU),liberty)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
     endif
-else
-    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 endif
 
 ifeq ($(CONTRAIL_SKU),kilo)
@@ -137,7 +134,6 @@ PACKAGES = \
 	contrail-openstack-control-deb \
 	contrail-openstack-database-deb \
 	$(CONTRAIL_OPENSTACK_VROUTER) \
-	contrail-openstack-vrouter-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
 	contrail-test-deb \
