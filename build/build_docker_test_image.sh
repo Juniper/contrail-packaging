@@ -10,17 +10,31 @@ DOCKER_IMAGE_EXPORT_PATH=${DOCKER_IMAGE_EXPORT_PATH:-$(readlink -f build/artifac
 IPADDRESS="172.17.0.1"
 export SSHPASS=c0ntrail123
 
+clean_up() {
+    for j in `docker images| tr -s ' ' | cut -d ' ' -f3 | grep -v IMAGE`
+    do
+        docker rmi -f $j
+    done
+
+    for i in `docker ps -a | tr -s ' ' | cut -d ' ' -f1 | grep -v CONTAINER`
+    do
+        docker rm -f $i
+    done
+}
+
 tmp=$(mktemp -d)
 tar zxv -C $tmp -f $TEST_CI_ARTIFACT contrail-test-ci/install.sh
 bash -x $tmp/contrail-test-ci/install.sh docker-build --test-artifact $TEST_ARTIFACT \
 --ci-artifact $TEST_CI_ARTIFACT --fab-artifact $FABRIC_UTILS_ARTIFACT \
 -u ssh://${IPADDRESS}/${CONTRAIL_PACKAGE_DEB} --export $DOCKER_IMAGE_EXPORT_PATH contrail-test-ci
 [ $? = 0 ] && touch ci_docker_build_contrail_test_ci_successful
+clean_up
 
 bash -x $tmp/contrail-test-ci/install.sh docker-build --test-artifact $TEST_ARTIFACT \
 --ci-artifact $TEST_CI_ARTIFACT --fab-artifact $FABRIC_UTILS_ARTIFACT \
 -u ssh://${IPADDRESS}/${CONTRAIL_PACKAGE_DEB} --export $DOCKER_IMAGE_EXPORT_PATH contrail-test
 [ $? = 0 ] && touch ci_docker_build_contrail_test_successful
+clean_up
 
 rm -rf $tmp
 [ $? = 0 ] && echo "Docker build completed!"
