@@ -37,6 +37,7 @@ Requires: contrail-web-core >= %{_verstr}-%{_relstr}
 Requires: contrail-web-controller >= %{_verstr}-%{_relstr}
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: contrail-utils >= %{_verstr}-%{_relstr}
+Requires: opscenter
 
 %description
 Contrail Package Requirements for WebUI
