@@ -29,6 +29,7 @@ Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
 Requires: zookeeper
 Requires: supervisor
+Requires: datastax-agent
 
 %description
 Contrail Package Requirements for Contrail Database
