@@ -140,53 +140,15 @@ popd
 %post
 if [ "$1" = "1" ]; then
   service cassandra stop
+  sleep 3
+  ps auxw | grep -Eq "Dcassandra-pidfile=.*cassandra\.pid" 2>/dev/null
+  if [ $? -eq 0 ] ; then
+      kill `ps auxw | grep -E "Dcassandra-pidfile=.*cassandra\.pid" | grep -v grep | awk '{print $2}'` > /dev/null 2>&1
+  fi
   rm -rf /var/lib/cassandra
 fi
 chkconfig cassandra off
 chkconfig contrail-database on
-
-# this is upgrade from 1.02 release to newer i.e cassandra 1.1.7 to 1.2.11
-if [ -f /usr/share/cassandra/conf/cassandra.yaml.rpmsave ]; then
-    CASSANDRA_CONF_OLD=/usr/share/cassandra/conf/cassandra.yaml.rpmsave
-    CASSANDRA_CONF=/etc/cassandra/conf/cassandra.yaml
-
-    CLUSTER_NAME=$(grep "^cluster_name:" ${CASSANDRA_CONF_OLD})
-    sed -e "s/^cluster_name:.*/${CLUSTER_NAME}/g" ${CASSANDRA_CONF} > ${CASSANDRA_CONF}.save
-    mv ${CASSANDRA_CONF}.save ${CASSANDRA_CONF}
-
-    PARTITIONER=$(grep "^partitioner:" ${CASSANDRA_CONF_OLD})
-    sed -e "s/^partitioner:.*/${PARTITIONER}/g" ${CASSANDRA_CONF} > ${CASSANDRA_CONF}.save
-    mv ${CASSANDRA_CONF}.save ${CASSANDRA_CONF}
-
-    DATA_DIR_OLD=$(grep -A1 "^data_file_directories:" ${CASSANDRA_CONF_OLD} | grep -v data_file_directories)
-    DATA_DIR_NEW=$(grep -A1 "^data_file_directories:" ${CASSANDRA_CONF} | grep -v data_file_directories)
-    sed -e "s@${DATA_DIR_NEW}@${DATA_DIR_OLD}@g" ${CASSANDRA_CONF} > ${CASSANDRA_CONF}.save
-    mv ${CASSANDRA_CONF}.save ${CASSANDRA_CONF}
-
-    COMMITLOG_DIR=$(grep "^commitlog_directory:" ${CASSANDRA_CONF_OLD})
-    sed -e "s@^commitlog_directory:.*@${COMMITLOG_DIR}@g" ${CASSANDRA_CONF} > ${CASSANDRA_CONF}.save
-    mv ${CASSANDRA_CONF}.save ${CASSANDRA_CONF}
-
-    SAVEDCACHES_DIR=$(grep "^saved_caches_directory:" ${CASSANDRA_CONF_OLD})
-    sed -e "s@^saved_caches_directory:.*@${SAVEDCACHES_DIR}@g" ${CASSANDRA_CONF} > ${CASSANDRA_CONF}.save
-    mv ${CASSANDRA_CONF}.save ${CASSANDRA_CONF}
-
-    SEEDS=$(grep "          - seeds:" ${CASSANDRA_CONF_OLD})
-    sed -e "s/^          - seeds:.*/${SEEDS}/g" ${CASSANDRA_CONF} > ${CASSANDRA_CONF}.save
-    mv ${CASSANDRA_CONF}.save ${CASSANDRA_CONF}
-
-    LISTEN_ADDRESS=$(grep "^listen_address:" ${CASSANDRA_CONF_OLD})
-    sed -e "s/^listen_address:.*/${LISTEN_ADDRESS}/g" ${CASSANDRA_CONF} > ${CASSANDRA_CONF}.save
-    mv ${CASSANDRA_CONF}.save ${CASSANDRA_CONF}
-
-    RPC_ADDRESS=$(grep "^rpc_address:" ${CASSANDRA_CONF_OLD})
-    sed -e "s/^rpc_address:.*/${RPC_ADDRESS}/g" ${CASSANDRA_CONF} > ${CASSANDRA_CONF}.save
-    mv ${CASSANDRA_CONF}.save ${CASSANDRA_CONF}
-
-    rm -rf ${CASSANDRA_CONF_OLD}
-
-    mv -f /usr/share/cassandra/conf/cassandra-env.sh.rpmsave /etc/cassandra/conf/cassandra-env.sh
-fi
 
 %files
 %defattr(-,root,root,-)
