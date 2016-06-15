@@ -1,0 +1,3 @@
+echo "Running Postinst for nova-docker"
+usermod -G docker nova
+echo "Postinst for nova-docker done"

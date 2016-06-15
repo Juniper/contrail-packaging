@@ -1,6 +1,6 @@
 nova (2:13.0.0-0ubuntu2~cloud0.1contrail) trusty-mitaka; urgency=medium
 
-  * Added 1contrail in contrail package
+  * Added 1contrail in contrail package.
 
  -- Amudha R <amudha@juniper.net>  Thu, 19 May 2016 14:26:34 +0000
 

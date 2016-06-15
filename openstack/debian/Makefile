@@ -8,7 +8,8 @@ endif
 
 PACKAGES = openstack-neutron-deb \
 	openstack-nova-deb \
-	openstack-python-neutronclient-deb
+	openstack-python-neutronclient-deb \
+	openstack-nova-docker-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"

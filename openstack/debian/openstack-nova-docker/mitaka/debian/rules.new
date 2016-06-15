@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+export PKG_ROOT = $(HOME)/build/nova-docker-0.0.0.post190
+export BUILD_ROOT = $(PKG_ROOT)/debian/nova-docker
+
+%:
+	dh $@ --with python2 --buildsystem=python_distutils
