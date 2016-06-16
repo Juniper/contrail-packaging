@@ -49,14 +49,15 @@ echo "All Snapshots are created"
 # Publish trusty multi-components
 echo Publish trusty repos as multi-components
 
-aptly publish snapshot -passphrase=OpenContrail -component=main,universe -distribution=trusty trusty-main-$SNAPSHOT_TAG trusty-universe-$SNAPSHOT_TAG $SNAPSHOT_TAG
-aptly publish snapshot -passphrase=OpenContrail -component=main,universe -distribution=trusty-updates trusty-updates-main-$SNAPSHOT_TAG trusty-updates-universe-$SNAPSHOT_TAG $SNAPSHOT_TAG
-aptly publish snapshot -passphrase=OpenContrail -component=main,universe -distribution=trusty-security trusty-security-main-$SNAPSHOT_TAG trusty-security-universe-$SNAPSHOT_TAG  $SNAPSHOT_TAG
+aptly publish snapshot -passphrase=OpenContrail -component=main,universe -distribution=trusty trusty-main-$SNAPSHOT_TAG trusty-universe-$SNAPSHOT_TAG trusty/$SNAPSHOT_TAG
+aptly publish snapshot -passphrase=OpenContrail -component=main,universe -distribution=trusty-updates trusty-updates-main-$SNAPSHOT_TAG trusty-updates-universe-$SNAPSHOT_TAG trusty-updates/$SNAPSHOT_TAG
+aptly publish snapshot -passphrase=OpenContrail -component=main,universe -distribution=trusty-security trusty-security-main-$SNAPSHOT_TAG trusty-security-universe-$SNAPSHOT_TAG  trusty-security/$SNAPSHOT_TAG
 
 # Publish trusty openstack repos
-aptly publish snapshot -passphrase=OpenContrail trusty-updates-juno-main-$SNAPSHOT_TAG $SNAPSHOT_TAG 
-aptly publish snapshot -passphrase=OpenContrail trusty-updates-kilo-main-$SNAPSHOT_TAG $SNAPSHOT_TAG
-aptly publish snapshot -passphrase=OpenContrail trusty-updates-liberty-main-$SNAPSHOT_TAG $SNAPSHOT_TAG
+aptly publish snapshot -passphrase=OpenContrail trusty-updates-juno-main-$SNAPSHOT_TAG trusty-updates-juno/$SNAPSHOT_TAG
+aptly publish snapshot -passphrase=OpenContrail trusty-updates-kilo-main-$SNAPSHOT_TAG trusty-updates-kilo/$SNAPSHOT_TAG
+aptly publish snapshot -passphrase=OpenContrail trusty-updates-liberty-main-$SNAPSHOT_TAG trusty-updates-liberty/$SNAPSHOT_TAG
+aptly publish snapshot -passphrase=OpenContrail trusty-updates-mitaka-main-$SNAPSHOT_TAG trusty-updates-mitaka/$SNAPSHOT_TAG
 
 
 echo Publish local repos to AWS
@@ -71,6 +72,7 @@ retry aptly publish snapshot -passphrase=OpenContrail -component=main,universe -
 retry aptly publish snapshot -passphrase=OpenContrail trusty-updates-juno-main-$SNAPSHOT_TAG s3:aws-contrail-mirrors:trusty-updates-juno/$SNAPSHOT_TAG
 retry aptly publish snapshot -passphrase=OpenContrail trusty-updates-kilo-main-$SNAPSHOT_TAG s3:aws-contrail-mirrors:trusty-updates-kilo/$SNAPSHOT_TAG
 retry aptly publish snapshot -passphrase=OpenContrail trusty-updates-liberty-main-$SNAPSHOT_TAG s3:aws-contrail-mirrors:trusty-updates-liberty/$SNAPSHOT_TAG
+retry aptly publish snapshot -passphrase=OpenContrail trusty-updates-liberty-mitaka-$SNAPSHOT_TAG s3:aws-contrail-mirrors:trusty-updates-mitaka/$SNAPSHOT_TAG
 
 # Publish precise multi-components
 #aptly publish snapshot -passphrase=OpenContrail -component=main,universe -distribution=precise precise-main-$SNAPSHOT_TAG precise-universe-$SNAPSHOT_TAG $SNAPSHOT_TAG
