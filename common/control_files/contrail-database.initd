@@ -17,7 +17,7 @@
 # Author: Megh Bhatt <meghb@juniper.net>
 
 NAME=cassandra
-PIDFILE=/var/run/$NAME.pid
+PIDFILE=/var/run/$NAME/$NAME.pid
 SERVICE="service $NAME"
 CLUSTER_STATUS_UP_FILE=/var/log/cassandra/status-up
 DEFAULT_GC_GRACE_SECONDS=864000
@@ -65,7 +65,7 @@ max_down_seconds_before_repair()
 # process is not running but the pidfile exists (to match the exit codes for
 # the "status" command; see LSB core spec 3.1, section 20.2)
 #
-CMD_PATT="-user.cassandra.+CassandraDaemon"
+CMD_PATT="Dcassandra-pidfile=.*cassandra\.pid"
 is_running()
 {
     if [ -f $PIDFILE ]; then
@@ -86,6 +86,9 @@ do_start()
     #   1 if daemon was already running
     #   2 if daemon could not be started
     is_running && return 1
+
+    [ -e `dirname "$PIDFILE"` ] || \
+        install -d -ocassandra -gcassandra -m755 `dirname $PIDFILE`
 
     max_allowed_down_seconds
     max_down_seconds_before_repair
