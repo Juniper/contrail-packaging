@@ -670,6 +670,17 @@ contrail-heat-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-heat) \
 	rm -rf ${BUILDDIR};
 
+ukai-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/ukai) \
+	mkdir -p ${BUILDDIR}; \
+	cp -R ${SB_TOP}/ukai/* ${BUILDDIR}; \
+	cd ${BUILDDIR}; \
+	make deb
+
+ukai-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/ukai) \
+	rm -rf ${BUILDDIR};
+
 contrail-vrouter-deb: contrail-libs-deb
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-vrouter)
 	mkdir -p ${BUILDDIR}
