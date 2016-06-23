@@ -36,6 +36,7 @@ Vendor:             Juniper Networks Inc
 Requires:	redis
 Requires:	nodejs >= 0.8.15-1
 Requires:	supervisor
+Requires:	openssl
 
 Obsoletes:      contrail-webui
 
