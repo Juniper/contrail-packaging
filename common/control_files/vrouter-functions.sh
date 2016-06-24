@@ -399,9 +399,11 @@ _dpdk_vrouter_ini_update() {
 ## Wait till bond interface is up and all slaves attached
 ##
 _dpdk_wait_for_bond_ready() {
-    bond_dir="/sys/class/net/${DPDK_PHY}/bonding"
+    #if DPDK_PHY is a vlan, remove the '.'
+    bond_name=$(echo ${DPDK_PHY} | cut -d. -f1)
+    bond_dir="/sys/class/net/${bond_name}/bonding"
     for iface in $(ifquery --list); do
-        ifquery $iface | grep "bond-master" | grep ${DPDK_PHY}
+        ifquery $iface | grep "bond-master" | grep ${bond_name}
         if [ $? -eq 0  ];
         then
             timeout=0
@@ -440,6 +442,9 @@ vrouter_dpdk_if_bind() {
     loops=0
     while [ ! -e /sys/class/net/${DPDK_PHY} ]; do
         sleep 2
+        #if DPDK_PHY is a vlan on a bond, might need to bring it up explicitly
+        # after the slaves are added to the bond (especially if slaves are VFs)
+        ifup ${DPDK_PHY}
         loops=$(($loops + 1))
         if [ $loops -ge 60 ]; then
             echo "$(date): Error binding physical interface ${DPDK_PHY}: device not found"
