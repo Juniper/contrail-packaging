@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$1" = "configure" ]; then
-    echo "Running Postinst for contrail-openstack-database install.."
+    echo "Running Postinst for contrail-database-common install.."
     if [ -z "$2" ]; then
         sudo service cassandra stop
         sudo rm -rf /var/lib/cassandra
@@ -9,4 +9,4 @@ if [ "$1" = "configure" ]; then
     sudo update-rc.d cassandra disable
     sudo update-rc.d contrail-database defaults
 fi
-echo "Postinst for contrail-openstack-database done"
+echo "Postinst for contrail-database-common done"
