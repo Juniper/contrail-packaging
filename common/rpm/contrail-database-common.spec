@@ -1,4 +1,5 @@
 %define         _distropkgdir tools/packaging/common/control_files
+%define         _centos %(grep -i centos /etc/redhat-release >> /dev/null && echo centos)
 
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
@@ -12,6 +13,12 @@ Release:	    %{_relstr}%{?dist}
 %else
 %define         _verstr      1
 %endif
+%if 0%{?_skuTag:1}
+%define         _sku     %{_skuTag}
+%else
+%define         _sku      None
+%endif
+
 Summary: Contrail Database Common %{?_gitVer}
 Name: contrail-database-common
 Version:	    %{_verstr}
@@ -31,12 +38,16 @@ Requires: datastax-agent
 Contrail Package Requirements for Contrail Database Common
 
 %install
+%if %{_sku} == "kilo" || ( %{_centos} == "centos" && %{_sku} == "liberty" )
 pushd %{_builddir}/..
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
 popd
+%endif
 
 %files
+%if %{_sku} == "kilo" || ( %{_centos} == "centos" && %{_sku} == "liberty" )
 %{_initddir}
+%endif
 
 %changelog
 * Fri Jul  15 2016 <ijohnson@juniper.net>

@@ -12,6 +12,12 @@ Release:	    %{_relstr}%{?dist}
 %else
 %define         _verstr      1
 %endif
+%if 0%{?_skuTag:1}
+%define         _sku     %{_skuTag}
+%else
+%define         _sku      None
+%endif
+
 Summary: Contrail Openstack Database %{?_gitVer}
 Name: contrail-openstack-database
 Version:	    %{_verstr}
