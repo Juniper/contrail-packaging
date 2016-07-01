@@ -287,15 +287,12 @@ else
 CEILOMETER_PLUGIN =
 endif
 
-# Execute contrail-nova-networkapi only from juno release
-CONTRAIL_NOVA_NETWORKAPI = $(shell [[ "juno kilo liberty" =~ ${CONTRAIL_SKU} ]] && echo "contrail-nova-networkapi" || echo )
-
 all: $(PREP) contrail \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
-       contrail-vrouter-init contrail-vrouter-common ${CONTRAIL_NOVA_NETWORKAPI} \
+       contrail-vrouter-init contrail-vrouter-common contrail-nova-networkapi \
        contrail-fabric-utils contrail-test
 
 server-manager-all: contrail-server-manager contrail-server-manager-monitoring contrail-server-manager-client contrail-web-server-manager
