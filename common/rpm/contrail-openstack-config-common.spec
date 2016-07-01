@@ -12,6 +12,7 @@
 %else
 %define         _verstr      1
 %endif
+
 Release:	    %{_relstr}%{?dist}
 Summary: Contrail Openstack Config %{?_gitVer}
 Name: contrail-openstack-config
@@ -64,7 +65,6 @@ install -D -m 755 %{_distropkgdir}/ifmap.initd.supervisord %{buildroot}%{_initdd
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
 install -p -m 755 %{_distropkgdir}/ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
 install -p -m 755 %{_nodemgr_config}/contrail-config-nodemgr.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
-install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
 pushd %{_builddir}
 install -D -m 755 src/config/schema-transformer/ifmap_view.py %{buildroot}%{_bindir}/ifmap_view.py
 #install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py
