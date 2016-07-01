@@ -13,6 +13,12 @@ Release:	    %{_relstr}%{?dist}
 %else
 %define         _verstr      1
 %endif
+%if 0%{?_skuTag:1}
+%define         _sku     %{_skuTag}
+%else
+%define         _sku      None
+%endif
+
 Summary: Contrail Openstack Database %{?_gitVer}
 Name: contrail-openstack-database
 Version:	    %{_verstr}
@@ -37,13 +43,18 @@ Contrail Package Requirements for Contrail Database
 
 %install
 pushd %{_builddir}/..
+%if %{_skuTag} != "mitaka"
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
+%endif
+
 install -D -m 755 %{_nodemgr_config}/contrail-database-nodemgr.conf %{buildroot}/etc/contrail/contrail-database-nodemgr.conf
 install -D -m 755 %{_nodemgr_config}/contrail-database-nodemgr.initd.supervisord %{buildroot}/etc/init.d/contrail-database-nodemgr
 popd
 
 %files
+%if %{_skuTag} != "mitaka" && 0%{?centos} >= 7
 %{_initddir}
+%endif
 /etc/contrail/contrail-database-nodemgr.conf
 /etc/init.d/contrail-database-nodemgr
 
