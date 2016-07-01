@@ -12,6 +12,7 @@ Release:	    %{_relstr}%{?dist}
 %else
 %define         _verstr      1
 %endif
+
 Summary: Contrail Openstack Database %{?_gitVer}
 Name: contrail-openstack-database
 Version:	    %{_verstr}
