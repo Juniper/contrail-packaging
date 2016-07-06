@@ -123,7 +123,7 @@ contrail-openstack: $(PREP)
 	    rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG) ;\
 	elif [ "$(CONTRAIL_SKU)" == "icehouse" ]; then \
 	    rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse.spec $(G_TAG) ;\
-	elif [ "$(CONTRAIL_SKU)" == "juno" ] || [ "$(CONTRAIL_SKU)" == "kilo" ]; then \
+	elif [ "$(CONTRAIL_SKU)" == "juno" ]; then \
 	    rpmbuild $(RPMBLDOPTS) contrail-openstack-juno.spec $(G_TAG) ;\
 	else \
 	    rpmbuild $(RPMBLDOPTS) contrail-openstack-liberty.spec $(G_TAG) ;\
