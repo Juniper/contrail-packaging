@@ -43,6 +43,12 @@ else
 endif
 G_TAG += --define "_skuTag $(CONTRAIL_SKU)"
 
+# If contrail-test repo is present, then it will be packaged (as tgz)
+ifeq ($(wildcard $(SB_TOP)/third_party/contrail-test),)
+    CONTRAIL_TEST :=
+else
+    CONTRAIL_TEST := contrail-test
+endif
 
 $(PPREP):
 	@echo some $(PPREP) work ...
@@ -296,7 +302,7 @@ all: $(PREP) contrail \
        contrail-web-core contrail-web-controller contrail-database \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
        contrail-vrouter-init contrail-vrouter-common ${CONTRAIL_NOVA_NETWORKAPI} \
-       contrail-fabric-utils contrail-test
+       contrail-fabric-utils ${CONTRAIL_TEST}
 
 server-manager-all: contrail-server-manager contrail-server-manager-monitoring contrail-server-manager-client contrail-web-server-manager
 clean:

@@ -31,9 +31,19 @@ class ContrailBuild(object):
         if self.opt.manifest_file:
             manifest_real_path = os.path.realpath(self.opt.manifest_file)
 
-        require_arch = ["centos64_os", "ubuntu-12-04", "xen6.2SP1_os", "centos65", "redhat70", "ubuntu-14-04" ]
+        require_arch = '''
+            centos64_os
+            centos65
+            centos71
+            redhat70
+            ubuntu-12-04
+            ubuntu-14-04
+            vcenter-plugin
+            xen6.2SP1_os
+        '''.split()
+
         if not self.opt.arch_type in require_arch:
-            print 'Error: Only centos64_os, ubuntu-12-04, centos65, redhat70, ubuntu-14-04, and xen6.2.SP1 are currently supported'
+            print 'Error: Only ' + ', '.join(require_arch) + ' are currently supported'
             sys.exit(1)
 
         """ Make sure we are in sandbox """
@@ -110,9 +120,6 @@ class ContrailBuild(object):
         execute("repo sync", f, ignore_errors=False)
         f.close()
 
-
-
-
     def build(self):
         if DEBUG:
             print 'build got called'
@@ -122,28 +129,72 @@ class ContrailBuild(object):
 
         f = open("fetch.log", mode='w')
 
+        # If we are building for vcenter, 3rd party dirs do not exist,
+        # so the below is safe. But let everyone know.
+
         if os.path.isdir ("third_party"):
             command = self.opt.python + " third_party/fetch_packages.py"
             execute (command, f, ignore_errors=False)
-
+        else:
+            f.write("Info: No third_party/ dir, not running fetch_patches")
 
         if os.path.isdir ("distro"):
             command = self.opt.python + " distro/third_party/fetch_packages.py"
             execute (command, f, ignore_errors=False)
+        else:
+            f.write("Info: No distro/ dir, not running fetch_patches")
 
         if os.path.isdir ("contrail-webui-third-party"):
             command = self.opt.python + " contrail-webui-third-party/fetch_packages.py"
             execute (command, f, ignore_errors=False)
+        else:
+            f.write("Info: No contrail-webui-third-party/ dir, not running fetch_patches")
 
         f.close()
 
         print "Running top level build"
         print "Log is build.log"
 
-        f = open("build.log", mode='w')
-        execute("scons", f, ignore_errors=False)
-        f.close()
+        # Preference given to scons build
+        if os.path.isfile("SConstruct"):
+            print "Found SConstruct for scons-based build"
+            # The first scons does production build, the second one is needed
+            # so that we have debug symbols.
+            # cmd = "scons --opt=production"
+            # f = open("build.log", mode='w')
+            # execute(cmd, f, ignore_errors=False)
+            # f.close()
 
+            cmd = "scons"
+            # f = open("build-debug.log", mode='w')
+            f = open("build.log", mode='w')
+            execute(cmd, f, ignore_errors=False)
+            f.close()
+
+            # Build and bgp_stress_test on ubuntu14
+            platform = os.getenv('BUILD_PLATFORM')
+            if platform and platform == "ubuntu-14-04":
+                print "Info: building bgp_stress_test... "
+                os.putenv('NO_HEAPCHECK','TRUE')
+                cmd = "scons -iu src/bgp:bgp_stress_test"
+                f = open("bgp_stress_test-debug.log", mode='w')
+                execute(cmd, f, ignore_errors=True)
+                f.close()
+                cmd = "scons --opt=production -iu src/bgp:bgp_stress_test"
+                f = open("bgp_stress_test-production.log", mode='w')
+                execute(cmd, f, ignore_errors=True)
+                f.close()
+                os.unsetenv('NO_HEAPCHECK')
+
+        elif os.path.isfile("Makefile"):
+            print "Found Makefile for make-based build"
+            if not self.opt.build_num:
+                self.opt.build_num = execute("date +%F-%R", ignore_errors=False)
+            cmd = "make BUILDNUM=%s all" % self.opt.build_num
+
+            f = open("build.log", mode='w')
+            execute(cmd, f, ignore_errors=False)
+            f.close()
 
     def package(self):
         if DEBUG:
@@ -203,6 +254,14 @@ class ContrailBuild(object):
         execute(command, f, ignore_errors=False)
         f.close()
 
+        # The packager will create copies of .tgz's in $SB/store, which
+        # is not an efficient use of disk space. To save disk space
+        # on archive storage, let's make these hard links
+        artifacts_dir = os.path.join(current_dir, "build", "artifacts")
+        os.chdir(os.path.join(current_dir, "store"))
+        for f in glob.glob('*.tgz'):
+            os.remove(f)
+            os.link(os.path.join(artifacts_dir,f), f)
 
 def execute(command, output, ignore_errors=False):
     """ Function to execute shell command and return the output """
@@ -279,7 +338,7 @@ def parse_options(args):
                         help='Branch to use to fetch manifest file')
 
     parser.add_argument('-d', '--dir', nargs='?', dest='dir_name',
-                        default='/volume/junosv-storage01/contrail/',
+                        default='/volume/contrail/',
                         help='Base directory to search for archived daily builds')
 
     parser.add_argument('-k', '--sku', nargs='?', dest='sku_name',

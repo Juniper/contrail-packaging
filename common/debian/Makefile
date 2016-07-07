@@ -14,6 +14,21 @@ else
   export CONTRAIL_SKU := havana
 endif
 
+# If contrail-test repo is present, then it will be packaged (as tgz)
+# Maybe be over-ridden based on CONTRAIL_SKU
+ifeq ($(wildcard $(SB_TOP)/third_party/contrail-test),)
+    CONTRAIL_TEST :=
+else
+    CONTRAIL_TEST := contrail-test-deb
+endif
+
+# Ditto for contrail-test-ci repo
+ifeq ($(wildcard ${SB_TOP}/tools/contrail-test-ci),)
+    CONTRAIL_TEST_CI :=
+else
+    CONTRAIL_TEST_CI := contrail-test-ci-deb
+endif
+
 CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
 CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 
@@ -75,6 +90,8 @@ ifeq ($(CONTRAIL_SKU),icehouse)
 endif
 
 ifeq ($(CONTRAIL_SKU), vcenter)
+    # We do not build contrail-test-ci tarball for vcenter
+    CONTRAIL_TEST_CI :=
     CEILOMETER_PLUGIN :=
     ifeq ($(SERIES),precise)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
@@ -138,7 +155,8 @@ PACKAGES = \
 	$(CONTRAIL_OPENSTACK_VROUTER) \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
-	contrail-test-deb \
+	$(CONTRAIL_TEST_CI) \
+	$(CONTRAIL_TEST) \
 	libvirt-deb \
 	contrail-openstack-dashboard-deb \
 	contrail-ostack-dashboard-deb \
@@ -173,7 +191,8 @@ PACKAGES_VMWARE = \
         contrail-openstack-database-deb \
         contrail-openstack-webui-deb \
         contrail-fabric-utils-deb \
-        contrail-test-deb \
+        $(CONTRAIL_TEST_CI) \
+        $(CONTRAIL_TEST) \
         libvirt-deb \
 	contrail-f5-deb \
         contrail-vmware-config-deb \
@@ -411,16 +430,22 @@ contrail-fabric-utils-clean:
 	rm -rf ${BUILDDIR}
 	rm -rf ${TGZ_FILE}
 
+contrail-test-ci-deb:
+	@mkdir -p $(SB_TOP)/build/tools
+	(cd ${SB_TOP}/tools && tar -cvzf $(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test-ci)
+	@echo "Wrote: $(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz"
+
 contrail-test-deb:
-	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test)
+	@mkdir -p $(SB_TOP)/build/tools
+	(cd ${SB_TOP}/third_party && tar -cvzf $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test)
 	@echo "Wrote: $(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz"
-	if [ '${CONTRAIL_SKU}' != 'vcenter' ]; then \
-		(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/tools/; tar -cvzf $(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz contrail-test-ci); \
-		echo "Wrote: $(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz"; \
-	fi
 
 contrail-test-clean:
 	$(eval TGZ_FILE=$(SB_TOP)/build/tools/contrail-test-$(VERSION)~$(CONTRAIL_SKU).tgz)
+	rm -rf ${TGZ_FILE}
+
+contrail-test-ci-clean:
+	$(eval TGZ_FILE=$(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz)
 	rm -rf ${TGZ_FILE}
 
 contrail-openstack-icehouse-deb:
