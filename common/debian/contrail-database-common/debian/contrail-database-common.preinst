@@ -1,0 +1,7 @@
+echo "Running Preinst for contrail-database-common"
+# Disable auto start of cassandra
+for svc in cassandra ; do
+    echo "manual" > /etc/init/$svc.override
+done
+
+echo "Preinst for contrail-database-common done"
