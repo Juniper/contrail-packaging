@@ -1,4 +1,3 @@
-%define         _distropkgdir tools/packaging/common/control_files
 %define  _nodemgr_config controller/src/nodemgr/database_nodemgr
 
 %if 0%{?_buildTag:1}
@@ -23,21 +22,17 @@ Vendor:             Juniper Networks Inc
 
 BuildArch: noarch
 
-Requires: contrail-database >= %{_verstr}-%{_relstr}
+Requires: contrail-database-common >= %{_verstr}-%{_relstr}
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
-Requires: zookeeper
 Requires: supervisor
-Requires: sysstat
-Requires: datastax-agent
 
 %description
 Contrail Package Requirements for Contrail Database
 
 %install
 pushd %{_builddir}/..
-install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
 install -D -m 755 %{_nodemgr_config}/contrail-database-nodemgr.conf %{buildroot}/etc/contrail/contrail-database-nodemgr.conf
 install -D -m 755 %{_nodemgr_config}/contrail-database-nodemgr.initd.supervisord %{buildroot}/etc/init.d/contrail-database-nodemgr
 popd
@@ -51,3 +46,5 @@ popd
 * Tue Aug  6 2013 <ndramesh@juniper.net>
 * Initial build.
 
+* Fri July 15 2016 <ijohnson@juniper.net>
+* Moving cassandra and zookeeper to contrail database common package.
