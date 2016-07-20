@@ -60,17 +60,11 @@ Contrail Package Requirements for Contrail Config
 pushd %{_builddir}/..
 
 pushd %{_builddir}/..
-install -D -m 755 %{_distropkgdir}/rabbitmq-server.initd.supervisord %{buildroot}%{_initddir}/rabbitmq-server.initd.supervisord
 install -D -m 755 %{_distropkgdir}/ifmap.initd.supervisord %{buildroot}%{_initddir}/ifmap
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
 install -p -m 755 %{_distropkgdir}/ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
 install -p -m 755 %{_nodemgr_config}/contrail-config-nodemgr.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
-install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service_files
-install -D -m 755 %{_distropkgdir}/supervisor-support-service.initd %{buildroot}%{_initddir}/supervisor-support-service
-install -D -m 755 %{_distropkgdir}/supervisord_support_service.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service.conf
-install -D -m 755 %{_distropkgdir}/rabbitmq-server.initd.supervisord %{buildroot}%{_initddir}/rabbitmq-server.initd.supervisord
-install -p -m 755 %{_distropkgdir}/rabbitmq-server.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service_files/rabbitmq-server.ini
 pushd %{_builddir}
 install -D -m 755 src/config/schema-transformer/ifmap_view.py %{buildroot}%{_bindir}/ifmap_view.py
 #install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py
@@ -94,27 +88,16 @@ popd
 %{_bindir}/ifmap_view.py
 #%{_bindir}/encap.py
 %{_initddir}
-%{_sysconfdir}/contrail/supervisord_support_service.conf
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_support_service_files/rabbitmq-server.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
 
 %post
 if [ $1 -eq 1 -a -x /bin/systemctl ] ; then
    /bin/systemctl daemon-reload > /dev/null
 fi
-for svc in rabbitmq-server; do
-    if [ -f %{_initddir}/$svc ]; then
-        service $svc stop || true
-        mv %{_initddir}/$svc %{_initddir}/$svc.backup
-        cp %{_initddir}/$svc.initd.supervisord %{_initddir}/$svc
-    elif [ -f /usr/lib/systemd/system/$svc.service ]; then
-        service $svc stop || true
-        mv /usr/lib/systemd/system/$svc.service /usr/lib/systemd/system/$svc.service_backup
-        cp %{_initddir}/$svc.initd.supervisord %{_initddir}/$svc
-    fi
-done
 
 %changelog
+* Wed Jun 22 2016 Nagendra Maynattamai <npchandran@juniper.net>
+* Remove supervisor-support-services and supervisor support for rabbitmq
 * Tue Aug  6 2013 <ndramesh@juniper.net>
 * Initial build.
 
