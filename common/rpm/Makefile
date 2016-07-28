@@ -238,6 +238,10 @@ contrail-database: $(PREP)
 	cp ../control_files/supervisord_contrail_database.initd $(BUILD_SRC)/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-database.spec $(G_TAG)
 
+contrail-database-common: $(PREP)
+	@echo making rpm for contrail-database-common
+	rpmbuild $(RPMBLDOPTS) contrail-database-common.spec $(G_TAG)
+
 contrail-server-manager: $(PREP)
 	@echo making rpm for contrail-server-manager
 	cp contrail-server-manager.spec $(BUILD_BASE)/SPECS/
@@ -294,6 +298,7 @@ all: $(PREP) contrail \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
+	   contrail-database-common \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
        contrail-vrouter-init contrail-vrouter-common ${CONTRAIL_NOVA_NETWORKAPI} \
        contrail-fabric-utils contrail-test
