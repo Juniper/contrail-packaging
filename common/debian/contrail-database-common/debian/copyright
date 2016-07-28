@@ -1,0 +1,5 @@
+Name:     contrail-database-common
+Maintainer: ijohnson <ijohnson@juniper.net>
+License:  Commercial
+Files: *
+ Copyright (c) 2016 Juniper Networks, Inc. All rights reserved.
