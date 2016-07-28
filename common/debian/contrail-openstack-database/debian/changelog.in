@@ -1,5 +1,10 @@
 contrail-openstack-database (BUILDTAG) rrugge; urgency=low
 
+  * Spliting contrail-openstack-database in to contrail-openstack-database and
+    contrail-database
+
+ -- ijohnson <ijohnson@juniper.net> Tue, 28 Jun 2016 22:04:02 -0700
+
   [rrugge ]
   * debian/changelog: changelog
 

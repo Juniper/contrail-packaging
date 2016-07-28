@@ -1,5 +1,4 @@
 %define         _distropkgdir tools/packaging/common/control_files
-%define         _distrothirdpartydir distro/third_party
 %define         _nodemgr_config controller/src/nodemgr/config_nodemgr
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
@@ -62,7 +61,6 @@ pushd %{_builddir}/..
 install -D -m 755 %{_distropkgdir}/ifmap.initd.supervisord %{buildroot}%{_initddir}/ifmap
 install -p -m 755 %{_distropkgdir}/ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
 install -p -m 755 %{_nodemgr_config}/contrail-config-nodemgr.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
-install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service_files
 install -D -m 755 %{_distropkgdir}/supervisor-support-service.initd %{buildroot}%{_initddir}/supervisor-support-service
 install -D -m 755 %{_distropkgdir}/supervisord_support_service.conf %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service.conf

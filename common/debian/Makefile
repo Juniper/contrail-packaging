@@ -131,6 +131,7 @@ PACKAGES = \
 	contrail-openstack-analytics-deb \
 	$(CONTRAIL_OPENSTACK_CONFIG) \
 	contrail-openstack-control-deb \
+	contrail-database-common-deb \
 	contrail-openstack-database-deb \
 	$(CONTRAIL_OPENSTACK_VROUTER) \
 	contrail-openstack-webui-deb \
@@ -165,6 +166,7 @@ PACKAGES_VMWARE = \
         contrail-openstack-ha-deb \
         contrail-openstack-analytics-deb \
         contrail-openstack-control-deb \
+	    contrail-database-common-deb \
         contrail-openstack-database-deb \
         contrail-openstack-webui-deb \
         contrail-fabric-utils-deb \
