@@ -43,7 +43,7 @@ override_dh_auto_install:
 	cp -r $(src_path)/client/server-manager $(build_root)/opt/contrail/server_manager/client/
 	install -p -m 755 $(src_path)/client/sm-client-config.ini  $(build_root)/opt/contrail/server_manager/client/
 	install -p -m 755 $(src_path)/kickstarts/interface_setup.py $(build_root)/opt/contrail/server_manager/client/interface_setup.py
-	install -p -m 755 $(contrail_provisioning_path)/common/staticroute_setup.py $(build_root)/opt/contrail/server_manager/client/staticroute_setup.py
+	install -p -m 755 $(src_path)/kickstarts/staticroute_setup.py $(build_root)/opt/contrail/server_manager/client/staticroute_setup.py
 	install -p -m 755 $(src_path)/client/provision.sh $(build_root)/opt/contrail/server_manager/client/provision.sh
 
 override_dh_shlibdeps:
