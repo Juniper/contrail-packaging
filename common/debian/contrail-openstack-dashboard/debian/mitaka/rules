@@ -35,6 +35,16 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/contrail_openstack_dashboard/openstack_dashboard
 	cp -a $(buildroot)/*.py $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/contrail_openstack_dashboard
 	cp -a $(buildroot)/openstack_dashboard/ $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/contrail_openstack_dashboard/
+	install -d -m 755 $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/neutron_lbaas_dashboard
+	install -d -m 755 $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/neutron_lbaas_dashboard/api
+	install -d -m 755 $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/neutron_lbaas_dashboard/dashboards
+	install -d -m 755 $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/neutron_lbaas_dashboard/enabled
+	install -d -m 755 $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/neutron_lbaas_dashboard/static
+	cp -a $(buildroot)/*.py $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/neutron_lbaas_dashboard
+	cp -a $(buildroot)/neutron_lbaas_dashboard/api/ $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/neutron_lbaas_dashboard/
+	cp -a $(buildroot)/neutron_lbaas_dashboard/dashboards/ $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/neutron_lbaas_dashboard/
+	cp -a $(buildroot)/neutron_lbaas_dashboard/enabled/ $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/neutron_lbaas_dashboard/
+	cp -a $(buildroot)/neutron_lbaas_dashboard/static/ $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/neutron_lbaas_dashboard/
 
 override_dh_shlibdeps:
 
