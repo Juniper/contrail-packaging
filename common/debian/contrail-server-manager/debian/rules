@@ -135,8 +135,6 @@ override_dh_auto_install:
 	cp -r $(src_path)/puppet  $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/cobbler  $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/kickstarts  $(build_root)/etc/contrail_smgr/
-	install -p -m 755 $(contrail_provisioning_path)/common/staticroute_setup.py \
-$(build_root)/etc/contrail_smgr/kickstarts/staticroute_setup.py
 	
 	$(src_path)/../../../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file $(pkg_file) \
  --destination-dir $(build_root)/var/www/html/thirdparty_packages \
