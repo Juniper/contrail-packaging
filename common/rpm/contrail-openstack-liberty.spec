@@ -60,27 +60,13 @@ Requires: python-openstackclient
 Contrail Package Requirements for Contrail Openstack
 
 %install
-# Setup directories
-rm -rf %{buildroot}
-install -d -m 755 %{buildroot}/%{_bindir}
-
-pushd %{_builddir}/..
-# Install contrail openstack-status
-install -p -m 755 tools/provisioning/tools/openstack-status %{buildroot}/%{_bindir}/openstack-status.contrail
-popd
 
 %files
-%defattr(-,root,root,-)
-%{_bindir}/openstack-status.contrail
-
-%post
-# Replace stock openstack-status with contrail openstack-status
-if [ -f %{_bindir}/openstack-status ]; then
-    mv %{_bindir}/openstack-status %{_bindir}/openstack-status.rpmsave
-fi
-mv %{_bindir}/openstack-status.contrail %{_bindir}/openstack-status
 
 %changelog
+* Mon Aug 08 2016 Nagendra Maynattamai <npchandran@juniper.net>
+- Remove packaging empty bin dir
+
 * Mon Jun 20 2016 Nagendra Maynattamai <npchandran@juniper.net>
 - Remove supervisord support
 
