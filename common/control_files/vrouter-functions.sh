@@ -119,6 +119,10 @@ _dpdk_conf_read() {
     DPDK_PHY_PCI="${physical_interface_address}"
     DPDK_PHY_MAC="${physical_interface_mac}"
     DPDK_VHOST="${name}"
+    DPDK_UIO_DRIVER="${physical_uio_driver}"
+    if [ -z "${DPDK_UIO_DRIVER}" ]; then
+        DPDK_UIO_DRIVER="igb_uio"
+    fi
 
     if [ -z "${DPDK_PHY}" ]; then
         echo "$(date): Error reading ${AGENT_CONF}: no physical device defined"
@@ -135,7 +139,7 @@ _dpdk_conf_read() {
     # delay, enlarging the start/stop time of the supervisor-vrouter service.
     loops=0
     # Waiting for interface, we should wait
-    # for interface in case of rebinding interface from dpdk (igb_uio) driver to kernel driver
+    # for interface in case of rebinding interface from UIO driver to kernel driver
     while [ ! -e /sys/class/net/${DPDK_PHY} ]
     do
         sleep 2
@@ -455,7 +459,7 @@ vrouter_dpdk_if_bind() {
 
     _dpdk_conf_read
 
-    modprobe igb_uio
+    modprobe "${DPDK_UIO_DRIVER}"
     # multiple kthreads for port monitoring
     modprobe rte_kni kthread_mode=multiple
 
@@ -473,8 +477,8 @@ vrouter_dpdk_if_bind() {
 
     # bind physical device(s) to DPDK driver
     for slave in ${DPDK_BOND_SLAVES}; do
-        echo "Binding device ${slave} to DPDK igb_uio driver..."
-        ${DPDK_BIND} --force --bind=igb_uio ${slave}
+        echo "Binding device ${slave} to UIO driver ${DPDK_UIO_DRIVER}..."
+        ${DPDK_BIND} --force --bind="${DPDK_UIO_DRIVER}" ${slave}
     done
 
     if [ -n "${DPDK_BOND_MODE}" ]; then
@@ -549,8 +553,8 @@ vrouter_dpdk_if_unbind() {
 
     _dpdk_vrouter_ini_bond_info_collect
 
-    ## make sure igb_uio is loaded otherwise DPDK_BIND will not work
-    modprobe igb_uio
+    ## make sure UIO driver is loaded otherwise DPDK_BIND will not work
+    modprobe "${DPDK_UIO_DRIVER}"
     for slave_pci_name in ${DPDK_BOND_PCI_NAMES}; do
         eval slave_pci=\${DPDK_BOND_${slave_pci_name}_PCI}
         slave_driver=`grep "Driver:" ${DPDK_BINDING_DRIVER_DATA}/${slave_pci} | cut -f 2 | tr -d ['\n\r']`
@@ -562,7 +566,7 @@ vrouter_dpdk_if_unbind() {
     ${DPDK_BIND} --status
 
     rmmod rte_kni
-    rmmod igb_uio
+    rmmod "${DPDK_UIO_DRIVER}"
 
     echo "$(date): Re-initialize networking."
     for iface in $(ifquery --list);
