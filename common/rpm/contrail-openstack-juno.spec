@@ -59,14 +59,13 @@ Requires: openstack-heat-api-cfn
 Contrail Package Requirements for Contrail Openstack
 
 %install
-# Setup directories
-rm -rf %{buildroot}
-install -d -m 755 %{buildroot}/%{_bindir}
 
 %files
-%defattr(-,root,root,-)
 
 %changelog
+* Mon Aug 08 2016 Nagendra Maynattamai <npchandran@juniper.net>
+- Stop packaging empty bin dir
+
 * Mon Jun 20 2016 Nagendra Maynattamai <npchandran@juniper.net>
 - Remove supervisord support
 
