@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo "Running Postinst for contrail-database-common install.."
+    sudo update-rc.d cassandra disable
+    sudo update-rc.d contrail-database defaults
+echo "Postinst for contrail-openstack-database-common done"
