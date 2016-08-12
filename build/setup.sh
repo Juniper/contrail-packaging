@@ -33,5 +33,8 @@ cp /opt/contrail/contrail_packages/helpers/* /opt/contrail/bin/
 # Remove existing python-crypto-2.0.1 rpm.
 yum -y --disablerepo=* remove python-crypto-2.0.1
 
+# install if available
+yum -y install yum-plugin-priorities
+
 #Install basic packages 
 yum -y install contrail-fabric-utils contrail-setup
