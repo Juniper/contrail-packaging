@@ -61,9 +61,28 @@ Contrail Package Requirements for Contrail Openstack
 
 %install
 
+%post
+# Create symlink to /usr/lib/systemd/system/mariadb.service as
+# mysqld.service is no more packaged upstream
+if [ ! -e /usr/lib/systemd/system/mysqld.service ] && \
+   [ -e /usr/lib/systemd/system/mariadb.service ] && \
+   [ ! -e /etc/systemd/system/mysqld.service ]; then
+    ln -s /usr/lib/systemd/system/mariadb.service /etc/systemd/system/mysqld.service
+    systemctl daemon-reload
+fi
+
+%preun
+if [ -e /etc/systemd/system/mysqld.service ]; then
+    rm -f /etc/systemd/system/mysqld.service
+    systemctl daemon-reload
+fi
+
 %files
 
 %changelog
+* Mon Aug 15 2016 Nagendra Maynattamai <npchandran@juniper.net>
+- Create mysqld.service symlink to point to mariadb.service
+
 * Mon Aug 08 2016 Nagendra Maynattamai <npchandran@juniper.net>
 - Use upstream openstack-status command
 
