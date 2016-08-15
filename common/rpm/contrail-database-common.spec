@@ -14,6 +14,11 @@ Release:	    %{_relstr}%{?dist}
 %else
 %define         _verstr      1
 %endif
+%if 0%{?_skuTag:1}
+%define         _sku     %{_skuTag}
+%else
+%define         _sku      None
+%endif
 
 Summary: Contrail Database Common %{?_gitVer}
 Name: contrail-database-common
@@ -28,10 +33,17 @@ BuildArch: noarch
 Requires: contrail-database >= %{_verstr}-%{_relstr}
 Requires: sysstat
 Requires: datastax-agent
+
+# Packaging zookeeper-3.4.8-0contrail1 for all rhel version
 %if "%{_rhel}" == "rhel"
 Requires: zookeeper >= 3.4.8-0contrail1
-%else
+%endif
+
+# Packaging zookeeper-3.4.8-0contrail1 from mitaka onwards
+%if "%{_centos}" == "centos" && ( "%{_sku}" == "liberty" || "%{_sku}" == "kilo" || "%{_sku}" == "juno" )
 Requires: zookeeper
+%else
+Requires: zookeeper >= 3.4.8-0contrail1
 %endif
 
 
@@ -39,18 +51,23 @@ Requires: zookeeper
 Contrail Package Requirements for Contrail Database Common
 
 %install
-%if "%{_centos}" == "centos"
+# zookeeper.initd will be brought in by zookeeper-3.4.8-0contrail1 packaged in centos/mitaka onwards
+%if "%{_centos}" == "centos" && ( "%{_sku}" == "liberty" || "%{_sku}" == "kilo" || "%{_sku}" == "juno" )
 pushd %{_builddir}/..
 install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
 popd
 %endif
 
 %files
-%if "%{_centos}" == "centos"
+# zookeeper.initd will be brought in by zookeeper-3.4.8-0contrail1 packaged in centos/mitaka onwards
+%if "%{_centos}" == "centos" && ( "%{_sku}" == "liberty" || "%{_sku}" == "kilo" || "%{_sku}" == "juno" )
 %{_initddir}
 %endif
 
 %changelog
+* Fri Aug 12 2016 Nagendra Maynattamai <npchandran@juniper.net>
+- Adding dependency to zookeeper >= 3.4.8-0contrail1 for centos based platforms from mitaka onwards
+
 * Sat Aug 06 2016 Nagendra Maynattamai <npchandran@juniper.net>
 - Adding dependency to zookeeper >= 3.4.8-0contrail1 for rhel based platforms
 
