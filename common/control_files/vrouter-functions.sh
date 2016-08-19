@@ -460,8 +460,9 @@ vrouter_dpdk_if_bind() {
     _dpdk_conf_read
 
     modprobe "${DPDK_UIO_DRIVER}"
-    # multiple kthreads for port monitoring
-    modprobe rte_kni kthread_mode=multiple
+    ## The KNI kernel module is not needed anymore since we use TAPs
+    ## multiple kthreads for port monitoring
+    #modprobe rte_kni kthread_mode=multiple
 
     _dpdk_wait_for_bond_ready
     _dpdk_system_bond_info_collect
@@ -565,7 +566,8 @@ vrouter_dpdk_if_unbind() {
 
     ${DPDK_BIND} --status
 
-    rmmod rte_kni
+    ## The KNI kernel module is not needed anymore since we use TAPs
+    #rmmod rte_kni
     rmmod "${DPDK_UIO_DRIVER}"
 
     echo "$(date): Re-initialize networking."
@@ -576,7 +578,7 @@ vrouter_dpdk_if_unbind() {
             ifdown $iface
          fi
     done
- 
+
     # Make the bond slaves up
     # Bond slaves with automatically make the bond master up
     for iface in $(ifquery --list);
