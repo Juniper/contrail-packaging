@@ -54,8 +54,15 @@ install -d -m 755 %{buildroot}%{_contrailopt}/contrail_packages
 pushd %{_builddir}/..
 install -p -m 755 tools/packaging/build/setup.sh %{buildroot}%{_contrailopt}/contrail_packages/setup.sh.new
 
+# %{_builddir}%/../build/puppet is a temp dir for puppet-third-party and puppet
+install -d -m 755 %{_builddir}%/../build/puppet
 # Install puppet manifests
-tar -cvzf %{_builddir}/../build/contrail-puppet-manifest.tgz -C %{_builddir}/../tools/puppet .
+if [ -d %{_builddir}%/../tools/puppet-third-party ]; then echo "New Modules"; cp -rp %{_builddir}%/../tools/puppet %{_builddir}%/../build/; cp -rp %{_builddir}%/../tools/puppet-third-party/* %{_builddir}%/../build/puppet/contrail/environment/modules/ ; fi
+
+
+# Install puppet manifests
+tar -cvzf %{_builddir}/../build/contrail-puppet-manifest.tgz -C %{_builddir}/../build/puppet .
+
 install -p -m 755 %{_builddir}/../build/contrail-puppet-manifest.tgz %{buildroot}%{_contrailopt}/puppet/contrail-puppet-manifest.tgz
 
 if [ -f %{_flist} ]; then echo "Using TGZ FILE = %{_flist}"; install -p -m 644 %{_flist} %{buildroot}%{_contrailopt}/contrail_packages/contrail_rpms.tgz; else echo "ERROR: TGZ file containing all rpms is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
