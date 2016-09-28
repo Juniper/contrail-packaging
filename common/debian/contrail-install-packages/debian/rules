@@ -77,7 +77,11 @@ override_dh_auto_install:
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_packages/sources.list
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/repo_preferences  $(buildroot)$(_contrailopt)/contrail_packages/preferences
 	# install puppet manifests
-	tar -cvzf $(SB_TOP)/build/contrail-puppet-manifest.tgz -C $(SB_TOP)/tools/puppet .
+	# $(SB_TOP)/build/puppet is a temp dir for puppet-third-party and puppet
+	install -d -m 755 $(SB_TOP)/build/puppet
+	if [ -d $(SB_TOP)/tools/puppet-third-party ]; then echo "New Method for modules"; cp -rp ${SB_TOP}/tools/puppet $(SB_TOP)/build/; cp -rp $(SB_TOP)/tools/puppet-third-party/* $(SB_TOP)/build/puppet/contrail/environment/modules/ ; fi
+
+	tar -cvzf ${SB_TOP}/build/contrail-puppet-manifest.tgz -C $(SB_TOP)/build/puppet .  ;
 	install -p -m 755 $(SB_TOP)/build/contrail-puppet-manifest.tgz $(buildroot)$(_contrailopt)/puppet/contrail-puppet-manifest.tgz
 	# install TGZ file and packages list file
 	if [ -f $(TGZ_FILE) ]; then echo "Using TGZ FILE = $(TGZ_FILE)"; install -p -m 644 $(TGZ_FILE) $(buildroot)$(_contrailopt)/contrail_packages/contrail_debs.tgz; else echo "ERROR: TGZ file containing all debs is not supplied or not present"; echo "Supply Argument: FILE_LIST=<TGZ FILE>"; exit 1; fi
