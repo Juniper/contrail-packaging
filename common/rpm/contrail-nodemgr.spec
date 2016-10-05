@@ -36,6 +36,7 @@ Requires:	  python-bottle >= 0.11.6
 Requires:	  python-contrail >= %{_verstr}-%{_relstr}
 Requires:	  ntp
 Requires:         python-psutil
+Requires:         PyYAML
 %if 0%{?rhel} && 0%{?rhel} <= 6
 Requires:         python-importlib
 %endif
