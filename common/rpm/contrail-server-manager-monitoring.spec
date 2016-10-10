@@ -65,7 +65,6 @@ mkdir -p  %{buildroot}
 scons -U install_contrail_sm_monitoring --root=%{buildroot}
 install -d -m 755 %{buildroot}%{_contrailopt}%{_contrail_smgr}
 install -p -m 755 %{_contrail_smgr_src}server_mgr_ipmi_monitoring.py %{buildroot}%{_contrailopt}%{_contrail_smgr}
-install -p -m 755 %{_contrail_smgr_src}sm-monitoring-config.ini %{buildroot}%{_contrailopt}%{_contrail_smgr}
 
 %files
 %defattr(-,root,root,-)
@@ -83,6 +82,5 @@ then
    HOST_IP=$(cat /opt/contrail/contrail_server_manager/IP.txt)
 fi
 echo $HOST_IP
-sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/sm-monitoring-config.ini
-cat /opt/contrail/server_manager/sm-monitoring-config.ini >> /opt/contrail/server_manager/sm-config.ini
+sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
 %changelog
