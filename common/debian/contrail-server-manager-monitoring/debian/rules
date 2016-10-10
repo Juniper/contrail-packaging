@@ -43,7 +43,4 @@ override_dh_auto_install:
 	cp -r $(src_path)/server_mgr_ipmi_monitoring.py $(buildroot)/opt/contrail/server_manager/
 	cp -r $(src_path)/server_mgr_inventory.py $(buildroot)/opt/contrail/server_manager/
 	cp -r $(src_path)/server_mgr_disk_filesystem_view.py $(buildroot)/opt/contrail/server_manager/
-	install -p -m 755 $(src_path)/sm-monitoring-config.ini $(buildroot)/opt/contrail/server_manager/
-	install -p -m 755 $(src_path)/sm-inventory-config.ini $(buildroot)/opt/contrail/server_manager/
-	install -p -m 755 $(src_path)/sm-sandesh-config.ini $(buildroot)/opt/contrail/server_manager/
 override_dh_shlibdeps:
