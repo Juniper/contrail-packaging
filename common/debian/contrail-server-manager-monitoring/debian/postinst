@@ -13,5 +13,5 @@ then
 fi
 echo $HOST_IP
 
-sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/sm-sandesh-config.ini
+sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
 sed -i "s/monitoring * = .*/monitoring               = true/g" /opt/contrail/server_manager/sm-config.ini
