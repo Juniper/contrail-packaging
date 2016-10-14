@@ -42,6 +42,16 @@ cp /etc/contrail_smgr/smgr.conf /etc/apache2/sites-available/
 
 cp -r /etc/contrail_smgr/kickstarts /var/www/html/
 
+if [ -f /etc/cobbler/named.template ]; then
+    cp /etc/cobbler/named.template /etc/cobbler/named.template.orig
+fi
+cp /etc/contrail_smgr/cobbler/named.template.u.sample /etc/cobbler/named.template
+
+if [ -f /etc/bind/named.conf.options ]; then
+    cp /etc/bind/named.conf.options /etc/bind/named.conf.options.orig
+fi
+cp /etc/contrail_smgr/cobbler/named.conf.options.u.sample /etc/bind/named.conf.options
+
 #cp /etc/contrail_smgr/sendmail.cf /etc/mail/
 #mv /etc/ntp.conf /etc/ntp.conf.default
 #cp /etc/contrail_smgr/ntp.conf /etc/ntp.conf
