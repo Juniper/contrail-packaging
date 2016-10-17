@@ -383,15 +383,6 @@ if [ "$SMMON" != "" ] && [ "$NOSMMON" == "" ]; then
   echo "$space$arrow$install_str Server Manager Monitoring"
   apt-get -y install contrail-server-manager-monitoring >> $log_file 2>&1
   apt-get -y install -f >> $log_file 2>&1
-  if [ "$check_upgrade" != ""  ]; then
-      echo "Sample Configurations for Monitoring and Inventory are available at /opt/contrail/server_manager/sm-monitoring-config.ini and /opt/contrail/server_manager/sm-inventory-config.ini."
-      echo "Sample Configurations for Sandesh is available at /opt/contrail/server_manager/sm-sandesh-config.ini."
-      echo "Please add these to the main server manager configuration at /opt/contrail/server_manager/sm-config.ini to activate these features."
-  else
-      cat /opt/contrail/server_manager/sm-sandesh-config.ini >> /opt/contrail/server_manager/sm-config.ini
-      cat /opt/contrail/server_manager/sm-monitoring-config.ini >> /opt/contrail/server_manager/sm-config.ini
-      cat /opt/contrail/server_manager/sm-inventory-config.ini >> /opt/contrail/server_manager/sm-config.ini
-  fi
   echo "$arrow Completed Installing Server Manager Monitoring"
 fi
 
