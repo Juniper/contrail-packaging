@@ -569,9 +569,10 @@ vrouter_dpdk_if_unbind() {
     rmmod "${DPDK_UIO_DRIVER}"
 
     echo "$(date): Re-initialize networking."
+    bond_name=$(echo ${DPDK_PHY} | cut -d. -f1)
     for iface in $(ifquery --list);
     do
-        if ifquery $iface | grep -i "bond";
+        if ifquery $iface | grep -i "$bond_name";
         then
             ifdown $iface
          fi
