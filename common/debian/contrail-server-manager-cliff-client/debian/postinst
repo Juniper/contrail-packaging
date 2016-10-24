@@ -5,4 +5,9 @@ set -e
 
 echo "running post install"
 
+if [ -e /usr/bin/server-manager ]; then
+        unlink /usr/bin/server-manager
+fi
+
 /opt/contrail/bin/setup_server_manager_client.sh
+ln -s /opt/contrail/bin/server-manager-client /usr/bin/server-manager
