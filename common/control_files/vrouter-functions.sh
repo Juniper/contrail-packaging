@@ -336,26 +336,29 @@ _dpdk_system_bond_info_collect() {
 _dpdk_vrouter_ini_update() {
     _dpdk_system_bond_info_collect
 
-    ## update virtual device (bond) configuration
-    dpdk_vdev=""
-    if [ -n "${DPDK_BOND_MODE}" -a -n "${DPDK_BOND_NUMA}" ]; then
-        echo "${0##*/}: updating bonding configuration in ${VROUTER_DPDK_INI}..."
-
-        dpdk_vdev=" --vdev \"eth_bond_${DPDK_PHY},mode=${DPDK_BOND_MODE}"
-        dpdk_vdev="${dpdk_vdev},xmit_policy=${DPDK_BOND_POLICY}"
-        dpdk_vdev="${dpdk_vdev},socket_id=${DPDK_BOND_NUMA},mac=${DPDK_BOND_MAC}"
-        for SLAVE in ${DPDK_BOND_PCIS}; do
-            dpdk_vdev="${dpdk_vdev},slave=${SLAVE}"
-        done
-        dpdk_vdev="${dpdk_vdev}\""
-    fi
-    ## always update the ini file, so we remove vdev argument
-    ## whenever Linux configuration has changed
-    sed -ri.bak \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
-        -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vdev}/" \
-         ${VROUTER_DPDK_INI}
+    ## update virtual device (bond) configuration if needed
+    cat  ${VROUTER_DPDK_INI} | grep "\-\-vdev"
+    if [ $? -ne 0 ];
+    then
+        dpdk_vdev=""
+        if [ -n "${DPDK_BOND_MODE}" -a -n "${DPDK_BOND_NUMA}" ]; then
+            echo "${0##*/}: updating bonding configuration in ${VROUTER_DPDK_INI}..."
+        
+            dpdk_vdev=" --vdev \"eth_bond_${DPDK_PHY},mode=${DPDK_BOND_MODE}"
+            dpdk_vdev="${dpdk_vdev},xmit_policy=${DPDK_BOND_POLICY}"
+            dpdk_vdev="${dpdk_vdev},socket_id=${DPDK_BOND_NUMA},mac=${DPDK_BOND_MAC}"
+            for SLAVE in ${DPDK_BOND_PCIS}; do
+                dpdk_vdev="${dpdk_vdev},slave=${SLAVE}"
+            done
+            dpdk_vdev="${dpdk_vdev}\""
+        fi
+        ## update the --vdev string if it does not exist
+        sed -ri.bak \
+            -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
+            -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
+            -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vdev}/" \
+             ${VROUTER_DPDK_INI}
+    fi         
 
 
     ## update VLAN configuration
