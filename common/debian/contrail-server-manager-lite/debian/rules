@@ -94,28 +94,10 @@ override_dh_auto_install:
 	install -p -m 755 $(src_path)/reprepro/conf/override $(build_root)/opt/contrail/server_manager/reprepro/conf/override
 	install -p -m 755 $(src_path)/reprepro/dpdk_depends_conf/distributions $(build_root)/opt/contrail/server_manager/reprepro/dpdk_depends_conf/distributions
 	install -p -m 755 $(src_path)/reprepro/dpdk_depends_conf/override $(build_root)/opt/contrail/server_manager/reprepro/dpdk_depends_conf/override
-	cp -r $(src_path)/server_mgr_main.py $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_db.py  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_utils.py  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_cobbler.py  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_status.py  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_puppet.py  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_exception.py  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_logger.py  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_err.py  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/smgr_dhcp_event.py  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/contrail_defaults.py $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_defaults.py $(build_root)/opt/contrail/server_manager/
+	cp -r $(src_path)/*.py $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/vmware/esxi_contrailvm.py $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_mon_base_plugin.py $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_ssh_client.py $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_validations.py $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_certs.py  $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_cert_utils.py  $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/role_sequence.json $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/contrail-defaults.yaml $(build_root)/etc/contrail_smgr/
-	cp -r $(src_path)/create_vm.py $(build_root)/opt/contrail/server_manager/
-	cp -r $(src_path)/server_mgr_issu.py $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/third_party/bottle.py  $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/utils/send_mail.py $(build_root)/opt/contrail/server_manager/
 	# Config files - Do not overwrite
