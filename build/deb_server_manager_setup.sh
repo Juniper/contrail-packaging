@@ -18,8 +18,6 @@ SM=""
 SMCLIENT=""
 SMCLIFFCLIENT=""
 HOSTIP=""
-SMMON=""
-NOSMMON=""
 WEBUI=""
 NOWEBUI=""
 WEBCORE=""
@@ -39,12 +37,10 @@ function usage()
     echo "-h --help"
     echo "--smlite"
     echo "--nowebui"
-    echo "--nosm-mon"
     echo "--sm"
     echo "--sm-client"
     echo "--sm-cliff-client"
     echo "--webui"
-    echo "--sm-mon"
     echo "--hostip=<HOSTIP>"
     echo "--cert-name=<PUPPET CERTIFICATE NAME>"
     echo "--all"
@@ -194,7 +190,6 @@ while [ "$1" != "" ]; do
 	    WEBCORE="contrail-web-core"
 	    SMCLIENT="contrail-server-manager-client"
 	    SMCLIFFCLIENT="contrail-server-manager-cliff-client"
-	    SMMON="contrail-server-manager-monitoring"
             ;;
 	--smlite)
 	    SMLITE="smlite"
@@ -202,18 +197,12 @@ while [ "$1" != "" ]; do
 	--nowebui)
 	    NOWEBUI="nowebui"
 	    ;;
-	--nosm-mon)
-	    NOSMMON="nosm-mon"
-	    ;;
         --sm)
 	    SM="contrail-server-manager"
             ;;
         --webui)
 	    WEBUI="contrail-web-server-manager"
 	    WEBCORE="contrail-web-core"
-            ;;
-        --sm-mon)
-	    SMMON="contrail-server-manager-monitoring"
             ;;
         --sm-client)
 	    SMCLIENT="contrail-server-manager-client"
@@ -311,6 +300,7 @@ if [ "$SM" != "" ]; then
     RESTART_SERVER_MANAGER="1"
     if [ "$SMLITE" != "" ]; then
        echo "$space$arrow$install_str Server Manager Lite"
+       dpkg -P --force-all contrail-server-manager-monitoring >> $log_file 2>&1
        apt-get -y install contrail-server-manager-lite >> $log_file 2>&1
        apt-get -y install -f >> $log_file 2>&1
     else
@@ -325,6 +315,7 @@ if [ "$SM" != "" ]; then
        fi
        echo "$space$arrow$install_str Server Manager"
        apt-get -y install cobbler="2.6.3-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
+       dpkg -P --force-all contrail-server-manager-monitoring >> $log_file 2>&1
        apt-get -y install contrail-server-manager >> $log_file 2>&1
        apt-get -y install -f >> $log_file 2>&1
        # Stopping webui service that uses old name
@@ -376,14 +367,6 @@ if [ "$WEBUI" != "" ] && [ "$NOWEBUI" == "" ]; then
   apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install contrail-web-server-manager >> $log_file 2>&1
   apt-get -y install -f >> $log_file 2>&1
   echo "$arrow Completed Installing Web Server Manager"
-fi
-
-if [ "$SMMON" != "" ] && [ "$NOSMMON" == "" ]; then
-  echo "$arrow Server Manager Monitoring"
-  echo "$space$arrow$install_str Server Manager Monitoring"
-  apt-get -y install contrail-server-manager-monitoring >> $log_file 2>&1
-  apt-get -y install -f >> $log_file 2>&1
-  echo "$arrow Completed Installing Server Manager Monitoring"
 fi
 
 if [ "x$RESTART_SERVER_MANAGER" == "x1" ]; then
