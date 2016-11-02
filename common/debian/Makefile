@@ -32,12 +32,27 @@ endif
 CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
 CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
 
+ifeq ($(CONTRAIL_SKU),newton)
+    CONTRAIL_OPENSTACK := contrail-openstack-newton-deb
+    CONTRAIL_HEAT := contrail-heat-deb
+    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-newton-deb
+    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-newton-deb
+    ifeq ($(SERIES),xenial)
+        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
+        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
+    endif
+endif
+
 ifeq ($(CONTRAIL_SKU),mitaka)
     CONTRAIL_OPENSTACK := contrail-openstack-mitaka-deb
     CONTRAIL_HEAT := contrail-heat-deb
     CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-mitaka-deb
     CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-mitaka-deb
     ifeq ($(SERIES),trusty)
+        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
+        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
+    endif
+    ifeq ($(SERIES),xenial)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
     endif
@@ -242,7 +257,8 @@ clean-%:
 
 KERNEL_VERSIONS := 3.8.0-29-generic 3.2.0-58-generic 3.2.0-51-generic 3.11.0-22-generic \
                    3.13.0-24-generic 3.8.0-31-generic 3.13.0-34-generic 3.13.0-35-generic \
-                   3.13.0-40-generic 3.13.0-83-generic 3.13.0-85-generic 4.4.0-34-generic
+                   3.13.0-40-generic 3.13.0-83-generic 3.13.0-85-generic 4.4.0-34-generic \
+                   4.4.0-38-generic
 
 AVAILABLE_KERNEL_VERSIONS := $(foreach kname, $(KERNEL_VERSIONS), $(shell [ -d /lib/modules/$(kname)/build ] && echo $(kname)))
 
@@ -534,6 +550,23 @@ contrail-openstack-mitaka-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
 	rm -rf ${BUILDDIR}
 
+contrail-openstack-newton-deb:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -R contrail-openstack/debian ${BUILDDIR}
+	(cd ${BUILDDIR}; [ -f debian/control.newton.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.newton.in ) || echo no control.newton.in
+	cp ${BUILDDIR}/debian/control.newton ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.newton ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-newton-clean:
+	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
+	rm -rf ${BUILDDIR}
+
 contrail-openstack-config-kilo-deb:
 	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config)
 	(cd ${BUILDDIR}; [ -f debian/control.kilo.in ] && python \
@@ -568,6 +601,18 @@ contrail-openstack-config-mitaka-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 contrail-openstack-config-mitaka-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config; fakeroot debian/rules clean)
+
+contrail-openstack-config-newton-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config)
+	(cd ${BUILDDIR}; [ -f debian/control.newton.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.newton.in ) || echo no control.newton.in
+	cp ${BUILDDIR}/debian/control.newton ${BUILDDIR}/debian/control
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-config-newton-clean:
 	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config; fakeroot debian/rules clean)
 
 contrail-openstack-dashboard-deb:
@@ -618,6 +663,18 @@ contrail-openstack-vrouter-mitaka-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 contrail-openstack-vrouter-mitaka-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter; fakeroot debian/rules clean)
+
+contrail-openstack-vrouter-newton-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter)
+	(cd ${BUILDDIR}; [ -f debian/control.newton.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.newton.in ) || echo no control.newton.in
+	cp ${BUILDDIR}/debian/control.newton ${BUILDDIR}/debian/control
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-vrouter-newton-clean:
 	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter; fakeroot debian/rules clean)
 
 libvirt-deb:

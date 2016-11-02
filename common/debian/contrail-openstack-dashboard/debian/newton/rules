@@ -1,0 +1,41 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+SPEC_DIR := $(shell pwd)
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/build\/debian\/(.*)/\1/")
+export BUILDTIME := $(shell date -u +%y%m%d%H%M)
+export buildroot := $(SB_TOP)/build/debian/contrail-openstack-dashboard
+export PY_DIST_PATH := /usr/lib/python2.7/dist-packages
+
+SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
+
+BUILDTAG =
+ifdef TAG
+BUILDTAG = $(SRC_VER)-$(TAG)
+else
+BUILDTAG = $(SRC_VER)-$(BUILDTIME)
+endif
+
+%:
+	dh $@ --destdir=${SB_TOP}/build/debian --with python2
+
+override_dh_auto_build:
+	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
+
+override_dh_auto_install:
+	# Setup directories
+	install -d -m 755 $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/contrail_openstack_dashboard
+	install -d -m 755 $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/contrail_openstack_dashboard/openstack_dashboard
+	cp -a $(buildroot)/*.py $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/contrail_openstack_dashboard
+	cp -a $(buildroot)/openstack_dashboard/ $(buildroot)/debian/contrail-openstack-dashboard/$(PY_DIST_PATH)/contrail_openstack_dashboard/
+
+override_dh_shlibdeps:
+
+override_dh_usrlocal:
