@@ -95,6 +95,11 @@ override_dh_auto_install:
 	install -d -m 755 $(build_root)/var/www/html/thirdparty_packages/
 	install -d $(build_root)/var/log/contrail-server-manager/provision/
 	install -d -m 755 $(build_root)/etc/mail/
+
+	# Build Monitoring Sandesh Files
+	scons -U install_contrail_sm_monitoring --root=${buildroot}
+	scons -U install_contrail_sm_inventory --root=${buildroot}
+
 	# Copy/install files - Python scripts
 	cp -r $(src_path)/*.py $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/vmware/esxi_contrailvm.py $(build_root)/opt/contrail/server_manager/
