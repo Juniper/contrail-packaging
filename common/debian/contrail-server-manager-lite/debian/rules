@@ -95,8 +95,8 @@ override_dh_auto_install:
 	install -p -m 755 $(src_path)/reprepro/dpdk_depends_conf/distributions $(build_root)/opt/contrail/server_manager/reprepro/dpdk_depends_conf/distributions
 	install -p -m 755 $(src_path)/reprepro/dpdk_depends_conf/override $(build_root)/opt/contrail/server_manager/reprepro/dpdk_depends_conf/override
 	# Build Monitoring Sandesh Files
-	scons -U install_contrail_sm_monitoring --root=${buildroot}
-	scons -U install_contrail_sm_inventory --root=${buildroot}
+	scons -U install_contrail_sm_monitoring --root=${build_root}
+	scons -U install_contrail_sm_inventory --root=${build_root}
 	cp -r $(src_path)/*.py $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/vmware/esxi_contrailvm.py $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/role_sequence.json $(build_root)/etc/contrail_smgr/
