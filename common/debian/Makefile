@@ -228,7 +228,6 @@ server-manager-all: contrail-server-manager-deb \
                     contrail-server-manager-lite-deb \
                     contrail-server-manager-client-deb \
                     contrail-server-manager-cliff-client-deb \
-                    contrail-server-manager-monitoring-deb \
                     contrail-server-manager-installer-deb \
                     contrail-server-manager-client-tgz
 
@@ -393,16 +392,6 @@ contrail-server-manager-cliff-client-deb:
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 	(mkdir -p $(SB_TOP)/build/tools/; cp $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/servermanagercli-$(VERSION)-$(CONTRAIL_SKU).tar.gz $(SB_TOP)/build/tools/contrail-server-manager-cliff-client-$(VERSION)~$(CONTRAIL_SKU).tgz)
 
-contrail-server-manager-monitoring-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-monitoring)
-	rm -rf ${BUILDDIR}
-	mkdir -p ${BUILDDIR}/debian
-	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-monitoring/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; python ${SB_TOP}/tools/packaging/tools/scripts/add_dependency_version.py \
-        --version ${VERSION} --file debian/control.in) || echo no control.in
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
 contrail-server-manager-installer-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-installer)
 	rm -rf ${BUILDDIR}
@@ -425,10 +414,6 @@ contrail-server-manager-client-clean:
 
 contrail-server-manager-installer-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-installer)
-	rm -rf ${BUILDDIR}
-
-contrail-server-manager-monitoring-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager-monitoring)
 	rm -rf ${BUILDDIR}
 
 contrail-fabric-utils-deb:
