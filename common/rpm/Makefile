@@ -272,10 +272,6 @@ contrail-vrouter-common: $(PREP)
 	@echo making rpm for contrail-vrouter-common
 	rpmbuild $(RPMBLDOPTS) contrail-vrouter-common.spec $(G_TAG)
 
-contrail-server-manager-monitoring: $(PREP)
-	@echo making rpm for contrail-server-manager-monitoring
-	rpmbuild $(RPMBLDOPTS) contrail-server-manager-monitoring.spec $(G_TAG)
-
 contrail-fabric-utils: $(PPREP)
 	@echo making rpm for contrail-fabric-utils
 	rpmbuild $(RPMBLDOPTS) fabric-utils.spec $(G_TAG)
@@ -311,7 +307,7 @@ all: $(PREP) contrail \
        contrail-vrouter-init contrail-vrouter-common contrail-nova-networkapi \
        contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet
 
-server-manager-all: contrail-server-manager contrail-server-manager-monitoring contrail-server-manager-client contrail-web-server-manager
+server-manager-all: contrail-server-manager contrail-server-manager-client contrail-web-server-manager
 clean:
 	@echo clean
 
