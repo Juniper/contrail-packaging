@@ -18,7 +18,6 @@ fi
 cd /usr/local
 ln -s cmon-1.2.6-357-64bit-glibc23-mc70 cmon
 cp cmon/etc/init.d/cmon /etc/init.d/
-chmod 755 /etc/init.d/cmon
 update-rc.d cmon defaults
 sed -i 's/sleep 1/sleep 2/' /etc/init.d/mysql
 echo "Postinst for contrail-openstack-ha done"
