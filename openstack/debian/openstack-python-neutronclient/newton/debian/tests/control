@@ -1,0 +1,2 @@
+Tests: client
+Depends: python-neutronclient

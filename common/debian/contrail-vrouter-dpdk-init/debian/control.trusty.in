@@ -1,0 +1,16 @@
+Source: contrail-vrouter-dpdk-init
+Maintainer: builder@juniper.net
+Section: net
+Priority: optional
+
+Package: contrail-vrouter-dpdk-init
+Architecture: all
+Depends: contrail-vrouter-dpdk,
+    contrail-vrouter-utils,
+    contrail-vrouter-agent,
+    python-contrail-vrouter-api,
+    python-opencontrail-vrouter-netns,
+    supervisor
+Priority: optional
+Conflicts: contrail-vrouter-init
+Description: OpenContrail DPDK compute-node startup and monitoring scripts.

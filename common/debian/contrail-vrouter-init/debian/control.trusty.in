@@ -1,0 +1,16 @@
+Source: contrail-vrouter-init
+Maintainer: builder@juniper.net
+Section: net
+Priority: optional
+
+Package: contrail-vrouter-init
+Architecture: all
+Depends: contrail-vrouter,
+    contrail-vrouter-utils,
+    contrail-vrouter-agent,
+    python-contrail-vrouter-api,
+    python-opencontrail-vrouter-netns,
+    supervisor
+Conflicts: contrail-vrouter-dpdk-init
+Priority: optional
+Description: OpenContrail compute-node startup and monitoring scripts.

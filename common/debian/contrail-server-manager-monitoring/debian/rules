@@ -28,6 +28,7 @@ endif
 TARGETS=controller/src/server-manager
 
 %:
+	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 	dh $@ --with python2 --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
 
 override_dh_auto_build:

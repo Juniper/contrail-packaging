@@ -30,91 +30,11 @@ else
 endif
 
 CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
-CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
-
-ifeq ($(CONTRAIL_SKU),mitaka)
-    CONTRAIL_OPENSTACK := contrail-openstack-mitaka-deb
-    CONTRAIL_HEAT := contrail-heat-deb
-    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-mitaka-deb
-    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-mitaka-deb
-    ifeq ($(SERIES),trusty)
-        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
-        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
-    endif
-endif
-
-ifeq ($(CONTRAIL_SKU),liberty)
-    CONTRAIL_OPENSTACK := contrail-openstack-liberty-deb
-    CONTRAIL_HEAT := contrail-heat-deb
-    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-liberty-deb
-    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-liberty-deb
-    ifeq ($(SERIES),trusty)
-        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
-        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
-    endif
-endif
-
-ifeq ($(CONTRAIL_SKU),kilo)
-    CONTRAIL_OPENSTACK := contrail-openstack-kilo-deb
-    CONTRAIL_HEAT := contrail-heat-deb
-    CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-kilo-deb
-    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-deb
-    ifeq ($(SERIES),trusty)
-        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
-        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
-    endif
-endif
-
-ifeq ($(CONTRAIL_SKU),juno)
-    CONTRAIL_OPENSTACK := contrail-openstack-juno-deb
-    CONTRAIL_HEAT := contrail-heat-deb
-    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-deb
-    ifeq ($(SERIES),trusty)
-        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
-        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
-    endif
-endif
-
-ifeq ($(CONTRAIL_SKU),icehouse)
-    CONTRAIL_OPENSTACK := contrail-openstack-icehouse-deb
-    CONTRAIL_HEAT := contrail-heat-deb
-    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-deb
-    ifeq ($(SERIES),precise)
-        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
-        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
-    endif
-    ifeq ($(SERIES),trusty)
-        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
-        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
-    endif
-endif
 
 ifeq ($(CONTRAIL_SKU), vcenter)
     # We do not build contrail-test-ci tarball for vcenter
     CONTRAIL_TEST_CI :=
     CEILOMETER_PLUGIN :=
-    ifeq ($(SERIES),precise)
-        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
-        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
-    endif
-    ifeq ($(SERIES),trusty)
-        CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
-        CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
-    endif
-endif
-
-ifeq ($(CONTRAIL_SKU),havana)
-    CEILOMETER_PLUGIN :=
-    CONTRAIL_OPENSTACK := contrail-openstack-deb
-    CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-deb
-endif
-
-ifeq ($(CONTRAIL_SKU),havana)
-    CONTRAIL_VCENTER_PLUGIN :=
-else ifeq ($(CONTRAIL_SKU),icehouse)
-    CONTRAIL_VCENTER_PLUGIN :=
-else 
-    CONTRAIL_VCENTER_PLUGIN := contrail-install-vcenter-plugin
 endif
 
 KVERS ?= $(shell uname -r)
@@ -139,20 +59,18 @@ PACKAGES = \
         contrail-nova-networkapi-deb \
 	contrail-vrouter-init-deb \
 	contrail-vrouter-common-deb \
-        $(CONTRAIL_VRDPDK_BIN) \
-        $(CONTRAIL_VRDPDK_INIT) \
 	contrail-web-core-deb \
 	contrail-web-controller-deb \
 	contrail-web-server-manager-deb \
 	contrail-setup-deb \
-	$(CONTRAIL_OPENSTACK) \
+	contrail-openstack-deb \
 	contrail-openstack-ha-deb \
 	contrail-openstack-analytics-deb \
-	$(CONTRAIL_OPENSTACK_CONFIG) \
+	contrail-openstack-config-deb \
 	contrail-openstack-control-deb \
 	contrail-database-common-deb \
 	contrail-openstack-database-deb \
-	$(CONTRAIL_OPENSTACK_VROUTER) \
+	contrail-openstack-vrouter-deb \
 	contrail-openstack-webui-deb \
 	contrail-fabric-utils-deb \
 	$(CONTRAIL_TEST_CI) \
@@ -160,13 +78,13 @@ PACKAGES = \
 	libvirt-deb \
 	contrail-openstack-dashboard-deb \
 	contrail-ostack-dashboard-deb \
-	$(CONTRAIL_HEAT) \
+	contrail-heat-deb \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
 	contrail-f5-deb \
 	contrail-vmware-utils-deb \
 	contrail-puppet-deb \
-	$(CONTRAIL_VCENTER_PLUGIN)
+	contrail-install-vcenter-plugin
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -178,8 +96,8 @@ PACKAGES_VMWARE = \
         ifmap-python-client \
         contrail-vrouter-init-deb \
         contrail-vrouter-common-deb \
-        $(CONTRAIL_VRDPDK_BIN) \
-        $(CONTRAIL_VRDPDK_INIT) \
+        contrail-vrouter-dpdk \
+        contrail-vrouter-dpdk-init-deb \
         contrail-web-core-deb \
         contrail-web-controller-deb \
         contrail-web-server-manager-deb \
@@ -240,7 +158,9 @@ clean-%:
 	rm -rf $(SB_TOP)/build/packages/$(PACKAGE)
 
 KERNEL_VERSIONS := 3.13.0-83-generic 3.13.0-85-generic 3.13.0-100-generic \
-                   3.13.0-106-generic 3.13.0-110-generic 3.13.0-142-generic
+                   3.13.0-106-generic 3.13.0-110-generic 3.13.0-142-generic \
+                   4.4.0-34-generic 4.4.0-38-generic 4.4.0-116-generic \
+                   4.15.0-29-generic 4.15.0-39-generic
 
 AVAILABLE_KERNEL_VERSIONS := $(foreach kname, $(KERNEL_VERSIONS), $(shell [ -d /lib/modules/$(kname)/build ] && echo $(kname)))
 
@@ -249,8 +169,28 @@ package-contrail: debian-contrail
 	@echo "Building package $(PACKAGE)"
 	sed -i 's/VERSION/$(VERSION)/g' $(SB_TOP)/build/packages/$(PACKAGE)/debian/changelog
 	sed -i 's/SERIES/$(SERIES)/g' $(SB_TOP)/build/packages/$(PACKAGE)/debian/changelog
-# TODO: add BUILDDEP_SERIES after https://review.opencontrail.org/#/c/2640/
 	sed -i '/BUILDDEP_SERIES/d' $(SB_TOP)/build/packages/$(PACKAGE)/debian/control
+	# Append series specific depends
+	(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian; sed -i '/SUPERVISORDEP_SERIES/r supervisordep.$(SERIES)' control)
+	sed -i '/SUPERVISORDEP_SERIES/d' $(SB_TOP)/build/packages/$(PACKAGE)/debian/control
+	# Append series specific install files
+	$(eval CONTRAIL_INSTALL_SERIES := $(shell find $(SB_TOP)/build/packages/$(PACKAGE)/debian/ -name '*.install.$(SERIES)'))
+	$(foreach series_fname, $(CONTRAIL_INSTALL_SERIES), \
+			(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian;\
+			sed -i '/INSTALL_SERIES/r $(series_fname)' $(patsubst %.$(SERIES),%,$(series_fname))); )
+	$(eval CONTRAIL_INSTALL := $(shell find $(SB_TOP)/build/packages/$(PACKAGE)/debian/ -name '*.install'))
+	$(foreach install_fname, $(CONTRAIL_INSTALL), \
+			(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian;\
+			sed -i '/INSTALL_SERIES/d' $(install_fname)); )
+	# Append series specific dirs
+	$(eval CONTRAIL_DIRS_SERIES := $(shell find $(SB_TOP)/build/packages/$(PACKAGE)/debian/ -name '*.dirs.$(SERIES)'))
+	$(foreach series_dirname, $(CONTRAIL_DIRS_SERIES), \
+			(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian;\
+			sed -i '/DIRS_SERIES/r $(series_dirname)' $(patsubst %.$(SERIES),%,$(series_dirname))); )
+	$(eval CONTRAIL_DIRS := $(shell find $(SB_TOP)/build/packages/$(PACKAGE)/debian/ -name '*.dirs'))
+	$(foreach dir_fname, $(CONTRAIL_DIRS), \
+			(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian;\
+			sed -i '/DIRS_SERIES/d' $(dir_fname)); )
 	(cd $(SB_TOP)/build/packages/$(PACKAGE); dpkg-buildpackage -uc -us -b -rfakeroot)
 	chmod u+x $(SB_TOP)/build/packages/contrail/debian/rules.modules
 	$(foreach kver, $(AVAILABLE_KERNEL_VERSIONS), \
@@ -338,7 +278,7 @@ contrail-thirdparty-packages-deb:
 
 contrail-server-manager-client-tgz:
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/tools/contrail-server-manager/src/client/ && tar -czf $(SB_TOP)/build/tools/contrail-server-manager-client-$(VERSION)~$(CONTRAIL_SKU).tgz *)
-        @echo "Wrote: $(SB_TOP)/build/tools/contrail-server-manager-client-$(VERSION)~$(CONTRAIL_SKU).tgz"
+	@echo "Wrote: $(SB_TOP)/build/tools/contrail-server-manager-client-$(VERSION)~$(CONTRAIL_SKU).tgz"
 
 contrail-server-manager-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager)
@@ -414,10 +354,18 @@ contrail-server-manager-monitoring-clean:
 	rm -rf ${BUILDDIR}
 
 contrail-fabric-utils-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/third_party/contrail-fabric-utils)
+	$(eval PACKAGE := contrail-fabric-utils)
+	$(eval BUILDDIR=${SB_TOP}/build/third_party/$(PACKAGE))
 	cp -R ${SB_TOP}/third_party/fabric-utils ${BUILDDIR}
-	cp -R contrail-fabric-utils/debian ${BUILDDIR}/debian
-	cp ${BUILDDIR}/debian/control.${SERIES}_${CONTRAIL_SKU} ${BUILDDIR}/debian/control
+	cp -R $(PACKAGE)/debian ${BUILDDIR}/debian
+	$(eval DEFAULT_CONTROL_IN := control.in)
+	@echo "Default control file: $(DEFAULT_CONTROL_IN)"
+	@echo "Looking for control file: control.$(SERIES).in"
+	$(eval SERIES_CONTROL_IN := $(shell [ -f $(PACKAGE)/debian/control.$(SERIES).in ] && echo 'control.$(SERIES).in'  || echo $(DEFAULT_CONTROL_IN)))
+	@echo "Looking for control file: control.$(SERIES).$(CONTRAIL_SKU).in"
+	$(eval CONTROL_IN := $(shell [ -f $(PACKAGE)/debian/control.$(SERIES).$(CONTRAIL_SKU).in ] && echo 'control.$(SERIES).$(CONTRAIL_SKU).in' || echo $(SERIES_CONTROL_IN)))
+	@echo "Using control file: $(CONTROL_IN)"
+	cp ${BUILDDIR}/debian/${CONTROL_IN} ${BUILDDIR}/debian/control
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/third_party/; tar -cvzf $(SB_TOP)/build/tools/contrail-fabric-utils-$(VERSION)~$(CONTRAIL_SKU).tgz fabric-utils)
@@ -447,127 +395,6 @@ contrail-test-ci-clean:
 	$(eval TGZ_FILE=$(SB_TOP)/build/artifacts_extra/contrail-test-ci-$(VERSION)~$(CONTRAIL_SKU).tgz)
 	rm -rf ${TGZ_FILE}
 
-contrail-openstack-icehouse-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
-	rm -rf ${BUILDDIR}
-	mkdir -p ${BUILDDIR}/debian
-	cp -R contrail-openstack/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; [ -f debian/control.icehouse.in ] && python \
-	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
-	  --version $(VERSION) --file debian/control.icehouse.in ) || echo no control.icehouse.in
-	cp ${BUILDDIR}/debian/control.icehouse ${BUILDDIR}/debian/control
-	cp ${BUILDDIR}/debian/rules.icehouse ${BUILDDIR}/debian/rules
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-contrail-openstack-icehouse-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
-	rm -rf ${BUILDDIR}
-
-contrail-openstack-juno-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
-	rm -rf ${BUILDDIR}
-	mkdir -p ${BUILDDIR}/debian
-	cp -R contrail-openstack/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; [ -f debian/control.juno.in ] && python \
-	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
-	  --version $(VERSION) --file debian/control.juno.in ) || echo no control.juno.in
-	cp ${BUILDDIR}/debian/control.juno ${BUILDDIR}/debian/control
-	cp ${BUILDDIR}/debian/rules.juno ${BUILDDIR}/debian/rules
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-contrail-openstack-juno-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
-	rm -rf ${BUILDDIR}
-
-contrail-openstack-kilo-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
-	rm -rf ${BUILDDIR}
-	mkdir -p ${BUILDDIR}/debian
-	cp -R contrail-openstack/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; [ -f debian/control.kilo.in ] && python \
-	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
-	  --version $(VERSION) --file debian/control.kilo.in ) || echo no control.kilo.in
-	cp ${BUILDDIR}/debian/control.kilo ${BUILDDIR}/debian/control
-	cp ${BUILDDIR}/debian/rules.kilo ${BUILDDIR}/debian/rules
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-contrail-openstack-kilo-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
-	rm -rf ${BUILDDIR}
-
-contrail-openstack-liberty-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
-	rm -rf ${BUILDDIR}
-	mkdir -p ${BUILDDIR}/debian
-	cp -R contrail-openstack/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; [ -f debian/control.liberty.in ] && python \
-	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
-	--version $(VERSION) --file debian/control.liberty.in ) || echo no control.liberty.in
-	cp ${BUILDDIR}/debian/control.liberty ${BUILDDIR}/debian/control
-	cp ${BUILDDIR}/debian/rules.liberty ${BUILDDIR}/debian/rules
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-contrail-openstack-liberty-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
-	rm -rf ${BUILDDIR}
-
-contrail-openstack-mitaka-deb:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
-	rm -rf ${BUILDDIR}
-	mkdir -p ${BUILDDIR}/debian
-	cp -R contrail-openstack/debian ${BUILDDIR}
-	(cd ${BUILDDIR}; [ -f debian/control.mitaka.in ] && python \
-	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
-          --version $(VERSION) --file debian/control.mitaka.in ) || echo no control.mitaka.in
-	cp ${BUILDDIR}/debian/control.mitaka ${BUILDDIR}/debian/control
-	cp ${BUILDDIR}/debian/rules.mitaka ${BUILDDIR}/debian/rules
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-contrail-openstack-mitaka-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/tmp)
-	rm -rf ${BUILDDIR}
-
-contrail-openstack-config-kilo-deb:
-	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config)
-	(cd ${BUILDDIR}; [ -f debian/control.kilo.in ] && python \
-	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
-	  --version $(VERSION) --file debian/control.kilo.in ) || echo no control.kilo.in
-	cp ${BUILDDIR}/debian/control.kilo ${BUILDDIR}/debian/control
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-contrail-openstack-config-kilo-clean:
-	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config; fakeroot debian/rules clean)
-
-contrail-openstack-config-liberty-deb:
-	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config)
-	(cd ${BUILDDIR}; [ -f debian/control.liberty.in ] && python \
-	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
-	  --version $(VERSION) --file debian/control.liberty.in ) || echo no control.liberty.in
-	cp ${BUILDDIR}/debian/control.liberty ${BUILDDIR}/debian/control
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-contrail-openstack-config-liberty-clean:
-	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config; fakeroot debian/rules clean)
-
-contrail-openstack-config-mitaka-deb:
-	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config)
-	(cd ${BUILDDIR}; [ -f debian/control.mitaka.in ] && python \
-	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
-          --version $(VERSION) --file debian/control.mitaka.in ) || echo no control.mitaka.in
-	cp ${BUILDDIR}/debian/control.mitaka ${BUILDDIR}/debian/control
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-contrail-openstack-config-mitaka-clean:
-	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-config; fakeroot debian/rules clean)
-
 contrail-openstack-dashboard-deb:
 	if [ -d ${SB_TOP}/contrail-horizon ]; then \
 		$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard) \
@@ -593,30 +420,6 @@ contrail-ostack-dashboard-deb:
 contrail-ostack-dashboard-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-ostack-dashboard)
 	rm -rf ${BUILDDIR}
-
-contrail-openstack-vrouter-liberty-deb:
-	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter)
-	(cd ${BUILDDIR}; [ -f debian/control.liberty.in ] && python \
-	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
-          --version $(VERSION) --file debian/control.liberty.in ) || echo no control.liberty.in
-	cp ${BUILDDIR}/debian/control.liberty ${BUILDDIR}/debian/control
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-contrail-openstack-vrouter-liberty-clean:
-	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter; fakeroot debian/rules clean)
-
-contrail-openstack-vrouter-mitaka-deb:
-	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter)
-	(cd ${BUILDDIR}; [ -f debian/control.mitaka.in ] && python \
-	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
-          --version $(VERSION) --file debian/control.mitaka.in ) || echo no control.mitaka.in
-	cp ${BUILDDIR}/debian/control.mitaka ${BUILDDIR}/debian/control
-	(cd ${BUILDDIR}; fakeroot debian/rules clean)
-	(cd ${BUILDDIR}; fakeroot debian/rules binary)
-
-contrail-openstack-vrouter-mitaka-clean:
-	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter; fakeroot debian/rules clean)
 
 libvirt-deb:
 	$(eval LIBDIR=${SB_TOP}/third_party/libvirt)
@@ -644,16 +447,36 @@ contrail-web-core-deb:
 	(cd $(@:-deb=); fakeroot debian/rules binary)
 
 %-deb:
-	(cd $(@:-deb=); [ -f debian/control.in ] && python \
-         $(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
-           --version $(VERSION) --file debian/control.in ) || echo no control.in
-	(cd $(@:-deb=); fakeroot debian/rules clean)
-	(cd $(@:-deb=); fakeroot debian/rules binary)
+	$(eval PACKAGE := $(@:-deb=))
+	$(eval BUILDDIR=${SB_TOP}/build/debian/packaging/$(PACKAGE))
+	rm -rf ${BUILDDIR}
+	mkdir -p ${BUILDDIR}/debian
+	cp -R $(PACKAGE)/debian ${BUILDDIR}
+	$(eval DEFAULT_CONTROL := control)
+	@echo "Default control file: $(DEFAULT_CONTROL)"
+	@echo "Looking for control file: control.in"
+	$(eval DEFAULT_CONTROL_IN := $(shell [ -f $(PACKAGE)/debian/control.in ] && echo 'control.in'  || echo $(DEFAULT_CONTROL)))
+	@echo "Looking for control file: control.$(SERIES).in"
+	$(eval SERIES_CONTROL_IN := $(shell [ -f $(PACKAGE)/debian/control.$(SERIES).in ] && echo 'control.$(SERIES).in'  || echo $(DEFAULT_CONTROL_IN)))
+	@echo "Looking for control file: control.$(SERIES).$(CONTRAIL_SKU).in"
+	$(eval CONTROL_IN := $(shell [ -f $(PACKAGE)/debian/control.$(SERIES).$(CONTRAIL_SKU).in ] && echo 'control.$(SERIES).$(CONTRAIL_SKU).in' || echo $(SERIES_CONTROL_IN)))
+	@echo "Using control file: $(CONTROL_IN)"
+	(cd ${BUILDDIR}; python $(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+		--version $(VERSION) --file debian/$(CONTROL_IN) --outfile debian/control)
+	$(eval DEFAULT_RULES := rules)
+	@echo "Default rules file: $(DEFAULT_RULES)"
+	@echo "Looking for rules file: rules.$(SERIES)"
+	$(eval SERIES_RULES := $(shell [ -f $(PACKAGE)/debian/rules.$(SERIES) ] && echo 'rules.$(SERIES)' || echo $(DEFAULT_RULES)))
+	@echo "Looking for rules file: rules.$(SERIES).$(CONTRAIL_SKU)"
+	$(eval RULES := $(shell [ -f $(PACKAGE)/debian/rules.$(SERIES).$(CONTRAIL_SKU) ] && echo 'rules.$(SERIES).$(CONTRAIL_SKU)' || echo $(SERIES_RULES)))
+	@echo "Using rules file: $(RULES)"
+	cp $(PACKAGE)/debian/$(RULES) ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 %-clean:
-	(cd $(@:-clean=); fakeroot debian/rules clean)
-	(cd $(@:-clean=); [ -f debian/control.in ] && rm -f debian/control) || \
-                || echo no control.in
+	$(eval BUILDDIR=${SB_TOP}/build/debian/packaging/$(@:-clean=))
+	rm -rf ${BUILDDIR}
 
 neutron-plugin-contrail-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/neutron-plugin-contrail) \
@@ -746,6 +569,19 @@ contrail-vrouter-deb: contrail-libs-deb
 		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
 	fi
 	$(eval BUILDKVER=3.13.0-34-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+		(cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+	fi
+	$(eval BUILDKVER=4.15.0-39-generic)
+	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
+	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
+		(cd contrail-vrouter; fakeroot debian/rules clean); \
+		(cd contrail-vrouter; fakeroot debian/rules binary OSVER=${BUILDKVER}); \
+	fi
+
+	$(eval BUILDKVER=4.15.0-29-generic)
 	$(eval DISTRODIR=/lib/modules/${BUILDKVER}/build)
 	if [ -d ${DISTRODIR} ] && [ '${KVER}' != '${BUILDKVER}' ]; then \
 		(cd contrail-vrouter; fakeroot debian/rules clean); \

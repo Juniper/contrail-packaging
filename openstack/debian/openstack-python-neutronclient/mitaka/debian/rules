@@ -43,6 +43,7 @@ get-orig-source:
 	dh $@ --destdir=${SB_TOP}/build/openstack
 
 %:
+	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 	dh $@  --with python2
 
 get-orig-source:

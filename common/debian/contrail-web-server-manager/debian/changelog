@@ -1,0 +1,6 @@
+contrail-web-server-manager (BUILDTAG) czanpure; urgency=low
+
+  [czanpure ]
+  * debian/changelog: changelog
+
+ -- czanpure <czanpure@juniper.net>  Wed Oct 14 11:04:50 PDT 2014

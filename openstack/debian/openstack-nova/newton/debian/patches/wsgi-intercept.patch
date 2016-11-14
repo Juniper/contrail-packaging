@@ -1,0 +1,33 @@
+From d3dfeb44d649a8e100ee4ce91468086cfebd9ab6 Mon Sep 17 00:00:00 2001
+From: Matt Riedemann <mriedem@us.ibm.com>
+Date: Tue, 20 Sep 2016 14:17:54 -0400
+Subject: [PATCH] Move wsgi-intercept to test-requirements.txt
+
+The wsgi-intercept dependency is only used in the functional
+tests for the placement API, so we should move it to the
+test-requirements.txt file so people don't try to package
+it for runtime installs.
+
+Change-Id: I0d8325e12ed7d5d022877782d6aa4ba4055c30db
+Closes-Bug: #1625653
+---
+ requirements.txt      | 1 -
+ test-requirements.txt | 3 +++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -58,4 +58,3 @@ os-vif>=1.1.0 # Apache-2.0
+ os-win>=0.2.3 # Apache-2.0
+ castellan>=0.4.0 # Apache-2.0
+ microversion-parse>=0.1.2 # Apache-2.0
+-wsgi-intercept>=0.6.1 # MIT License
+--- a/test-requirements.txt
++++ b/test-requirements.txt
+@@ -31,3 +31,6 @@ oslo.vmware>=2.11.0 # Apache-2.0
+ 
+ # releasenotes
+ reno>=1.8.0 # Apache2
++
++# placement functional tests
++wsgi-intercept>=0.6.1 # MIT License

@@ -36,6 +36,7 @@ export _bindir := /usr/bin
 __python ?= /usr/bin/python
 
 %:
+	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
 
 override_dh_auto_build:

@@ -29,6 +29,7 @@ TGZ_FILE = $(FILE_LIST)
 endif
 
 %:
+	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 	dh $@
 
 override_dh_auto_build: 

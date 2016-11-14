@@ -8,8 +8,7 @@ Build-Depends:
 Package: contrail-openstack-control
 Architecture: all
 Maintainer: amoghe <amoghe@juniper.net>
-Depends: supervisor,
-         contrail-lib,
+Depends: contrail-lib,
          contrail-control,
          contrail-dns,
          contrail-setup,
