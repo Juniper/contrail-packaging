@@ -1,0 +1,6 @@
+contrail-fabric-utils (BUILDTAG) amoghe; urgency=low
+
+  [amoghe]
+  * debian/changelog: changelog
+
+ -- amoghe <amoghe@juniper.net>  Wed, 4 Jan 2014 17:00:11 +0800

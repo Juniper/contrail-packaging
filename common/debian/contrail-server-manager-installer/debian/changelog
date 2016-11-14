@@ -1,0 +1,6 @@
+contrail-server-manager-installer (BUILDTAG) UNRELEASED; urgency=low
+
+  [nitishk]
+  * debian/changelog: changelog
+ 
+ -- nitishk <nitishk@juniper.net>  Mon, 11 Nov 2013 8:00:11 +0800

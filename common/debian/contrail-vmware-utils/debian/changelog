@@ -1,0 +1,6 @@
+contrail-vmware-utils (BUILDTAG) kirand; urgency=low
+
+  [kirand ]
+  * debian/changelog: changelog
+
+ -- kirand  <kirand@juniper.net>  Fri, 24 Oct 2014 8:00:11 +0800
