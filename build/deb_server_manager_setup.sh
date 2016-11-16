@@ -335,6 +335,7 @@ if [ "$SM" != "" ]; then
       echo "$space$arrow$install_str Server Manager"
       apt-get -y install cobbler="2.6.3-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
       apt-get -y install contrail-server-manager >> $log_file 2>&1
+      cp /etc/contrail_smgr/cobbler/bootup_dhcp.template.u /etc/cobbler/dhcp.template
     fi
     apt-get -y install -f >> $log_file 2>&1
   fi
