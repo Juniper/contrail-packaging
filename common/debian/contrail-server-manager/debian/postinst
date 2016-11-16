@@ -10,6 +10,11 @@ then
    HOST_IP=$(cat /opt/contrail/contrail_server_manager/IP.txt) 
 fi
 echo $HOST_IP
+
+HOST_MAC=`ifconfig -a | grep $HOST_IP -b2 | grep HWaddr | awk \'{print $5}\'`
+HOST_FQDN=`hostname -f`
+HOST_NAME=`hostname`
+
 DOMAIN=`hostname -d`
 rel=`lsb_release -r`
 
@@ -89,6 +94,16 @@ sed -i "s/bind_master:.*/bind_master: $HOST_IP/g" /etc/cobbler/settings
 sed -i "s/next_server:.*/next_server: $HOST_IP/g" /etc/cobbler/settings
 sed -i "s/server:.*/server: $HOST_IP/g" /etc/cobbler/settings
 sed -i "s/module = authn_.*/module = authn_testing/g" /etc/cobbler/modules.conf
+
+# DHCP Auto-add the server manager to DHCP HOSTS
+sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/generate_dhcp_template.py
+sed -i "s/__\$MACADDRESS__/$HOST_MAC/g" /opt/contrail/server_manager/generate_dhcp_template.py
+sed -i "s/__\$HOSTFQDN__/$HOST_FQDN/g" /opt/contrail/server_manager/generate_dhcp_template.py
+sed -i "s/__\$HOSTNAME__/$HOST_NAME/g" /opt/contrail/server_manager/generate_dhcp_template.py
+sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /etc/contrail_smgr/cobbler/bootup_dhcp.template.u
+sed -i "s/__\$MACADDRESS__/$HOST_MAC/g" /etc/contrail_smgr/cobbler/bootup_dhcp.template.u
+sed -i "s/__\$HOSTFQDN__/$HOST_FQDN/g" /etc/contrail_smgr/cobbler/bootup_dhcp.template.u
+sed -i "s/__\$HOSTNAME__/$HOST_NAME/g" /etc/contrail_smgr/cobbler/bootup_dhcp.template.u
 
 set -e
 
