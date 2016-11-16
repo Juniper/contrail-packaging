@@ -1,0 +1,9 @@
+Verified+2: opencontrail-admin <ci-admin@opencontrail.org>
+Verified+2: Zuul <zuul@lists.opencontrail.org>
+Approved+1: Sachchidanand Vaidya <vaidyasd@juniper.net>
+Code-Review+2: Sachchidanand Vaidya <vaidyasd@juniper.net>
+Submitted-by: Zuul <zuul@lists.opencontrail.org>
+Submitted-at: Wed, 16 Nov 2016 14:34:14 -0800
+Reviewed-on: https://review.opencontrail.org/26160
+Project: Juniper/contrail-packaging
+Branch: refs/heads/master
