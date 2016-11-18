@@ -252,14 +252,28 @@ if [ "$SM" != "" ]; then
       echo "$space$arrow Puppet agent certificates have been moved to /var/lib/puppet/ssl_$datetime_string"
       mv /var/lib/puppet/ssl /var/lib/puppet/ssl_$datetime_string
   fi
-   # Check if this is an upgrade
+  # Check if this is an upgrade
   if [ "$SMLITE" != "" ]; then
-      check_upgrade=`dpkg --list | grep "contrail-server-manager-lite " || true`
+      installed_version=`dpkg -l | grep "contrail-server-manager-lite " | awk '{print $3}'`
   else
-      check_upgrade=`dpkg --list | grep "contrail-server-manager " || true`
+      installed_version=`dpkg -l | grep "contrail-server-manager " | awk '{print $3}'`
+  fi
+  check_upgrade=1
+  if [ "$installed_version" != ""  ]; then
+      version_to_install=`ls /opt/contrail/contrail_server_manager/contrail-server-manager_* | cut -d'_' -f 4`
+      set +e
+      comparison=`dpkg --compare-versions $version_to_install gt $installed_version`
+      check_upgrade=`echo $?`
+      set -e
+      if [ $check_upgrade == 0 ]; then
+          echo "$space$arrow Upgrading Server Manager to version $version_to_install"
+      else
+          echo "$space$arrow Cannot upgrade Server Manager to version $version_to_install"
+          exit
+      fi
   fi
 
-  if [ "$check_upgrade" != ""  ]; then
+  if [ $check_upgrade == 0 ]; then
     #  Cleanup old Passenger Manual Install so that it doesn't collide with new package
     passenger_upgrade_version="2.22"
     contrail_server_manager_version=`dpkg -l | grep "contrail-server-manager " | awk '{print $3}' | cut -d'-' -f 1`
@@ -294,7 +308,7 @@ if [ "$SM" != "" ]; then
     update-rc.d -f apparmor remove >> $log_file 2>&1
   fi
 
-  if [ "$check_upgrade" != ""  ]; then
+  if [ $check_upgrade == 0 ]; then
     # Upgrade
     echo "$space$arrow Upgrading Server Manager"
     RESTART_SERVER_MANAGER="1"
