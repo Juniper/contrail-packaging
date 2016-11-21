@@ -11,7 +11,7 @@ then
 fi
 echo $HOST_IP
 
-HOST_MAC=`ifconfig -a | grep $HOST_IP -b2 | grep HWaddr | awk \'{print $5}\'`
+HOST_MAC=`ifconfig -a | grep $HOST_IP -b2 | grep HWaddr | awk '{print $5}'`
 HOST_FQDN=`hostname -f`
 HOST_NAME=`hostname`
 
