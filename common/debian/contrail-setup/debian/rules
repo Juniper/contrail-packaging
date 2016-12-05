@@ -44,7 +44,7 @@ override_dh_auto_build:
 	rm -rf $(builddist)
 	mkdir -p $(builddist)
 	rm -rf $(SB_TOP)/tools/provisioning/ContrailProvisioning.egg-info
-	rm -rf $(SB_TOP)/tools/provisioning/ContrailProvisioning-0.1dev
+	rm -rf $(SB_TOP)/tools/provisioning/ContrailProvisioning-*
 	(cd $(SB_TOP)/tools/provisioning/ && ${__python} setup.py sdist)
 	(cd $(SB_TOP)/controller/src/config && tar cvfz $(builddist)/config_utils.tgz utils)
 	(cd $(SB_TOP)/controller/src/dns/scripts && tar cvfz $(builddist)/dns_scripts.tgz *)
@@ -66,8 +66,8 @@ override_dh_auto_install:
 	install -p -m 644 $(builddist)/debs_list.txt  $(buildroot)/etc/contrail/debs_list.txt
 	install -p -m 644 $(builddist)/config_utils.tgz $(buildroot)/opt/contrail/config_utils.tgz
 	install -p -m 644 $(builddist)/dns_scripts.tgz $(buildroot)/opt/contrail/dns_scripts.tgz
-	(cd $(SB_TOP)/tools/provisioning/ && tar zxf dist/ContrailProvisioning-0.1dev.tar.gz)
-	(cd $(SB_TOP)/tools/provisioning/ContrailProvisioning-0.1dev && ${__python} setup.py install --root=${buildroot} --install-scripts ${_contrailopt}/bin/)
+	(cd $(SB_TOP)/tools/provisioning/ && tar zxf dist/ContrailProvisioning-*.tar.gz)
+	(cd $(SB_TOP)/tools/provisioning/ContrailProvisioning-* && ${__python} setup.py install --root=${buildroot} --install-scripts ${_contrailopt}/bin/)
 	install -D -m 755 $(SB_TOP)/tools/provisioning/tools/openstack-status-deb $(buildroot)/usr/bin/openstack-status
 	install -D -m 755 $(SB_TOP)/tools/provisioning/tools/openstack-db $(buildroot)/usr/bin/openstack-db
 	# install pkgs needed first

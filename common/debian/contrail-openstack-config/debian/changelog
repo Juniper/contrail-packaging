@@ -1,0 +1,6 @@
+contrail-openstack-config (BUILDTAG) rrugge; urgency=low
+
+  [rrugge ]
+  * debian/changelog: changelog
+
+ -- rrugge <rrugge@juniper.net>  Mon, 11 Nov 2013 8:00:11 +0800

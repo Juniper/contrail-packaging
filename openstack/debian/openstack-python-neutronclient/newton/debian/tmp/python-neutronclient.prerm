@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "remove" ] ; then
+	update-alternatives --remove neutron /usr/bin/python2-neutron
+fi
+
+#DEBHELPER#
+
+exit 0

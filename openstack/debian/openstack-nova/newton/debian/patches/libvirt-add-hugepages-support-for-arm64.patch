@@ -1,0 +1,56 @@
+From 190990e7c864deb7034d857630f34f6b26ceba4a Mon Sep 17 00:00:00 2001
+From: VeenaSL <mveenasl@gmail.com>
+Date: Mon, 19 Sep 2016 13:36:53 +0530
+Subject: [PATCH] Adding hugepage and NUMA support check for aarch64
+
+Nova ignores aarch64 while verifying for hugepage and NUMA support.
+AARCH64 also supports hugepage and NUMA on the same libvirt versions as of x86.
+Hence adding this chek for aarch64 also.
+
+Change-Id: I7b5ae1dbdca4fdd0aee2eefd4099c4c4953b609a
+Closes-bug: #1623871
+
+[dannf: Also add AARCH64 to hugepages arches in test_driver.py]
+
+Origin: https://review.openstack.org/#/c/372304/
+Bug: http://bugs.launchpad.net/bugs/1623871
+Bug-Ubuntu: http://bugs.launchpad.net/bugs/1623871
+
+Index: nova-14.0.0~rc1/nova/virt/libvirt/driver.py
+===================================================================
+--- nova-14.0.0~rc1.orig/nova/virt/libvirt/driver.py
++++ nova-14.0.0~rc1/nova/virt/libvirt/driver.py
+@@ -5108,7 +5108,8 @@ class LibvirtDriver(driver.ComputeDriver
+                     self._bad_libvirt_numa_version_warn = True
+                 return False
+ 
+-        support_matrix = {(arch.I686, arch.X86_64): MIN_LIBVIRT_NUMA_VERSION,
++        support_matrix = {(arch.I686, arch.X86_64,
++                           arch.AARCH64): MIN_LIBVIRT_NUMA_VERSION,
+                           (arch.PPC64,
+                            arch.PPC64LE): MIN_LIBVIRT_NUMA_VERSION_PPC}
+         caps = self._host.get_capabilities()
+@@ -5124,7 +5125,8 @@ class LibvirtDriver(driver.ComputeDriver
+     def _has_hugepage_support(self):
+         # This means that the host can support multiple values for the size
+         # field in LibvirtConfigGuestMemoryBackingPage
+-        supported_archs = [arch.I686, arch.X86_64, arch.PPC64LE, arch.PPC64]
++        supported_archs = [arch.I686, arch.X86_64, arch.PPC64LE, arch.PPC64,
++                           arch.AARCH64]
+         caps = self._host.get_capabilities()
+         return ((caps.host.cpu.arch in supported_archs) and
+                 self._host.has_min_version(MIN_LIBVIRT_HUGEPAGE_VERSION,
+Index: nova-14.0.0~rc1/nova/virt/libvirt/driver.py
+===================================================================
+--- nova-14.0.0~rc1.orig/nova/tests/unit/virt/libvirt/test_driver.py
++++ nova-14.0.0~rc1/nova/tests/unit/virt/libvirt/test_driver.py
+@@ -2910,7 +2910,8 @@ class LibvirtConnTestCase(test.NoDBTestCase):
+                        return_value=True)
+     @mock.patch.object(host.Host, "get_capabilities")
+     def test_does_want_hugepages(self, mock_caps, mock_hp, mock_numa):
+-        for each_arch in [arch.I686, arch.X86_64, arch.PPC64LE, arch.PPC64]:
++        for each_arch in [arch.I686, arch.X86_64, arch.PPC64LE, arch.PPC64,
++                          arch.AARCH64]:
+             self._test_does_want_hugepages(
+                 mock_caps, mock_hp, mock_numa, each_arch)
+ 
