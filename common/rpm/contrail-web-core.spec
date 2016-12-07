@@ -8,6 +8,7 @@
 %endif
 %define		_nodemodules		node_modules/
 %define		_config			contrail-web-core/config
+%define		_contrailwebcoredir	contrail-web-core
 %define		_contrailuitoolsdir	src/tools
 %define         _supervisordir /etc/contrail/supervisord_webui_files
 
@@ -105,6 +106,8 @@ perl -pi -e '{ s/opencontrail-favicon/juniper-networks-favicon/g; }' %{buildroot
 rm %{buildroot}%{_contrailwebsrc}/config/userAuth.js
 cp -p %{_config}/userAuth.js %{buildroot}%{_contrailetc}/contrail-webui-userauth.js
 ln -s %{_contrailetc}/contrail-webui-userauth.js %{buildroot}%{_contrailwebsrc}/config/userAuth.js
+rm %{buildroot}%{_contrailwebsrc}/.built_version
+cp -p %{_contrailwebcoredir}/.built_version %{buildroot}%{_contrailwebsrc}/.built_version
 
 #install .ini files for supervisord
 install -d -m 755 %{buildroot}%{_supervisordir}

@@ -75,6 +75,8 @@ override_dh_auto_install:
 	rm -rf $(buildroot)/$(_contrailwebsrc)/config/userAuth.js
 	cp -p $(_config)/userAuth.js $(buildroot)/$(_contrailetc)/contrail-webui-userauth.js
 	ln -s $(_contrailetc)/contrail-webui-userauth.js $(buildroot)/$(_contrailwebsrc)/config/userAuth.js
+	rm -rf $(buildroot)/$(_contrailwebsrc)/.built_version
+	cp -p $(SB_TOP)/contrail-web-core/.built_version $(buildroot)/$(_contrailwebsrc)/.built_version
 
 
 override_dh_shlibdeps:
