@@ -1,0 +1,176 @@
+python-neutronclient (1:6.0.0-0ubuntu1~cloud0.2contrail) xenial-newton; urgency=medium
+
+  * Added 2contrail for contrail openstack python-neutronclient.
+
+ -- Amudha R <amudha@juniper.net> Wed, 23 Nov 2016 14:26:34 +0000
+
+python-neutronclient (1:6.0.0-0ubuntu1~cloud0) xenial-newton; urgency=medium
+
+  * New upstream release for the Ubuntu Cloud Archive.
+
+ -- Openstack Ubuntu Testing Bot <openstack-testing-bot@ubuntu.com>  Fri, 02 Sep 2016 16:45:51 +0000
+
+python-neutronclient (1:6.0.0-0ubuntu1) yakkety; urgency=medium
+
+  * New upstream release.
+  * d/control: Align (Build-)Depends with upstream.
+
+ -- Corey Bryant <corey.bryant@canonical.com>  Fri, 02 Sep 2016 15:39:43 +0100
+
+python-neutronclient (1:4.2.0-1) experimental; urgency=medium
+
+  [ Ondřej Nový ]
+  * Standards-Version is 3.9.8 now (no change)
+  * d/copyright: Changed source URL to https protocol
+
+  [ Thomas Goirand ]
+  * New upstream release.
+
+ -- Thomas Goirand <zigo@debian.org>  Sun, 05 Jun 2016 23:49:17 +0000
+
+python-neutronclient (1:4.1.1-1) experimental; urgency=medium
+
+  [ Ondřej Nový ]
+  * Fixed homepage (https).
+  * Fixed VCS URLs (https).
+
+  [ Thomas Goirand ]
+  * New upstream release.
+  * Fixed (build-)depends for this release.
+  * Standards-Version: 3.9.7 (no change).
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 21 Mar 2016 12:41:04 +0100
+
+python-neutronclient (1:4.0.0-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Fixed (build-)depends for this release.
+
+ -- Thomas Goirand <zigo@debian.org>  Sat, 16 Jan 2016 06:03:08 +0000
+
+python-neutronclient (1:3.1.0-3) experimental; urgency=medium
+
+  * Added Python 3 support.
+  * Black list 2 unit tests failing in Python 3:
+    - test_cli20_port.CLITestV20PortJSON.test_list_ports_with_fixed_ips_in_csv
+    - test_cli20_port.CLITestV20PortXML.test_list_ports_with_fixed_ips_in_csv
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 14 Jan 2016 06:15:45 +0000
+
+python-neutronclient (1:3.1.0-2) unstable; urgency=medium
+
+  * Uploading to unstable.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 15 Oct 2015 22:11:42 +0000
+
+python-neutronclient (1:3.1.0-1) experimental; urgency=medium
+
+  [ Corey Bryant ]
+  * New upstream release.
+  * d/control: Align dependencies with upstream.
+  * d/control: Bump minimum version of python-pbr to 1.8.
+
+  [ Thomas Goirand ]
+  * Removed version of (build-)depends when already satisfied in Trusty.
+  * Dropped Replaces+Breaks+Provides for quantumclient.
+  * Fixed the install path of the bash-completion script.
+
+ -- Thomas Goirand <zigo@debian.org>  Sat, 26 Sep 2015 17:21:13 +0000
+
+python-neutronclient (1:2.6.0-1) experimental; urgency=medium
+
+  * Team upload.
+  * New upstream release:
+    - d/control: Align dependencies and versions with upstream.
+  * Bump epoch inline with Ubuntu to support resync.
+  * Introduce DEP-8 tests from Ubuntu.
+
+ -- James Page <james.page@ubuntu.com>  Tue, 23 Jun 2015 12:08:44 +0100
+
+python-neutronclient (2.4.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Uploading to unstable.
+  * Fixed (build-)depends for this release.
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 16 Mar 2015 18:16:10 +0100
+
+python-neutronclient (2.3.6-2) unstable; urgency=medium
+
+  * Increased version of (build-)depends for cliff and six.
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 23 Sep 2014 15:19:10 +0800
+
+python-neutronclient (2.3.6-1) unstable; urgency=medium
+
+  * New upstream release.
+  * New (build-)depends for this release (python-mox3, python-oslotest)
+
+ -- Mehdi Abaakouk <sileht@sileht.net>  Fri, 22 Aug 2014 15:43:56 +0200
+
+python-neutronclient (2.3.5-1) unstable; urgency=medium
+
+  * New upstream release.
+  * New (build-)depends for this release.
+
+ -- Thomas Goirand <zigo@debian.org>  Mon, 28 Jul 2014 18:52:08 +0800
+
+python-neutronclient (2.3.4-2) unstable; urgency=low
+
+  * This version of neutronclient needs python-httplib2 >= 0.7.5. Fixed the
+    (build-)depends accordingly. Also fixed more (build-)depends versions.
+    (Closes: #744129)
+  * Runs testr/subunit correctly.
+
+ -- Thomas Goirand <zigo@debian.org>  Fri, 11 Apr 2014 13:24:11 +0800
+
+python-neutronclient (2.3.4-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Removed fixed-get_auth_info-for-pre-authenticated-clients.patch applied
+    upstream.
+
+ -- Thomas Goirand <zigo@debian.org>  Fri, 07 Mar 2014 15:57:07 +0800
+
+python-neutronclient (2.3.3-3) unstable; urgency=medium
+
+  * Added fixed-get_auth_info-for-pre-authenticated-clients.patch.
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 19 Feb 2014 22:37:12 +0800
+
+python-neutronclient (2.3.3-2) unstable; urgency=medium
+
+  * Removes the man page thing which doesn't build in Wheezy.
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 28 Jan 2014 09:34:45 +0000
+
+python-neutronclient (2.3.3-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Added --slowest --testr-args='--subunit  ' when calling testr.
+  * Standard-Version: is now 3.9.5.
+  * Adds the generation of the python-neutronclient man page.
+
+ -- Thomas Goirand <zigo@debian.org>  Tue, 28 Jan 2014 17:04:05 +0800
+
+python-neutronclient (2.3.0-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 12 Sep 2013 11:20:06 +0800
+
+python-neutronclient (2.2.4-2) unstable; urgency=low
+
+  * Added missing python-pbr build-depends.
+  * Cleans python_neutronclient.egg-info (package can build twice).
+  * Fixed debian/copyright (added missing holders).
+
+ -- Thomas Goirand <zigo@debian.org>  Thu, 25 Jul 2013 17:46:57 +0800
+
+python-neutronclient (2.2.4-1) unstable; urgency=low
+
+  * Initial release.
+  * Note that this is a rename of Quantum into Neutron because of a trademark
+    problem.
+
+ -- Thomas Goirand <zigo@debian.org>  Sat, 20 Jul 2013 20:21:03 +0800

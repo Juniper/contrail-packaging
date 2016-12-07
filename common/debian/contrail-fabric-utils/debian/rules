@@ -38,8 +38,9 @@ DESTDIR = $(shell pwd)/debian/contrail-fabric-utils
 
 override_dh_auto_install:
 	# Setup directories
-	rm -rf $(BUILDDIR)/contrail_fabric_utils-0.1dev
+	rm -rf $(BUILDDIR)/contrail_fabric_utils-*
 	rm -rf $(BUILDDIR)/contrail_fabric_utils.egg-info
+	rm -rf $(BUILDDIR)/dist
 	install -d -m 755 $(BUILDDIR)
 	install -d -m 755 $(installroot)
 	install -d -m 755 $(installroot)$(python_sitelib)
@@ -47,10 +48,10 @@ override_dh_auto_install:
 	install -d -m 755 $(installroot)$(_contrailopt)/utils
 	install -d -m 755 $(installroot)$(_contrailopt)/utils/fabfile
 	cd ${BUILDDIR}; python setup.py sdist
-	tar zxf dist/contrail_fabric_utils-0.1dev.tar.gz
-	cd contrail_fabric_utils-0.1dev; python setup.py install --root=$(installroot)
-	cd contrail_fabric_utils-0.1dev; cp README $(installroot)$(_contrailopt)/utils/README.fabric 
-	cd contrail_fabric_utils-0.1dev; cp -R $(installroot)$(python_sitelib)/contrail_fabric_utils/fabfile $(installroot)$(_contrailopt)/utils/
+	tar zxf dist/contrail_fabric_utils-*.tar.gz
+	cd contrail_fabric_utils-*; python setup.py install --root=$(installroot)
+	cd contrail_fabric_utils-*; cp README $(installroot)$(_contrailopt)/utils/README.fabric
+	cd contrail_fabric_utils-*; cp -R $(installroot)$(python_sitelib)/contrail_fabric_utils/fabfile $(installroot)$(_contrailopt)/utils/
 
 override_dh_usrlocal:	
 
