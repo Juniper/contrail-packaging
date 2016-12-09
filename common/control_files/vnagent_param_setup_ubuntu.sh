@@ -28,6 +28,8 @@ echo dev=__DEVICE__ >> $CFG_FILE
 echo vgw_subnet_ip=__VGW_SUBNET_IP__ >> $CFG_FILE
 echo vgw_intf=__VGW_INTF_LIST__ >> $CFG_FILE
 
+echo qos_enabled=__QOS__ >> $CFG_FILE
+
 LOGFILE=/var/log/contrail/vrouter.log
 echo "LOGFILE=--log-file=${LOGFILE}" >> $CFG_FILE
 
