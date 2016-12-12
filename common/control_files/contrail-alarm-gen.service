@@ -1,0 +1,25 @@
+[Unit]
+Description="Contrail Alarm-gen"
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/contrail-alarm-gen
+PIDFile=/var/run/contrail/contrail-alarm-gen.pid
+TimeoutStopSec=0
+Restart=always
+User=contrail
+Group=contrail
+ExecStop=/bin/kill -s TERM $MAINPID
+
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ReadOnlyDirectories=/
+ReadWriteDirectories=-/var/log/contrail
+ReadWriteDirectories=-/etc/contrail
+
+[Install]
+WantedBy=multi-user.target
+Alias=contrail-alarm.service
+

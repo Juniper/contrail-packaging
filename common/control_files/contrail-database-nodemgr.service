@@ -1,0 +1,25 @@
+[Unit]
+Description="Contrail Database Node Mgr"
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/contrail-database-nodemgr
+PIDFile=/var/run/contrail/contrail-database-nodemgr.pid
+TimeoutStopSec=0
+Restart=always
+User=contrail
+Group=contrail
+ExecStop=/bin/kill -s TERM $MAINPID
+
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ReadOnlyDirectories=/
+ReadWriteDirectories=-/var/log/contrail
+ReadWriteDirectories=-/etc/contrail
+
+[Install]
+WantedBy=multi-user.target
+Alias=contrail-database-nodemgr.service
+

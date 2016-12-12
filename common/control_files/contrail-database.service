@@ -1,0 +1,15 @@
+[Unit]
+Description="Contrail Database"
+SourcePath=/etc/init.d/cassandra
+After=network-online.target
+
+[Service]
+Type=forking
+Restart=no
+TimeoutSec=5min
+IgnoreSIGPIPE=no
+KillMode=process
+GuessMainPID=no
+RemainAfterExit=yes
+ExecStart=/etc/init.d/cassandra start
+ExecStop=/etc/init.d/cassandra stop
