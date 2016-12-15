@@ -15,7 +15,7 @@ function create_qos_config() {
     fi
 
     echo "$(date): Running qosmap.py script\n"
-    python /usr/share/contrail-utils/qosmap.py --interface_list $QOS_INTF_LIST
+    python /opt/contrail/utils/qosmap.py --interface_list $QOS_INTF_LIST
 }
 
 if [ $qos_enabled != false ]
