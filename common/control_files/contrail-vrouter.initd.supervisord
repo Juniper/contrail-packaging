@@ -3,9 +3,4 @@
 # chkconfig: 2345 11 01
 # description: Juniper Network Virtualization service offering
 
-sock_file=/tmp/supervisord_vrouter.sock
-if [ -e "$sock_file" ]; then
-    supervisorctl -s unix:///tmp/supervisord_vrouter.sock ${1} `basename ${0}`
-else
-    supervisorctl -s unix:///var/run/supervisord_vrouter.sock ${1} `basename ${0}`
-fi
+supervisorctl -s unix:///tmp/supervisord_vrouter.sock ${1} `basename ${0}`

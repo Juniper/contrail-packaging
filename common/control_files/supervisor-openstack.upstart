@@ -36,12 +36,7 @@ script
 end script
 
 pre-stop script
-    if [ -e /tmp/supervisord_openstack.sock ]; then
-        supervisorctl -s unix:///tmp/supervisord_openstack.sock stop all
-        supervisorctl -s unix:///tmp/supervisord_openstack.sock shutdown
-    else
-        supervisorctl -s unix:///var/run/supervisord_openstack.sock stop all
-        supervisorctl -s unix:///var/run/supervisord_openstack.sock shutdown
-    fi
+    supervisorctl -s unix:///tmp/supervisord_openstack.sock stop all
+    supervisorctl -s unix:///tmp/supervisord_openstack.sock shutdown
     /usr/bin/supervisor_killall /etc/contrail/supervisord_openstack_files
 end script

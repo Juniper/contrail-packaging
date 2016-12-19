@@ -3,9 +3,4 @@
 # chkconfig: 2345 99 01
 # description: Juniper Network Virtualization API
 
-sock_file=/tmp/supervisord_openstack.sock
-if [ -e "$sock_file" ]; then
-    supervisorctl -s unix:///tmp/supervisord_openstack.sock ${1} `basename ${0}`
-else
-    supervisorctl -s unix:///var/run/supervisord_openstack.sock ${1} `basename ${0}`
-fi
+supervisorctl -s unix:///tmp/supervisord_openstack.sock  ${1} `basename ${0}`
