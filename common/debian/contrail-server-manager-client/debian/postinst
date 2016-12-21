@@ -18,4 +18,4 @@ if [ -e /usr/bin/server-manager ]; then
 	unlink /usr/bin/server-manager
 fi
 
-ln -sf /opt/contrail/server_manager/client/server-manager /usr/bin/server-manager
+ln -s /opt/contrail/server_manager/client/server-manager /usr/bin/server-manager
