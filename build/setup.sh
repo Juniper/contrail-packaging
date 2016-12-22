@@ -26,12 +26,16 @@ mkdir -p /opt/contrail/contrail_install_repo
 mkdir -p /opt/contrail/bin
 
 cd /opt/contrail/contrail_install_repo; tar xvzf /opt/contrail/contrail_packages/contrail_rpms.tgz
+yum clean expire-cache
 
 # create shell scripts and put to bin
 cp /opt/contrail/contrail_packages/helpers/* /opt/contrail/bin/
 
 # Remove existing python-crypto-2.0.1 rpm.
 yum -y --disablerepo=* remove python-crypto-2.0.1
+
+# to provide preference to contrail packages
+yum -y install yum-plugin-priorities
 
 #Install basic packages 
 yum -y install contrail-fabric-utils contrail-setup
