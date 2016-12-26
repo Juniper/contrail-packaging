@@ -29,6 +29,39 @@ HOSTIP=`echo $HOST_IP_LIST | cut -d' ' -f1`
 rel=`lsb_release -r`
 rel=( $rel )
 
+function create_pip_repo()
+{
+  echo "Installing pip2pi ..."
+  pip install pip2pi
+  echo "Create pip repo for required thirdparty packages ..."
+
+  #mkdir -p /var/www/html/thirdparty_packages/pip_repo
+  #mv /var/www/html/thirdparty_packages/*.tar.gz /var/www/html/thirdparty_packages/pip_repo
+
+  sed -i "s/HOSTIP/$HOSTIP/" /opt/contrail/server_manager/ansible/playbooks/files/pip.conf
+  dir2pi /var/www/html/thirdparty_packages/pip_repo
+}
+
+function ansible_and_docker_configs()
+{
+  echo "Configuring Ansible"
+  sed -i "/callback_plugin/c\callback_plugins = \/opt\/contrail\/server_manager\/ansible\/plugins" /etc/ansible/ansible.cfg
+  ansible-galaxy install -r /opt/contrail/server_manager/ansible/playbooks/requirements.yml
+  echo "Starting docker registry"
+
+  NUM_CONT=`docker ps -qa | wc -l`
+  if [ $NUM_CONT != "0" ]; then
+      docker rm -f `docker ps -qa`
+  fi
+
+  echo "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" >> /etc/default/docker
+  service docker restart >> $log_file 2>&1
+  docker run -d -p 5100:5100 --restart=always --name registry registry:2
+
+  #echo "Cleaning up docker images"
+  #docker rmi -f `docker images -a | grep -v registry | grep -v REPOSITORY | awk '{print $3}'`
+}
+
 
 function usage()
 {
@@ -354,6 +387,8 @@ if [ "$SM" != "" ]; then
     apt-get -y install -f >> $log_file 2>&1
   fi
 
+  ansible_and_docker_configs
+  create_pip_repo
   echo "$arrow Completed Installing Server Manager"
 fi
 
