@@ -1,4 +1,4 @@
-contrail-openstack-analytics (BUILDTAG) rrugge; urgency=low
+contrail-openstack-analytics (4.0.0.0-3019) rrugge; urgency=low
 
   [rrugge ]
   * debian/changelog: changelog

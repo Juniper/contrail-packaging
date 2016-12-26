@@ -1,4 +1,4 @@
-contrail-web-server-manager (BUILDTAG) czanpure; urgency=low
+contrail-web-server-manager (4.0.0.0-3019) czanpure; urgency=low
 
   [czanpure ]
   * debian/changelog: changelog

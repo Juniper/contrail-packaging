@@ -1,4 +1,4 @@
-contrail-database-common (BUILDTAG) ijohnson; urgency=low
+contrail-database-common (4.0.0.0-3019) ijohnson; urgency=low
 
   * Initial commit of contrail-database-common package
 

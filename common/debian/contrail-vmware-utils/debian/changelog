@@ -1,4 +1,4 @@
-contrail-vmware-utils (BUILDTAG) kirand; urgency=low
+contrail-vmware-utils (4.0.0.0-3019) kirand; urgency=low
 
   [kirand ]
   * debian/changelog: changelog

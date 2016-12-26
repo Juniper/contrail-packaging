@@ -1,3 +1,3 @@
-contrail-nova-vif (BUILDTAG) builder; urgency=low
+contrail-nova-vif (4.0.0.0-3019) builder; urgency=low
    [builder]
    * debian/changelog: initial version

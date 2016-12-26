@@ -1,4 +1,4 @@
-contrail-vrouter-common (BUILDTAG) ijohnson; urgency=low
+contrail-vrouter-common (4.0.0.0-3019) ijohnson; urgency=low
 
   [ijohnson]
   * debian/changelog: changelog

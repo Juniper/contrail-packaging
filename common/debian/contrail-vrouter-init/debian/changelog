@@ -1,4 +1,4 @@
-contrail-vrouter-init (BUILDTAG) builder; urgency=low
+contrail-vrouter-init (4.0.0.0-3019) builder; urgency=low
    [builder]
    * debian/changelog: initial version
 

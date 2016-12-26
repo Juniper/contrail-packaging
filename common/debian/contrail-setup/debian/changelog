@@ -1,4 +1,4 @@
-contrail-setup (BUILDTAG) swamy; urgency=low
+contrail-setup (4.0.0.0-3019) swamy; urgency=low
 
   [swamy]
   * debian/changelog: changelog

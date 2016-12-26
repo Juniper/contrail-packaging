@@ -1,4 +1,4 @@
-contrail-openstack-vrouter (BUILDTAG) rrugge; urgency=low
+contrail-openstack-vrouter (4.0.0.0-3019) rrugge; urgency=low
 
   [rrugge ]
   * debian/changelog: changelog

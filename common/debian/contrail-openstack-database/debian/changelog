@@ -1,4 +1,4 @@
-contrail-openstack-database (BUILDTAG) rrugge; urgency=low
+contrail-openstack-database (4.0.0.0-3019) rrugge; urgency=low
 
   * Spliting contrail-openstack-database in to contrail-openstack-database and
     contrail-database
