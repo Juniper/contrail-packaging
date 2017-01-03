@@ -46,7 +46,16 @@ override_dh_auto_install:
 	# Install directories
 	install -d -m 755 $(build_root)$(_contrailopt)
 	install -d -m 755 $(build_root)$(_contrailopt)/bin
+	install -d -m 755 $(build_root)/opt/contrail/server_manager/
+	install -d -m 755 $(build_root)/opt/contrail/server_manager/client/
 	# Copy/install files
+	cp -r $(src_path)/client/preconfig.py $(build_root)/opt/contrail/server_manager/client/
+	cp -r $(src_path)/client/testbed_parser.py $(build_root)/opt/contrail/server_manager/client/
+	cp -r $(src_path)/client/*.txt $(build_root)/opt/contrail/server_manager/client/
+	cp -r $(src_path)/client/*.json $(build_root)/opt/contrail/server_manager/client/
+	install -p -m 755 $(src_path)/kickstarts/interface_setup.py $(build_root)/opt/contrail/server_manager/client/interface_setup.py
+	install -p -m 755 $(src_path)/kickstarts/staticroute_setup.py $(build_root)/opt/contrail/server_manager/client/staticroute_setup.py
+	install -p -m 755 $(src_path)/client/provision.sh $(build_root)/opt/contrail/server_manager/client/provision.sh
 	(cd $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/ && tar zxf servermanagercli-$(BUILDTAG)-$(CONTRAIL_SKU).tar.gz)
 	(cd $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/servermanagercli-$(BUILDTAG)-$(CONTRAIL_SKU) && ${__python} setup.py install --root=$(build_root) --install-scripts ${_contrailopt}/bin/)
 override_dh_shlibdeps:
