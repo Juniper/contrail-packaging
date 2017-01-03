@@ -1,0 +1,23 @@
+[Unit]
+Description=OpenStack Compute Console
+After=postgresql.service mysql.service keystone.service rabbitmq-server.service ntp.service 
+
+
+
+[Service]
+User=nova
+Group=nova
+Type=simple
+WorkingDirectory=/var/lib/nova
+PermissionsStartOnly=true
+ExecStartPre=/bin/mkdir -p /var/lock/nova /var/log/nova /var/lib/nova
+ExecStartPre=/bin/chown nova:nova /var/lock/nova /var/lib/nova
+ExecStartPre=/bin/chown nova:adm /var/log/nova
+ExecStart=/etc/init.d/nova-console systemd-start
+Restart=on-failure
+LimitNOFILE=65535
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target
+
