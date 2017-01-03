@@ -1,0 +1,14 @@
+[Unit]
+SourcePath=/usr/share/zookeeper/bin/zookeeper
+Description="Zookeeper"
+
+[Service]
+Type=forking
+Restart=no
+TimeoutSec=5min
+IgnoreSIGPIPE=no
+KillMode=process
+GuessMainPID=no
+RemainAfterExit=yes
+ExecStart=/usr/share/zookeeper/bin/zkServer.sh start
+ExecStop=/usr/share/zookeeper/bin/zkServer.sh stop

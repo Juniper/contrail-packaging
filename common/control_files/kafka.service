@@ -1,0 +1,21 @@
+[Unit]
+Description=kafka
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/share/kafka/bin/kafka-server-start.sh /usr/share/kafka/config/server.properties
+TimeoutStopSec=30
+Restart=always
+ExecStop=/usr/share/kafka/bin/kafka-server-stop.sh /usr/share/kafka/config/server.properties
+StandardOutput=journal
+StandardError=journal
+LimitNOFILE=infinity
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectHome=yes
+ReadOnlyDirectories=/
+ReadWriteDirectories=-/usr/share/kafka
+
+[Install]
+WantedBy=multi-user.target
