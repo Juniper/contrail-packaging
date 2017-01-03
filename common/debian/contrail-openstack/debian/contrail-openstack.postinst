@@ -1,33 +1,41 @@
 echo "Running Postinst for contrail-openstack"
-for svc in keystone nova-api nova-scheduler nova-conductor nova-console\
-           nova-consoleauth nova-novncproxy glance-api\
-           glance-registry cinder-api cinder-scheduler heat-engine heat-api heat-api-cfn\
-           barbican-api barbican-worker ; do
-    if [ -f /etc/init/$svc.conf ]; then
-        # Service stop is required for SM provisioing; because SM does
-        # installation of contrail-openstack after provisioning
-        # with native openstack packages
-        service $svc stop || true
-        mv /etc/init/$svc.conf /etc/init/$svc.conf.backup
-        # Move only in case of fresh install, if /etc/init/$svc.conf exists
-        # it is a fresh install case
-        if [ -f /etc/init.d/$svc ]; then
-            mv /etc/init.d/$svc /etc/init.d/$svc.backup
+if [ -f /etc/init.d/keystone.initd.supervisord ]; then
+    for svc in keystone nova-api nova-scheduler nova-conductor nova-console\
+               nova-consoleauth nova-novncproxy glance-api\
+               glance-registry cinder-api cinder-scheduler heat-engine heat-api heat-api-cfn\
+               barbican-api barbican-worker ; do
+        if [ -f /etc/init/$svc.conf ]; then
+             # Service stop is required for SM provisioing; because SM does
+             # installation of contrail-openstack after provisioning
+             # with native openstack packages
+             service $svc stop || true
+             mv /etc/init/$svc.conf /etc/init/$svc.conf.backup
+             # Move only in case of fresh install, if /etc/init/$svc.conf exists
+             # it is a fresh install case
+             if [ -f /etc/init.d/$svc ]; then
+                mv /etc/init.d/$svc /etc/init.d/$svc.backup
+            fi
         fi
-    fi
-    if [ -f /etc/init.d/$svc.initd.supervisord ]; then
-        mv /etc/init.d/$svc.initd.supervisord /etc/init.d/$svc
-    fi
-    if [ -f /etc/init/$svc.override ]; then
-        rm /etc/init/$svc.override
-    fi
-done
+        if [ -f /etc/init.d/$svc.initd.supervisord ]; then
+            mv /etc/init.d/$svc.initd.supervisord /etc/init.d/$svc
+        fi
+        if [ -f /etc/init/$svc.override ]; then
+            rm /etc/init/$svc.override
+        fi
+    done
+fi
 
 # Needed for barbican-api to work
 chown -R barbican:barbican /etc/barbican/
 
 # Start mysql at boot time
-sudo update-rc.d -f mysql remove
-sudo update-rc.d mysql defaults
-sed -i 's/sleep 1/sleep 2/' /etc/init.d/mysql
+if [ -f /etc/init.d/keystone.initd.supervisord ]; then
+    sudo systemctl enable mysql.service
+    sudo systemctl start mysql.service
+else
+    sudo update-rc.d -f mysql remove
+    sudo update-rc.d mysql defaults
+    sed -i 's/sleep 1/sleep 2/' /etc/init.d/mysql
+fi
+
 echo "Postinst for contrail-openstack done"
