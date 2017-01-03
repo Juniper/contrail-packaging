@@ -221,7 +221,6 @@ while [ "$1" != "" ]; do
 	    SM="contrail-server-manager"
 	    WEBUI="contrail-web-server-manager"
 	    WEBCORE="contrail-web-core"
-	    SMCLIENT="contrail-server-manager-client"
 	    SMCLIFFCLIENT="contrail-server-manager-cliff-client"
             ;;
 	--smlite)
