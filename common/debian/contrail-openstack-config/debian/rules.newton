@@ -7,19 +7,15 @@
 # This special exception was added by Craig Small in version 0.37 of dh-make.
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
-
-SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/(.*)\/build\/debian\/(.*)/\1/")
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export buildroot := $(SB_TOP)/build/debian/contrail-openstack
-export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
+export buildroot := $(SB_TOP)/build/debian/contrail-openstack-config
 export _bindir := /usr/bin
-export _initddir := /etc/init.d
-export _initdir := /etc/init
 export _sysconfdir := /etc
-export _mysqllogdir := /var/log/mysql
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
+export _nodemgr_config := $(SB_TOP)/controller/src/nodemgr/config_nodemgr
 export _servicedir := /etc/systemd/system
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
@@ -37,16 +33,25 @@ endif
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
-override_dh_auto_install: 
+override_dh_auto_install:
 	# Install all the directories
 	install -d -m 755 $(buildroot)$(_bindir)
 	install -d -m 755 $(buildroot)$(_initdir)
 	install -d -m 755 $(buildroot)$(_initddir)
 	install -d -m 755 $(buildroot)$(_sysconfdir)
-	install -d -m 755 $(buildroot)$(_mysqllogdir)
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
 	install -d -m 755 $(buildroot)$(_servicedir)
 
+	install -p -m 755 $(_src_config)/contrail-api.service $(buildroot)$(_servicedir)/contrail-api.service
+	install -p -m 755 $(_src_config)/contrail-config-nodemgr.service $(buildroot)$(_servicedir)/contrail-config-nodemgr.service
+	install -p -m 755 $(_nodemgr_config)/contrail-config-nodemgr.conf $(buildroot)$(_sysconfdir)/contrail/contrail-config-nodemgr.conf
+	install -p -m 755 $(_src_config)/contrail-device-manager.service $(buildroot)$(_servicedir)/contrail-device-manager.service
+	install -p -m 755 $(_src_config)/contrail-discovery.service $(buildroot)$(_servicedir)/contrail-discovery.service
+	install -p -m 755 $(_src_config)/contrail-schema.service $(buildroot)$(_servicedir)/contrail-schema.service
+	install -p -m 755 $(_src_config)/contrail-svc-monitor.service $(buildroot)$(_servicedir)/contrail-svc-monitor.service
+	install -p -m 755 $(_src_config)/ifmap.service $(buildroot)$(_servicedir)/ifmap.service
+
 override_dh_usrlocal:	
+
 
 override_dh_shlibdeps:
