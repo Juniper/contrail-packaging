@@ -30,13 +30,27 @@ else
 endif
 
 CEILOMETER_PLUGIN := ceilometer-plugin-contrail-deb
+CONTRAIL_VROUTER_INIT := contrail-vrouter-init-deb
+CONTRAIL_DATABASE_COMMON := contrail-database-common-deb
+CONTRAIL_OPENSTACK := contrail-openstack-deb
+CONTRAIL_OPENSTACK_ANALYTICS := contrail-openstack-analytics-deb
 CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-deb
+CONTRAIL_OPENSTACK_CONTROL := contrail-openstack-control-deb
+CONTRAIL_OPENSTACK_DATABASE := contrail-openstack-database-deb
+CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-deb
+CONTRAIL_OPENSTACK_WEBUI := contrail-openstack-webui-deb
 
 ifeq ($(CONTRAIL_SKU),newton)
-    CONTRAIL_OPENSTACK := contrail-openstack-newton-deb
     CONTRAIL_HEAT := contrail-heat-deb
+    CONTRAIL_VROUTER_INIT := contrail-vrouter-init-newton-deb
+    CONTRAIL_DATABASE_COMMON := contrail-database-common-newton-deb
+    CONTRAIL_OPENSTACK := contrail-openstack-newton-deb
+    CONTRAIL_OPENSTACK_ANALYTICS := contrail-openstack-analytics-newton-deb
     CONTRAIL_OPENSTACK_CONFIG := contrail-openstack-config-newton-deb
+    CONTRAIL_OPENSTACK_CONTROL := contrail-openstack-control-newton-deb
+    CONTRAIL_OPENSTACK_DATABASE := contrail-openstack-database-newton-deb
     CONTRAIL_OPENSTACK_VROUTER := contrail-openstack-vrouter-newton-deb
+    CONTRAIL_OPENSTACK_WEBUI := contrail-openstack-webui-newton-deb
     ifeq ($(SERIES),xenial)
         CONTRAIL_VRDPDK_INIT := contrail-vrouter-dpdk-init-deb
         CONTRAIL_VRDPDK_BIN  := contrail-vrouter-dpdk
@@ -147,12 +161,12 @@ endif
 
 PACKAGES = \
         contrail \
-        ukai-deb \
-        ifmap-server \
+	ukai-deb \
+	ifmap-server \
         ifmap-python-client \
         contrail-nova-vif-deb \
         contrail-nova-networkapi-deb \
-	contrail-vrouter-init-deb \
+	$(CONTRAIL_VROUTER_INIT) \
 	contrail-vrouter-common-deb \
         $(CONTRAIL_VRDPDK_BIN) \
         $(CONTRAIL_VRDPDK_INIT) \
@@ -162,13 +176,13 @@ PACKAGES = \
 	contrail-setup-deb \
 	$(CONTRAIL_OPENSTACK) \
 	contrail-openstack-ha-deb \
-	contrail-openstack-analytics-deb \
+	$(CONTRAIL_OPENSTACK_ANALYTICS) \
 	$(CONTRAIL_OPENSTACK_CONFIG) \
-	contrail-openstack-control-deb \
-	contrail-database-common-deb \
-	contrail-openstack-database-deb \
+	$(CONTRAIL_OPENSTACK_CONTROL) \
+	$(CONTRAIL_DATABASE_COMMON) \
+	$(CONTRAIL_OPENSTACK_DATABASE) \
 	$(CONTRAIL_OPENSTACK_VROUTER) \
-	contrail-openstack-webui-deb \
+	$(CONTRAIL_OPENSTACK_WEBUI) \
 	contrail-fabric-utils-deb \
 	$(CONTRAIL_TEST_CI) \
 	$(CONTRAIL_TEST) \
@@ -188,7 +202,7 @@ all: ${PACKAGES}
 
 PACKAGES_VMWARE = \
         contrail \
-        ukai-deb \
+	ukai-deb \
         ifmap-server \
         ifmap-python-client \
         contrail-vrouter-init-deb \
@@ -202,7 +216,7 @@ PACKAGES_VMWARE = \
         contrail-openstack-ha-deb \
         contrail-openstack-analytics-deb \
         contrail-openstack-control-deb \
-	    contrail-database-common-deb \
+	contrail-database-common-deb \
         contrail-openstack-database-deb \
         contrail-openstack-webui-deb \
         contrail-fabric-utils-deb \
@@ -594,6 +608,7 @@ contrail-openstack-config-newton-deb:
 	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
           --version $(VERSION) --file debian/control.newton.in ) || echo no control.newton.in
 	cp ${BUILDDIR}/debian/control.newton ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.newton ${BUILDDIR}/debian/rules
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
@@ -626,6 +641,71 @@ contrail-ostack-dashboard-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-ostack-dashboard)
 	rm -rf ${BUILDDIR}
 
+contrail-vrouter-init-newton-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-vrouter-init)
+	(cd ${BUILDDIR}; [ -f debian/control.newton.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.newton.in ) || echo no control.newton.in
+	cp ${BUILDDIR}/debian/control.newton.in ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.newton ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-vrouter-init-newton-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-vrouter-init; fakeroot debian/rules clean)
+
+contrail-database-common-newton-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-database-common)
+	(cd ${BUILDDIR}; [ -f debian/control.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.in ) || echo no control.in
+	cp ${BUILDDIR}/debian/control.in ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.newton ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-database-common-newton-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-database-common; fakeroot debian/rules clean)
+
+contrail-openstack-analytics-newton-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-analytics)
+	(cd ${BUILDDIR}; [ -f debian/control.newton.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.newton.in ) || echo no control.newton.in
+	cp ${BUILDDIR}/debian/control.newton.in ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.newton ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-analytics-newton-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-analytics; fakeroot debian/rules clean)
+
+contrail-openstack-control-newton-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-control)
+	(cd ${BUILDDIR}; [ -f debian/control.newton.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.newton.in ) || echo no control.newton.in
+	cp ${BUILDDIR}/debian/control.newton.in ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.newton ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-control-newton-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-control; fakeroot debian/rules clean)
+
+contrail-openstack-database-newton-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-database)
+	(cd ${BUILDDIR}; [ -f debian/control.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.in ) || echo no control.in
+	cp ${BUILDDIR}/debian/control.in ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.newton ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-database-newton-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-database; fakeroot debian/rules clean)
+
 contrail-openstack-vrouter-liberty-deb:
 	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter)
 	(cd ${BUILDDIR}; [ -f debian/control.liberty.in ] && python \
@@ -655,12 +735,26 @@ contrail-openstack-vrouter-newton-deb:
 	(cd ${BUILDDIR}; [ -f debian/control.newton.in ] && python \
 	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
           --version $(VERSION) --file debian/control.newton.in ) || echo no control.newton.in
-	cp ${BUILDDIR}/debian/control.newton ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/control.newton.in ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.newton ${BUILDDIR}/debian/rules
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
 contrail-openstack-vrouter-newton-clean:
 	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-openstack-vrouter; fakeroot debian/rules clean)
+
+contrail-openstack-webui-newton-deb:
+	$(eval BUILDDIR=${SB_TOP}/tools/packaging/common/debian/contrail-openstack-webui)
+	(cd ${BUILDDIR}; [ -f debian/control.in ] && python \
+	$(SB_TOP)/tools/packaging/tools/scripts/add_dependency_version.py \
+          --version $(VERSION) --file debian/control.in ) || echo no control.in
+	cp ${BUILDDIR}/debian/control.in ${BUILDDIR}/debian/control
+	cp ${BUILDDIR}/debian/rules.newton ${BUILDDIR}/debian/rules
+	(cd ${BUILDDIR}; fakeroot debian/rules clean)
+	(cd ${BUILDDIR}; fakeroot debian/rules binary)
+
+contrail-openstack-webui-newton-clean:
+	(cd ${SB_TOP}/tools/packaging/common/debian/contrail-webui-vrouter; fakeroot debian/rules clean)
 
 libvirt-deb:
 	$(eval LIBDIR=${SB_TOP}/third_party/libvirt)
