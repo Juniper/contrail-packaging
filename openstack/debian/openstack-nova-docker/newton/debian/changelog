@@ -1,0 +1,17 @@
+nova-docker (0.0.1.dev241-0contrail0) xenial-newton; urgency=medium
+
+  * Nova docker package for newton release.
+
+ -- Amudha R <amudha@juniper.net>  Thu, 05 Jan 2017 10:26:34 +0000
+
+nova-docker (0.0.1.dev241-0contrail0) trusty-mitaka; urgency=medium
+
+  * Nova docker package for mitaka release. 
+
+ -- Amudha R <amudha@juniper.net>  Tue, 13 Jun 2016 14:26:34 +0000
+
+nova-docker (0.0.1.dev241-0contrail0) trusty; urgency=low
+
+  * Initial release - Nova docker package for liberty release.
+
+ -- Ignatious Johnson <ijohnson@juniper.net>  Wed, 04 May 2016 22:16:09 +0000

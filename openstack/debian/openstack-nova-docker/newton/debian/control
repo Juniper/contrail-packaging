@@ -1,0 +1,25 @@
+Source: nova-docker
+Section: python
+Priority: optional
+Maintainer: Ignatious Johnson <ijohnson@juniper.net>
+Build-Depends: debhelper (>= 7),
+               python-pbr (>= 0.6),
+               python-setuptools (>= 0.6b3)
+Standards-Version: 3.9.4
+Homepage: https://wiki.openstack.org/wiki/Docker
+
+Package: nova-docker
+Architecture: all
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         nova-compute,
+         lxc-docker,
+         python-six,
+         python-babel,
+         python-docker-py (>= 1.3.0-1contrail1),
+         python-oslo.serialization,
+         python-oslo.utils,
+         python-oslo.config,
+         python-oslo.concurrency,
+         python-oslo.i18n,
+Description: Docker driver for Liberty OpenStack Nova
