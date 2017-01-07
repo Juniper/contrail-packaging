@@ -16,11 +16,9 @@ Origin: https://review.openstack.org/#/c/372304/
 Bug: http://bugs.launchpad.net/bugs/1623871
 Bug-Ubuntu: http://bugs.launchpad.net/bugs/1623871
 
-Index: nova-14.0.0~rc1/nova/virt/libvirt/driver.py
-===================================================================
---- nova-14.0.0~rc1.orig/nova/virt/libvirt/driver.py
-+++ nova-14.0.0~rc1/nova/virt/libvirt/driver.py
-@@ -5108,7 +5108,8 @@ class LibvirtDriver(driver.ComputeDriver
+--- a/nova/virt/libvirt/driver.py
++++ b/nova/virt/libvirt/driver.py
+@@ -5121,7 +5121,8 @@
                      self._bad_libvirt_numa_version_warn = True
                  return False
  
@@ -30,7 +28,7 @@ Index: nova-14.0.0~rc1/nova/virt/libvirt/driver.py
                            (arch.PPC64,
                             arch.PPC64LE): MIN_LIBVIRT_NUMA_VERSION_PPC}
          caps = self._host.get_capabilities()
-@@ -5124,7 +5125,8 @@ class LibvirtDriver(driver.ComputeDriver
+@@ -5137,7 +5138,8 @@
      def _has_hugepage_support(self):
          # This means that the host can support multiple values for the size
          # field in LibvirtConfigGuestMemoryBackingPage
@@ -40,11 +38,9 @@ Index: nova-14.0.0~rc1/nova/virt/libvirt/driver.py
          caps = self._host.get_capabilities()
          return ((caps.host.cpu.arch in supported_archs) and
                  self._host.has_min_version(MIN_LIBVIRT_HUGEPAGE_VERSION,
-Index: nova-14.0.0~rc1/nova/virt/libvirt/driver.py
-===================================================================
---- nova-14.0.0~rc1.orig/nova/tests/unit/virt/libvirt/test_driver.py
-+++ nova-14.0.0~rc1/nova/tests/unit/virt/libvirt/test_driver.py
-@@ -2910,7 +2910,8 @@ class LibvirtConnTestCase(test.NoDBTestCase):
+--- a/nova/tests/unit/virt/libvirt/test_driver.py
++++ b/nova/tests/unit/virt/libvirt/test_driver.py
+@@ -2910,7 +2910,8 @@
                         return_value=True)
      @mock.patch.object(host.Host, "get_capabilities")
      def test_does_want_hugepages(self, mock_caps, mock_hp, mock_numa):
