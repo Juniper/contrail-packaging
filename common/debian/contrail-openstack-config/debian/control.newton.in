@@ -9,7 +9,6 @@ Package: contrail-openstack-config
 Architecture: all
 Maintainer: rrugge <rrugge@juniper.net>
 Depends:
- supervisor,
  contrail-nodemgr,
  contrail-lib,
  contrail-config,
