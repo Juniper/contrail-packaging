@@ -1,14 +1,21 @@
-nova (2:14.0.1-0ubuntu1~cloud0.1contrail) xenial-newton; urgency=medium
+nova (2:14.0.2-0ubuntu1~cloud0.1contrail) xenial-newton; urgency=medium
 
   * Added 1contrail in contrail package.
 
- -- Amudha R <amudha@juniper.net>  Wed, 23 Nov 2016 14:26:34 +0000
+ -- Amudha R <amudha@juniper.net>  Fri, 06 Jan 2017 14:26:34 +0000
 
-nova (2:14.0.1-0ubuntu1~cloud0) xenial-newton; urgency=medium
+nova (2:14.0.2-0ubuntu1~cloud0) xenial-newton; urgency=medium
 
   * New upstream release for the Ubuntu Cloud Archive.
 
- -- Openstack Ubuntu Testing Bot <openstack-testing-bot@ubuntu.com>  Wed, 12 Oct 2016 17:10:45 +0000
+ -- Openstack Ubuntu Testing Bot <openstack-testing-bot@ubuntu.com>  Thu, 15 Dec 2016 20:10:10 +0000
+
+nova (2:14.0.2-0ubuntu1) yakkety; urgency=medium
+
+  * New upstream point release for OpenStack Newton (LP: #1645772).
+  * d/p/libvirt-add-hugepages-support-for-arm64.patch: Rebased.
+
+ -- David Della Vecchia <ddv@canonical.com>  Fri, 02 Dec 2016 10:46:31 -0500
 
 nova (2:14.0.1-0ubuntu1) yakkety; urgency=medium
 
