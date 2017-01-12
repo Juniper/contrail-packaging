@@ -8,7 +8,6 @@ Architecture: all
 Depends: contrail-vrouter,
     contrail-vrouter-utils,
     contrail-vrouter-agent,
-    contrail-vrouter-agent-supervisor,
     python-contrail-vrouter-api,
     python-opencontrail-vrouter-netns,
     supervisor
