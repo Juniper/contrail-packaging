@@ -13,7 +13,6 @@ Depends:
  contrail-nodemgr,
  contrail-lib,
  contrail-config,
- control-config-supervisor,
  contrail-f5,
  neutron-plugin-contrail,
  neutron-server,

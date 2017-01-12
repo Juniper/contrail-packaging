@@ -11,9 +11,7 @@ Maintainer: amoghe <amoghe@juniper.net>
 Depends: supervisor,
          contrail-lib,
          contrail-control,
-         contrail-control-supervisor,
          contrail-dns,
-         contrail-dns-supervisor,
          contrail-setup,
          contrail-utils,
          contrail-nodemgr
