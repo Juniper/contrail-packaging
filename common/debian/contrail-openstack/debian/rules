@@ -9,7 +9,7 @@
 export DH_VERBOSE=1
 
 SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/build\/debian\/(.*)/\1/")
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := $(SB_TOP)/build/debian/contrail-openstack
@@ -20,6 +20,7 @@ export _initdir := /etc/init
 export _sysconfdir := /etc
 export _mysqllogdir := /var/log/mysql
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
+export _servicedir := /etc/systemd/system
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -36,7 +37,7 @@ endif
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
 
-override_dh_auto_install:
+override_dh_auto_install: 
 	# Install all the directories
 	install -d -m 755 $(buildroot)$(_bindir)
 	install -d -m 755 $(buildroot)$(_initdir)
@@ -44,37 +45,25 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_sysconfdir)
 	install -d -m 755 $(buildroot)$(_mysqllogdir)
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
-	# Install supervisord config config files and directories
-	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files
-	install -D -m 755 $(_src_config)/supervisor-openstack.upstart $(buildroot)$(_initdir)/supervisor-openstack.conf
-	install -p -m 755 $(_src_config)/supervisord_openstack.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack.conf
-	# Install supervisor init.d files
-	install -p -m 755 $(_src_config)/keystone.initd.supervisord $(buildroot)$(_initddir)/keystone.initd.supervisord
-	install -p -m 755 $(_src_config)/nova-api.initd.supervisord $(buildroot)$(_initddir)/nova-api.initd.supervisord
-	install -p -m 755 $(_src_config)/nova-scheduler.initd.supervisord $(buildroot)$(_initddir)/nova-scheduler.initd.supervisord
-	install -p -m 755 $(_src_config)/nova-conductor.initd.supervisord $(buildroot)$(_initddir)/nova-conductor.initd.supervisord
-	install -p -m 755 $(_src_config)/nova-console.initd.supervisord $(buildroot)$(_initddir)/nova-console.initd.supervisord
-	install -p -m 755 $(_src_config)/nova-consoleauth.initd.supervisord $(buildroot)$(_initddir)/nova-consoleauth.initd.supervisord
-	#install -p -m 755 $(_src_config)/nova-objectstore.initd.supervisord $(buildroot)$(_initddir)/nova-objectstore.initd.supervisord
-	install -p -m 755 $(_src_config)/nova-novncproxy.initd.supervisord $(buildroot)$(_initddir)/nova-novncproxy.initd.supervisord
-	install -p -m 755 $(_src_config)/glance-api.initd.supervisord $(buildroot)$(_initddir)/glance-api.initd.supervisord
-	install -p -m 755 $(_src_config)/glance-registry.initd.supervisord $(buildroot)$(_initddir)/glance-registry.initd.supervisord
-	install -p -m 755 $(_src_config)/cinder-api.initd.supervisord $(buildroot)$(_initddir)/cinder-api.initd.supervisord
-	install -p -m 755 $(_src_config)/cinder-scheduler.initd.supervisord $(buildroot)$(_initddir)/cinder-scheduler.initd.supervisord
-	# Install supervisord config files
-	install -p -m 755 $(_src_config)/keystone.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/keystone.ini
-	install -p -m 755 $(_src_config)/glance-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/glance-api.ini
-	install -p -m 755 $(_src_config)/glance-registry.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/glance-registry.ini
-	install -p -m 755 $(_src_config)/cinder-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/cinder-api.ini
-	install -p -m 755 $(_src_config)/cinder-scheduler.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/cinder-scheduler.ini
-	install -p -m 755 $(_src_config)/nova-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-api.ini
-	install -p -m 755 $(_src_config)/nova-scheduler.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-scheduler.ini
-	install -p -m 755 $(_src_config)/nova-conductor.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-conductor.ini
-	install -p -m 755 $(_src_config)/nova-console.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-console.ini
-	install -p -m 755 $(_src_config)/nova-consoleauth.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-consoleauth.ini
-	#install -p -m 755 $(_src_config)/nova-objectstore.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-objectstore.ini
-	install -p -m 755 $(_src_config)/nova-novncproxy.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/nova-novncproxy.ini
-	
+	install -d -m 755 $(buildroot)$(_servicedir)
+
+	install -p -m 755 $(_src_config)/nova-api $(buildroot)$(_initddir)/nova-api
+	install -p -m 755 $(_src_config)/nova-compute $(buildroot)$(_initddir)/nova-compute
+	install -p -m 755 $(_src_config)/nova-conductor $(buildroot)$(_initddir)/nova-conductor
+	install -p -m 755 $(_src_config)/nova-console $(buildroot)$(_initddir)/nova-console
+	install -p -m 755 $(_src_config)/nova-consoleauth $(buildroot)$(_initddir)/nova-consoleauth
+	install -p -m 755 $(_src_config)/nova-novncproxy $(buildroot)$(_initddir)/nova-novncproxy
+	install -p -m 755 $(_src_config)/nova-scheduler $(buildroot)$(_initddir)/nova-scheduler
+
+	install -p -m 755 $(_src_config)/nova-api.service $(buildroot)$(_servicedir)/nova-api.service
+	install -p -m 755 $(_src_config)/nova-compute.service $(buildroot)$(_servicedir)/nova-compute.service
+	install -p -m 755 $(_src_config)/nova-conductor.service $(buildroot)$(_servicedir)/nova-conductor.service
+	install -p -m 755 $(_src_config)/nova-console.service $(buildroot)$(_servicedir)/nova-console.service
+	install -p -m 755 $(_src_config)/nova-consoleauth.service $(buildroot)$(_servicedir)/nova-consoleauth.service
+	install -p -m 755 $(_src_config)/nova-novncproxy.service $(buildroot)$(_servicedir)/nova-novncproxy.service
+	install -p -m 755 $(_src_config)/nova-scheduler.service $(buildroot)$(_servicedir)/nova-scheduler.service
+
+
 override_dh_usrlocal:	
 
 override_dh_shlibdeps:
