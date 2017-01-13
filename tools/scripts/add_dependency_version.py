@@ -41,6 +41,13 @@ class ChangeDepends(object):
     def add_version_to_or_depends(self, depends):
         return [dep.strip() + ' (>= %s)' % self._version for dep in depends.split('|')]
 
+    def depends(self):
+        try:
+            self.control.get('dummysection', 'Depends')
+        except NoOptionError:
+            return False
+        return True
+
     def change_config(self):
         dep_list = map(lambda x: x.strip(), self.control.get('dummysection', 'Depends').split(','))
         dummy_set, ch_or_set = self.partition(self.cset_or_cond, dep_list)
@@ -65,7 +72,8 @@ class ChangeDepends(object):
 
     def run(self):
         self.read_config()
-        self.change_config()
+        if self.depends():
+            self.change_config()
         self.write_output()
 
 def main():
