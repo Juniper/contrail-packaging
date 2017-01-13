@@ -280,8 +280,28 @@ package-contrail: debian-contrail
 	@echo "Building package $(PACKAGE)"
 	sed -i 's/VERSION/$(VERSION)/g' $(SB_TOP)/build/packages/$(PACKAGE)/debian/changelog
 	sed -i 's/SERIES/$(SERIES)/g' $(SB_TOP)/build/packages/$(PACKAGE)/debian/changelog
-# TODO: add BUILDDEP_SERIES after https://review.opencontrail.org/#/c/2640/
 	sed -i '/BUILDDEP_SERIES/d' $(SB_TOP)/build/packages/$(PACKAGE)/debian/control
+	# Append series specific depends
+	(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian; sed -i '/SUPERVISORDEP_SERIES/r supervisordep.$(SERIES)' control)
+	sed -i '/SUPERVISORDEP_SERIES/d' $(SB_TOP)/build/packages/$(PACKAGE)/debian/control
+	# Append series specific install files
+	$(eval CONTRAIL_INSTALL_SERIES := $(shell find $(SB_TOP)/build/packages/$(PACKAGE)/debian/ -name '*.install.$(SERIES)'))
+	$(foreach series_fname, $(CONTRAIL_INSTALL_SERIES), \
+			(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian;\
+			sed -i '/INSTALL_SERIES/r $(series_fname)' $(patsubst %.$(SERIES),%,$(series_fname))); )
+	$(eval CONTRAIL_INSTALL := $(shell find $(SB_TOP)/build/packages/$(PACKAGE)/debian/ -name '*.install'))
+	$(foreach install_fname, $(CONTRAIL_INSTALL), \
+			(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian;\
+			sed -i '/INSTALL_SERIES/d' $(install_fname)); )
+	# Append series specific dirs
+	$(eval CONTRAIL_DIRS_SERIES := $(shell find $(SB_TOP)/build/packages/$(PACKAGE)/debian/ -name '*.dirs.$(SERIES)'))
+	$(foreach series_dirname, $(CONTRAIL_DIRS_SERIES), \
+			(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian;\
+			sed -i '/DIRS_SERIES/r $(series_dirname)' $(patsubst %.$(SERIES),%,$(series_dirname))); )
+	$(eval CONTRAIL_DIRS := $(shell find $(SB_TOP)/build/packages/$(PACKAGE)/debian/ -name '*.dirs'))
+	$(foreach dir_fname, $(CONTRAIL_DIRS), \
+			(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian;\
+			sed -i '/DIRS_SERIES/d' $(dir_fname)); )
 	(cd $(SB_TOP)/build/packages/$(PACKAGE); dpkg-buildpackage -uc -us -b -rfakeroot)
 	chmod u+x $(SB_TOP)/build/packages/contrail/debian/rules.modules
 	$(foreach kver, $(AVAILABLE_KERNEL_VERSIONS), \
