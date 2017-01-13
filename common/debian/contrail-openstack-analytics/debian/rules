@@ -9,17 +9,16 @@
 export DH_VERBOSE=1
 
 SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/build\/debian\/(.*)/\1/")
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := $(SB_TOP)/build/debian/contrail-openstack-analytics
 export _bindir := /usr/bin
-export _initddir := /etc/init.d
-export _initdir := /etc/init
 export _sysconfdir := /etc
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 export _nodemgr_config := $(SB_TOP)/controller/src/nodemgr/analytics_nodemgr
+export _servicedir := /etc/systemd/system
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -42,12 +41,17 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_bindir)
 	install -d -m 755 $(buildroot)$(_initdir)
 	install -d -m 755 $(buildroot)$(_initddir)
+	install -d -m 755 $(buildroot)$(_servicedir)
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
-	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_analytics_files
-	# install supervisord ini, upstart, conf and rules files
-	install -p -m 755 $(_nodemgr_config)/contrail-analytics-nodemgr.ini $(buildroot)/$(_sysconfdir)/contrail/supervisord_analytics_files/contrail-analytics-nodemgr.ini
-	install -p -m 755 $(_nodemgr_config)/contrail-analytics-nodemgr.conf $(buildroot)/$(_sysconfdir)/contrail/contrail-analytics-nodemgr.conf
-	install -p -m 755 $(_nodemgr_config)/contrail-analytics-nodemgr.initd.supervisord $(buildroot)$(_initddir)/contrail-analytics-nodemgr
+
+	install -p -m 755 $(_src_config)/contrail-alarm-gen.service $(buildroot)$(_servicedir)/contrail-alarm-gen.service
+	install -p -m 755 $(_src_config)/contrail-analytics-api.service $(buildroot)$(_servicedir)/contrail-analytics-api.service
+	install -p -m 755 $(_src_config)/contrail-analytics-nodemgr.service $(buildroot)$(_servicedir)/contrail-analytics-nodemgr.service
+	install -p -m 755 $(_src_config)/contrail-collector.service $(buildroot)$(_servicedir)/contrail-collector.service
+	install -p -m 755 $(_src_config)/contrail-query-engine.service $(buildroot)$(_servicedir)/contrail-query-engine.service
+	install -p -m 755 $(_src_config)/contrail-snmp-collector.service $(buildroot)$(_servicedir)/contrail-snmp-collector.service
+	install -p -m 755 $(_src_config)/contrail-topology.service $(buildroot)$(_servicedir)/contrail-topology.service
+
 
 override_dh_usrlocal:	
 
