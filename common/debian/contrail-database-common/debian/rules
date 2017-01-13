@@ -9,7 +9,7 @@
 export DH_VERBOSE=1
 
 SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/build\/debian\/(.*)/\1/")
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := $(SB_TOP)/build/debian/contrail-database-common
@@ -18,6 +18,7 @@ export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-lib
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 export _datadir := /usr/share
 export _sysconfdir := /etc
+export _servicedir := /etc/systemd/system
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -38,9 +39,10 @@ override_dh_auto_install:
 	# Setup directories
 	install -d -m 777 $(buildroot)$(_datadir)
 	install -d -m 777 $(buildroot)$(_sysconfdir)
+	install -d -m 755 $(buildroot)$(_servicedir)
 	install -d -m 755 $(buildroot)$(_datadir)/cassandra/conf
-	install -D -m 755 $(_src_config)/zookeeper.conf $(buildroot)$(_sysconfdir)/init/zookeeper.conf
-	install -D -m 755 $(_src_config)/contrail-database.initd $(buildroot)$(_sysconfdir)/init.d/contrail-database
+	install -p -m 755 $(_src_config)/contrail-database.service $(buildroot)$(_servicedir)/contrail-database.service
+	install -p -m 755 $(_src_config)/cassandra.service $(buildroot)$(_servicedir)/cassandra.service
 
 override_dh_shlibdeps:
 
