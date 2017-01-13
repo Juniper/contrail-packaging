@@ -4,15 +4,15 @@
 export DH_VERBOSE=1
 
 SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/build\/debian\/(.*)/\1/")
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := ${SB_TOP}/build/debian/contrail-vrouter-init
 export _confsrcdir := ${SB_TOP}/tools/packaging/common/control_files
 
-export _supervisorconf := /etc/contrail/supervisord_vrouter_files
 export _opt_bin := /opt/contrail/bin
 export _nodemgr_config := $(SB_TOP)/controller/src/nodemgr/vrouter_nodemgr
+export _servicedir := /etc/systemd/system
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -33,11 +33,11 @@ override_dh_auto_install:
 	install -d -m 755 ${buildroot}/etc/init
 	install -d -m 755 ${buildroot}/etc/init.d
 	install -d -m 755 ${buildroot}${_opt_bin}
-	install -d -m 755 ${buildroot}${_supervisorconf}
+	install -d -m 755 $(buildroot)$(_servicedir)
 	install -d -m 755 ${buildroot}/var/log/contrail
+	install -d -m 755 ${buildroot}/etc/contrail
 	install -p -m 644 $(_confsrcdir)/core-pattern.upstart ${buildroot}/etc/init/core-pattern.conf
-	install -p -m 644 $(_nodemgr_config)/contrail-vrouter-nodemgr.ini ${buildroot}${_supervisorconf}
-	install -p -m 644 $(_confsrcdir)/contrail-vrouter.rules ${buildroot}${_supervisorconf}
+	install -p -m 644 $(_confsrcdir)/contrail-vrouter.rules ${buildroot}/etc/contrail
 	install -p -m 755 $(_confsrcdir)/vrouter-pre-start.sh ${buildroot}${_opt_bin}
 	install -p -m 755 $(_confsrcdir)/vrouter-post-start.sh ${buildroot}${_opt_bin}
 	install -p -m 755 $(_confsrcdir)/vrouter-pre-stop.sh ${buildroot}${_opt_bin}
