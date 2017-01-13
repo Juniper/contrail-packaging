@@ -13,10 +13,11 @@ export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-lib
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := $(SB_TOP)/build/debian/contrail-openstack-config
 export _bindir := /usr/bin
+export _initddir := /etc/init.d
+export _initdir := /etc/init
 export _sysconfdir := /etc
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
 export _nodemgr_config := $(SB_TOP)/controller/src/nodemgr/config_nodemgr
-export _servicedir := /etc/systemd/system
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -40,20 +41,17 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_initddir)
 	install -d -m 755 $(buildroot)$(_sysconfdir)
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
-	install -d -m 755 $(buildroot)$(_servicedir)
-
-	install -p -m 755 $(_src_config)/contrail-api.service $(buildroot)$(_servicedir)/contrail-api.service
-	install -p -m 755 $(_src_config)/contrail-config-nodemgr.service $(buildroot)$(_servicedir)/contrail-config-nodemgr.service
+	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files
+	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail/supervisord_support_service_files
+	# Install upstart, supervisord ini for rabbitmq-server
+	install -p -m 755 $(_src_config)/rabbitmq-server.initd.supervisord $(buildroot)$(_initddir)/rabbitmq-server.initd.supervisord
+	install -p -m 755 $(_src_config)/rabbitmq-server.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_support_service_files/rabbitmq-server.ini
+	install -p -m 755 $(_nodemgr_config)/contrail-config-nodemgr.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-config-nodemgr.ini
+	install -p -m 755 $(_nodemgr_config)/contrail-config-nodemgr.initd.supervisord $(buildroot)$(_initddir)/contrail-config-nodemgr
+	# Install upstart, supervisord ini for support-services
+	install -p -m 755 $(_src_config)/supervisord_support_service.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_support_service.conf
+	install -D -m 755 $(_src_config)/supervisor-support-service.upstart $(buildroot)$(_initdir)/supervisor-support-service.conf
 	install -p -m 755 $(_nodemgr_config)/contrail-config-nodemgr.conf $(buildroot)$(_sysconfdir)/contrail/contrail-config-nodemgr.conf
-	install -p -m 755 $(_src_config)/contrail-device-manager.service $(buildroot)$(_servicedir)/contrail-device-manager.service
-	install -p -m 755 $(_src_config)/contrail-discovery.service $(buildroot)$(_servicedir)/contrail-discovery.service
-	install -p -m 755 $(_src_config)/contrail-schema.service $(buildroot)$(_servicedir)/contrail-schema.service
-	install -p -m 755 $(_src_config)/contrail-svc-monitor.service $(buildroot)$(_servicedir)/contrail-svc-monitor.service
-	install -p -m 755 $(_src_config)/ifmap.service $(buildroot)$(_servicedir)/ifmap.service
-
-	install -p -m 755 $(_src_config)/zookeeper.service $(buildroot)$(_servicedir)/zookeeper.service
-	install -D -m 755 $(_src_config)/zookeeper.conf $(buildroot)$(_sysconfdir)/init/zookeeper.conf
-
 
 override_dh_usrlocal:	
 

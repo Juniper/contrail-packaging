@@ -9,7 +9,7 @@
 export DH_VERBOSE=1
 
 SPEC_DIR := $(shell pwd)
-export SB_TOP := $(shell pwd | sed -re "s/(.*)\/tools\/packaging\/(.*)/\1/")
+export SB_TOP := $(shell pwd | sed -re "s/(.*)\/build\/debian\/(.*)/\1/")
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(SB_TOP)/build/debian/contrail-libs/usr/lib64/contrail
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
@@ -17,9 +17,8 @@ export buildroot := $(SB_TOP)/build/debian/contrail-openstack-webui
 export _initddir := /etc/init.d
 export _initdir := /etc/init
 export _contrailetc := /etc/contrail
+export _supervisordir := /etc/contrail/supervisord_webui_files
 export _distropkgdir := $(SB_TOP)/tools/packaging/common/control_files
-export _src_config := $(SB_TOP)/tools/packaging/common/control_files
-export _servicedir := /etc/systemd/system
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -43,10 +42,17 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_initddir)
 	install -d -m 755 $(buildroot)/etc
 	install -d -m 755 $(buildroot)$(_contrailetc)
-	install -d -m 755 $(buildroot)$(_servicedir)
-	install -p -m 755 $(_src_config)/contrail-webui-middleware.service $(buildroot)$(_servicedir)/contrail-webui-middleware.service
-	install -p -m 755 $(_src_config)/contrail-webui.service $(buildroot)$(_servicedir)/contrail-webui.service
-
+	install -d -m 755 $(buildroot)$(_supervisordir)
+	# supervisord conf file
+	install -p -m 755 $(_distropkgdir)/supervisord_webui.conf $(buildroot)/$(_contrailetc)/supervisord_webui.conf
+	# supervisord upstart file
+	install -p -m 755 $(_distropkgdir)/supervisor-webui.upstart $(buildroot)$(_initdir)/supervisor-webui.conf
+	# supervisord ini files
+	install -p -m 755 $(_distropkgdir)/contrail-webui.ini $(buildroot)/$(_supervisordir)/contrail-webui.ini
+	install -p -m 755 $(_distropkgdir)/contrail-webui-middleware.ini $(buildroot)/$(_supervisordir)/contrail-webui-middleware.ini
+	# init scripts for service command
+	install -p -m 755 $(_distropkgdir)/contrail-webui.initd.supervisord $(buildroot)/$(_initddir)/contrail-webui
+	install -p -m 755 $(_distropkgdir)/contrail-webui-middleware.initd.supervisord $(buildroot)/$(_initddir)/contrail-webui-middleware
 override_dh_usrlocal:
 
 override_dh_shlibdeps:
