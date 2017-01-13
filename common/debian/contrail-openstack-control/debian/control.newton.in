@@ -1,0 +1,17 @@
+Source: contrail-openstack-control
+Maintainer: amoghe <amoghe@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends:
+
+Package: contrail-openstack-control
+Architecture: all
+Maintainer: amoghe <amoghe@juniper.net>
+Depends: contrail-lib,
+         contrail-control,
+         contrail-dns,
+         contrail-setup,
+         contrail-utils,
+         contrail-nodemgr
+Description: Contrail Openstack Control composite debian package
