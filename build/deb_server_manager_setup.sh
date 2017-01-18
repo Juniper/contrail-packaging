@@ -56,7 +56,7 @@ function ansible_and_docker_configs()
 
   echo "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" >> /etc/default/docker
   service docker restart >> $log_file 2>&1
-  docker run -d -p 5100:5100 --restart=always --name registry registry:2
+  docker run -d -p 5100:5200 --restart=always --name registry registry:2
 
   #echo "Cleaning up docker images"
   #docker rmi -f `docker images -a | grep -v registry | grep -v REPOSITORY | awk '{print $3}'`
