@@ -34,6 +34,10 @@ ifeq ($(DISTRIB_RELEASE),14.04)
 SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu1404.sh
 endif
 
+ifeq ($(DISTRIB_RELEASE),16.04)
+SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu1604.sh
+endif
+
 ifeq ($(CONTRAIL_SKU),juno)
 SETUP_FILE := $(SB_TOP)/tools/packaging/build/setup_ubuntu_juno.sh
 endif
