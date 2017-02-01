@@ -140,12 +140,33 @@ popd
 
 %post
 if [ "$1" = "1" ]; then
-  service cassandra stop
-  sleep 3
-  ps auxw | grep -Eq "Dcassandra-pidfile=.*cassandra\.pid" 2>/dev/null
-  if [ $? -eq 0 ] ; then
-      kill `ps auxw | grep -E "Dcassandra-pidfile=.*cassandra\.pid" | grep -v grep | awk '{print $2}'` > /dev/null 2>&1
-  fi
+  i=0
+  while : ; do
+      sudo service cassandra status
+      if [ $? -eq 0 ] ; then
+          break
+      fi
+      i=$(($i+1))
+      if [ $i -gt 10 ] ; then
+          echo "Error: postinst contrail-openstack-database, expected cassandra to be running"
+          break
+      fi
+      sleep 3
+  done
+  sudo service cassandra stop
+  i=0
+  while : ; do
+      ps auxw | grep -Eq "Dcassandra-pidfile=.*cassandra\.pid" 2>/dev/null
+      if [ $? -ne 0 ] ; then
+          break
+      fi
+      i=$(($i+1))
+      if [ $i -gt 5 ] ; then
+          kill `ps auxw | grep -E "Dcassandra-pidfile=.*cassandra\.pid" | grep -v grep | awk '{print $2}'` > /dev/null 2>&1
+          break
+      fi
+      sleep 2
+  done
   rm -rf /var/lib/cassandra
 fi
 chkconfig cassandra off
