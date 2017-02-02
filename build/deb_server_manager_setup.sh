@@ -294,7 +294,7 @@ if [ "$SM" != "" ]; then
   if [ "$installed_version" != ""  ]; then
       version_to_install=`ls /opt/contrail/contrail_server_manager/contrail-server-manager_* | cut -d'_' -f 4`
       set +e
-      comparison=`dpkg --compare-versions $version_to_install gt $installed_version`
+      comparison=`dpkg --compare-versions $installed_version lt $version_to_install`
       check_upgrade=`echo $?`
       set -e
       if [ $check_upgrade == 0 ]; then
@@ -314,7 +314,7 @@ if [ "$SM" != "" ]; then
 
   #TODO: To be Removed after local repo additions
   if [ ${rel[1]} == "14.04"  ]; then
-    apt-get --no-install-recommends -y install libpython2.7=2.7.6-8ubuntu0.2 >> $log_file 2>&1
+    apt-get --no-install-recommends -y install libpython2.7>=2.7.6-8ubuntu0.2 >> $log_file 2>&1
   fi
   apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppet-common="3.7.3-1puppetlabs1" puppetmaster-common="3.7.3-1puppetlabs1" >> $log_file 2>&1
   cp /opt/contrail/contrail_server_manager/puppet.conf /etc/puppet/
@@ -402,6 +402,10 @@ fi
 if [ "$SMCLIFFCLIENT" != "" ]; then
   echo "$arrow Server Manager Cliff Client"
   echo "$space$arrow$install_str Server Manager Cliff Client"
+  if [ -e /usr/bin/server-manager ]; then
+      unlink /usr/bin/server-manager
+  fi
+  dpkg -P --force-all contrail-server-manager-client >> $log_file 2>&1
   apt-get -y install contrail-server-manager-cliff-client >> $log_file 2>&1
   apt-get -y install -f >> $log_file 2>&1
   echo "$arrow Completed Installing Server Manager Cliff Client"
