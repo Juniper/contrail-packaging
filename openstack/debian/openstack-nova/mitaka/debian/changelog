@@ -1,3 +1,9 @@
+nova (2:13.0.0-0ubuntu2~cloud0.1contrail1) trusty-mitaka; urgency=medium
+
+  * Fixed storage_scope changes for live-migration/block-migraition to work
+
+ -- Jeya ganesh babu J <jjeya@juniper.net>  Tue, 24 Jan 2017 17:34:11 +0000
+
 nova (2:13.0.0-0ubuntu2~cloud0.1contrail) trusty-mitaka; urgency=medium
 
   * Added 1contrail in contrail package.
