@@ -282,7 +282,7 @@ if [ "$SM" != "" ]; then
 
   #TODO: To be Removed after local repo additions
   if [ ${rel[1]} == "14.04"  ]; then
-    apt-get --no-install-recommends -y install libpython2.7=2.7.6-8ubuntu0.2 >> $log_file 2>&1
+    apt-get --no-install-recommends -y install libpython2.7>=2.7.6-8ubuntu0.2 >> $log_file 2>&1
   fi
   apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppet-common="3.7.3-1puppetlabs1" puppetmaster-common="3.7.3-1puppetlabs1" >> $log_file 2>&1
   cp /opt/contrail/contrail_server_manager/puppet.conf /etc/puppet/
