@@ -1,3 +1,9 @@
+nova (1:2015.1.2-0ubuntu2~cloud0.1contrail1) trusty-kilo; urgency=medium
+
+  * Fixed storage_scope changes for live-migration/block-migraition to work
+
+ -- Jeya ganesh babu J <jjeya@juniper.net>  Tue, 24 Jan 2017 17:34:11 +0000
+
 nova (1:2015.1.2-0ubuntu2~cloud0.1contrail) trusty-kilo; urgency=medium
 
   * Added 1contrail in contrail package
