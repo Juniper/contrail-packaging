@@ -42,7 +42,6 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_servicedir)
 	install -d -m 755 $(buildroot)$(_datadir)/cassandra/conf
 	install -p -m 755 $(_src_config)/contrail-database.service $(buildroot)$(_servicedir)/contrail-database.service
-	install -p -m 755 $(_src_config)/cassandra.service $(buildroot)$(_servicedir)/cassandra.service
 
 override_dh_shlibdeps:
 
