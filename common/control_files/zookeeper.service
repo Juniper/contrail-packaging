@@ -1,6 +1,7 @@
 [Unit]
 SourcePath=/usr/share/zookeeper/bin/zookeeper
 Description="Zookeeper"
+After=network.target
 
 [Service]
 Type=forking
@@ -12,3 +13,6 @@ GuessMainPID=no
 RemainAfterExit=yes
 ExecStart=/usr/share/zookeeper/bin/zkServer.sh start
 ExecStop=/usr/share/zookeeper/bin/zkServer.sh stop
+
+[Install]
+WantedBy=multi-user.target

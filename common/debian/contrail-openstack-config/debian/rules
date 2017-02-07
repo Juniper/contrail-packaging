@@ -14,7 +14,7 @@ export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export buildroot := $(SB_TOP)/build/debian/contrail-openstack-config
 export _sysconfdir := /etc
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
-export _servicedir := /etc/systemd/system
+export _servicedir := /lib/systemd/system
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -26,7 +26,7 @@ BUILDTAG = $(SRC_VER)-$(BUILDTIME)
 endif
 
 %:
-	dh $@ --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
+	dh $@ --with systemd --tmpdir=${buildroot} --destdir=${SB_TOP}/build/debian
 
 override_dh_auto_build: 
 	cat debian/changelog.in | sed 's,BUILDTAG,$(BUILDTAG),g' > debian/changelog
