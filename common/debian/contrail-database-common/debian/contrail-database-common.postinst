@@ -1,6 +1,14 @@
 #!/bin/sh
-
+is_systemd=
+if [ -d /run/systemd/system ]; then
+   is_systemd=1
+fi
 echo "Running Postinst for contrail-database-common install.."
-    sudo update-rc.d cassandra disable
-    sudo update-rc.d contrail-database defaults
+    if [ -n "$is_systemd" ]; then
+        exec systemctl disable cassandra
+        exec systemctl enable contrail-database
+    else
+        sudo update-rc.d cassandra disable
+        sudo update-rc.d contrail-database defaults
+    fi
 echo "Postinst for contrail-openstack-database-common done"
