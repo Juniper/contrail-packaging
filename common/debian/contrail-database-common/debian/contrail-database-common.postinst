@@ -5,8 +5,8 @@ if [ -d /run/systemd/system ]; then
 fi
 echo "Running Postinst for contrail-database-common install.."
     if [ -n "$is_systemd" ]; then
-        exec systemctl disable cassandra
-        exec systemctl enable contrail-database
+        sudo systemctl disable cassandra
+        sudo systemctl enable contrail-database
     else
         sudo update-rc.d cassandra disable
         sudo update-rc.d contrail-database defaults

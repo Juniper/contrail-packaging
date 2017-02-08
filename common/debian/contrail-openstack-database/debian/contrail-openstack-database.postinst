@@ -9,7 +9,7 @@ if [ "$1" = "configure" ]; then
         i=0
         while : ; do
             if [ -n "$is_systemd" ]; then
-                exec systemctl is-active cassandra
+                sudo systemctl is-active cassandra
             else
                 sudo service cassandra status
             fi
@@ -40,8 +40,8 @@ if [ "$1" = "configure" ]; then
         sudo rm -rf /var/lib/cassandra
     fi
     if [ -n "$is_systemd" ]; then
-        exec systemctl disable cassandra
-        exec systemctl enable contrail-database
+        sudo systemctl disable cassandra
+        sudo systemctl enable contrail-database
     else
         sudo update-rc.d cassandra disable
         sudo update-rc.d contrail-database defaults
