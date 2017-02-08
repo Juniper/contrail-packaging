@@ -1,11 +1,18 @@
 #!/bin/sh
-
+is_systemd=
+if [ -d /run/systemd/system ]; then
+   is_systemd=1
+fi
 if [ "$1" = "configure" ]; then
     echo "Running Postinst for contrail-openstack-database install.."
     if [ -z "$2" ]; then
         i=0
         while : ; do
-            sudo service cassandra status
+            if [ -n "$is_systemd" ]; then
+                exec systemctl is-active cassandra
+            else
+                sudo service cassandra status
+            fi
             if [ $? -eq 0 ] ; then
                 break
             fi
@@ -32,7 +39,12 @@ if [ "$1" = "configure" ]; then
         done
         sudo rm -rf /var/lib/cassandra
     fi
-    sudo update-rc.d cassandra disable
-    sudo update-rc.d contrail-database defaults
+    if [ -n "$is_systemd" ]; then
+        exec systemctl disable cassandra
+        exec systemctl enable contrail-database
+    else
+        sudo update-rc.d cassandra disable
+        sudo update-rc.d contrail-database defaults
+    fi
 fi
 echo "Postinst for contrail-openstack-database done"
