@@ -4,7 +4,7 @@ After=redis.service
 Requires=redis.service
 
 [Service]
-ExecStart=/usr/src/contrail/contrail-webui/contrailWebMiddleware.sh
+ExecStart=/usr/src/contrail/contrail-web-core/contrailWebMiddleware.sh
 Restart=always
 LimitCORE=infinity
 
