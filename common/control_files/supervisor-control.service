@@ -5,7 +5,11 @@ After=syslog.target network.target
 [Service]
 Restart=always
 ExecStart=/usr/bin/supervisord -n -c /etc/contrail/supervisord_control.conf
-ExecStopPre=/usr/bin/supervisorctl -s unix:///var/run/supervisord_control.sock stop all
+ExecStopPre=if [ -e /tmp/supervisord_control.sock ]; then \
+                /usr/bin/supervisorctl -s unix:///tmp/supervisord_control.sock stop all \
+            else \
+                /usr/bin/supervisorctl -s unix:///var/run/supervisord_control.sock stop all \
+            fi
 ExecStopPost=/usr/bin/supervisor_killall /etc/contrail/supervisord_control_files
 LimitCORE=infinity
 LimitNOFILE=4096
