@@ -46,6 +46,10 @@ function ansible_and_docker_configs()
 {
   echo "Configuring Ansible"
   sed -i "/callback_plugin/c\callback_plugins = \/opt\/contrail\/server_manager\/ansible\/plugins" /etc/ansible/ansible.cfg
+  sed -i "/host_key_checking/c\host_key_checking = False" /etc/ansible/ansible.cfg
+  sed -i "/record_host_keys/c\record_host_keys = False" /etc/ansible/ansible.cfg
+  sed -i "/ssh_args/c\ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o UserKnownHostsFile=/dev/null" /etc/ansible/ansible.cfg
+
   ansible-galaxy install -r /opt/contrail/server_manager/ansible/playbooks/requirements.yml
   echo "Starting docker registry"
 
