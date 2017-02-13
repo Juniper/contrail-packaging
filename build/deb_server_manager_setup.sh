@@ -49,11 +49,6 @@ function ansible_and_docker_configs()
   ansible-galaxy install -r /opt/contrail/server_manager/ansible/playbooks/requirements.yml
   echo "Starting docker registry"
 
-  NUM_CONT=`docker ps -qa | wc -l`
-  if [ $NUM_CONT != "0" ]; then
-      docker rm -f `docker ps -qa`
-  fi
-
   echo "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" >> /etc/default/docker
   service docker restart >> $log_file 2>&1
   docker run -d -p 5100:5000 --restart=always --name registry registry:2
