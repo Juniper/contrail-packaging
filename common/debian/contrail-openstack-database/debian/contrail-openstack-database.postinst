@@ -42,6 +42,11 @@ if [ "$1" = "configure" ]; then
     if [ -n "$is_systemd" ]; then
         sudo systemctl disable cassandra
         sudo systemctl enable contrail-database
+        sudo systemctl is-enabled contrail-database-nodemgr
+        if [ $? -ne 0 ]; then
+            sudo systemctl enable contrail-database-nodemgr
+        fi
+        sudo systemctl start contrail-database-nodemgr
     else
         sudo update-rc.d cassandra disable
         sudo update-rc.d contrail-database defaults
