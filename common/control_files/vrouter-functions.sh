@@ -342,7 +342,7 @@ _dpdk_vrouter_ini_update() {
         
             dpdk_vdev=" --vdev \"eth_bond_${DPDK_PHY},mode=${DPDK_BOND_MODE}"
             dpdk_vdev="${dpdk_vdev},xmit_policy=${DPDK_BOND_POLICY}"
-            dpdk_vdev="${dpdk_vdev},socket_id=${DPDK_BOND_NUMA},mac=${DPDK_BOND_MAC}"
+            dpdk_vdev="${dpdk_vdev},socket_id=${DPDK_BOND_NUMA},mac=${DPDK_PHY_MAC}"
             for SLAVE in ${DPDK_BOND_PCIS}; do
                 dpdk_vdev="${dpdk_vdev},slave=${SLAVE}"
             done
