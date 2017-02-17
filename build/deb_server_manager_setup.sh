@@ -174,7 +174,7 @@ function setup_internet_repos()
   fi
 
   # Repo to add for redis - required for contrail-web-core
-  add-apt-repository ppa:rwky/redis --yes >> $log_file 2>&1
+  #add-apt-repository ppa:rwky/redis --yes >> $log_file 2>&1
 
   # Cobbler repo to be added if this is not an SMLITE install
   if [ "$SMLITE" == "" ]; then
