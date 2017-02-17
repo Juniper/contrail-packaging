@@ -68,6 +68,7 @@ override_dh_auto_install:
 	install -p -m 755 $(src_path)../../../tools/packaging/build/contrail_local_preferences $(buildroot)$(_contrailopt)/contrail_server_manager/contrail_local_preferences
 	install -p -m 755 $(SETUP_FILE)  $(buildroot)$(_contrailopt)/contrail_server_manager/setup.sh
 	install -p -m 755 $(src_path)/sm_provision.sh $(buildroot)$(_contrailopt)/contrail_server_manager/provision.sh
+	install -p -m 755 $(src_path)/sm_provision_containers.sh $(buildroot)$(_contrailopt)/contrail_server_manager/provision_containers.sh
 	install -p -m 755 $(provision_file_location)/provision_status.sh $(buildroot)$(_contrailopt)/contrail_server_manager/provision_status.sh
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/ubuntu_12_04_3_sources.list  $(buildroot)$(_contrailopt)/contrail_server_manager/ubuntu_12_04_3_sources.list
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/ubuntu_14_04_1_sources.list  $(buildroot)$(_contrailopt)/contrail_server_manager/ubuntu_14_04_1_sources.list
