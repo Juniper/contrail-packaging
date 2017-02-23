@@ -58,7 +58,7 @@ function ansible_and_docker_configs()
 
   cur_name=`docker ps | grep registry | awk '{print $12}'`
 
-  if [ $cur_name='registry' ]; then
+  if [ $cur_name == 'registry' ]; then
       echo "Docker registry already running"
   else
       echo "Starting docker registry"
