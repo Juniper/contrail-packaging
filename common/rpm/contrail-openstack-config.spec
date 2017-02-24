@@ -70,8 +70,6 @@ install -D -m 755 %{_nodemgr_config}/contrail-config-nodemgr.conf %{buildroot}/e
 
 install -D -m 755 %{_nodemgr_config}/contrail-config-nodemgr.initd.supervisord %{buildroot}/etc/init.d/contrail-config-nodemgr
 pushd %{_builddir}
-install -D -m 755 src/config/schema-transformer/ifmap_view.py %{buildroot}%{_bindir}/ifmap_view.py
-#install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py
 popd
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 
@@ -90,8 +88,6 @@ popd
 #/usr/share/doc/python-vnc_cfg_api_server
 %{_sysconfdir}/contrail
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
-%{_bindir}/ifmap_view.py
-#%{_bindir}/encap.py
 %{_initddir}
 %{_sysconfdir}/contrail/supervisord_support_service.conf
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
