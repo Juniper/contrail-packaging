@@ -11,7 +11,7 @@ export BUILD_ONLY := TRUE
 ifdef CONTRAIL_SKU
   export CONTRAIL_SKU
 else
-  export CONTRAIL_SKU := havana
+  export CONTRAIL_SKU := kilo
 endif
 
 # If contrail-test repo is present, then it will be packaged (as tgz)
@@ -53,8 +53,6 @@ endif
 PACKAGES = \
         contrail \
 	ukai-deb \
-	ifmap-server \
-        ifmap-python-client \
         contrail-nova-vif-deb \
         contrail-nova-networkapi-deb \
 	contrail-vrouter-init-deb \
@@ -79,7 +77,6 @@ PACKAGES = \
 	$(CONTRAIL_TEST) \
 	libvirt-deb \
 	contrail-openstack-dashboard-deb \
-	contrail-ostack-dashboard-deb \
 	contrail-heat-deb \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
@@ -94,8 +91,6 @@ all: ${PACKAGES}
 PACKAGES_VMWARE = \
         contrail \
 	ukai-deb \
-        ifmap-server \
-        ifmap-python-client \
         contrail-vrouter-init-deb \
         contrail-vrouter-common-deb \
         contrail-vrouter-dpdk \
@@ -153,7 +148,6 @@ debian-%:
 	cp -R $(SB_TOP)/tools/packages/debian/$(PACKAGE)/debian $(SB_TOP)/build/packages/$(PACKAGE)
 	cp -R $(SB_TOP)/tools/packages/utils $(SB_TOP)/build/packages/$(PACKAGE)/debian/
 	chmod u+x $(SB_TOP)/build/packages/$(PACKAGE)/debian/rules
-	rm -f $(SB_TOP)/build/packages/$(PACKAGE)/debian/ifmap-server.upstart
 
 clean-%:
 	$(eval PACKAGE := $(patsubst clean-%,%,$@))
@@ -209,22 +203,8 @@ package-contrail-vrouter-dpdk:
 contrail-vrouter-dpdk: package-contrail-vrouter-dpdk
 	@echo "Package contrail-vrouter-dpdk done"
 
-package-ifmap-server: clean-ifmap-server debian-ifmap-server
-	$(eval PACKAGE := $(patsubst package-%,%,$@))
-	@echo "Building package $(PACKAGE)"
-	(cd $(SB_TOP)/build/packages/$(PACKAGE); fakeroot debian/rules \
-                get-orig-source)
-	(cd $(SB_TOP)/build/packages/$(PACKAGE); dpkg-buildpackage \
-                -uc -us -b -rfakeroot)
-
 contrail: package-contrail
 	@echo "Package contrail done"
-
-ifmap-server: package-ifmap-server
-	@echo "Package ifmap-server done"
-
-ifmap-python-client: package-ifmap-python-client
-	@echo "Package ifmap-python client done"
 
 contrail-installer-packages: contrail-installer-packages-deb
 contrail-installer-packages-deb:
@@ -396,19 +376,6 @@ contrail-openstack-dashboard-deb:
 
 contrail-openstack-dashboard-clean:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-openstack-dashboard)
-	rm -rf ${BUILDDIR}
-
-contrail-ostack-dashboard-deb:
-	if [ '${CONTRAIL_SKU}' = 'havana' ]; then \
-		$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-ostack-dashboard) \
-		mkdir -p ${BUILDDIR}/debian; \
-		cp -R ${SB_TOP}/distro/openstack/horizon/* ${BUILDDIR}; \
-		cp -prf ${SB_TOP}/distro/openstack/horizon/.git ${BUILDDIR}; \
-		(cp -R contrail-ostack-dashboard/debian/havana/* ${BUILDDIR}/debian); \
-		(cd ${BUILDDIR}; fakeroot debian/rules binary); \
-	fi
-contrail-ostack-dashboard-clean:
-	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-ostack-dashboard)
 	rm -rf ${BUILDDIR}
 
 libvirt-deb:

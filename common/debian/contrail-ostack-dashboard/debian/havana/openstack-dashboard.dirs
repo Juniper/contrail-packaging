@@ -1,6 +1,0 @@
-/etc/openstack-dashboard
-/usr/share/openstack-dashboard
-/usr/share/openstack-dashboard/bin/less/
-/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/js
-/usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/css
-/var/lib/openstack-dashboard

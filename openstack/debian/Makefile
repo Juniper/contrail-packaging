@@ -3,7 +3,7 @@ SB_TOP := $(PWD:/tools/packaging/openstack/debian=)
 
 ifdef CONTRAIL_SKU
 else
-  CONTRAIL_SKU := "havana"
+  CONTRAIL_SKU := "kilo"
 endif
 
 PACKAGES = openstack-neutron-deb \
