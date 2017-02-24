@@ -56,17 +56,15 @@ function ansible_and_docker_configs()
   echo "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" >> /etc/default/docker
   service docker restart >> $log_file 2>&1
 
-  cur_name=`docker ps | grep registry | awk '{print $12}'`
+  cur_name=`docker inspect --format='{{.Name}}' $(docker ps -aq --no-trunc) | grep -w registry`
 
-  if [ "$cur_name" == 'registry' ]; then
+  if [ "$cur_name" == '/registry' ]; then
       echo "Docker registry already running"
   else
       echo "Starting docker registry"
       docker run -d -p 5100:5000 --restart=always --name registry registry:2
   fi
 
-  #echo "Cleaning up docker images"
-  #docker rmi -f `docker images -a | grep -v registry | grep -v REPOSITORY | awk '{print $3}'`
 }
 
 
