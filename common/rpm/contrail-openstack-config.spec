@@ -25,11 +25,7 @@ BuildArch: noarch
 Requires: contrail-config >= %{_verstr}-%{_relstr}
 Requires: openstack-quantum-contrail
 Requires: python-novaclient
-%if %{_skuTag} == "havana"
-Requires: python-neutronclient >= 2.3.0-2contrail
-%else
 Requires: python-neutronclient >= 2.3.4-2contrail
-%endif
 Requires: python-keystoneclient >= 0.2.0
 Requires: python-psutil
 Requires: mysql-server
@@ -44,7 +40,6 @@ Requires: keepalived
 Requires: rabbitmq-server >= 3.3.5
 Requires: python-bottle >= 0.11.6
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
-Requires: ifmap-server >= 0.3.2-2contrail
 Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
 Requires: python-contrail >= %{_verstr}-%{_relstr}
 %if 0%{?rhel} && 0%{?rhel} <= 6
@@ -58,8 +53,6 @@ Contrail Package Requirements for Contrail Config
 pushd %{_builddir}/..
 
 pushd %{_builddir}/..
-install -D -m 755 %{_distropkgdir}/ifmap.initd.supervisord %{buildroot}%{_initddir}/ifmap
-install -p -m 755 %{_distropkgdir}/ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
 install -p -m 755 %{_nodemgr_config}/contrail-config-nodemgr.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_support_service_files
 install -D -m 755 %{_distropkgdir}/supervisor-support-service.initd %{buildroot}%{_initddir}/supervisor-support-service
@@ -69,10 +62,6 @@ install -p -m 755 %{_distropkgdir}/rabbitmq-server.ini %{buildroot}%{_sysconfdir
 install -D -m 755 %{_nodemgr_config}/contrail-config-nodemgr.conf %{buildroot}/etc/contrail/contrail-config-nodemgr.conf
 
 install -D -m 755 %{_nodemgr_config}/contrail-config-nodemgr.initd.supervisord %{buildroot}/etc/init.d/contrail-config-nodemgr
-pushd %{_builddir}
-install -D -m 755 src/config/schema-transformer/ifmap_view.py %{buildroot}%{_bindir}/ifmap_view.py
-#install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py
-popd
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 
 
@@ -90,8 +79,6 @@ popd
 #/usr/share/doc/python-vnc_cfg_api_server
 %{_sysconfdir}/contrail
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
-%{_bindir}/ifmap_view.py
-#%{_bindir}/encap.py
 %{_initddir}
 %{_sysconfdir}/contrail/supervisord_support_service.conf
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini

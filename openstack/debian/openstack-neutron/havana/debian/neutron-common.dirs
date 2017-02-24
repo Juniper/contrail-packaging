@@ -1,5 +1,0 @@
-var/log/neutron
-var/lib/neutron
-etc/neutron
-etc/neutron/rootwrap.d
-etc/neutron/plugins
