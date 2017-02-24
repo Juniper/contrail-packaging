@@ -1,7 +1,0 @@
-/var/log/nova/nova-spiceproxy.log {
-    daily
-    missingok
-    compress
-    delaycompress
-    notifempty
-}

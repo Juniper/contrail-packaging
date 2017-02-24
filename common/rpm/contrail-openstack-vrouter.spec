@@ -27,7 +27,7 @@ BuildArch: noarch
 Requires: contrail-vrouter-common >= %{_verstr}-%{_relstr}
 
 # contrail-nova-vif not required from Kilo onwards
-%if %{_skuTag} == "havana" || %{_skuTag} == "icehouse" || %{_skuTag} == "juno"
+%if %{_skuTag} == "juno"
 Requires: contrail-nova-vif >= %{_verstr}-%{_relstr}
 %endif
 

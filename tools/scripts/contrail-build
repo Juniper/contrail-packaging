@@ -342,7 +342,7 @@ def parse_options(args):
                         help='Base directory to search for archived daily builds')
 
     parser.add_argument('-k', '--sku', nargs='?', dest='sku_name',
-                        default='grizzly',
+                        default='kilo',
                         help='SKU to use to fetch manifest file or TAG to use in packaging')
 
     parser.add_argument('-a', '--arch', nargs='?', dest='arch_type',

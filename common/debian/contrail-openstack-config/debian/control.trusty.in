@@ -27,8 +27,6 @@ Depends:
  python-qpid,
  python-iniparse,
  python-bottle,
- ifmap-server,
- ifmap-python-client,
  contrail-config-openstack,
  keepalived (>=1.2.13-1) | keepalived (>=1.2.13-0~276~ubuntu14.04.1),
  memcached,
