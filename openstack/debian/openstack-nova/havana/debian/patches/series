@@ -1,5 +1,0 @@
-# Ubuntu specific patches below here. Note these can be dropped eventually.
-path-to-the-xenhost.conf-fixup.patch
-fix-ubuntu-tests.patch
-fix-docs-build-without-network.patch
-avoid_setuptools_git_dependency.patch

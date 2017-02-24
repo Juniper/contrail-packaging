@@ -6,7 +6,7 @@ BUILDTIME := $(shell date -u +%y%m%d%H%M)
 ifdef CONTRAIL_SKU
   export CONTRAIL_SKU
 else
-  export CONTRAIL_SKU := havana
+  export CONTRAIL_SKU := kilo
 endif
 
 VERSION = 

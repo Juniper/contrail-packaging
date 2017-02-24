@@ -32,7 +32,7 @@ endif
 G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
 
 ifndef CONTRAIL_SKU
-  CONTRAIL_SKU := havana
+  CONTRAIL_SKU := kilo
 endif
 
 $(PPREP):

@@ -27,7 +27,7 @@ endif
 G_TAG += --define "_srcVer $(CPLANE_SRC_VER)"
 
 ifndef CONTRAIL_SKU
-  CONTRAIL_SKU := havana
+  CONTRAIL_SKU := kilo
 endif
 
 $(PPREP):
@@ -46,56 +46,7 @@ package-python-neutronclient:
 	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
 	-bb neutronclient/${CONTRAIL_SKU}/python-neutronclient.spec $(G_TAG)
 
-# Openstack packages
-ifeq ($(CONTRAIL_SKU), havana)
-nova: package-nova
-openstack-nova-cert: package-nova
-openstack-nova-objectstore: package-nova
-openstack-nova-scheduler: package-nova
-openstack-nova-api: package-nova
-python-nova: package-nova
-openstack-nova-compute: package-nova
-openstack-nova-console: package-nova
-openstack-nova-common: package-nova
-openstack-nova-doc: package-nova
-package-nova: $(PREP)
-	@echo making havana rpm for package-nova
-	echo $(OPENSTACK_PKGDIR)
-	cd $(OPENSTACK_PKGDIR)/centos_64/nova/havana && \
-	cp `grep '^Source[0-9]\+:' openstack-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
-	cd $(OPENSTACK_PKGDIR)/centos_64/nova/havana && \
-	cp `grep '^Patch[0-9]\+:' openstack-nova.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb nova/havana/openstack-nova.spec $(G_TAG)
-
-neutron: package-neutron
-python-neutron: package-neutron
-openstack-neutron-contrail: package-neutron
-openstack-neutron-contrail: package-neutron
-package-neutron: $(PREP)
-	@echo making rpm for package-neutron for havana
-	echo $(OPENSTACK_PKGDIR)
-	cd $(OPENSTACK_PKGDIR)/centos_64/neutron/havana && \
-	cp `grep '^Source[0-9]\+:' openstack-neutron.spec | cut -d: -f2` $(BUILD_BASE)/SOURCES/
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb neutron/havana/openstack-neutron.spec $(G_TAG)
-
-horizon: package-horizon
-openstack-dashboard: package-horizon
-package-horizon: $(PREP)
-	@echo making rpm for package-horizon
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DISTRO_BLDDIR)' \
-	-bb horizon/havana/openstack-horizon.spec $(G_TAG)
-
-contrail-openstack-dashboard: $(PREP)
-	@echo making rpm for package-horizon
-	rpmbuild --define '_topdir $(BUILD_BASE)' --define '_builddir $(DASH_PLUGIN_BLDDIR)' \
-	-bb horizon-plugin/havana/openstack-horizon-plugin.spec $(G_TAG)
-
-all: $(PREP) horizon contrail-openstack-dashboard
-else
 all: $(PREP)
-endif
 
 clean:
 	@echo clean
