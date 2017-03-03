@@ -320,7 +320,8 @@ if [ "$SM" != "" ]; then
   if [ ${rel[1]} == "14.04"  ]; then
     apt-get --no-install-recommends -y install libpython2.7>=2.7.6-8ubuntu0.2 >> $log_file 2>&1
   fi
-  apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppet-common="3.7.3-1puppetlabs1" puppetmaster-common="3.7.3-1puppetlabs1" >> $log_file 2>&1
+  apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o
+  Dpkg::Options::="--force-confnew" install puppet-common="3.8.7-1puppetlabs1" puppetmaster-common="3.8.7-1puppetlabs1" >> $log_file 2>&1
   cp /opt/contrail/contrail_server_manager/puppet.conf /etc/puppet/
   apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install nodejs=0.10.35-1contrail1 >> $log_file 2>&1
 
@@ -336,7 +337,7 @@ if [ "$SM" != "" ]; then
   set -e
   #To be Removed after local repo additions
   echo "$space$arrow$install_str Puppetmaster Passenger"
-  apt-get --no-install-recommends -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppetmaster-passenger="3.7.3-1puppetlabs1" >> $log_file 2>&1
+  apt-get --no-install-recommends -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppetmaster-passenger="3.8.7-1puppetlabs1" >> $log_file 2>&1
   service apache2 restart >> $log_file 2>&1
 
   if [ -e /etc/init.d/apparmor ]; then
