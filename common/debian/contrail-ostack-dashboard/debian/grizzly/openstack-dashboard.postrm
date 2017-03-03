@@ -1,9 +1,0 @@
-#!/bin/sh
-
-set -e
-
-if [ -x "`which invoke-rc.d 2>/dev/null`" -a -x "/etc/init.d/apache2" ] ; then
-	invoke-rc.d --quiet apache2 reload
-fi
-
-#DEBHELPER#

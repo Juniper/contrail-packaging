@@ -31,7 +31,7 @@ class BasePackager(Utils):
         self.contrail_pkg_files    = self.expanduser(kwargs['contrail_package_file'])
         self.package_types         = kwargs.get('package_types', None)
         self.id                    = kwargs.get('build_id', 999)
-        self.sku                   = kwargs.get('sku', 'grizzly')
+        self.sku                   = kwargs.get('sku', 'mitaka')
         self.branch                = kwargs.get('branch', 9.9)
         self.copy_use_hard_link    = kwargs.get('copy_use_hard_link', False)
         self.store                 = self.expanduser(kwargs['store_dir'])

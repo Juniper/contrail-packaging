@@ -39,7 +39,7 @@ endif
 
 ifdef CONTRAIL_SKU
 else
-  CONTRAIL_SKU := "havana"
+  CONTRAIL_SKU := "liberty"
 endif
 G_TAG += --define "_skuTag $(CONTRAIL_SKU)"
 
@@ -114,23 +114,9 @@ contrail-cloudstack-utils: $(PREP)
 	rpmbuild $(RPMBLDOPTS) contrail-cloudstack-utils.spec $(G_TAG)
 
 # Contrail Openstack stuff
-#ifeq ($(CONTRAIL_SKU), havana)
-#contrail-openstack: $(PREP)
-#	@echo making rpm for contrail-openstack
-#	rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG)
-#else
-#contrail-openstack: $(PREP)
-#	@echo making rpm for contrail-openstack
-#	rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse.spec $(G_TAG)
-#endif
-
 contrail-openstack: $(PREP)
 	@echo making rpm for contrail-openstack $(CONTRAIL_SKU)
-	if [ "$(CONTRAIL_SKU)" == "havana" ]; then \
-	    rpmbuild $(RPMBLDOPTS) contrail-openstack.spec $(G_TAG) ;\
-	elif [ "$(CONTRAIL_SKU)" == "icehouse" ]; then \
-	    rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse.spec $(G_TAG) ;\
-	elif [ "$(CONTRAIL_SKU)" == "juno" ]; then \
+	if [ "$(CONTRAIL_SKU)" == "juno" ]; then \
 	    rpmbuild $(RPMBLDOPTS) contrail-openstack-juno.spec $(G_TAG) ;\
 	else \
 	    rpmbuild $(RPMBLDOPTS) contrail-openstack-liberty.spec $(G_TAG) ;\
@@ -146,11 +132,7 @@ contrail-openstack-analytics: $(PREP)
 
 contrail-openstack-config: $(PREP)
 	@echo making rpm for contrail-openstack-config
-	if [ "$(CONTRAIL_SKU)" == "havana" ]; then \
-	    rpmbuild $(RPMBLDOPTS) contrail-openstack-havana-config.spec $(G_TAG) ;\
-	elif [ "$(CONTRAIL_SKU)" == "icehouse" ]; then \
-	    rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse-config.spec $(G_TAG) ;\
-	elif [ "$(CONTRAIL_SKU)" == "juno" ]; then \
+	if [ "$(CONTRAIL_SKU)" == "juno" ]; then \
 	    rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse-config.spec $(G_TAG) ;\
 	else \
 	    rpmbuild $(RPMBLDOPTS) contrail-openstack-config-common.spec $(G_TAG) ;\
@@ -286,20 +268,11 @@ contrail-puppet: $(PREP)
 	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/contrail-server-manager/build/rpm/contrail-puppet.spec  $(G_TAG)
 
 NEUTRON_PLUGIN = neutron-plugin-contrail
-ifneq ($(CONTRAIL_SKU), havana)
 CONTRAIL_HEAT = contrail-heat
-else
-CONTRAIL_HEAT = 
-endif
-
-ifneq ($(CONTRAIL_SKU), havana)
 CEILOMETER_PLUGIN = ceilometer-plugin-contrail
-else
-CEILOMETER_PLUGIN =
-endif
 
 all: $(PREP) contrail \
-       contrail-interface-name ifmap-python-client \
+       contrail-interface-name \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
 	   contrail-database-common \

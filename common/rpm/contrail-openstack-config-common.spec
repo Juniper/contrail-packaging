@@ -48,7 +48,6 @@ Requires: python-contrail >= %{_verstr}-%{_relstr}
 Requires: contrail-config-openstack >= %{_verstr}-%{_relstr}
 Requires: python-bottle
 Requires: contrail-nodemgr  >= %{_verstr}-%{_relstr}
-Requires: ifmap-server >= 0.3.2-2contrail
 Requires: python-neutron-lbaas
 %if 0%{?rhel} && 0%{?rhel} <= 6
 Requires: python-importlib
@@ -61,14 +60,8 @@ Contrail Package Requirements for Contrail Config
 pushd %{_builddir}/..
 
 pushd %{_builddir}/..
-install -D -m 755 %{_distropkgdir}/ifmap.initd.supervisord %{buildroot}%{_initddir}/ifmap
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
-install -p -m 755 %{_distropkgdir}/ifmap.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/ifmap.ini
 install -p -m 755 %{_nodemgr_config}/contrail-config-nodemgr.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
-pushd %{_builddir}
-install -D -m 755 src/config/schema-transformer/ifmap_view.py %{buildroot}%{_bindir}/ifmap_view.py
-#install -D -m 755 src/config/utils/encap.py %{buildroot}%{_bindir}/encap.py
-popd
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 install -p -m 755 %{_distropkgdir}/rabbitmq-restart-contrail.conf %{buildroot}%{_sysconfdir}/contrail/rabbitmq-restart-contrail.conf
 
@@ -86,9 +79,6 @@ popd
 #/usr/share/doc/python-vnc_cfg_api_server
 %{_sysconfdir}/contrail
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
-%{_bindir}/ifmap_view.py
-#%{_bindir}/encap.py
-%{_initddir}
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
 
 %preun
