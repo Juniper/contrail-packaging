@@ -53,6 +53,9 @@ override_dh_auto_install:
 	mkdir -p ${buildroot}$(_sysconfdir)/contrail
 	install -p -m 644 $(SB_TOP)/controller/src/storage/stats-daemon/stats-daemon.conf ${buildroot}$(_sysconfdir)/contrail/contrail-storage-nodemgr.conf
 	mkdir -p ${buildroot}$(_bindir)
+	mkdir -p ${buildroot}/lib/systemd/system
+	install -p -m 644 $(_src_config)/contrail-storage-stats.service ${buildroot}/lib/systemd/system/contrail-storage-stats.service
+	install -p -m 644 $(_src_config)/ceph-rest-api.service ${buildroot}/lib/systemd/system/ceph-rest-api.service
 
 override_dh_builddeb:
 	dh_builddeb -- -Zgzip
