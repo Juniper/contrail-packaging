@@ -84,7 +84,7 @@ set -e
 service sendmail restart
 
 pushd /var/www/html/thirdparty_packages
-dpkg-scanpackages . | gzip -9c > Packages.gz
+dpkg-scanpackages -m . | gzip -9c > Packages.gz
 popd
 
 update-rc.d apache2 defaults
