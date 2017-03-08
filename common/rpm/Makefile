@@ -285,6 +285,21 @@ contrail-puppet: $(PREP)
 	@echo making rpm for contrail-puppet
 	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/contrail-server-manager/build/rpm/contrail-puppet.spec  $(G_TAG)
 
+contrail-tripleo-heat-templates: $(PREP)
+	@echo making rpm for contrail-tripleo-heat-templates
+	cp contrail-tripleo-heat-templates.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-tripleo-heat-templates.spec $(G_TAG)
+
+contrail-tripleo-puppet: $(PREP)
+	@echo making rpm for contrail-tripleo-puppet
+	cp contrail-tripleo-puppet.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-tripleo-puppet.spec $(G_TAG)
+
+puppet-contrail: $(PREP)
+	@echo making rpm for puppet-contrail
+	cp puppet-contrail.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/puppet-contrail.spec $(G_TAG)
+
 NEUTRON_PLUGIN = neutron-plugin-contrail
 ifneq ($(CONTRAIL_SKU), havana)
 CONTRAIL_HEAT = contrail-heat
