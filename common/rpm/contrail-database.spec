@@ -71,17 +71,6 @@ if [ $? -ne 0 ] ; then
     echo " sandesh python build failed"
     exit -1
 fi
-scons -U src/discovery:discovery
-if [ $? -ne 0 ] ; then
-    echo " discovery build failed"
-    exit -1
-fi
-
-scons -U src/discovery:client
-if [ $? -ne 0 ] ; then
-    echo " discovery build failed"
-    exit -1
-fi
 
 %define             _build_dist build/debug
 %install
@@ -100,15 +89,6 @@ popd
 tar zxf %{_build_dist}/tools/sandesh/library/python/dist/sandesh-0.1dev.tar.gz
 pushd sandesh-0.1dev
 %{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
-popd
-tar zxf %{_build_dist}/discovery/dist/discovery-0.1dev.tar.gz
-pushd discovery-0.1dev
-%{__python} setup.py install --root=%{buildroot}  %{?_venvtr}
-popd
-
-tar zxf %{_build_dist}/discovery/client/dist/discoveryclient-0.1dev.tar.gz
-pushd discoveryclient-0.1dev
-%{__python}  setup.py install --root=%{buildroot} %{?_venvtr}
 popd
 
 install -d -m 755 %{buildroot}%{_supervisordir}
