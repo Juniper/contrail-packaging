@@ -83,7 +83,8 @@ PACKAGES = \
 	contrail-f5-deb \
 	contrail-vmware-utils-deb \
 	contrail-puppet-deb \
-	contrail-install-vcenter-plugin
+	contrail-install-vcenter-plugin \
+	contrail-troubleshoot
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -113,7 +114,8 @@ PACKAGES_VMWARE = \
         contrail-vmware-config-deb \
         contrail-vmware-utils-deb \
         contrail-vmware-vrouter-deb \
-	contrail-install-vcenter-plugin
+	contrail-install-vcenter-plugin \
+	contrail-troubleshoot
 
 all_vmware: ${PACKAGES_VMWARE}
 	@echo "Build complete"
@@ -542,3 +544,16 @@ contrail-puppet-deb:
 contrail-puppet-clean:
 	(cd $(SB_TOP)/build/debian/$(@:-clean=); fakeroot debian/rules clean)
 	(rm -rf $(SB_TOP)/build/debian/$(@:-clean=))
+
+contrail-troubleshoot-deb:
+	(rm -rf $(SB_TOP)/build/debian/troubleshoot)
+	mkdir -p $(SB_TOP)/build/debian/troubleshoot
+	cp -R $(SB_TOP)/tools/troubleshoot/* $(SB_TOP)/build/debian/troubleshoot/
+	cp -R $(SB_TOP)/tools/troubleshoot/build/debian $(SB_TOP)/build/debian/troubleshoot/
+	chmod u+x $(SB_TOP)/build/debian/troubleshoot/debian/rules
+	(cd $(SB_TOP)/build/debian/troubleshoot; fakeroot debian/rules clean)
+	(cd $(SB_TOP)/build/debian/troubleshoot; fakeroot debian/rules binary)
+
+contrail-troubleshoot-clean:
+	(cd $(SB_TOP)/build/debian/troubleshoot; fakeroot debian/rules clean)
+	(rm -rf $(SB_TOP)/build/debian/troubleshoot)
