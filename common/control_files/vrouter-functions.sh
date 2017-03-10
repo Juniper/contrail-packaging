@@ -112,7 +112,7 @@ _dpdk_conf_read() {
         exit 1
     fi
 
-    eval `cat ${AGENT_CONF} | grep '^[a-zA-Z]'`
+    eval `cat ${AGENT_CONF} | grep '^[a-zA-Z]' | sed 's/[[:space:]]/\\\ /g'`
 
     AGENT_PLATFORM="${platform}"
     DPDK_PHY="${physical_interface}"
