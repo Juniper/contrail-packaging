@@ -86,6 +86,7 @@ PACKAGES = \
 	contrail-puppet-tgz \
 	contrail-install-vcenter-plugin \
 	contrail-ansible
+	contrail-troubleshoot-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -115,7 +116,8 @@ PACKAGES_VMWARE = \
         contrail-vmware-config-deb \
         contrail-vmware-utils-deb \
         contrail-vmware-vrouter-deb \
-	contrail-install-vcenter-plugin
+	contrail-install-vcenter-plugin \
+	contrail-troubleshoot-deb
 
 all_vmware: ${PACKAGES_VMWARE}
 	@echo "Build complete"
@@ -565,3 +567,16 @@ contrail-ansible:
 	    mkdir -p ${SB_TOP}/build/artifacts_extra/ && \
 	    cd ${SB_TOP}/tools/ansible/ && tar -czf ${SB_TOP}/build/artifacts_extra/contrail-ansible-$(VERSION).tar.gz * ) || echo -e \
 	    "\n\nWARNING: ${SB_TOP}/tools/ansible/ not found; Skipping contrail-ansible\n\n"
+
+contrail-troubleshoot-deb:
+	(rm -rf $(SB_TOP)/build/debian/troubleshoot)
+	mkdir -p $(SB_TOP)/build/debian/troubleshoot
+	cp -R $(SB_TOP)/tools/troubleshoot/* $(SB_TOP)/build/debian/troubleshoot/
+	cp -R $(SB_TOP)/tools/troubleshoot/build/debian $(SB_TOP)/build/debian/troubleshoot/
+	chmod u+x $(SB_TOP)/build/debian/troubleshoot/debian/rules
+	(cd $(SB_TOP)/build/debian/troubleshoot; fakeroot debian/rules clean)
+	(cd $(SB_TOP)/build/debian/troubleshoot; fakeroot debian/rules binary)
+
+contrail-troubleshoot-clean:
+	(cd $(SB_TOP)/build/debian/troubleshoot; fakeroot debian/rules clean)
+	(rm -rf $(SB_TOP)/build/debian/troubleshoot)
