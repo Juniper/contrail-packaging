@@ -301,7 +301,7 @@ if [ "$SM" != "" ]; then
       comparison=`dpkg --compare-versions $installed_version lt $version_to_install`
       check_upgrade=`echo $?`
       set -e
-      if [ $check_upgrade == 0 ]; then
+      if [[ $check_upgrade == 0 || "$installed_version" == "$version_to_install" ]]; then
           echo "$space$arrow Upgrading Server Manager to version $version_to_install"
       else
           echo "$space$arrow Cannot upgrade Server Manager to version $version_to_install"
