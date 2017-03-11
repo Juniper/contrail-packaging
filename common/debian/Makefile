@@ -83,7 +83,8 @@ PACKAGES = \
 	contrail-f5-deb \
 	contrail-vmware-utils-deb \
 	contrail-puppet-deb \
-	contrail-install-vcenter-plugin
+	contrail-install-vcenter-plugin \
+	contrail-sm-ansible
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -542,3 +543,9 @@ contrail-puppet-deb:
 contrail-puppet-clean:
 	(cd $(SB_TOP)/build/debian/$(@:-clean=); fakeroot debian/rules clean)
 	(rm -rf $(SB_TOP)/build/debian/$(@:-clean=))
+
+contrail-sm-ansible:
+	( [ -f $(SB_TOP)/build/artifacts_extra/contrail-sm-ansible-$(VERSION).tgz ] && \
+	  rm -f $(SB_TOP)/build/artifacts_extra/contrail-sm-ansible-$(VERSION).tgz )
+	mkdir -p $(SB_TOP)/build/artifacts_extra/
+	(cd $(SB_TOP)/tools/contrail-sm-ansible/ && tar -czf $(SB_TOP)/build/artifacts_extra/contrail-sm-ansible-$(VERSION).tgz *)
