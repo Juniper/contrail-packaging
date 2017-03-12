@@ -66,6 +66,18 @@ class BasePackager(Utils):
         self.repo_dir              = ''
         self.exec_status           = 0
 
+    def retrieve_pkgtypes_recursively(self, pkgtypes):
+        '''Recursively retrieve dependent package type from given
+           package types until the sub-package-type
+        '''
+        for pkgtype in pkgtypes:
+            if (pkgtype in self.contrail_pkgs_dict.keys() and
+                'sub_package_type' in self.contrail_pkgs_dict[pkgtype][pkgtype]):
+                sub_pkgs = copy.deepcopy(self.contrail_pkgs_dict[pkgtype][pkgtype]['sub_package_type'])
+                #for sub_pkg in sub_pkgs:
+                pkgtypes += self.retrieve_pkgtypes_recursively(self.get_as_list(sub_pkgs))
+        return list(set(pkgtypes))
+
     def rearrange_types(self, pkgtypes):
         '''Rearrange a pkgtype if it has a sub_package_type
            defined so that sub_package_type builds first
@@ -77,6 +89,15 @@ class BasePackager(Utils):
                pkgs_dict = copy.deepcopy(self.contrail_pkgs_dict)
             elif pkgtype in self.depends_pkgs_dict.keys():
                pkgs_dict = copy.deepcopy(self.depends_pkgs_dict)
+            else:
+                log.error('Cant create an empty package for package '
+                          'type (%s)' % pkgtype)
+                log.error('Package type (%s) is found in contrail '
+                         'package config but no packages are tagged '
+                         'with that package type' % pkgtype)
+                raise RuntimeError('No packages are tagged with '
+                                   'Package type (%s); Empty package type '
+                                   'is not allowed' % pkgtype)
             if not pkgtype in pkgs_dict[pkgtype].keys():
                 log.warn('No Target for package type (%s) is present in'
                          ' contrail packages config file' % pkgtype)
@@ -85,8 +106,8 @@ class BasePackager(Utils):
                 sub_package_types = pkgs_dict[pkgtype][pkgtype]['sub_package_type']
                 sub_package_types = self.get_as_list(sub_package_types)
                 for sub_type in filter(None, sub_package_types):
-                    sub_index = new_pkgtypes.index(sub_type)
                     pkg_index = new_pkgtypes.index(pkgtype)
+                    sub_index = new_pkgtypes.index(sub_type)
                     # move sub package type before current package type
                     if sub_index > pkg_index:
                         new_pkgtypes.remove(sub_type)
@@ -110,7 +131,7 @@ class BasePackager(Utils):
         # build for given package_types. if not, find them from
         # config files
         if self.package_types:
-            pkgtypes = copy.deepcopy(self.package_types)
+            pkgtypes = self.retrieve_pkgtypes_recursively(copy.deepcopy(self.package_types))
         else:
             pkgtypes = list(set(sorted(self.contrail_pkgs_dict.keys() +
                                    self.depends_pkgs_dict.keys() +
@@ -232,12 +253,16 @@ class BasePackager(Utils):
 
         # Skip building all packages but not those supplied
         # in self.targets and self.meta_pkg
+        # Update built loc with contrail_pkgs_dir if the target is empty
+        # which basically means its a virtual target meant to pickup packages
+        # than to build itself
         # Update built loc and create support files
         if self.contrail_pkg_dirs:
             # update build location if contrail dir is supplied
             for target in self.contrail_pkgs.keys():
-                if target in self.targets or \
-                   target == self.meta_pkg:
+                if ( target in self.targets or \
+                   target == self.meta_pkg ) and \
+                   self.contrail_pkgs[target]['target'] != '':
                     continue
                 self.contrail_pkgs[target]['builtloc'] = self.contrail_pkg_dirs
         else:
