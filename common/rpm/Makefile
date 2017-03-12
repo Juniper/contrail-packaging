@@ -267,6 +267,14 @@ contrail-puppet: $(PREP)
 	@echo making rpm for contrail-puppet
 	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/contrail-server-manager/build/rpm/contrail-puppet.spec  $(G_TAG)
 
+contrail-sm-ansible:
+	[ -d $(SB_TOP)/tools/sm-ansible/ ] && \
+	( [ -f $(SB_TOP)/build/artifacts_extra/contrail-sm-ansible-$(TOOLS_VERSION).tgz ] && \
+	  rm -f $(SB_TOP)/build/artifacts_extra/contrail-sm-ansible-$(TOOLS_VERSION).tgz ) && \
+	(mkdir -p $(SB_TOP)/build/artifacts_extra/) && \
+	(cd $(SB_TOP)/tools/sm-ansible/ && \
+	  tar -czf $(SB_TOP)/build/artifacts_extra/contrail-sm-ansible-$(TOOLS_VERSION).tgz *)
+
 NEUTRON_PLUGIN = neutron-plugin-contrail
 CONTRAIL_HEAT = contrail-heat
 CEILOMETER_PLUGIN = ceilometer-plugin-contrail
@@ -278,9 +286,11 @@ all: $(PREP) contrail \
 	   contrail-database-common \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
        contrail-vrouter-init contrail-vrouter-common contrail-nova-networkapi \
-       contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet
+       contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet contrail-sm-ansible
 
-server-manager-all: contrail-server-manager contrail-server-manager-client contrail-web-server-manager
+server-manager-all: contrail-server-manager contrail-server-manager-client \
+    contrail-web-server-manager
+
 clean:
 	@echo clean
 
