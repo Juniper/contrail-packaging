@@ -83,7 +83,9 @@ PACKAGES = \
 	contrail-f5-deb \
 	contrail-vmware-utils-deb \
 	contrail-puppet-deb \
-	contrail-install-vcenter-plugin
+	contrail-puppet-tgz \
+	contrail-install-vcenter-plugin \
+	contrail-sm-ansible
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -542,3 +544,24 @@ contrail-puppet-deb:
 contrail-puppet-clean:
 	(cd $(SB_TOP)/build/debian/$(@:-clean=); fakeroot debian/rules clean)
 	(rm -rf $(SB_TOP)/build/debian/$(@:-clean=))
+
+contrail-puppet-tgz:
+	( [ -f ${SB_TOP}/build/artifacts_extra/contrail-puppet_${VERSION}~${CONTRAIL_SKU}.tar.gz ] && \
+	  rm -f ${SB_TOP}/build/artifacts_extra/contrail-puppet_${VERSION}~${CONTRAIL_SKU}.tar.gz ) ; \
+	( rm -rf ${SB_TOP}/build/contrail-puppet-tgz-builddir/ ) ; \
+	( mkdir -p ${SB_TOP}/build/artifacts_extra/) ;\
+	( mkdir -p ${SB_TOP}/build/contrail-puppet-tgz-builddir/ ); \
+	( [ -d ${SB_TOP}/tools/puppet/ ] && [ -d ${SB_TOP}/tools/puppet-third-party/ ] && \
+	    cp -a ${SB_TOP}/tools/puppet/ ${SB_TOP}/build/contrail-puppet-tgz-builddir/ && \
+	    cp -rp ${SB_TOP}/tools/puppet-third-party/* ${SB_TOP}/build/contrail-puppet-tgz-builddir/puppet/contrail/environment/modules/ && \
+	    cd ${SB_TOP}/build/contrail-puppet-tgz-builddir/puppet/ && \
+	    tar -czf ${SB_TOP}/build/artifacts_extra/contrail-puppet_${VERSION}~${CONTRAIL_SKU}.tar.gz * ) || echo -e\
+	    "\n\nWARNING: ${SB_TOP}/tools/puppet/ or ${SB_TOP}/tools/puppet-third-party is not found; Skipping contrail-puppet\n\n"
+
+contrail-sm-ansible:
+	( [ -f ${SB_TOP}/build/artifacts_extra/contrail-sm-ansible_${VERSION}.tar.gz ] && \
+	    rm -f ${SB_TOP}/build/artifacts_extra/contrail-sm-ansible_${VERSION}.tar.gz ) ;\
+	( [ -d  ${SB_TOP}/tools/sm-ansible/ ] && \
+	    mkdir -p ${SB_TOP}/build/artifacts_extra/ && \
+	    cd ${SB_TOP}/tools/sm-ansible/ && tar -czf ${SB_TOP}/build/artifacts_extra/contrail-sm-ansible_$(VERSION).tar.gz * ) || echo -e \
+	    "\n\nWARNING: ${SB_TOP}/tools/sm-ansible/ not found; Skipping contrail-sm-ansible\n\n"

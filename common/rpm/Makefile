@@ -267,6 +267,28 @@ contrail-puppet: $(PREP)
 	@echo making rpm for contrail-puppet
 	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/contrail-server-manager/build/rpm/contrail-puppet.spec  $(G_TAG)
 
+contrail-puppet-tgz:
+	( [ -f $(SB_TOP)/build/artifacts_extra/contrail-puppet_$(TOOLS_VERSION)~$(CONTRAIL_SKU).tar.gz ] && \
+	  rm -f $(SB_TOP)/build/artifacts_extra/contrail-puppet_$(TOOLS_VERSION)~$(CONTRAIL_SKU).tar.gz ) ; \
+	( rm -rf $(SB_TOP)/build/contrail-puppet-tgz-builddir/ ) ; \
+	( mkdir -p $(SB_TOP)/build/artifacts_extra/) ;\
+	( mkdir -p $(SB_TOP)/build/contrail-puppet-tgz-builddir/ ); \
+	( [ -d $(SB_TOP)/tools/puppet/ ] && [ -d $(SB_TOP)/tools/puppet-third-party/ ] && \
+	    cp -a $(SB_TOP)/tools/puppet/ $(SB_TOP)/build/contrail-puppet-tgz-builddir/ && \
+	    cp -rp $(SB_TOP)/tools/puppet-third-party/* $(SB_TOP)/build/contrail-puppet-tgz-builddir/puppet/contrail/environment/modules/ && \
+	    cd $(SB_TOP)/build/contrail-puppet-tgz-builddir/puppet/ && \
+	    tar -czf $(SB_TOP)/build/artifacts_extra/contrail-puppet_$(TOOLS_VERSION)~$(CONTRAIL_SKU).tar.gz * ) || echo -e \
+	    "\n\nWARNING: $(SB_TOP)/tools/puppet/ or $(SB_TOP)/tools/puppet-third-party is not found; Skipping contrail-puppet\n\n"
+
+contrail-sm-ansible:
+	( [ -f $(SB_TOP)/build/artifacts_extra/contrail-sm-ansible_$(TOOLS_VERSION).tar.gz ] && \
+	  rm -f $(SB_TOP)/build/artifacts_extra/contrail-sm-ansible_$(TOOLS_VERSION).tar.gz ) ;\
+	(mkdir -p $(SB_TOP)/build/artifacts_extra/) ;\
+	( [ -d $(SB_TOP)/tools/sm-ansible/ ] && \
+	    cd $(SB_TOP)/tools/sm-ansible/ && \
+	    tar -czf $(SB_TOP)/build/artifacts_extra/contrail-sm-ansible_$(TOOLS_VERSION).tar.gz * ) || \
+	    echo "WARNING: $(SB_TOP)/tools/sm-ansible/ not found; Skipping contrail-sm-ansible"
+
 NEUTRON_PLUGIN = neutron-plugin-contrail
 CONTRAIL_HEAT = contrail-heat
 CEILOMETER_PLUGIN = ceilometer-plugin-contrail
@@ -278,9 +300,12 @@ all: $(PREP) contrail \
 	   contrail-database-common \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
        contrail-vrouter-init contrail-vrouter-common contrail-nova-networkapi \
-       contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet
+       contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet contrail-sm-ansible \
+       contrail-puppet-tgz
 
-server-manager-all: contrail-server-manager contrail-server-manager-client contrail-web-server-manager
+server-manager-all: contrail-server-manager contrail-server-manager-client \
+    contrail-web-server-manager
+
 clean:
 	@echo clean
 
