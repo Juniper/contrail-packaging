@@ -285,6 +285,21 @@ contrail-puppet: $(PREP)
 	@echo making rpm for contrail-puppet
 	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/contrail-server-manager/build/rpm/contrail-puppet.spec  $(G_TAG)
 
+contrail-tripleo-heat-templates: $(PREP)
+	@echo making rpm for contrail-tripleo-heat-templates
+	cp contrail-tripleo-heat-templates.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-tripleo-heat-templates.spec $(G_TAG)
+
+contrail-tripleo-puppet: $(PREP)
+	@echo making rpm for contrail-tripleo-puppet
+	cp contrail-tripleo-puppet.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-tripleo-puppet.spec $(G_TAG)
+
+puppet-contrail: $(PREP)
+	@echo making rpm for puppet-contrail
+	cp puppet-contrail.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/puppet-contrail.spec $(G_TAG)
+
 NEUTRON_PLUGIN = neutron-plugin-contrail
 ifneq ($(CONTRAIL_SKU), havana)
 CONTRAIL_HEAT = contrail-heat
@@ -298,6 +313,18 @@ else
 CEILOMETER_PLUGIN =
 endif
 
+RH_ONLY_TARGETS =
+
+ifeq ($(DISTRO), Red Hat)
+  ifeq ($(CONTRAIL_SKU), liberty)
+    RH_ONLY_TARGETS = puppet-contrail
+  endif
+  ifeq ($(CONTRAIL_SKU), newton)
+    RH_ONLY_TARGETS = contrail-tripleo-heat-templates \
+                      contrail-tripleo-puppet puppet-contrail
+  endif
+endif
+
 all: $(PREP) contrail \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
@@ -305,7 +332,7 @@ all: $(PREP) contrail \
 	   contrail-database-common \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
        contrail-vrouter-init contrail-vrouter-common contrail-nova-networkapi \
-       contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet
+       contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet ${RH_ONLY_TARGETS}
 
 server-manager-all: contrail-server-manager contrail-server-manager-client contrail-web-server-manager
 clean:
