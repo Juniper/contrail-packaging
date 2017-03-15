@@ -32,5 +32,8 @@ Depends:
  contrail-config-openstack,
  keepalived (>=1.2.13-1) | keepalived (>=1.2.13-0~276~ubuntu14.04.1),
  memcached,
- python-memcache
+ python-memcache,
+ zookeeper
+Replaces: contrail-database-common (<< 4.0.0)
+Breaks: contrail-database-common (<< 4.0.0)
 Description: Contrail Openstack Config composite debian package
