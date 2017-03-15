@@ -39,7 +39,6 @@ override_dh_auto_install:
 	install -d -m 777 $(buildroot)$(_datadir)
 	install -d -m 777 $(buildroot)$(_sysconfdir)
 	install -d -m 755 $(buildroot)$(_datadir)/cassandra/conf
-	install -D -m 755 $(_src_config)/zookeeper.conf $(buildroot)$(_sysconfdir)/init/zookeeper.conf
 	install -D -m 755 $(_src_config)/contrail-database.initd $(buildroot)$(_sysconfdir)/init.d/contrail-database
 
 override_dh_shlibdeps:

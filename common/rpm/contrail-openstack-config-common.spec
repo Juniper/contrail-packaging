@@ -53,6 +53,18 @@ Requires: python-neutron-lbaas
 Requires: python-importlib
 %endif
 
+# Packaging zookeeper-3.4.8-0contrail1 for all rhel version
+%if "%{_rhel}" == "rhel"
+Requires: zookeeper >= 3.4.8-0contrail1
+%endif
+
+# Packaging zookeeper-3.4.8-0contrail1 from mitaka onwards
+%if "%{_centos}" == "centos" && ( "%{_sku}" == "liberty" || "%{_sku}" == "kilo" || "%{_sku}" == "juno" )
+Requires: zookeeper
+%else
+Requires: zookeeper >= 3.4.8-0contrail1
+%endif
+
 %description
 Contrail Package Requirements for Contrail Config
 
@@ -74,12 +86,23 @@ for f in $(find . -type f -exec grep -nH "^#\!.*BUILD.*python" {} \; | grep -v '
 done
 popd
 
+# zookeeper.initd will be brought in by zookeeper-3.4.8-0contrail1 packaged in centos/mitaka onwards
+%if "%{_centos}" == "centos" && ( "%{_sku}" == "liberty" || "%{_sku}" == "kilo" || "%{_sku}" == "juno" )
+pushd %{_builddir}/..
+install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
+popd
+%endif
+
 %files
 %defattr(-,root,root,-)
 #/usr/share/doc/python-vnc_cfg_api_server
 %{_sysconfdir}/contrail
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
+# zookeeper.initd will be brought in by zookeeper-3.4.8-0contrail1 packaged in centos/mitaka onwards
+%if "%{_centos}" == "centos" && ( "%{_sku}" == "liberty" || "%{_sku}" == "kilo" || "%{_sku}" == "juno" )
+%{_initddir}
+%endif
 
 %preun
 if [ -e /etc/systemd/system/rabbitmq-server.service.d/rabbitmq-restart-contrail.conf ]; then
@@ -97,6 +120,9 @@ if [ $1 -eq 1 -a -x /bin/systemctl ] ; then
 fi
 
 %changelog
+* Tue Mar 14 2017 Ignatious Johnson <ijohnson@juniper.net>
+- Adding zookeeper dependency and related files
+
 * Wed Jun 22 2016 Nagendra Maynattamai <npchandran@juniper.net>
 * Remove supervisor-support-services and supervisor support for rabbitmq
 * Tue Aug  6 2013 <ndramesh@juniper.net>
