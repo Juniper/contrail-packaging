@@ -34,37 +34,17 @@ Requires: contrail-database >= %{_verstr}-%{_relstr}
 Requires: sysstat
 Requires: datastax-agent
 
-# Packaging zookeeper-3.4.8-0contrail1 for all rhel version
-%if "%{_rhel}" == "rhel"
-Requires: zookeeper >= 3.4.8-0contrail1
-%endif
-
-# Packaging zookeeper-3.4.8-0contrail1 from mitaka onwards
-%if "%{_centos}" == "centos" && ( "%{_sku}" == "liberty" || "%{_sku}" == "kilo" || "%{_sku}" == "juno" )
-Requires: zookeeper
-%else
-Requires: zookeeper >= 3.4.8-0contrail1
-%endif
-
-
 %description
 Contrail Package Requirements for Contrail Database Common
 
 %install
-# zookeeper.initd will be brought in by zookeeper-3.4.8-0contrail1 packaged in centos/mitaka onwards
-%if "%{_centos}" == "centos" && ( "%{_sku}" == "liberty" || "%{_sku}" == "kilo" || "%{_sku}" == "juno" )
-pushd %{_builddir}/..
-install -D -m 755 %{_distropkgdir}/zookeeper.initd %{buildroot}%{_initddir}/zookeeper
-popd
-%endif
 
 %files
-# zookeeper.initd will be brought in by zookeeper-3.4.8-0contrail1 packaged in centos/mitaka onwards
-%if "%{_centos}" == "centos" && ( "%{_sku}" == "liberty" || "%{_sku}" == "kilo" || "%{_sku}" == "juno" )
-%{_initddir}
-%endif
 
 %changelog
+* Tue Mar 14 2017 Ignatious Johnson <ijohnson@juniper.net>
+- Removing zookeeper dependency and related files
+
 * Fri Aug 12 2016 Nagendra Maynattamai <npchandran@juniper.net>
 - Adding dependency to zookeeper >= 3.4.8-0contrail1 for centos based platforms from mitaka onwards
 
