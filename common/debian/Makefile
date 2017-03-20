@@ -85,7 +85,7 @@ PACKAGES = \
 	contrail-puppet-deb \
 	contrail-puppet-tgz \
 	contrail-install-vcenter-plugin \
-	contrail-sm-ansible
+	contrail-ansible
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -546,8 +546,8 @@ contrail-puppet-clean:
 	(rm -rf $(SB_TOP)/build/debian/$(@:-clean=))
 
 contrail-puppet-tgz:
-	( [ -f ${SB_TOP}/build/artifacts_extra/contrail-puppet_${VERSION}~${CONTRAIL_SKU}.tar.gz ] && \
-	  rm -f ${SB_TOP}/build/artifacts_extra/contrail-puppet_${VERSION}~${CONTRAIL_SKU}.tar.gz ) ; \
+	( [ -f ${SB_TOP}/build/artifacts_extra/contrail-puppet-${VERSION}~${CONTRAIL_SKU}.tar.gz ] && \
+	  rm -f ${SB_TOP}/build/artifacts_extra/contrail-puppet-${VERSION}~${CONTRAIL_SKU}.tar.gz ) ; \
 	( rm -rf ${SB_TOP}/build/contrail-puppet-tgz-builddir/ ) ; \
 	( mkdir -p ${SB_TOP}/build/artifacts_extra/) ;\
 	( mkdir -p ${SB_TOP}/build/contrail-puppet-tgz-builddir/ ); \
@@ -555,13 +555,13 @@ contrail-puppet-tgz:
 	    cp -a ${SB_TOP}/tools/puppet/ ${SB_TOP}/build/contrail-puppet-tgz-builddir/ && \
 	    cp -rp ${SB_TOP}/tools/puppet-third-party/* ${SB_TOP}/build/contrail-puppet-tgz-builddir/puppet/contrail/environment/modules/ && \
 	    cd ${SB_TOP}/build/contrail-puppet-tgz-builddir/puppet/ && \
-	    tar -czf ${SB_TOP}/build/artifacts_extra/contrail-puppet_${VERSION}~${CONTRAIL_SKU}.tar.gz * ) || echo -e\
+	    tar -czf ${SB_TOP}/build/artifacts_extra/contrail-puppet-${VERSION}~${CONTRAIL_SKU}.tar.gz * ) || echo -e\
 	    "\n\nWARNING: ${SB_TOP}/tools/puppet/ or ${SB_TOP}/tools/puppet-third-party is not found; Skipping contrail-puppet\n\n"
 
-contrail-sm-ansible:
-	( [ -f ${SB_TOP}/build/artifacts_extra/contrail-sm-ansible_${VERSION}.tar.gz ] && \
-	    rm -f ${SB_TOP}/build/artifacts_extra/contrail-sm-ansible_${VERSION}.tar.gz ) ;\
-	( [ -d  ${SB_TOP}/tools/sm-ansible/ ] && \
+contrail-ansible:
+	( [ -f ${SB_TOP}/build/artifacts_extra/contrail-ansible-${VERSION}.tar.gz ] && \
+	    rm -f ${SB_TOP}/build/artifacts_extra/contrail-ansible-${VERSION}.tar.gz ) ;\
+	( [ -d ${SB_TOP}/tools/ansible/ ] && \
 	    mkdir -p ${SB_TOP}/build/artifacts_extra/ && \
-	    cd ${SB_TOP}/tools/sm-ansible/ && tar -czf ${SB_TOP}/build/artifacts_extra/contrail-sm-ansible_$(VERSION).tar.gz * ) || echo -e \
-	    "\n\nWARNING: ${SB_TOP}/tools/sm-ansible/ not found; Skipping contrail-sm-ansible\n\n"
+	    cd ${SB_TOP}/tools/ansible/ && tar -czf ${SB_TOP}/build/artifacts_extra/contrail-ansible-$(VERSION).tar.gz * ) || echo -e \
+	    "\n\nWARNING: ${SB_TOP}/tools/ansible/ not found; Skipping contrail-ansible\n\n"
