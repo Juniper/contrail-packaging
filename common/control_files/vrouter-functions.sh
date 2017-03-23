@@ -571,7 +571,7 @@ vrouter_dpdk_if_unbind() {
     bond_name=$(echo ${DPDK_PHY} | cut -d. -f1)
     for iface in $(ifquery --list);
     do
-        if ifquery $iface | grep -i "$bond_name";
+        if ifquery $iface | grep -i "$bond_name" | grep -i "bond-master";
         then
             ifdown $iface
          fi
