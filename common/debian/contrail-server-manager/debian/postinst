@@ -180,7 +180,7 @@ set -e
 service sendmail restart
 
 pushd /var/www/html/thirdparty_packages
-dpkg-scanpackages -m . | gzip -9c > Packages.gz
+dpkg-scanpackages . | gzip -9c > Packages.gz
 popd
 
 for f in /etc/cobbler/power/*.template; do
