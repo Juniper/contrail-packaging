@@ -154,6 +154,7 @@ class BasePackager(Utils):
             self.package_type = pkgtype
             self.meta_pkg = pkgtype
             self.sub_pkg_types = []
+            add_sku_tag = False
             log.info('Executing Build for Package Type (%s)' % pkgtype)
             try:
                 self.base_pkgs, self.depends_pkgs = {}, {}
@@ -162,8 +163,16 @@ class BasePackager(Utils):
                 self.repo_dir = os.path.join(self.store, pkgtype)
                 if self.package_type in self.contrail_pkgs_dict.keys():
                     self.contrail_pkgs = self.contrail_pkgs_dict[self.package_type]
-                self.pkg_tgz_name = '%s_%s-%s-%s.tgz' % (self.package_type,
+                    if 'add_sku_tag' in self.contrail_pkgs[self.package_type] and \
+                       self.contrail_pkgs[self.package_type]['add_sku_tag'].lower() == 'true':
+                        add_sku_tag = True
+                if add_sku_tag:
+                    self.pkg_tgz_name = '%s_%s-%s-%s.tgz' % (self.package_type,
                                     self.branch, self.id, self.sku)
+                else:
+                    self.pkg_tgz_name = '%s_%s-%s.tgz' % (self.package_type,
+                                    self.branch, self.id)
+
                 self.pkglist_file = os.path.join(self.store_log_dir,
                                       '%s_%s_%s_list.txt' % (
                                       self.package_type, self.id, self.pkg_type))
@@ -437,9 +446,14 @@ class BasePackager(Utils):
             # find the tgz in self.store. if not available
             # probably sub_package_type is not executed before
             # current package type
-            sub_pkg_tgz = self.pkg_tgz_name.split('_')
-            sub_pkg_tgz.remove(sub_pkg_tgz[0])
-            sub_pkg_tgz = sub_type + '_' + sub_pkg_tgz[0]
+            sub_pkg_tgz = "%s_%s-%s" % (sub_type, self.branch, self.id)
+            if sub_type in self.contrail_pkgs_dict and \
+                'add_sku_tag' in self.contrail_pkgs_dict[sub_type][sub_type] and \
+                self.contrail_pkgs_dict[sub_type][sub_type]['add_sku_tag'].lower() == 'true':
+                sub_pkg_tgz = "%s-%s.tgz" % (sub_pkg_tgz, self.sku)
+            else:
+                sub_pkg_tgz = "%s.tgz" % sub_pkg_tgz
+
             tgzfiles = self.get_file_list(self.store, sub_pkg_tgz, False)
             if len(tgzfiles) != 0:
                 self.copyfiles(tgzfiles, self.repo_dir)
