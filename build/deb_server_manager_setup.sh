@@ -44,28 +44,42 @@ function create_pip_repo()
 
 function ansible_and_docker_configs()
 {
-  echo "Configuring Ansible"
-  sed -i "/callback_plugin/c\callback_plugins = \/opt\/contrail\/server_manager\/ansible\/plugins" /etc/ansible/ansible.cfg
-  sed -i "/host_key_checking/c\host_key_checking = False" /etc/ansible/ansible.cfg
-  sed -i "/record_host_keys/c\record_host_keys = False" /etc/ansible/ansible.cfg
-  sed -i "/ssh_args/c\ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o UserKnownHostsFile=/dev/null" /etc/ansible/ansible.cfg
+    echo "Configuring Ansible"
+    sed -i "/callback_plugin/c\callback_plugins = \/opt\/contrail\/server_manager\/ansible\/plugins" /etc/ansible/ansible.cfg
+    sed -i "/host_key_checking/c\host_key_checking = False" /etc/ansible/ansible.cfg
+    sed -i "/record_host_keys/c\record_host_keys = False" /etc/ansible/ansible.cfg
+    sed -i "/ssh_args/c\ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o UserKnownHostsFile=/dev/null" /etc/ansible/ansible.cfg
 
-  ansible-galaxy install -r /opt/contrail/server_manager/ansible/playbooks/requirements.yml
-  echo "Starting docker"
+    ansible-galaxy install -r /opt/contrail/server_manager/ansible/playbooks/requirements.yml
+    echo "Starting docker if required"
+    if grep -q "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" /etc/default/docker; then
+        if service docker status | grep running; then
+            echo "option already set"
+        else
+            echo "starting docker with options"
+            echo "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" >> /etc/default/docker
+            service docker restart >> 1 2>&1
+        fi
+    else
+        echo "restarting docker with options"
+        echo "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" >> /etc/default/docker
+        service docker restart >> 1 2>&1
+    fi
 
-  echo "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" >> /etc/default/docker
-  service docker restart >> $log_file 2>&1
-
-  cur_name=`docker ps | grep -w "registry$" | awk '{print $NF}'`
-  if [ "$cur_name" == "registry" ]; then
-      echo "Docker registry already running"
-  else
-      echo "Starting docker registry"
-      docker run -d -p 5100:5000 --restart=always --name registry registry:2
-  fi
-
+    cur_name=`docker ps | grep -w "registry$" | awk '{print $NF}'`
+    stopped_name=`docker ps -a | grep -w "registry$" | awk '{print $NF}'`
+    if [ "$cur_name" == "registry" ]; then
+        echo "Docker registry already running"
+    else
+        if [ "$stopped_name" == "registry" ]; then
+            echo "Restarting docker regitry"
+            docker start registry
+        else
+            echo "Starting docker registry"
+            docker run -d -e REGISTRY_HTTP_ADDR=0.0.0.0:5100 --restart=always --net=host --name registry registry:2
+        fi
+    fi
 }
-
 
 function usage()
 {
