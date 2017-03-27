@@ -20,7 +20,6 @@ export _initdir := /etc/init
 export _sysconfdir := /etc
 export _mysqllogdir := /var/log/mysql
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
-export _servicedir := /lib/systemd/system
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -45,24 +44,6 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_sysconfdir)
 	install -d -m 755 $(buildroot)$(_mysqllogdir)
 	install -d -m 755 $(buildroot)$(_sysconfdir)/contrail
-	install -d -m 755 $(buildroot)$(_servicedir)
-
-	install -p -m 755 $(_src_config)/nova-api $(buildroot)$(_initddir)/nova-api
-	install -p -m 755 $(_src_config)/nova-compute $(buildroot)$(_initddir)/nova-compute
-	install -p -m 755 $(_src_config)/nova-conductor $(buildroot)$(_initddir)/nova-conductor
-	install -p -m 755 $(_src_config)/nova-console $(buildroot)$(_initddir)/nova-console
-	install -p -m 755 $(_src_config)/nova-consoleauth $(buildroot)$(_initddir)/nova-consoleauth
-	install -p -m 755 $(_src_config)/nova-novncproxy $(buildroot)$(_initddir)/nova-novncproxy
-	install -p -m 755 $(_src_config)/nova-scheduler $(buildroot)$(_initddir)/nova-scheduler
-
-	install -p -m 755 $(_src_config)/nova-api.service $(buildroot)$(_servicedir)/nova-api.service
-	install -p -m 755 $(_src_config)/nova-compute.service $(buildroot)$(_servicedir)/nova-compute.service
-	install -p -m 755 $(_src_config)/nova-conductor.service $(buildroot)$(_servicedir)/nova-conductor.service
-	install -p -m 755 $(_src_config)/nova-console.service $(buildroot)$(_servicedir)/nova-console.service
-	install -p -m 755 $(_src_config)/nova-consoleauth.service $(buildroot)$(_servicedir)/nova-consoleauth.service
-	install -p -m 755 $(_src_config)/nova-novncproxy.service $(buildroot)$(_servicedir)/nova-novncproxy.service
-	install -p -m 755 $(_src_config)/nova-scheduler.service $(buildroot)$(_servicedir)/nova-scheduler.service
-
 
 override_dh_usrlocal:	
 
