@@ -6,6 +6,12 @@
 export SB_TOP := $(shell pwd | sed -re "s/(.*)\/build\/openstack\/(.*)/\1/")
 export BUILDDIR:= ${SB_TOP}/build/openstack/nova
 
+export buildroot := ${SB_TOP}/build/openstack/nova
+export _initdir := /etc/init
+export _initddir := /etc/init.d
+export _src_config := $(SB_TOP)/tools/packaging/openstack/debian/openstack-nova/newton/debian
+export _servicedir := /lib/systemd/system
+
 DEBVERS ?= $(shell dpkg-parsechangelog | sed -n -e 's/^Version: //p')
 VERSION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: ([0-9]:)*([^-]+).*,\2,p')
 export OSLO_PACKAGE_VERSION=$(VERSION)
@@ -55,6 +61,15 @@ override_dh_install:
 	for hypervisor in qemu kvm xen lxc vmware; do \
 		install -D -m 0600 $(CURDIR)/debian/nova-compute-$${hypervisor}.conf $(CURDIR)/debian/nova-compute-$${hypervisor}/etc/nova/nova-compute.conf; \
 	done
+
+	install -d -m 755 $(buildroot)$(_servicedir)
+	install -p -m 755 $(_src_config)/nova-api.service $(buildroot)$(_servicedir)/nova-api.service
+	install -p -m 755 $(_src_config)/nova-compute.service $(buildroot)$(_servicedir)/nova-compute.service
+	install -p -m 755 $(_src_config)/nova-conductor.service $(buildroot)$(_servicedir)/nova-conductor.service
+	install -p -m 755 $(_src_config)/nova-console.service $(buildroot)$(_servicedir)/nova-console.service
+	install -p -m 755 $(_src_config)/nova-consoleauth.service $(buildroot)$(_servicedir)/nova-consoleauth.service
+	install -p -m 755 $(_src_config)/nova-novncproxy.service $(buildroot)$(_servicedir)/nova-novncproxy.service
+	install -p -m 755 $(_src_config)/nova-scheduler.service $(buildroot)$(_servicedir)/nova-scheduler.service
 
 override_dh_installdocs:
 
