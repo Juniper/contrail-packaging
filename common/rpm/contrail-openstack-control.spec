@@ -55,7 +55,7 @@ install -D -m 755 %{_nodemgr_config}/contrail-control-nodemgr.initd.supervisord 
 %{_supervisordir}
 %defattr(-,contrail,contrail,-)
 %config(noreplace) %{_supervisordir}/contrail-control-nodemgr.ini
-/etc/contrail/contrail-control-nodemgr.conf
+%config(noreplace) /etc/contrail/contrail-control-nodemgr.conf
 /etc/init.d/contrail-control-nodemgr
 
 %post
