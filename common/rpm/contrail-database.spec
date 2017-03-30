@@ -154,8 +154,8 @@ chkconfig contrail-database on
 %defattr(-,root,root,-)
 %{_venv_root}
 %{_supervisordir}/contrail-database.rules
-%{_supervisordir}/contrail-database-nodemgr.ini
-/etc/contrail/contrail-database-nodemgr.conf
+%config(noreplace) %{_supervisordir}/contrail-database-nodemgr.ini
+%config(noreplace) /etc/contrail/contrail-database-nodemgr.conf
 %if 0%{?rhel}
 %{_initddir}/supervisor-database
 %endif
