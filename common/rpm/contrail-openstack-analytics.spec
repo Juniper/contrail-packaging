@@ -64,7 +64,7 @@ done
 %files
 %defattr(-, root, root)
 %config(noreplace) %{_supervisordir}/contrail-analytics-nodemgr.ini
-/etc/contrail/contrail-analytics-nodemgr.conf
+%config(noreplace) /etc/contrail/contrail-analytics-nodemgr.conf
 /etc/init.d/contrail-analytics-nodemgr
 
 %changelog
