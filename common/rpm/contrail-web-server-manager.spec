@@ -74,9 +74,9 @@ rm -rf %{_specdir}/contrail-web-server-manager.spec
 %files
 %defattr(-,root,root)
 %{_contrailwebsrc}/*
-%{_contrailetc}/*
+%config(noreplace) %{_contrailetc}/*
 %{_initddir}/*
-%{_supervisordir}/*
+%config(noreplace) %{_supervisordir}/*
 
 %post
 mkdir -p /var/log/contrail/

@@ -55,6 +55,8 @@ install -p -m 755 %{_distropkgdir}/agent.conf  %{buildroot}/etc/contrail/rpm_age
 
 %files
 /opt/*
+%config(noreplace) %{buildroot}%{_supervisordir}/contrail-vrouter-nodemgr.ini
+%config(noreplace) %{buildroot}/etc/contrail/rpm_agent.conf
 /etc/*
 /var/*
 %dir %attr(0777, contrail, contrail) /var/log/contrail
