@@ -93,10 +93,10 @@ popd
 %{_bindir}/ifmap_view.py
 #%{_bindir}/encap.py
 %{_initddir}
-%{_sysconfdir}/contrail/supervisord_support_service.conf
+%config(noreplace) %{_sysconfdir}/contrail/supervisord_support_service.conf
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_support_service_files/rabbitmq-server.ini
-/etc/contrail/contrail-config-nodemgr.conf
+%config(noreplace) /etc/contrail/contrail-config-nodemgr.conf
 /etc/init.d/contrail-config-nodemgr
 
 %post
