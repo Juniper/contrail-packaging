@@ -419,9 +419,6 @@ fi
 if [ "$SMCLIFFCLIENT" != "" ]; then
   echo "$arrow Server Manager Cliff Client"
   echo "$space$arrow$install_str Server Manager Cliff Client"
-  if [ -e /usr/bin/server-manager ]; then
-      unlink /usr/bin/server-manager
-  fi
   dpkg -P --force-all contrail-server-manager-client >> $log_file 2>&1
   apt-get -y install contrail-server-manager-cliff-client >> $log_file 2>&1
   apt-get -y install -f >> $log_file 2>&1
