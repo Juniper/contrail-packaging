@@ -183,6 +183,10 @@ pushd /var/www/html/thirdparty_packages
 dpkg-scanpackages . | gzip -9c > Packages.gz
 popd
 
+pushd /var/www/html/thirdparty_packages_ubuntu_1604
+dpkg-scanpackages . | gzip -9c > Packages.gz
+popd
+
 for f in /etc/cobbler/power/*.template; do
 if ! grep -q '#for \$fact' $f; then
 cat << EOT >> $f
