@@ -66,6 +66,7 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_contrailopt)/contrail_server_manager
 	# Install files
 	install -p -m 755 $(src_path)../../../tools/packaging/build/contrail_local_preferences $(buildroot)$(_contrailopt)/contrail_server_manager/contrail_local_preferences
+	install -p -m 755 $(pkg_sources)/registry.tar.gz  $(buildroot)$(_contrailopt)/contrail_server_manager/.
 	install -p -m 755 $(SETUP_FILE)  $(buildroot)$(_contrailopt)/contrail_server_manager/setup.sh
 	install -p -m 755 $(src_path)/sm_provision.sh $(buildroot)$(_contrailopt)/contrail_server_manager/provision.sh
 	install -p -m 755 $(src_path)/sm_provision_containers.sh $(buildroot)$(_contrailopt)/contrail_server_manager/provision_containers.sh
