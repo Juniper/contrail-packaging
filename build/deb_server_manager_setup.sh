@@ -50,7 +50,6 @@ function ansible_and_docker_configs()
     sed -i "/record_host_keys/c\record_host_keys = False" /etc/ansible/ansible.cfg
     sed -i "/ssh_args/c\ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o UserKnownHostsFile=/dev/null" /etc/ansible/ansible.cfg
 
-    ansible-galaxy install -r /opt/contrail/server_manager/ansible/playbooks/requirements.yml
     echo "Starting docker if required"
     if grep -q "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" /etc/default/docker; then
         if service docker status | grep running; then
@@ -75,6 +74,7 @@ function ansible_and_docker_configs()
             docker start registry
         else
             echo "Starting docker registry"
+            docker load < /opt/contrail/contrail_server_manager/registry.tar.gz
             docker run -d -e REGISTRY_HTTP_ADDR=0.0.0.0:5100 --restart=always --net=host --name registry registry:2
         fi
     fi
