@@ -418,7 +418,13 @@ class BasePackager(Utils):
     def createrepo(self, extraargs=''):
         ''' execute create repo '''
         log.info('Executing createrepo in (%s)...' % self.repo_dir)
-        self.exec_cmd('createrepo %s .' % extraargs, wd=self.repo_dir)
+        packages_present = any([fname.endswith('.%s' % self.pkg_type)
+                                for fname in os.listdir(self.repo_dir)])
+        if packages_present:
+            self.exec_cmd('createrepo %s .' % extraargs, wd=self.repo_dir)
+        else:
+            log.warn('No Packages of type (%s) found in (%s); '
+                     'Skip creating Repo' % (self.pkg_type, self.repo_dir))
 
     def cleanup_store(self):
         log.info('Removing Packager repo dir (%s)' % self.repo_dir)
