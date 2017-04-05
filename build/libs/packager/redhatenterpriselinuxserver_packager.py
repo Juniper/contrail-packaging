@@ -15,12 +15,15 @@ class Packager(BasePackager):
         self.setup_env()
         self.create_pkg_list_file()
         self.make_pkgs()
-        self.verify_built_pkgs_exists(skips=self.meta_pkg)
+        self.verify_built_pkgs_exists(skips=self.meta_pkg,
+                                      recursion=False)
         self.copy_built_pkg_files(skips=self.meta_pkg)
+        self.add_sub_pkgs_tgz()
         self.createrepo()
         self.create_pkgs_tgz()
         self.create_contrail_pkg()
-        self.verify_built_pkgs_exists(self.meta_pkg)
+        self.verify_built_pkgs_exists(self.meta_pkg,
+                                      recursion=False)
         self.create_log()
         self.cleanup_store()
 
