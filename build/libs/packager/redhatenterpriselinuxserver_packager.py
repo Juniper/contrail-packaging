@@ -17,6 +17,7 @@ class Packager(BasePackager):
         self.make_pkgs()
         self.verify_built_pkgs_exists(skips=self.meta_pkg)
         self.copy_built_pkg_files(skips=self.meta_pkg)
+        self.add_sub_pkgs_tgz()
         self.createrepo()
         self.create_pkgs_tgz()
         self.create_contrail_pkg()
