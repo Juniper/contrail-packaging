@@ -29,19 +29,6 @@ HOSTIP=`echo $HOST_IP_LIST | cut -d' ' -f1`
 rel=`lsb_release -r`
 rel=( $rel )
 
-function create_pip_repo()
-{
-  echo "Installing pip2pi ..."
-  pip install pip2pi
-  echo "Create pip repo for required thirdparty packages ..."
-
-  #mkdir -p /var/www/html/thirdparty_packages/pip_repo
-  #mv /var/www/html/thirdparty_packages/*.tar.gz /var/www/html/thirdparty_packages/pip_repo
-
-  sed -i "s/HOSTIP/$HOSTIP/" /opt/contrail/server_manager/ansible/playbooks/files/pip.conf
-  dir2pi /var/www/html/thirdparty_packages/pip_repo
-}
-
 function ansible_and_docker_configs()
 {
     echo "Configuring Ansible"
@@ -404,7 +391,6 @@ if [ "$SM" != "" ]; then
   fi
 
   ansible_and_docker_configs
-  create_pip_repo
   echo "$arrow Completed Installing Server Manager"
 fi
 
@@ -451,7 +437,9 @@ echo "$arrow Reverting Repos to old state"
 rm -f /etc/apt/sources.list.d/puppet.list >> $log_file 2>&1
 rm -f /etc/apt/sources.list.d/passenger.list >> $log_file 2>&1
 rm -f /etc/apt/sources.list.d/smgr_sources.list >> $log_file 2>&1
+set +e
 apt-get update >> $log_file 2>&1
+set -e
 
 sm_installed=`dpkg -l | grep "contrail-server-manager " || true`
 if [ "$sm_installed" != "" ]; then
