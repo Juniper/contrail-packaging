@@ -88,7 +88,7 @@ function cleanup_smgr_repos()
 {
 
   echo "$space$arrow Cleaning up existing sources.list and Server Manager sources file"
-  local_repo="deb file:/opt/contrail/contrail_server_manager ./"
+  local_repo="deb file:/opt/contrail/contrail_server_manager/repo ./"
   sed -i "s|$local_repo||g" /etc/apt/sources.list
   if [ -f /etc/apt/sources.list.d/smgr_sources.list ]; then
     rm /etc/apt/sources.list.d/smgr_sources.list
@@ -124,11 +124,11 @@ function setup_smgr_repos()
   #scan pkgs in local repo and create Packages.gz
   apt-get --no-install-recommends -y install dpkg-dev >> $log_file 2>&1
 
-  pushd /opt/contrail/contrail_server_manager >> $log_file 2>&1
+  pushd /opt/contrail/contrail_server_manager/repo >> $log_file 2>&1
   dpkg-scanpackages . | gzip -9c > Packages.gz | >> $log_file 2>&1
   popd >> $log_file 2>&1
 
-  echo "deb file:/opt/contrail/contrail_server_manager ./" > /tmp/local_repo
+  echo "deb file:/opt/contrail/contrail_server_manager/repo ./" > /tmp/local_repo
   cat /tmp/local_repo /etc/apt/sources.list.d/smgr_sources.list > /tmp/new_smgr_sources.list
   mv /tmp/new_smgr_sources.list /etc/apt/sources.list.d/smgr_sources.list
 
