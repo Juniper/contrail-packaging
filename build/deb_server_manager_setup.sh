@@ -142,7 +142,9 @@ function setup_internet_repos()
 {
   echo "$space$arrow Setting up Internet Repos"
   # Push this to makefile - Copy only the file we need into installer.
-  if [ ${rel[1]} == "14.04"  ]; then
+  if [ ${rel[1]} == "16.04"  ]; then
+    cp /opt/contrail/contrail_server_manager/ubuntu_16_04_sources.list /etc/apt/sources.list.d/smgr_sources.list
+  elif [ ${rel[1]} == "14.04"  ]; then
     cp /opt/contrail/contrail_server_manager/ubuntu_14_04_1_sources.list /etc/apt/sources.list.d/smgr_sources.list
   elif [ ${rel[1]} == "12.04"  ]; then
     cp /opt/contrail/contrail_server_manager/ubuntu_12_04_3_sources.list /etc/apt/sources.list.d/smgr_sources.list
@@ -162,6 +164,9 @@ function setup_internet_repos()
   puppet_list_file="/etc/apt/sources.list.d/puppet.list"
   passenger_list_file="/etc/apt/sources.list.d/passenger.list"
   dist='precise'
+  if [ ${rel[1]} == "16.04"  ]; then
+      dist='xenial'
+  fi
   if [ ${rel[1]} == "14.04"  ]; then
       dist='trusty'
   fi
@@ -316,11 +321,17 @@ if [ "$SM" != "" ]; then
     awk -v n1=$passenger_upgrade_version -v n2=$contrail_server_manager_version 'BEGIN{ if (n1>n2) cleanup_passenger}'
   fi
 
+  PUPPET_VERSION="3.7.3-1puppetlabs1"
   #TODO: To be Removed after local repo additions
+  if [ ${rel[1]} == "16.04"  ]; then
+    apt-get --no-install-recommends -y install libpython2.7>=2.7.6-8ubuntu0.2 >> $log_file 2>&1
+    PUPPET_VERSION="3.8.5-2"
+  fi
   if [ ${rel[1]} == "14.04"  ]; then
     apt-get --no-install-recommends -y install libpython2.7>=2.7.6-8ubuntu0.2 >> $log_file 2>&1
+    PUPPET_VERSION="3.7.3-1puppetlabs1"
   fi
-  apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppet-common="3.7.3-1puppetlabs1" puppetmaster-common="3.7.3-1puppetlabs1" >> $log_file 2>&1
+  apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppet-common=${PUPPET_VERSION} puppetmaster-common=${PUPPET_VERSION} >> $log_file 2>&1
   cp /opt/contrail/contrail_server_manager/puppet.conf /etc/puppet/
   apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install nodejs=0.10.35-1contrail1 >> $log_file 2>&1
 
@@ -336,7 +347,7 @@ if [ "$SM" != "" ]; then
   set -e
   #To be Removed after local repo additions
   echo "$space$arrow$install_str Puppetmaster Passenger"
-  apt-get --no-install-recommends -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppetmaster-passenger="3.7.3-1puppetlabs1" >> $log_file 2>&1
+  apt-get --no-install-recommends -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppetmaster-passenger=${PUPPET_VERSION} >> $log_file 2>&1
   service apache2 restart >> $log_file 2>&1
 
   if [ -e /etc/init.d/apparmor ]; then
