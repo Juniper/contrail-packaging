@@ -73,6 +73,7 @@ override_dh_auto_install:
 	install -p -m 755 $(provision_file_location)/provision_status.sh $(buildroot)$(_contrailopt)/contrail_server_manager/provision_status.sh
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/ubuntu_12_04_3_sources.list  $(buildroot)$(_contrailopt)/contrail_server_manager/ubuntu_12_04_3_sources.list
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/ubuntu_14_04_1_sources.list  $(buildroot)$(_contrailopt)/contrail_server_manager/ubuntu_14_04_1_sources.list
+	install -p -m 755 $(SB_TOP)/tools/packaging/build/ubuntu_16_04_sources.list $(buildroot)$(_contrailopt)/contrail_server_manager/ubuntu_16_04_sources.list
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/cobbler.conf  $(buildroot)$(_contrailopt)/contrail_server_manager/cobbler.conf
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/cobbler_web.conf  $(buildroot)$(_contrailopt)/contrail_server_manager/cobbler_web.conf
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/cobbler_14.conf  $(buildroot)$(_contrailopt)/contrail_server_manager/cobbler_14.conf

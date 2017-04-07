@@ -264,13 +264,24 @@ contrail-thirdparty-packages-deb:
 
 contrail-server-manager-client-tgz:
 	(mkdir -p $(SB_TOP)/build/tools/; cd ${SB_TOP}/tools/contrail-server-manager/src/client/ && tar -czf $(SB_TOP)/build/tools/contrail-server-manager-client-$(VERSION)~$(CONTRAIL_SKU).tgz *)
-        @echo "Wrote: $(SB_TOP)/build/tools/contrail-server-manager-client-$(VERSION)~$(CONTRAIL_SKU).tgz"
+	@echo "Wrote: $(SB_TOP)/build/tools/contrail-server-manager-client-$(VERSION)~$(CONTRAIL_SKU).tgz"
 
 contrail-server-manager-deb:
 	$(eval BUILDDIR=${SB_TOP}/build/debian/contrail-server-manager)
 	rm -rf ${BUILDDIR}
 	mkdir -p ${BUILDDIR}/debian
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager/debian ${BUILDDIR}
+	$(eval PACKAGE := $(@:-deb=))
+	@echo "PACKAGE : $(PACKAGE)"
+	$(eval DEFAULT_CONTROL := control)
+	@echo "Looking for control file: control.in"
+	$(eval DEFAULT_CONTROL_IN := $(shell [ -f $(PACKAGE)/debian/control.in ] && echo 'control.in'  || echo $(DEFAULT_CONTROL)))
+	@echo "Looking for control file: control.$(SERIES).in"
+	$(eval SERIES_CONTROL_IN := $(shell [ -f $(PACKAGE)/debian/control.$(SERIES).in ] && echo 'control.$(SERIES).in'  || echo $(DEFAULT_CONTROL_IN)))
+	@echo "Looking for control file: control.$(SERIES).$(CONTRAIL_SKU).in"
+	$(eval CONTROL_IN := $(shell [ -f $(PACKAGE)/debian/control.$(SERIES).$(CONTRAIL_SKU).in ] && echo 'control.$(SERIES).$(CONTRAIL_SKU).in' || echo $(SERIES_CONTROL_IN)))
+	@echo "Using control file: $(CONTROL_IN)"
+	cp ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager/debian/$(CONTROL_IN) ${BUILDDIR}/debian/control
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
@@ -279,6 +290,21 @@ contrail-server-manager-lite-deb:
 	rm -rf ${BUILDDIR}
 	mkdir -p ${BUILDDIR}/debian
 	cp -ar ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-lite/debian ${BUILDDIR}
+	$(eval PACKAGE := $(@:-deb=))
+	@echo "PACKAGE : $(PACKAGE)"
+	@echo "DHEERAJ  SMLITE CHECK"
+	$(eval DEFAULT_CONTROL := control)
+	@echo "Default control file: $(DEFAULT_CONTROL)"
+	@echo "Looking for control file: control.in"
+	$(eval DEFAULT_CONTROL_IN := $(shell [ -f $(PACKAGE)/debian/control.in ] && echo 'control.in'  || echo $(DEFAULT_CONTROL)))
+	@echo "Using control file: $(DEFAULT_CONTROL_IN)"
+	@echo "Looking for control file: control.$(SERIES).in"
+	$(eval SERIES_CONTROL_IN := $(shell [ -f $(PACKAGE)/debian/control.$(SERIES).in ] && echo 'control.$(SERIES).in'  || echo $(DEFAULT_CONTROL_IN)))
+	@echo "Looking for control file: control.$(SERIES).$(CONTRAIL_SKU).in"
+	@echo "Using control file: $(SERIES_CONTROL_IN)"
+	$(eval CONTROL_IN := $(shell [ -f $(PACKAGE)/debian/control.$(SERIES).$(CONTRAIL_SKU).in ] && echo 'control.$(SERIES).$(CONTRAIL_SKU).in' || echo $(SERIES_CONTROL_IN)))
+	@echo "Using control file: $(CONTROL_IN)"
+	cp ${SB_TOP}/tools/packaging/common/debian/contrail-server-manager-lite/debian/$(CONTROL_IN) ${BUILDDIR}/debian/control
 	(cd ${BUILDDIR}; fakeroot debian/rules clean)
 	(cd ${BUILDDIR}; fakeroot debian/rules binary)
 
