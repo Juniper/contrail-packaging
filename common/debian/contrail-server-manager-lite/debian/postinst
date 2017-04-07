@@ -33,7 +33,9 @@ cp /etc/contrail_smgr/puppet/hiera.yaml /etc/puppet/
 cp /etc/contrail_smgr/puppet/puppet.conf /etc/puppet/
 cp -r /etc/contrail_smgr/puppet/environments /etc/puppet/
 
-if [[ "$rel" == *"14.04"* ]]; then
+if [[ "$rel" == *"16.04"* ]]; then
+    echo "Not seding files for 16.04"
+elif [[ "$rel" == *"14.04"* ]]; then
     echo "Not seding files for 14.04"
 else
     a2enmod version

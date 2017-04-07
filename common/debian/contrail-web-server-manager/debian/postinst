@@ -136,4 +136,4 @@ service redis-server restart
 service supervisor restart
 
 # start webui
-service supervisor-webui-sm restart
+#service supervisor-webui-sm restart
