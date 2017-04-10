@@ -47,3 +47,5 @@ ruby-json_1.6.3-1_amd64.deb, 60512a21163973f1b714dad68ee276e0
 ruby-augeas_0.5.0-2_amd64.deb, a7faa5ea78f5b93307c05bf01f13d00c
 rubygems-integration_1.5_all.deb, 4fd9a6b8fcd6cac0935d416bef4c0089
 virt-what_1.11-1_amd64.deb, 76fc052bf3bfef3d0fe66f6145decdb6
+ethtool_1%3a3.13-1_amd64.deb, b23c4d504e5b13decc47276ee40927b6
+sysstat_10.2.0-1_amd64.deb, c85d3d8c3d3162c4d6b2efe1b963e0d2
