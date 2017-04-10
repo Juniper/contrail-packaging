@@ -51,7 +51,7 @@ install -D -m 755 %{_nodemgr_config}/contrail-vrouter-nodemgr.initd.supervisord 
 %postun
 
 %files
-/etc/contrail/contrail-vrouter-nodemgr.conf
+%config(noreplace) /etc/contrail/contrail-vrouter-nodemgr.conf
 /etc/init.d/contrail-vrouter-nodemgr
 
 %changelog

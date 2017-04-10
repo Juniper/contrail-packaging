@@ -39,7 +39,7 @@ install -D -m 755 %{_nodemgr_config}/contrail-database-nodemgr.initd.supervisord
 popd
 
 %files
-/etc/contrail/contrail-database-nodemgr.conf
+%config(noreplace) /etc/contrail/contrail-database-nodemgr.conf
 /etc/init.d/contrail-database-nodemgr
 
 %changelog
