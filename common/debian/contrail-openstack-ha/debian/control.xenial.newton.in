@@ -1,0 +1,14 @@
+Source: contrail-openstack-ha
+Maintainer: ijohnson <ijohnson@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends:
+
+Package: contrail-openstack-ha
+Architecture: all
+Maintainer: ijohnson <ijohnson@juniper.net>
+Depends: galera, keepalived, percona-xtrabackup, apache2, mysql-wsrep-server-5.7, mysql-client, fontconfig-config, libfontconfig1, libgd2-xpm, libxpm4, php7.0-cli, php7.0-common, php7.0-gd, php7.0-mysql, ttf-dejavu-core, xinetd
+Section: contrail-openstack-ha
+Priority: extra
+Description: Contrail Openstack High Availablity composite debian package
