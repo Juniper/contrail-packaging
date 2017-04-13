@@ -122,9 +122,7 @@ function setup_smgr_repos()
 
   echo "$space$arrow Installing dependent packages for Setting up Smgr repos"
   #scan pkgs in local repo and create Packages.gz
-  dpkg -i libdpkg-perl_1.17.5ubuntu5.7_all.deb patch_2.7.1-4ubuntu2.3_amd64.deb >> $log_file 2>&1
-  dpkg -i make_3.81-8.2ubuntu3_amd64.deb binutils_2.24-5ubuntu14.1_amd64.deb >> $log_file 2>&1
-  dpkg -i dpkg-dev_1.17.5ubuntu5.7_all.deb >> $log_file 2>&1
+  (DEBIAN_FRONTEND=noninteractive dpkg -i binutils_*.deb dpkg-dev_*.deb libdpkg-perl_*.deb make_*.deb patch_*.deb  xz-utils_*.deb >> $log_file 2>&1)
 
   pushd /opt/contrail/contrail_server_manager >> $log_file 2>&1
   dpkg-scanpackages . | gzip -9c > Packages.gz | >> $log_file 2>&1
