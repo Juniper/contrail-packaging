@@ -24,9 +24,9 @@ SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 CONTRAIL_SKU := $(shell cat $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/contrail_sku.txt)
 BUILDTAG =
 ifdef TAG
-BUILDTAG = $(SRC_VER)-$(TAG)
+BUILDTAG = $(SRC_VER).$(TAG)
 else
-BUILDTAG = $(SRC_VER)-$(BUILDTIME)
+BUILDTAG = $(SRC_VER).$(BUILDTIME)
 endif
 
 %:
@@ -57,8 +57,8 @@ override_dh_auto_install:
 	install -p -m 755 $(smgr_src_path)/kickstarts/interface_setup.py $(build_root)/opt/contrail/server_manager/client/interface_setup.py
 	install -p -m 755 $(smgr_src_path)/kickstarts/staticroute_setup.py $(build_root)/opt/contrail/server_manager/client/staticroute_setup.py
 	install -p -m 755 $(smgr_src_path)/client/provision.sh $(build_root)/opt/contrail/server_manager/client/provision.sh
-	(cd $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/ && tar zxf servermanagercli-$(BUILDTAG)-$(CONTRAIL_SKU).tar.gz)
-	(cd $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/servermanagercli-$(BUILDTAG)-$(CONTRAIL_SKU) && ${__python} setup.py install --root=$(build_root) --install-scripts ${_contrailopt}/bin/)
+	(cd $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/ && tar zxf servermanagercli-$(BUILDTAG).tar.gz)
+	(cd $(SB_TOP)/tools/contrail-server-manager/src/smgr_cliff_client/dist/servermanagercli-$(BUILDTAG) && ${__python} setup.py install --root=$(build_root) --install-scripts ${_contrailopt}/bin/)
 override_dh_shlibdeps:
 
 override_dh_usrlocal:
