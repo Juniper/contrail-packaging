@@ -85,7 +85,8 @@ PACKAGES = \
 	contrail-puppet-deb \
 	contrail-puppet-tgz \
 	contrail-install-vcenter-plugin \
-	contrail-ansible
+	contrail-ansible \
+	contrail-docker-tools-deb
 
 all: ${PACKAGES}
 	@echo "Build complete"
@@ -591,3 +592,13 @@ contrail-ansible:
 	    mkdir -p ${SB_TOP}/build/artifacts_extra/ && \
 	    cd ${SB_TOP}/tools/ansible/ && tar -czf ${SB_TOP}/build/artifacts_extra/contrail-ansible-$(VERSION).tar.gz * ) || echo -e \
 	    "\n\nWARNING: ${SB_TOP}/tools/ansible/ not found; Skipping contrail-ansible\n\n"
+
+contrail-docker-tools-deb:
+	[ -f ${SB_TOP}/build/debian/contrail-docker-tools_${VERSION}* ] && \
+	    rm -f ${SB_TOP}/build/debian/contrail-docker-tools_${VERSION}* ; \
+	[ -d ${SB_TOP}/tools/docker-tools/ ] || echo -e \
+	  "\n\nWARNING: ${SB_TOP}/tools/docker-tools/ not found; Skipping contrail-docker-tools-deb\n\n"
+	( [ -d ${SB_TOP}/tools/docker-tools/ ] && \
+	    cd ${SB_TOP}/tools/docker-tools/package-build/ && \
+	    make TAG=${TAG} SRC_VER=${SRC_VER} SB_TOP=${SB_TOP} contrail-docker-tools-deb ) || echo -e \
+	    "\n\nERROR: make contrail-docker-tools-deb with ARGs \(TAG=${TAG} SRC_VER=${SRC_VER} SB_TOP=${SB_TOP}\) Failed\n\n"
