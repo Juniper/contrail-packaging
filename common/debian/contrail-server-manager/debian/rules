@@ -12,7 +12,6 @@ SPEC_DIR := $(shell pwd)
 export SB_TOP := $(shell pwd | sed -re "s/\/build\/debian\/contrail-server-manager//g")
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 export src_path := $(SB_TOP)/tools/contrail-server-manager/src/
-export ansible_path := $(SB_TOP)/tools/ansible/
 export build_root := $(SB_TOP)/build/debian/contrail-server-manager/debian/contrail-server-manager
 export contrail_provisioning_path := $(SB_TOP)/tools/provisioning/contrail_provisioning
 #python_version := $(PYTHONPATH=$(PYTHONPATH):$(build_root)/../tools/packaging/tools/scripts/ python -c "import sys; print '%s.%s' % sys.version_info[0:2]")
@@ -96,8 +95,6 @@ override_dh_auto_install:
 	install -d -m 755 $(build_root)/opt/contrail/server_manager/reprepro/
 	install -d -m 755 $(build_root)/opt/contrail/server_manager/ansible/
 	install -d -m 755 $(build_root)/opt/contrail/server_manager/ansible/playbooks/
-	install -d -m 755 $(build_root)/opt/contrail/server_manager/ansible/playbooks/contrail-ansible/
-	install -d -m 755 $(build_root)/opt/contrail/server_manager/ansible/playbooks/contrail-ansible/contrailctl
 	install -d -m 755 $(build_root)/opt/contrail/server_manager/ansible/plugins
 	install -d -m 755 $(build_root)/opt/contrail/server_manager/reprepro/dpdk_depends_conf
 	install -d -m 755 $(build_root)/opt/contrail/server_manager/reprepro/conf
@@ -126,9 +123,6 @@ override_dh_auto_install:
 	cp -r $(src_path)/ansible/* $(build_root)/opt/contrail/server_manager/ansible/
 	install -p -m 755 $(src_path)/ansible/sm_ansible_server.py $(build_root)/opt/contrail/server_manager/ansible/sm_ansible_server.py
 	cp -r $(src_path)/ansible/plugins/*   $(build_root)/opt/contrail/server_manager/ansible/plugins/
-	if [ -d $(ansible_path) ]; then \
-	    cp -r $(ansible_path)/playbooks/* $(build_root)/opt/contrail/server_manager/ansible/playbooks/contrail-ansible/. ; \
-	fi
 	cp -r $(src_path)/vmware/esxi_contrailvm.py $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/role_sequence.json $(build_root)/etc/contrail_smgr/
 	cp -r $(src_path)/contrail-defaults.yaml $(build_root)/etc/contrail_smgr/
