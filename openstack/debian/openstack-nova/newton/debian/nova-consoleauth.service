@@ -13,7 +13,7 @@ PermissionsStartOnly=true
 ExecStartPre=/bin/mkdir -p /var/lock/nova /var/log/nova /var/lib/nova
 ExecStartPre=/bin/chown nova:nova /var/lock/nova /var/lib/nova
 ExecStartPre=/bin/chown nova:adm /var/log/nova
-ExecStart=/etc/init.d/nova-consoleauth systemd-start
+ExecStart=/usr/bin/nova-consoleauth --config-file=/etc/nova/nova.conf --log-file /var/log/nova/nova-consoleauth.log
 Restart=on-failure
 LimitNOFILE=65535
 TimeoutStopSec=15
