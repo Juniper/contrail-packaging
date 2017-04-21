@@ -88,6 +88,7 @@ PACKAGES = \
 	contrail-puppet-tgz \
 	contrail-install-vcenter-plugin \
 	contrail-ansible \
+	contrail-ansible-internal \
 	contrail-docker-tools-deb
 
 all: ${PACKAGES}
@@ -593,6 +594,16 @@ contrail-ansible:
 	    mkdir -p ${SB_TOP}/build/artifacts_extra/ && \
 	    cd ${SB_TOP}/tools/ansible/ && tar -czf ${SB_TOP}/build/artifacts_extra/contrail-ansible-$(VERSION).tar.gz * ) || echo -e \
 	    "\n\nWARNING: ${SB_TOP}/tools/ansible/ not found; Skipping contrail-ansible\n\n"
+
+contrail-ansible-internal:
+	( [ -f ${SB_TOP}/build/artifacts_extra/contrail-ansible-internal-${VERSION}.tar.gz ] && \
+	  rm -f ${SB_TOP}/build/artifacts_extra/contrail-ansible-internal-${VERSION}.tar.gz ) ;\
+	( [ -d ${SB_TOP}/tools/ansible-internal ] && \
+	    mkdir -p ${SB_TOP}/build/artifacts_extra && \
+	    cd ${SB_TOP}/tools && \
+	    tar -czf ${SB_TOP}/build/artifacts_extra/contrail-ansible-internal-${VERSION}.tar.gz \
+	    --exclude .git\* --transform='s|^ansible-internal|contrail-ansible-internal|' ansible-internal ) \
+	    || echo -e "\n\nWARNING: ${SB_TOP}/tools/ansible-internal/ not found; Skipping contrail-ansible-internal\n\n"
 
 contrail-docker-tools-deb:
 	[ -f ${SB_TOP}/build/debian/contrail-docker-tools_${VERSION}* ] && \

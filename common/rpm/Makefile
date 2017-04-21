@@ -289,6 +289,16 @@ contrail-ansible:
 	    tar -czf $(SB_TOP)/build/artifacts_extra/contrail-ansible-$(TOOLS_VERSION).tar.gz * ) || echo -e \
 	    "\n\nWARNING: $(SB_TOP)/tools/ansible/ not found; Skipping contrail-ansible\n\n"
 
+contrail-ansible-internal:
+	( [ -f $(SB_TOP)/build/artifacts_extra/contrail-ansible-internal-$(TOOLS_VERSION).tar.gz ] && \
+	  rm -f $(SB_TOP)/build/artifacts_extra/contrail-ansible-internal-$(TOOLS_VERSION).tar.gz ) ;\
+	( [ -d $(SB_TOP)/tools/ansible-internal ] && \
+	    mkdir -p $(SB_TOP)/build/artifacts_extra && \
+	    cd $(SB_TOP)/tools && \
+	    tar -czf $(SB_TOP)/build/artifacts_extra/contrail-ansible-internal-$(TOOLS_VERSION).tar.gz \
+	    --exclude .git\* --transform='s|^ansible-internal|contrail-ansible-internal|' ansible-internal ) \
+	    || echo -e "\n\nWARNING: $(SB_TOP)/tools/ansible-internal/ not found; Skipping contrail-ansible-internal\n\n"
+
 NEUTRON_PLUGIN = neutron-plugin-contrail
 CONTRAIL_HEAT = contrail-heat
 CEILOMETER_PLUGIN = ceilometer-plugin-contrail
@@ -301,7 +311,7 @@ all: $(PREP) contrail \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
        contrail-vrouter-init contrail-vrouter-common contrail-nova-networkapi \
        contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet contrail-ansible \
-       contrail-puppet-tgz
+       contrail-ansible-internal contrail-puppet-tgz
 
 server-manager-all: contrail-server-manager contrail-server-manager-client \
     contrail-web-server-manager
