@@ -17,6 +17,8 @@ VERSION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: ([0-9]:)*([^-]+).
 export OSLO_PACKAGE_VERSION=$(VERSION)
 DEB_BUILD_OPTIONS += nodocs nocheck
 
+DH_WITH=python2,systemd
+
 BUILDTAG =
 ifdef TAG
 BUILDTAG = $(TAG)
@@ -25,7 +27,7 @@ BUILDTAG = $(BUILDTIME)
 endif
 
 %:
-	dh $@ --with python2
+	dh $@ --with $(DH_WITH)
 
 override_dh_auto_clean:
 	dh_auto_clean
