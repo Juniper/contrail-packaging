@@ -1,4 +1,5 @@
 #!/bin/bash
+# setup.sh
 
 repopath=/etc/yum.repos.d/
 if [ -d /etc/zypp/repos.d ]; then
