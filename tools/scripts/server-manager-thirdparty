@@ -15,14 +15,17 @@ libaugeas-ruby1.9.1_0.5.0-2_all.deb, e1b270aedd79094603dd18d989b942f4
 libjson-ruby_1.6.3-1_all.deb, 04932a1bd8109310ca30734e4006384a
 libjs-jquery_1.7.2+dfsg-2ubuntu1_all.deb, 08cb6ee293e5570df48cbff3b1316cb5
 libltdl7_2.4.2-1.7ubuntu1_amd64.deb, ddeea7a0b4082abd4f746f46c8ccb48e
+libopts25_1%3a5.18-2ubuntu2_amd64.deb, eb03b85c6c136ed1fe59f84507d1f40e
 libruby1.8_1.8.7.352-2ubuntu1.4_amd64.deb, d17fa211728f6f6aa7e1aea8f4212cf2
 libruby2.0_2.0.0.484-1ubuntu2.2_amd64.deb, 3fa367bf349fe518941ec43b3b2953f4
 libruby1.9.1_1.9.3.484-2ubuntu1.2_amd64.deb, ca709b56133d05fe230ca9275bf0943d
 libreadline5_5.2-11_amd64.deb, 7f1a5bc806abf015dc11fb597b6ab67c
 libruby_4.8_all.deb, 8cc1c8fe9ca1cabcdaca2b734fb70e4a
+libsensors4_1%3a3.3.4-2ubuntu1_amd64.deb, 042d478dd8c2f8d47fe197b2bbf2e8a1
 libshadow-ruby1.8_1.4.1-8build1_amd64.deb, f4df08de22922d5eb7195965a8b15afc
 libsystemd-journal0_204-5ubuntu20_amd64.deb, 8f97d07bb1efc444cf6c1bf55f9cff13
 libyaml-0-2_0.1.4-3ubuntu3.1_amd64.deb, 4dcc359331403252136be3490c923fc9
+ntp_1%3a4.2.6.p5+dfsg-3ubuntu2.14.04.10_amd64.deb, 5ffba10fc338046d2d95b604c688987f
 puppet_2.7.11-1ubuntu2.7_all.deb, 389c61f683c0a389315f9d2833067bc7
 puppet_3.7.3-1puppetlabs1_all.deb, a0411e49e502d5675db04281dfb30caf
 puppet-common_2.7.11-1ubuntu2.7_all.deb, 406eafeb4c392b9dacf20034286107f6
