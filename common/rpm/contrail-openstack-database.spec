@@ -42,6 +42,14 @@ popd
 %config(noreplace) /etc/contrail/contrail-database-nodemgr.conf
 /etc/init.d/contrail-database-nodemgr
 
+%pre
+set -e
+# Create the "contrail" user
+getent group contrail >/dev/null || groupadd -r contrail
+getent passwd contrail >/dev/null || \
+  useradd -r -g contrail -d /var/lib/contrail -s /bin/false \
+  -c "OpenContail daemon" contrail
+
 %changelog
 * Fri Jul  15 2016 <ijohnson@juniper.net>
 * Moving cassandra/zookeper to contrail database common package
