@@ -267,6 +267,18 @@ contrail-puppet: $(PREP)
 	@echo making rpm for contrail-puppet
 	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/contrail-server-manager/build/rpm/contrail-puppet.spec  $(G_TAG)
 
+contrail-vrouter-dpdk-init: $(PREP)
+	@echo making rpm for contrail-vrouter-dpdk-init
+	rpmbuild $(RPMBLDOPTS) contrail-vrouter-dpdk-init.spec $(G_TAG)
+
+contrail-vrouter-dpdk: $(PREP)
+	@echo making rpm for contrail-vrouter-dpdk
+	if [ -d $(SB_TOP)/third_party/dpdk ]; then \
+	    rpmbuild $(RPMBLDOPTS) contrail-vrouter-dpdk.spec $(G_TAG); \
+	else \
+	    echo -e "\n\nWARNING: $(SB_TOP)/third_party/dpdk not found; Skipping contrail-vrouter-dpdk\n\n"; \
+	fi
+
 contrail-puppet-tgz:
 	( [ -f $(SB_TOP)/build/artifacts_extra/contrail-puppet-$(TOOLS_VERSION)~$(CONTRAIL_SKU).tar.gz ] && \
 	  rm -f $(SB_TOP)/build/artifacts_extra/contrail-puppet-$(TOOLS_VERSION)~$(CONTRAIL_SKU).tar.gz ) ; \
@@ -311,7 +323,8 @@ all: $(PREP) contrail \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
        contrail-vrouter-init contrail-vrouter-common contrail-nova-networkapi \
        contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet contrail-ansible \
-       contrail-ansible-internal contrail-puppet-tgz
+       contrail-ansible-internal contrail-puppet-tgz \
+       contrail-vrouter-dpdk-init contrail-vrouter-dpdk
 
 server-manager-all: contrail-server-manager contrail-server-manager-client \
     contrail-web-server-manager
