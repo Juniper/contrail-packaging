@@ -190,6 +190,16 @@ class BasePackager(Utils):
                     if 'sub_package_type' in self.contrail_pkgs[pkgtype].keys():
                         self.sub_pkg_types = self.contrail_pkgs[pkgtype]['sub_package_type']
                         self.sub_pkg_types = self.get_as_list(self.sub_pkg_types)
+
+                # Disabled temporarily
+                # Verify/Copy package tgz for this pkgtype already exists
+                # if contrail_pkg_dirs are given
+                #if self.contrail_pkg_dirs:
+                #    exists = self.check_pkgtype_exists(pkgtype)
+                #    if exists:
+                #        self.copy_pkgtype_tgz_to_store(pkgtype)
+                #        log.debug('Skipping Building package tgz for package_type (%s)' % pkgtype)
+                #        continue
                 self.exec_steps()
                 log.info('\n')
                 log.info('Packager Store: %s' % self.store)
@@ -203,6 +213,28 @@ class BasePackager(Utils):
                 if self.fail_on_error:
                     raise
         self.create_manifest_with_revision()
+
+    def copy_pkgtype_tgz_to_store(self, package_type):
+        '''Copy package tgz to store dir
+        '''
+        self.copyfiles(os.path.join(self.contrail_pkg_dirs, self.pkg_tgz_name), self.store, as_link=False)
+        log.debug('Package TGZ (%s) for package_type (%s) is copied to (%s)' %(
+            self.pkg_tgz_name, package_type, self.store))
+
+    def check_pkgtype_exists(self, package_type):
+        '''Check if given package_type already exists
+           in contrail packages dirs
+        '''
+        exists = False
+        if self.contrail_pkg_dirs:
+            log.debug('Check if (%s) exists in (%s)' % (self.pkg_tgz_name, self.contrail_pkg_dirs))
+            files = self.get_file_list(self.contrail_pkg_dirs, self.pkg_tgz_name, recursion=False)
+            if len(files) == 0:
+                log.warn('No Package TGZ for package_type (%s) is found at (%s)' % (package_type, self.contrail_pkg_dirs))
+                log.info('Package TGZ for package_type (%s) needs to be built' % package_type)
+            else:
+                exists = True
+        return exists
 
     def setup_env(self):
         ''' setup basic environment necessary for packager like
@@ -221,8 +253,8 @@ class BasePackager(Utils):
         for target in self.contrail_pkgs.keys():
             self.contrail_pkgs[target]['makeloc'] = os.path.join(self.git_local_repo,
                                                      self.contrail_pkgs[target]['makeloc'])
-            self.contrail_pkgs[target]['builtloc'] = os.path.join(self.git_local_repo,
-                                                     self.contrail_pkgs[target]['builtloc'])
+            self.contrail_pkgs[target]['builtloc'] = [os.path.join(self.git_local_repo, builtloc) for builtloc in
+                                                         self.get_as_list(self.contrail_pkgs[target]['builtloc'])]
 
         # update location of os and dependent package location
         cache_dir = []
