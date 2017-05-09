@@ -88,7 +88,7 @@ function cleanup_smgr_repos()
 {
 
   echo "$space$arrow Cleaning up existing sources.list and Server Manager sources file"
-  local_repo="deb file:/opt/contrail/contrail_server_manager ./"
+  local_repo="deb file:/opt/contrail/contrail_server_manager/packages ./"
   sed -i "s|$local_repo||g" /etc/apt/sources.list
   if [ -f /etc/apt/sources.list.d/smgr_sources.list ]; then
     rm /etc/apt/sources.list.d/smgr_sources.list
@@ -125,13 +125,13 @@ function setup_smgr_repos()
   if [ ${rel[1]} == "16.04"  ]; then
     PKG_16_04='xz-utils_*.deb'
   fi
-  (DEBIAN_FRONTEND=noninteractive dpkg -i binutils_*.deb dpkg-dev_*.deb libdpkg-perl_*.deb make_*.deb patch_*.deb ${PKG_16_04} >> $log_file 2>&1)
 
-  pushd /opt/contrail/contrail_server_manager >> $log_file 2>&1
+  pushd /opt/contrail/contrail_server_manager/packages >> $log_file 2>&1
+  (DEBIAN_FRONTEND=noninteractive dpkg -i binutils_*.deb dpkg-dev_*.deb libdpkg-perl_*.deb make_*.deb patch_*.deb ${PKG_16_04} >> $log_file 2>&1)
   dpkg-scanpackages . | gzip -9c > Packages.gz | >> $log_file 2>&1
   popd >> $log_file 2>&1
 
-  echo "deb file:/opt/contrail/contrail_server_manager ./" > /tmp/local_repo
+  echo "deb file:/opt/contrail/contrail_server_manager/packages ./" > /tmp/local_repo
   cat /tmp/local_repo /etc/apt/sources.list.d/smgr_sources.list > /tmp/new_smgr_sources.list
   mv /tmp/new_smgr_sources.list /etc/apt/sources.list.d/smgr_sources.list
 
