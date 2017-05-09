@@ -318,9 +318,36 @@ contrail-docker-tools: $(PREP)
 	    make SB_TOP=$(SB_TOP) TAG=$(TAG) SRC_VER=$(CPLANE_SRC_VER) contrail-docker-tools-rpm ) || echo -e \
 	    "\n\nWARNING: $(SB_TOP)/tools/docker-tools/ not found; Skipping contrail-docker-tools\n\n"
 
+contrail-tripleo-heat-templates: $(PREP)
+	@echo making rpm for contrail-tripleo-heat-templates
+	cp contrail-tripleo-heat-templates.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-tripleo-heat-templates.spec $(G_TAG)
+
+contrail-tripleo-puppet: $(PREP)
+	@echo making rpm for contrail-tripleo-puppet
+	cp contrail-tripleo-puppet.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-tripleo-puppet.spec $(G_TAG)
+
+puppet-contrail: $(PREP)
+	@echo making rpm for puppet-contrail
+	cp puppet-contrail.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/puppet-contrail.spec $(G_TAG)
+
 NEUTRON_PLUGIN = neutron-plugin-contrail
 CONTRAIL_HEAT = contrail-heat
 CEILOMETER_PLUGIN = ceilometer-plugin-contrail
+
+RH_ONLY_TARGETS =
+
+ifeq ($(DISTRO), Red Hat)
+  ifeq ($(CONTRAIL_SKU), liberty)
+    RH_ONLY_TARGETS = puppet-contrail
+  endif
+  ifeq ($(CONTRAIL_SKU), newton)
+    RH_ONLY_TARGETS = contrail-tripleo-heat-templates \
+                      contrail-tripleo-puppet puppet-contrail
+  endif
+endif
 
 all: $(PREP) contrail \
        contrail-interface-name \
@@ -331,7 +358,7 @@ all: $(PREP) contrail \
        contrail-vrouter-init contrail-vrouter-common contrail-nova-networkapi \
        contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet contrail-ansible \
        contrail-ansible-internal contrail-puppet-tgz \
-       contrail-vrouter-dpdk-init contrail-vrouter-dpdk \
+       contrail-vrouter-dpdk-init contrail-vrouter-dpdk ${RH_ONLY_TARGETS} \
        contrail-docker-tools
 
 server-manager-all: contrail-server-manager contrail-server-manager-client \
