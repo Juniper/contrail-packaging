@@ -204,7 +204,17 @@ package-contrail: debian-contrail
             fakeroot debian/rules.modules KVERS=$(kver) binary-modules); )
 
 package-contrail-vrouter-dpdk:
-	(cd ${SB_TOP}; make CONTRAIL_VERSION=$(VERSION) -f tools/packages/packages.make package-contrail-vrouter-dpdk)
+	$(eval BUILDDIR=${SB_TOP}/tools/packages/debian/contrail-vrouter-dpdk/debian)
+	$(eval DEFAULT_CONTROL := $(BUILDDIR)/control)
+	echo "Looking for control file: control.in"
+	$(eval DEFAULT_CONTROL_IN := $(shell [ -f $(BUILDDIR)/control.in ] && echo 'control.in'  || echo $(DEFAULT_CONTROL)))
+	@echo "Looking for control file: control.$(SERIES).in"
+	$(eval SERIES_CONTROL_IN := $(shell [ -f $(BUILDDIR)/control.$(SERIES).in ] && echo 'control.$(SERIES).in'  || echo $(DEFAULT_CONTROL_IN)))
+	@echo "Looking for control file: control.$(SERIES).$(CONTRAIL_SKU).in"
+	$(eval CONTROL_IN := $(shell [ -f $(BUILDDIR)/control.$(SERIES).$(CONTRAIL_SKU).in ] && echo 'control.$(SERIES).$(CONTRAIL_SKU).in' || echo $(SERIES_CONTROL_IN)))
+	@echo "Using control file: $(CONTROL_IN)"
+	cp ${BUILDDIR}/$(CONTROL_IN) ${BUILDDIR}/control
+	cd ${SB_TOP}; make CONTRAIL_VERSION=$(VERSION) -f tools/packages/packages.make package-contrail-vrouter-dpdk
 
 contrail-vrouter-dpdk: package-contrail-vrouter-dpdk
 	@echo "Package contrail-vrouter-dpdk done"
