@@ -304,7 +304,7 @@ if [ "$SM" != "" ]; then
   fi
   check_upgrade=1
   if [ "$installed_version" != ""  ]; then
-      version_to_install=`ls /opt/contrail/contrail_server_manager/contrail-server-manager_* | cut -d'_' -f 4`
+      version_to_install=`ls /opt/contrail/contrail_server_manager/packages/contrail-server-manager_* | cut -d'_' -f 4`
       set +e
       comparison=`dpkg --compare-versions $installed_version lt $version_to_install`
       check_upgrade=`echo $?`
