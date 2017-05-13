@@ -300,6 +300,18 @@ puppet-contrail: $(PREP)
 	cp puppet-contrail.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/puppet-contrail.spec $(G_TAG)
 
+contrail-vrouter-dpdk-init: $(PREP)
+	@echo making rpm for contrail-vrouter-dpdk-init
+	rpmbuild $(RPMBLDOPTS) contrail-vrouter-dpdk-init.spec $(G_TAG)
+
+contrail-vrouter-dpdk: $(PREP)
+	@echo making rpm for contrail-vrouter-dpdk
+	if [ -d $(SB_TOP)/third_party/dpdk ]; then \
+	    rpmbuild $(RPMBLDOPTS) contrail-vrouter-dpdk.spec $(G_TAG); \
+	else \
+	    echo -e "\n\nWARNING: $(SB_TOP)/third_party/dpdk not found; Skipping contrail-vrouter-dpdk\n\n"; \
+	fi
+
 NEUTRON_PLUGIN = neutron-plugin-contrail
 ifneq ($(CONTRAIL_SKU), havana)
 CONTRAIL_HEAT = contrail-heat
@@ -332,7 +344,8 @@ all: $(PREP) contrail \
 	   contrail-database-common \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
        contrail-vrouter-init contrail-vrouter-common contrail-nova-networkapi \
-       contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet ${RH_ONLY_TARGETS}
+       contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet ${RH_ONLY_TARGETS} \
+       contrail-vrouter-dpdk-init contrail-vrouter-dpdk
 
 server-manager-all: contrail-server-manager contrail-server-manager-client contrail-web-server-manager
 clean:
