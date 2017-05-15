@@ -78,6 +78,8 @@ override_dh_auto_install:
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_packages/sources.list
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/repo_preferences  $(buildroot)$(_contrailopt)/contrail_packages/preferences
 
+override_dh_pysupport:
+
 override_dh_usrlocal:	
 
 override_dh_shlibdeps:
