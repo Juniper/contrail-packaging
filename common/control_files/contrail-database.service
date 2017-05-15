@@ -5,6 +5,7 @@ After=network.target
 [Service]
 Type=forking
 Environment=CASSANDRA_USER_HOME=/var/lib/cassandra
+ExecStartPre=/usr/bin/contrail-cassandra-check-start
 ExecStart=/usr/sbin/cassandra -p ${CASSANDRA_USER_HOME}/cassandra.pid \
         -H ${CASSANDRA_USER_HOME}/java.hprof \
         -E ${CASSANDRA_USER_HOME}/hs_err.log
