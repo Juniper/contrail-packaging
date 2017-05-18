@@ -38,7 +38,6 @@ override_dh_auto_install:
 	install -d -m 755 $(buildroot)$(_servicedir)
 
 	install -p -m 755 $(_src_config)/zookeeper.service $(buildroot)$(_servicedir)/zookeeper.service
-	install -D -m 755 $(_src_config)/zookeeper.conf $(buildroot)$(_sysconfdir)/init/zookeeper.conf
 
 
 override_dh_usrlocal:	
