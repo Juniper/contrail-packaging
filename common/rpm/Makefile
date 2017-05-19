@@ -326,6 +326,13 @@ puppet-contrail: $(PREP)
 	cp puppet-contrail.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/puppet-contrail.spec $(G_TAG)
 
+contrail-docker-tools: $(PREP)
+	@echo About to make contrail-docker-tools package
+	( [ -d $(SB_TOP)/tools/docker-tools/ ] && \
+	cd $(SB_TOP)/tools/docker-tools/package-build/ && \
+	make SB_TOP=$(SB_TOP) TAG=$(TAG) SRC_VER=$(CPLANE_SRC_VER) contrail-docker-tools-rpm ) || echo -e \
+	"\n\nWARNING: $(SB_TOP)/tools/docker-tools/ not found; Skipping contrail-docker-tools\n\n"
+
 NEUTRON_PLUGIN = neutron-plugin-contrail
 CONTRAIL_HEAT = contrail-heat
 CEILOMETER_PLUGIN = ceilometer-plugin-contrail
@@ -351,7 +358,8 @@ all: $(PREP) contrail \
        contrail-vrouter-init contrail-vrouter-common contrail-nova-networkapi \
        contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet contrail-ansible \
        contrail-ansible-internal contrail-puppet-tgz \
-       contrail-vrouter-dpdk-init contrail-vrouter-dpdk ${RH_ONLY_TARGETS}
+       contrail-vrouter-dpdk-init contrail-vrouter-dpdk ${RH_ONLY_TARGETS} \
+       contrail-docker-tools
 
 server-manager-all: contrail-server-manager contrail-server-manager-client \
     contrail-web-server-manager
