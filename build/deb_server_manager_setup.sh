@@ -223,13 +223,12 @@ function setup_internet_repos()
 
   # Cobbler repo to be added if this is not an SMLITE install
   if [ "$SMLITE" == "" ]; then
-    if [ ${rel[1]} == "14.04"  ]; then
       wget -qO - http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_14.04/Release.key | apt-key add - >> $log_file 2>&1
       add-apt-repository "deb http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_14.04/ ./" >> $log_file 2>&1
-    elif [ ${rel[1]} == "12.04"  ]; then
-      wget -qO - http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/Release.key | apt-key add - >> $log_file 2>&1
-      add-apt-repository "deb http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/ ./" >> $log_file 2>&1
-    fi
+      if [ ${rel[1]} == "16.04"  ]; then
+          wget http://launchpadlibrarian.net/109052632/python-support_1.0.15_all.deb -P /var/tmp
+          apt-get -y install /var/tmp/python-support_1.0.15_all.deb
+      fi
   fi
 
   set +e
@@ -402,7 +401,7 @@ if [ "$SM" != "" ]; then
     else
        cv=`cobbler --version`
        cv=( $cv  )
-       if [ "${cv[1]}" != "2.6.3" ]; then
+       if [ "${cv[1]}" != "2.6.11" ]; then
           dpkg -P --force-all python-cobbler >> $log_file 2>&1
           dpkg -P --force-all cobbler-common >> $log_file 2>&1
           dpkg -P --force-all cobbler-web >> $log_file 2>&1
@@ -410,7 +409,7 @@ if [ "$SM" != "" ]; then
           dpkg -P --force-all contrail-server-manager >> $log_file 2>&1
        fi
        echo "$space$arrow$install_str Server Manager"
-       apt-get -y install cobbler="2.6.3-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
+       apt-get -y install cobbler="2.6.11-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
        dpkg -P --force-all contrail-server-manager-monitoring >> $log_file 2>&1
        apt-get -y install contrail-server-manager >> $log_file 2>&1
        apt-get -y install -f >> $log_file 2>&1
@@ -429,7 +428,7 @@ if [ "$SM" != "" ]; then
        RESTART_SERVER_MANAGER="1"
     else
       echo "$space$arrow$install_str Server Manager"
-      apt-get -y install cobbler="2.6.3-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
+      apt-get -y install cobbler="2.6.11-1" >> $log_file 2>&1 # TODO : Remove after local repo pinning
       apt-get -y install contrail-server-manager >> $log_file 2>&1
       cp /etc/contrail_smgr/cobbler/bootup_dhcp.template.u /etc/cobbler/dhcp.template
     fi

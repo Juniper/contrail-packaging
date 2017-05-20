@@ -50,6 +50,7 @@ cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /var/lib/cobbler/dis
 cp /etc/contrail_smgr/smgr.conf /etc/apache2/sites-available/
 
 cp -r /etc/contrail_smgr/kickstarts /var/www/html/
+cp -r /etc/contrail_smgr/kickstarts/* /var/lib/cobbler/kickstarts/
 
 if [ -f /etc/cobbler/named.template ]; then
     cp /etc/cobbler/named.template /etc/cobbler/named.template.orig
@@ -118,8 +119,6 @@ sed -i "s/__\$DOMAIN__/$DOMAIN/g" /etc/contrail_smgr/cobbler/bootup_dhcp.templat
 
 set -e
 
-if [[ "$rel" == *"14.04"* ]]; then
- 
   # Cobbler config for 14.04
   mkdir -p /etc/apache2/conf-available/
   cp /opt/contrail/contrail_server_manager/cobbler_14.conf /etc/apache2/conf.d/cobbler.conf
@@ -135,22 +134,6 @@ if [[ "$rel" == *"14.04"* ]]; then
   # The secret key file can be brought in by SM install - only need to sed the key into settings.py as below
   SECRET_KEY=$(python -c 'import re;from random import choice; import sys; sys.stdout.write(re.escape("".join([choice("abcdefghijklmnopqrstuvwxyz0123456789^&*(-_=+)") for i in range(100)])))')
   sed -i "s/^SECRET_KEY = .*/SECRET_KEY = '${SECRET_KEY}'/" /usr/share/cobbler/web/settings.py
-else
-  sed -i ':a;N;$!ba;s:DocumentRoot /var/www\n:DocumentRoot /var/www/html\n:g' /etc/apache2/sites-available/default
-  sed -i 's:<Directory /var/www/>:<Directory /var/www/html/>:g' /etc/apache2/sites-available/default
- 
-  # Cobbler config for 12.04
-  a2enmod version
-  setenforce 0
-  cp -r /srv/www/cobbler /var/www/cobbler
-  cp -r /srv/www/cobbler_webui_content /var/www/cobbler_webui_content
-  cp /opt/contrail/contrail_server_manager/cobbler.conf /etc/apache2/conf.d/
-  cp /opt/contrail/contrail_server_manager/cobbler_web.conf /etc/apache2/conf.d/
-  cp /opt/contrail/contrail_server_manager/cobbler.conf /etc/cobbler/
-  cp /opt/contrail/contrail_server_manager/cobbler_web.conf /etc/cobbler/
-  sed -i "s/django.conf.urls /django.conf.urls.defaults /g" /usr/share/cobbler/web/cobbler_web/urls.py
-  chmod 777 /var/lib/cobbler/webui_sessions/
-fi
 a2ensite smgr.conf
 a2enmod proxy
 a2enmod proxy_http
@@ -210,3 +193,4 @@ update-rc.d cobblerd defaults
 service apache2 restart
 service xinetd restart
 service cobblerd restart
+cobbler get-loaders
