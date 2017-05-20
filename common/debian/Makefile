@@ -206,6 +206,15 @@ package-contrail: debian-contrail
 package-contrail-vrouter-dpdk:
 	$(eval BUILDDIR=${SB_TOP}/tools/packages/debian/contrail-vrouter-dpdk/debian)
 	$(eval DEFAULT_CONTROL := $(BUILDDIR)/control)
+	# Append series specific install files
+	$(eval CONTRAIL_INSTALL_SERIES := $(shell find $(SB_TOP)/build/packages/$(PACKAGE)/debian/ -name '*.install.$(SERIES)'))
+	$(foreach series_fname, $(CONTRAIL_INSTALL_SERIES), \
+			(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian;\
+			sed -i '/INSTALL_SERIES/r $(series_fname)' $(patsubst %.$(SERIES),%,$(series_fname))); )
+	$(eval CONTRAIL_INSTALL := $(shell find $(SB_TOP)/build/packages/$(PACKAGE)/debian/ -name '*.install'))
+	$(foreach install_fname, $(CONTRAIL_INSTALL), \
+			(cd $(SB_TOP)/build/packages/$(PACKAGE)/debian;\
+			sed -i '/INSTALL_SERIES/d' $(install_fname)); )
 	echo "Looking for control file: control.in"
 	$(eval DEFAULT_CONTROL_IN := $(shell [ -f $(BUILDDIR)/control.in ] && echo 'control.in'  || echo $(DEFAULT_CONTROL)))
 	@echo "Looking for control file: control.$(SERIES).in"
