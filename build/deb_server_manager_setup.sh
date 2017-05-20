@@ -26,11 +26,13 @@ SMLITE=""
 NOEXTERNALREPOS=""
 HOST_IP_LIST=`ifconfig | sed -n -e 's/:127\.0\.0\.1 //g' -e 's/:172\.17\.0\.1//g' -e 's/ *inet addr:\([0-9.]\+\).*/\1/gp'`
 HOSTIP=`echo $HOST_IP_LIST | cut -d' ' -f1`
+default_docker_changed=0
 rel=`lsb_release -r`
 rel=( $rel )
 
 function ansible_and_docker_configs()
 {
+    # Ansible stuff
     echo "Configuring Ansible"
     sed -i "/callback_plugin/c\callback_plugins = \/opt\/contrail\/server_manager\/ansible\/plugins" /etc/ansible/ansible.cfg
     sed -i "/host_key_checking/c\host_key_checking = False" /etc/ansible/ansible.cfg
@@ -38,17 +40,47 @@ function ansible_and_docker_configs()
     sed -i "/ssh_args/c\ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o UserKnownHostsFile=/dev/null" /etc/ansible/ansible.cfg
 
     echo "Starting docker if required"
-    if grep -q "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" /etc/default/docker; then
-        if service docker status | grep running; then
-            echo "option already set"
+    # Docker behaves differently on Ubuntu 16.04 because of systemd
+    if [ ${rel[1]} == "16.04"  ]; then
+        # systemd stuff ...
+        if grep -q "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" /etc/default/docker; then
+            if systemctl status docker | grep Active | grep running; then
+                echo "Docker insecure-registry option already set"
+            else
+                echo "Starting docker with options"
+                default_docker_changed=1
+            fi
         else
-            echo "starting docker with options"
-            service docker restart >> 1 2>&1
+            echo "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" >> /etc/default/docker
+            default_docker_changed=1
+        fi
+        if grep -q "DOCKER_OPTS" /lib/systemd/system/docker.service; then
+            echo "DOCKER_OPTS alredy set in systemd option"
+        else
+            echo "Setting DOCKER_OPTS in systemd service file"
+            sed -i "/ExecStart/c\EnvironmentFile=\/etc\/default\/docker\nExecStart=\/usr\/bin\/dockerd -H fd:\/\/ \$DOCKER_OPTS" /lib/systemd/system/docker.service
+            default_docker_changed=1
+        fi
+        if [ "$default_docker_changed" == 1 ]; then
+            echo "Restarting Docker"
+            systemctl daemon-reload >> 1 2>&1
+            systemctl restart docker >> 1 2>&1
         fi
     else
-        echo "restarting docker with options"
-        echo "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" >> /etc/default/docker
-        service docker restart >> 1 2>&1
+        # good old sysv init service
+        if grep -q "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" /etc/default/docker; then
+            if service docker status | grep running; then
+                echo "option already set"
+            else
+                echo "starting docker with options"
+                service docker restart >> 1 2>&1
+            fi
+        else
+            echo "restarting docker with options"
+            echo "DOCKER_OPTS=\"--insecure-registry $HOSTIP:5100\"" >> /etc/default/docker
+            service docker restart >> 1 2>&1
+        fi
+
     fi
 
     cur_name=`docker ps | grep -w "registry$" | awk '{print $NF}'`
