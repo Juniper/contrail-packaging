@@ -106,8 +106,8 @@ _dpdk_conf_read() {
     if [ -f "/etc/contrail/supervisord_vrouter_files/contrail-vrouter-dpdk.ini" ]; then
         VROUTER_DPDK_INI=/etc/contrail/supervisord_vrouter_files/contrail-vrouter-dpdk.ini
         VROUTER_DPDK_CMD_KEY='command'
-    elif [ -f "/etc/systemd/system/contrail-vrouter-dpdk.service" ]; then
-        VROUTER_DPDK_INI=/etc/systemd/system/contrail-vrouter-dpdk.service
+    elif [ -f "/lib/systemd/system/contrail-vrouter-dpdk.service" ]; then
+        VROUTER_DPDK_INI=/lib/systemd/system/contrail-vrouter-dpdk.service
         VROUTER_DPDK_CMD_KEY='ExecStart'
     fi
     DPDK_NETLINK_TCP_PORT=20914
