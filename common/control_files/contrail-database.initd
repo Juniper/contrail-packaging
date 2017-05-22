@@ -148,6 +148,14 @@ case "$1" in
   start)
 	do_start
 	;;
+  restart|force-reload)
+        $SERVICE "stop"
+        case "$?" in
+          0|1)
+              sleep 1
+              do_start
+        esac
+        ;;
   *)
 	$SERVICE "$1"
         stat=$?
