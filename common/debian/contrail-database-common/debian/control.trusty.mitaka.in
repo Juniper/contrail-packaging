@@ -1,0 +1,14 @@
+Source: contrail-database-common
+Maintainer: ijohnson <ijohnson@juniper.net>
+Section: misc
+Priority: optional
+Standards-Version: 1.0
+Build-Depends:
+
+Package: contrail-database-common
+Architecture: all
+Maintainer: ijohnson <ijohnson@juniper.net>
+Depends: zookeeper, zookeeperd, cassandra (>= 2.2.8)
+Replaces: contrail-openstack-database (<< 3.1.0)
+Breaks: contrail-openstack-database (<< 3.1.0)
+Description: Contrail database composite debian package
