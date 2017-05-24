@@ -23,7 +23,7 @@ export _distropkgdir := $(SB_TOP)/tools/packaging/common/control_files
 export _contrailwebsrc := /usr/src/contrail/contrail-web-storage
 export _libdir := /usr/lib64
 export _nodemodules := node_modules
-export _config := $(SB_TOP)/contrail-web-core/config
+export _config := $(SB_TOP)/contrail-web-storage/config
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
@@ -45,8 +45,13 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	rm -rf $(buildroot)/$(_contrailwebsrc)
+	rm -rf $(buildroot)/$(_contrailetc)
 	mkdir -p $(buildroot)/$(_contrailwebsrc)
+	mkdir -p $(buildroot)/$(_contrailetc)
 	cp -r -p $(SB_TOP)/contrail-web-storage/* $(buildroot)/$(_contrailwebsrc)/.
 	ln -s $(_libdir)/node_modules $(buildroot)/$(_contrailwebsrc)/node_modules
+	cp -p $(_config)/config.global.storage.js $(buildroot)/$(_contrailetc)/
+	rm -rf $(buildroot)/$(_contrailwebsrc)/config/config.global.storage.js
+	ln -s $(_contrailetc)/config.global.storage.js $(buildroot)/$(_contrailwebsrc)/config/config.global.storage.js
 
 override_dh_shlibdeps:
