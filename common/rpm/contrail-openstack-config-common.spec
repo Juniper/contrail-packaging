@@ -1,6 +1,5 @@
 %define         _distropkgdir tools/packaging/common/control_files
 %define         _distrothirdpartydir distro/third_party
-%define         _nodemgr_config controller/src/nodemgr/config_nodemgr
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
 %else
@@ -61,7 +60,6 @@ pushd %{_builddir}/..
 
 pushd %{_builddir}/..
 install -d -m 755 %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files
-install -p -m 755 %{_nodemgr_config}/contrail-config-nodemgr.ini %{buildroot}%{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
 install -d -m 777 %{buildroot}%{_localstatedir}/log/contrail
 install -p -m 755 %{_distropkgdir}/rabbitmq-restart-contrail.conf %{buildroot}%{_sysconfdir}/contrail/rabbitmq-restart-contrail.conf
 
@@ -79,7 +77,6 @@ popd
 #/usr/share/doc/python-vnc_cfg_api_server
 %{_sysconfdir}/contrail
 %dir %attr(0777, contrail, contrail) %{_localstatedir}/log/contrail
-%config(noreplace) %{_sysconfdir}/contrail/supervisord_config_files/contrail-config-nodemgr.ini
 
 %preun
 if [ -e /etc/systemd/system/rabbitmq-server.service.d/rabbitmq-restart-contrail.conf ]; then

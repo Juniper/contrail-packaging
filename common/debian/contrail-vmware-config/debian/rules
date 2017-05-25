@@ -17,7 +17,6 @@ export _initddir := /etc/init.d
 export _initdir := /etc/init
 export _sysconfdir := /etc
 export _src_config := $(SB_TOP)/tools/packaging/common/control_files
-export _nodemgr_config := $(SB_TOP)/controller/src/nodemgr/config_nodemgr
 
 SRC_VER := $(shell cat $(SB_TOP)/controller/src/base/version.info)
 
@@ -46,12 +45,9 @@ override_dh_auto_install:
 	# Install upstart, supervisord ini for rabbitmq-server
 	install -p -m 755 $(_src_config)/rabbitmq-server.initd.supervisord $(buildroot)$(_initddir)/rabbitmq-server.initd.supervisord
 	install -p -m 755 $(_src_config)/rabbitmq-server.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_support_service_files/rabbitmq-server.ini
-	install -p -m 755 $(_nodemgr_config)/contrail-config-nodemgr.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_config_files/contrail-config-nodemgr.ini
-	install -p -m 755 $(_nodemgr_config)/contrail-config-nodemgr.initd.supervisord $(buildroot)$(_initddir)/contrail-config-nodemgr
 	# Install upstart, supervisord ini for support-services
 	install -p -m 755 $(_src_config)/supervisord_support_service.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_support_service.conf
 	install -D -m 755 $(_src_config)/supervisor-support-service.upstart $(buildroot)$(_initdir)/supervisor-support-service.conf
-	install -p -m 755 $(_nodemgr_config)/contrail-config-nodemgr.conf $(buildroot)$(_sysconfdir)/contrail/contrail-config-nodemgr.conf
 
 override_dh_usrlocal:	
 
