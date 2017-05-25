@@ -123,14 +123,19 @@ class PackagerArgParser(Utils):
         parser.set_defaults(**cfg_file_defaults['config'])
         ns_cliargs = parser.parse_args(self.unparsed_args)
 
-        # Create log file
-        ns_cliargs.logfile = self.defaults['logfile'].format(storedir=ns_cliargs.store_dir,
-                                                             id=ns_cliargs.build_id)
+        # Create log file - if logfile is specified via CLI or config file,
+        # the .format() will have no effect
+        ns_cliargs.logfile = ns_cliargs.logfile.format(storedir=ns_cliargs.store_dir,
+                                                       id=ns_cliargs.build_id)
         if not os.path.isdir(os.path.dirname(ns_cliargs.logfile)):
             os.makedirs(os.path.dirname(ns_cliargs.logfile))
-        logging.config.fileConfig(self.defaults['log_config'],
-                                  defaults={'loglevel': self.defaults['loglevel'], 
-                                            'logfile': ns_cliargs.logfile})
+        logging.config.fileConfig(ns_cliargs.log_config,
+                                  defaults={'loglevel': ns_cliargs.loglevel,
+                                            'logfile' : ns_cliargs.logfile})
+
+        # If the console log level is set to debug, we will also
+        # echo output of all commands run via Utils.exec_cmd()
+        ns_cliargs.debug = ns_cliargs.loglevel == "DEBUG"
 
         # set default branch
         if ns_cliargs.branch is None:
@@ -199,6 +204,15 @@ class PackagerArgParser(Utils):
         aparser = argparse.ArgumentParser(parents=[cparser, os_parser],
                                           formatter_class=argparse.RawTextHelpFormatter,
                                           description=self.desc)
+        aparser.add_argument('--loglevel',
+                             action='store',
+                             help='set the loglevel for console output (DEBUG, WARN, ERROR)')
+        aparser.add_argument('--logfile',
+                             action='store',
+                             help='logging file for more verbose output')
+        aparser.add_argument('--log_config',
+                             action='store',
+                             help='file for logger config')
         aparser.add_argument('--version', '-v',
                              action='version',
                              version=self.version,
