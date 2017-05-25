@@ -96,7 +96,7 @@ class Utils(object):
         for fd in fds:
             out = self.read_async(fd)
             if out:
-                sys.stdout.write(out)
+                if getattr(self, 'debug', True): sys.stdout.write(out)
                 log.handlers[1].stream.write(out)
                 log.handlers[1].stream.flush()
 
