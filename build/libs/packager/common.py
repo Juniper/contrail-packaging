@@ -26,6 +26,7 @@ class MakeError(Exception):
 class BasePackager(Utils):
     ''' Base class for packager methods '''
     def __init__(self, **kwargs):
+        self.debug                 = kwargs.get('debug', True) # echo unfiltered exec_cmd() output
         self.base_pkg_files        = self.expanduser(kwargs['base_package_file'])
         self.depends_pkg_files     = self.expanduser(kwargs['depends_package_file'])
         self.contrail_pkg_files    = self.expanduser(kwargs['contrail_package_file'])
