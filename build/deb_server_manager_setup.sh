@@ -34,6 +34,11 @@ function ansible_and_docker_configs()
 {
     # Ansible stuff
     echo "Configuring Ansible"
+    if [ ${rel[1]} == "16.04"  ]; then
+        DOCKER_RUN_OPTS=' --security-opt apparmor:unconfined -d -e REGISTRY_HTTP_ADDR=0.0.0.0:5100 --restart=always --net=host '
+    else
+        DOCKER_RUN_OPTS=' -d -e REGISTRY_HTTP_ADDR=0.0.0.0:5100 --restart=always --net=host '
+    fi
     sed -i "/callback_plugin/c\callback_plugins = \/opt\/contrail\/server_manager\/ansible\/plugins" /etc/ansible/ansible.cfg
     sed -i "/host_key_checking/c\host_key_checking = False" /etc/ansible/ansible.cfg
     sed -i "/record_host_keys/c\record_host_keys = False" /etc/ansible/ansible.cfg
@@ -92,9 +97,9 @@ function ansible_and_docker_configs()
             echo "Restarting docker regitry"
             docker start registry
         else
-            echo "Starting docker registry"
+            echo "Starting docker registry with ${DOCKER_RUN_OPTS}"
             docker load < /opt/contrail/contrail_server_manager/registry.tar.gz
-            docker run -d -e REGISTRY_HTTP_ADDR=0.0.0.0:5100 --restart=always --net=host --name registry registry:2
+            docker run ${DOCKER_RUN_OPTS} --name registry registry:2
         fi
     fi
 }
@@ -155,7 +160,7 @@ function setup_smgr_repos()
   echo "$space$arrow Installing dependent packages for Setting up Smgr repos"
   #scan pkgs in local repo and create Packages.gz
   if [ ${rel[1]} == "16.04"  ]; then
-    PKG_16_04='xz-utils_*.deb'
+    PKG_16_04='xz-utils_*.deb perl*.deb libperl*.deb libopts*.deb ntp*.deb'
   fi
 
   pushd /opt/contrail/contrail_server_manager/packages >> $log_file 2>&1
