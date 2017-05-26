@@ -88,6 +88,12 @@ function insert_vrouter() {
 ## vRouter/DPDK Functions
 ############################################################################
 
+_is_ubuntu_xenial() {
+    $(ls -al /etc/lsb-release > /dev/null 2>&1 && \
+      cat /etc/lsb-release | grep -i xenial > /dev/null 2>&1)
+    return $?
+}
+
 ##
 ## Read Agent Configuration File and Global vRouter/DPDK Configuration
 ##
@@ -121,7 +127,11 @@ _dpdk_conf_read() {
     DPDK_VHOST="${name}"
     DPDK_UIO_DRIVER="${physical_uio_driver}"
     if [ -z "${DPDK_UIO_DRIVER}" ]; then
-        DPDK_UIO_DRIVER="igb_uio"
+        if _is_ubuntu_xenial; then
+            DPDK_UIO_DRIVER="uio_pci_generic"
+        else
+            DPDK_UIO_DRIVER="igb_uio"
+        fi
     fi
 
     if [ -z "${DPDK_PHY}" ]; then
@@ -460,7 +470,9 @@ vrouter_dpdk_if_bind() {
 
     modprobe "${DPDK_UIO_DRIVER}"
     # multiple kthreads for port monitoring
-    modprobe rte_kni kthread_mode=multiple
+    if ! _is_ubuntu_xenial; then
+        modprobe rte_kni kthread_mode=multiple
+    fi
 
     _dpdk_wait_for_bond_ready
     _dpdk_system_bond_info_collect
@@ -564,7 +576,9 @@ vrouter_dpdk_if_unbind() {
 
     ${DPDK_BIND} --status
 
-    rmmod rte_kni
+    if ! _is_ubuntu_xenial; then
+        rmmod rte_kni
+    fi
     rmmod "${DPDK_UIO_DRIVER}"
 
     echo "$(date): Re-initialize networking."
