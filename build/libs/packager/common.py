@@ -156,6 +156,7 @@ class BasePackager(Utils):
             self.meta_pkg = pkgtype
             self.sub_pkg_types = []
             add_sku_tag = False
+            os_tag = False
             log.info('Executing Build for Package Type (%s)' % pkgtype)
             try:
                 self.base_pkgs, self.depends_pkgs = {}, {}
@@ -167,12 +168,20 @@ class BasePackager(Utils):
                     if 'add_sku_tag' in self.contrail_pkgs[self.package_type] and \
                        self.contrail_pkgs[self.package_type]['add_sku_tag'].lower() == 'true':
                         add_sku_tag = True
+                    if 'os_tag' in self.contrail_pkgs[self.package_type]:
+                        os_tag = self.contrail_pkgs[self.package_type]['os_tag']
+
                 if add_sku_tag:
                     self.pkg_tgz_name = '%s_%s-%s-%s.tgz' % (self.package_type,
                                     self.branch, self.id, self.sku)
                 else:
                     self.pkg_tgz_name = '%s_%s-%s.tgz' % (self.package_type,
                                     self.branch, self.id)
+
+                if os_tag:
+                    tgz_name = self.pkg_tgz_name.split('.')
+                    tgz_name.insert(-1, '-%s.' % os_tag)
+                    self.pkg_tgz_name = ''.join(tgz_name)
 
                 self.pkglist_file = os.path.join(self.store_log_dir,
                                       '%s_%s_%s_list.txt' % (
