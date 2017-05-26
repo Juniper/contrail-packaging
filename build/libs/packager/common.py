@@ -155,6 +155,7 @@ class BasePackager(Utils):
             self.meta_pkg = pkgtype
             self.sub_pkg_types = []
             add_sku_tag = False
+            self.os_tag = False
             log.info('Executing Build for Package Type (%s)' % pkgtype)
             try:
                 self.base_pkgs, self.depends_pkgs = {}, {}
@@ -166,12 +167,20 @@ class BasePackager(Utils):
                     if 'add_sku_tag' in self.contrail_pkgs[self.package_type] and \
                        self.contrail_pkgs[self.package_type]['add_sku_tag'].lower() == 'true':
                         add_sku_tag = True
+                    if 'os_tag' in self.contrail_pkgs[self.package_type]:
+                        self.os_tag = self.contrail_pkgs[self.package_type]['os_tag']
+
                 if add_sku_tag:
                     self.pkg_tgz_name = '%s_%s-%s-%s.tgz' % (self.package_type,
                                     self.branch, self.id, self.sku)
                 else:
                     self.pkg_tgz_name = '%s_%s-%s.tgz' % (self.package_type,
                                     self.branch, self.id)
+
+                if self.os_tag:
+                    tgz_name = list(os.path.splitext(self.pkg_tgz_name))
+                    tgz_name.insert(-1, '_%s' % self.os_tag)
+                    self.pkg_tgz_name = ''.join(tgz_name)
 
                 self.pkglist_file = os.path.join(self.store_log_dir,
                                       '%s_%s_%s_list.txt' % (
@@ -491,6 +500,14 @@ class BasePackager(Utils):
                 sub_pkg_tgz = "%s-%s.tgz" % (sub_pkg_tgz, self.sku)
             else:
                 sub_pkg_tgz = "%s.tgz" % sub_pkg_tgz
+
+            if sub_type in self.contrail_pkgs_dict and \
+                'os_tag' in self.contrail_pkgs_dict[sub_type][sub_type] and \
+                self.contrail_pkgs_dict[sub_type][sub_type]['os_tag']:
+                os_tag = self.contrail_pkgs_dict[sub_type][sub_type]['os_tag']
+                sub_pkg_tgz = list(os.path.splitext(sub_pkg_tgz))
+                sub_pkg_tgz.insert(-1, '_%s' % os_tag)
+                sub_pkg_tgz = ''.join(sub_pkg_tgz)
 
             tgzfiles = self.get_file_list(self.store, sub_pkg_tgz, False)
             if len(tgzfiles) != 0:
