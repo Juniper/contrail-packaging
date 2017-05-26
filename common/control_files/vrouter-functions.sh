@@ -84,6 +84,12 @@ function insert_vrouter() {
     return 0
 }
 
+_is_ubuntu_xenial() {
+    $(ls -al /etc/lsb-release > /dev/null 2>&1 && \
+      cat /etc/lsb-release | grep -i xenial > /dev/null 2>&1)
+    return $?
+}
+
 ############################################################################
 ## vRouter/DPDK Functions
 ############################################################################
@@ -127,7 +133,11 @@ _dpdk_conf_read() {
     DPDK_VHOST="${name}"
     DPDK_UIO_DRIVER="${physical_uio_driver}"
     if [ -z "${DPDK_UIO_DRIVER}" ]; then
-        DPDK_UIO_DRIVER="igb_uio"
+        if _is_ubuntu_xenial; then
+            DPDK_UIO_DRIVER="uio_pci_generic"
+        else
+            DPDK_UIO_DRIVER="igb_uio"
+        fi
     fi
 
     if [ -z "${DPDK_PHY}" ]; then
