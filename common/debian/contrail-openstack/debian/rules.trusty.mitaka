@@ -64,8 +64,6 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/heat-api.initd.supervisord $(buildroot)$(_initddir)/heat-api.initd.supervisord
 	install -p -m 755 $(_src_config)/heat-api-cfn.initd.supervisord $(buildroot)$(_initddir)/heat-api-cfn.initd.supervisord
 	install -p -m 755 $(_src_config)/heat-engine.initd.supervisord $(buildroot)$(_initddir)/heat-engine.initd.supervisord
-	install -p -m 755 $(_src_config)/barbican-api.initd.supervisord $(buildroot)$(_initddir)/barbican-api.initd.supervisord
-	install -p -m 755 $(_src_config)/barbican-worker.initd.supervisord $(buildroot)$(_initddir)/barbican-worker.initd.supervisord
 	# Install supervisord config files
 	install -p -m 755 $(_src_config)/keystone.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/keystone.ini
 	install -p -m 755 $(_src_config)/glance-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/glance-api.ini
@@ -82,8 +80,6 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/heat-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/heat-api.ini
 	install -p -m 755 $(_src_config)/heat-api-cfn.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/heat-api-cfn.ini
 	install -p -m 755 $(_src_config)/heat-engine.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/heat-engine.ini
-	install -p -m 755 $(_src_config)/barbican-api.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/barbican-api.ini
-	install -p -m 755 $(_src_config)/barbican-worker.ini $(buildroot)$(_sysconfdir)/contrail/supervisord_openstack_files/barbican-worker.ini
 
 override_dh_usrlocal:	
 
