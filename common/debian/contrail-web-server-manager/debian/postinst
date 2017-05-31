@@ -137,4 +137,7 @@ service redis-server restart
 service supervisor restart
 
 # start webui
-#service supervisor-webui-sm restart
+rel=`lsb_release -r`
+if [[ "$rel" == *"14.04"* ]]; then
+    service supervisor-webui-sm restart
+fi
