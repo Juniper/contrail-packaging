@@ -103,7 +103,13 @@ _dpdk_conf_read() {
     DPDK_RTE_CONFIG="/run/.rte_config"
     VROUTER_SERVICE="supervisor-vrouter"
     AGENT_CONF="${CONFIG}"
-    VROUTER_DPDK_INI=/etc/contrail/supervisord_vrouter_files/contrail-vrouter-dpdk.ini
+    if [ -f "/etc/contrail/supervisord_vrouter_files/contrail-vrouter-dpdk.ini" ]; then
+        VROUTER_DPDK_INI=/etc/contrail/supervisord_vrouter_files/contrail-vrouter-dpdk.ini
+        VROUTER_DPDK_CMD_KEY='command'
+    elif [ -f "/lib/systemd/system/contrail-vrouter-dpdk.service" ]; then
+        VROUTER_DPDK_INI=/lib/systemd/system/contrail-vrouter-dpdk.service
+        VROUTER_DPDK_CMD_KEY='ExecStart'
+    fi
     DPDK_NETLINK_TCP_PORT=20914
     DPDK_MEM_PER_SOCKET="1024"
 
@@ -350,9 +356,9 @@ _dpdk_vrouter_ini_update() {
         fi
         ## update the --vdev string if it does not exist
         sed -ri.bak \
-            -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
-            -e 's/(^ *command *=.*vrouter-dpdk.*) (--vdev +\"[^"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/' \
-            -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vdev}/" \
+            -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*) (--vdev +\"[^\"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/" \
+            -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*) (--vdev +\"[^\"]+\"|--vdev +[^ ]+)(.*) *$/\1\3/" \
+            -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*)/\\1${dpdk_vdev}/" \
              ${VROUTER_DPDK_INI}
     fi         
 
@@ -366,14 +372,14 @@ _dpdk_vrouter_ini_update() {
         dpdk_vlan_name=" --vlan_fwd_intf_name \"${DPDK_PHY}\""
     fi
     sed -ri.bak \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_tci +\"[^"]+\"|--vlan_tci +[^ ]+)(.*) *$/\1\3/' \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_tci +\"[^"]+\"|--vlan_tci +[^ ]+)(.*) *$/\1\3/' \
-        -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vlan}/" \
+        -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*) (--vlan_tci +\"[^\"]+\"|--vlan_tci +[^ ]+)(.*) *$/\1\3/" \
+        -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*) (--vlan_tci +\"[^\"]+\"|--vlan_tci +[^ ]+)(.*) *$/\1\3/" \
+        -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*)/\\1${dpdk_vlan}/" \
          ${VROUTER_DPDK_INI}
     sed -ri.bak \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_fwd_intf_name +\"[^"]+\"|--vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/' \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--vlan_fwd_intf_name +\"[^"]+\"|--vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/' \
-        -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_vlan_name}/" \
+        -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*) (--vlan_fwd_intf_name +\"[^\"]+\"|--vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/" \
+        -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*) (--vlan_fwd_intf_name +\"[^\"]+\"|--vlan_fwd_intf_name +[^ ]+)(.*) *$/\1\3/" \
+        -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*)/\\1${dpdk_vlan_name}/" \
          ${VROUTER_DPDK_INI}
 
     ## allocate memory on each NUMA node
@@ -392,10 +398,16 @@ _dpdk_vrouter_ini_update() {
     fi
     ## update the ini file
     sed -ri.bak \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--socket-mem +\"[^"]+\"|--socket-mem +[^ ]+)(.*) *$/\1\3/' \
-        -e 's/(^ *command *=.*vrouter-dpdk.*) (--socket-mem +\"[^"]+\"|--socket-mem +[^ ]+)(.*) *$/\1\3/' \
-        -e "s/(^ *command *=.*vrouter-dpdk.*)/\\1${dpdk_socket_mem}/" \
+        -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*) (--socket-mem +\"[^\"]+\"|--socket-mem +[^ ]+)(.*) *$/\1\3/" \
+        -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*) (--socket-mem +\"[^\"]+\"|--socket-mem +[^ ]+)(.*) *$/\1\3/" \
+        -e "s/(^ *${VROUTER_DPDK_CMD_KEY} *=.*vrouter-dpdk.*)/\\1${dpdk_socket_mem}/" \
          ${VROUTER_DPDK_INI}
+
+    ## For ubuntu 1604, reload systemctl for changes to take effect
+    type systemctl &> /dev/null
+    if [ $? -eq 0 ]; then
+        systemctl daemon-reload
+    fi
 }
 
 ##
@@ -505,12 +517,12 @@ _dpdk_vrouter_ini_bond_info_collect() {
 
     ## Look for slave PCI addresses of vRouter --vdev argument
     DPDK_BOND_PCIS=`sed -nr \
-        -e '/^ *command *=/ {
+        -e "/^ *${VROUTER_DPDK_CMD_KEY} *=/ {
             s/slave=/\x1/g
             s/[^\x1]+//
             s/\x1([0-9:\.]+)[^\x1]+/ \1/g
             p
-        }' \
+        }" \
         ${VROUTER_DPDK_INI}`
     DPDK_BOND_PCIS="${DPDK_BOND_PCIS# }"
     if [ -z "${DPDK_BOND_PCIS}" ]; then
