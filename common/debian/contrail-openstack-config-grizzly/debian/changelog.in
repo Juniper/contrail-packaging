@@ -1,5 +1,9 @@
 contrail-openstack-config (BUILDTAG) rrugge; urgency=low
 
+  * Adding zookeeper dependency
+
+ -- ijohnson <ijohnson@juniper.net>  Tue, 14 Mar 2017 21:42:08 -0700
+
   [rrugge ]
   * debian/changelog: changelog
 
