@@ -1,5 +1,9 @@
 contrail-database-common (BUILDTAG) ijohnson; urgency=low
 
+  * Removing zookeeper dependency
+
+ -- ijohnson <ijohnson@juniper.net>  Tue, 14 Mar 2017 21:42:08 -0700
+
   * Initial commit of contrail-database-common package
 
  -- ijohnson <ijohnson@juniper.net>  Wed, 29 Jun 2016 04:52:47 +0000
