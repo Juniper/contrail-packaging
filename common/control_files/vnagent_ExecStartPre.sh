@@ -51,7 +51,16 @@ source $VHOST_CFG
 
 function insert_vrouter() {
     depmod -a
-    modprobe $kmod
+
+    # if the running vrouter doesnt match kernel version, remove it
+    modinfo vrouter | grep filename | grep `/usr/bin/uname -r`
+    if [ $? != 0 ]
+    then
+        rmmod vrouter; modprobe $kmod
+    else
+        modprobe $kmod
+    fi
+
     if [ $? != 0 ]
     then
         echo "$(date) : Error inserting vrouter module"
