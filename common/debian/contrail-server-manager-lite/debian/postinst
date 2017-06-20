@@ -51,8 +51,10 @@ sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
 sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
 # Set IP Address in smgr_dhcp_event.py DHCP hook.
 sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/smgr_dhcp_event.py
+# Set monitoring true as default
+sed -i "s/monitoring * = .*/monitoring               = true/g" /opt/contrail/server_manager/sm-config.ini
 
-# Setting SM Lite config - No cobbler, no monitoring
+# Setting SM Lite config - No cobbler
 set +e
 sed -i "s/listen_ip_addr = .*/listen_ip_addr = $HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
 grep "cobbler * = " /opt/contrail/server_manager/sm-config.ini
@@ -60,12 +62,6 @@ if [ $? == 0 ]; then
   sed -i "s/cobbler * = .*/cobbler                  = false/g" /opt/contrail/server_manager/sm-config.ini
 else
   sed -i "/listen_port*/acobbler                  = false" /opt/contrail/server_manager/sm-config.ini
-fi
-grep "monitoring * = " /opt/contrail/server_manager/sm-config.ini
-if [ $? == 0 ]; then
-  sed -i "s/monitoring * = .*/monitoring               = false/g" /opt/contrail/server_manager/sm-config.ini
-else
-  sed -i "/listen_port*/amonitoring               = false" /opt/contrail/server_manager/sm-config.ini
 fi
 # Adding server and Public DNS to /etc/resolv.conf if not present
 grep "nameserver $HOST_IP" /etc/resolv.conf
