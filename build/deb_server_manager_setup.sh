@@ -19,7 +19,6 @@ SMCLIENT=""
 SMCLIFFCLIENT=""
 HOSTIP=""
 WEBUI=""
-NOWEBUI=""
 WEBCORE=""
 CERT_NAME=""
 SMLITE=""
@@ -274,9 +273,6 @@ while [ "$1" != "" ]; do
 	--smlite)
 	    SMLITE="smlite"
 	    ;;
-	--nowebui)
-	    NOWEBUI="nowebui"
-	    ;;
         --sm)
 	    SM="contrail-server-manager"
             ;;
@@ -461,7 +457,7 @@ if [ "$SMCLIFFCLIENT" != "" ]; then
   echo "$arrow Completed Installing Server Manager Cliff Client"
 fi
 
-if [ "$WEBUI" != "" ] && [ "$NOWEBUI" == "" ]; then
+if [ "$WEBUI" != "" ]; then
   echo "$arrow Web Server Manager"
   # install webui
   echo "$space$arrow$install_str Contrail Web Core"
