@@ -145,8 +145,6 @@ update-rc.d contrail-server-manager defaults
 # Set IP address in server manager configuration file.
 sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
 sed -i "s/127.0.0.1/$HOST_IP/g" /opt/contrail/server_manager/sm-config.ini
-# Set monitoring true as default
-sed -i "s/monitoring * = .*/monitoring               = true/g" /opt/contrail/server_manager/sm-config.ini
 # Set IP Address in smgr_dhcp_event.py DHCP hook.
 sed -i "s/__\$IPADDRESS__/$HOST_IP/g" /opt/contrail/server_manager/smgr_dhcp_event.py
 sed -i "s/cobbler_username         = cobbler/cobbler_username         = testing/g" /opt/contrail/server_manager/sm-config.ini
