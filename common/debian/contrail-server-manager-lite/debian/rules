@@ -162,3 +162,5 @@ $(build_root)/etc/contrail_smgr/kickstarts/staticroute_setup.py
 override_dh_shlibdeps: 
 
 override_dh_usrlocal:
+
+override_dh_pysupport:
