@@ -71,6 +71,10 @@ override_dh_auto_install:
 	install -p -m 755 $(SETUP_FILE)  $(buildroot)$(_contrailopt)/contrail_server_manager/setup.sh
 	install -p -m 755 $(src_path)/sm_provision.sh $(buildroot)$(_contrailopt)/contrail_server_manager/provision.sh
 	install -p -m 755 $(src_path)/sm_provision_containers.sh $(buildroot)$(_contrailopt)/contrail_server_manager/provision_containers.sh
+	install -p -m 755 $(src_path)/client/testbed_parser.py $(buildroot)$(_contrailopt)/contrail_server_manager/testbed_parser.py
+	install -p -m 755 $(src_path)/client/container-parameter-translation-dict.json $(buildroot)$(_contrailopt)/contrail_server_manager/container-parameter-translation-dict.json
+	install -p -m 755 $(src_path)/client/parameter-translation-dict.json $(buildroot)$(_contrailopt)/contrail_server_manager/parameter-translation-dict.json
+	install -p -m 755 $(src_path)/client/testbed-format-translator.json $(buildroot)$(_contrailopt)/contrail_server_manager/testbed-format-translator.json
 	install -p -m 755 $(provision_file_location)/provision_status.sh $(buildroot)$(_contrailopt)/contrail_server_manager/provision_status.sh
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/ubuntu_12_04_3_sources.list  $(buildroot)$(_contrailopt)/contrail_server_manager/ubuntu_12_04_3_sources.list
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/ubuntu_14_04_1_sources.list  $(buildroot)$(_contrailopt)/contrail_server_manager/ubuntu_14_04_1_sources.list
