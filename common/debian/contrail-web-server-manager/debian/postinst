@@ -21,6 +21,9 @@ WEBUI_PATH=/usr/src/contrail/contrail-web-server-manager
 WEBUI_STORAGE_PATH=/usr/src/contrail/contrail-web-storage
 WEBUI_WEBCONTROLLER_PATH=/usr/src/contrail/contrail-web-controller
 WEBUI_STORAGE_PATH=/usr/src/contrail/contrail-web-storage
+REDIS_CONF_FILE=/etc/redis/redis.conf
+DEFAULT_REDIS_PORT=6379
+WEBUI_REDIS_PORT=6380
 
 set +e
 grep "config.featurePkg" $WEBUI_CONF_FILE
@@ -130,6 +133,11 @@ sed -i "s/smConfig.sm.server_ip = .*/smConfig.sm.server_ip = '$HOSTIP';/g" $SM_C
 sed -i "s/smConfig.sm.server_port = .*/smConfig.sm.server_port = 9001;/g" $SM_CONF_FILE
 sed -i "s/smConfig.sm.introspect_ip = .*/smConfig.sm.introspect_ip = '$HOSTIP';/g" $SM_CONF_FILE
 sed -i "s/smConfig.sm.introspect_port = .*/smConfig.sm.introspect_port = 8106;/g" $SM_CONF_FILE
+
+sed -i "s/config.redis_server_port = .*/config.redis_server_port = '$WEBUI_REDIS_PORT';/g" $WEBUI_CONF_FILE
+
+# redis config file changes
+sed -i "s/port $DEFAULT_REDIS_PORT/port $WEBUI_REDIS_PORT/g" $REDIS_CONF_FILE
 set -e
 
 # start redis & supervisord
