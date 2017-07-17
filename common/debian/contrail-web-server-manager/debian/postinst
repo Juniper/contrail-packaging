@@ -140,4 +140,7 @@ service supervisor restart
 rel=`lsb_release -r`
 if [[ "$rel" == *"14.04"* ]]; then
     service supervisor-webui-sm restart
+elif [[ "$rel" == *"16.04"* ]]; then
+    service contrail-webui-sm restart
+    service contrail-webui-middleware-sm restart
 fi
