@@ -52,6 +52,8 @@ override_dh_auto_install:
 	install -p -m 755 $(_src_config)/supervisord_support_service.conf $(buildroot)$(_sysconfdir)/contrail/supervisord_support_service.conf
 	install -D -m 755 $(_src_config)/supervisor-support-service.upstart $(buildroot)$(_initdir)/supervisor-support-service.conf
 	install -p -m 755 $(_nodemgr_config)/contrail-config-nodemgr.conf $(buildroot)$(_sysconfdir)/contrail/contrail-config-nodemgr.conf
+	# Install init scritps for zookeeper
+	install -D -m 755 $(_src_config)/zookeeper.conf $(buildroot)$(_initdir)/zookeeper.conf
 
 override_dh_usrlocal:	
 

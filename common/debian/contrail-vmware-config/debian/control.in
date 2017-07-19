@@ -24,5 +24,7 @@ Depends:
  python-bottle,
  ifmap-python-client,
  keepalived (=1:1.2.13-1~bpo70+1) | keepalived (=1.2.13-0~276~ubuntu14.04.1),
- python-openssl
+ python-openssl,
+ zookeeper
+Replaces: contrail-database-common
 Description: Contrail Vmware Config composite debian package
