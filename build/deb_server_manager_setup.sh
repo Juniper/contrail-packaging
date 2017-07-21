@@ -179,70 +179,6 @@ function setup_smgr_repos()
 
 }
 
-function setup_internet_repos()
-{
-  echo "$space$arrow Setting up Internet Repos"
-  # Push this to makefile - Copy only the file we need into installer.
-  if [ ${rel[1]} == "16.04"  ]; then
-    cp /opt/contrail/contrail_server_manager/ubuntu_16_04_sources.list /etc/apt/sources.list.d/smgr_sources.list
-  elif [ ${rel[1]} == "14.04"  ]; then
-    cp /opt/contrail/contrail_server_manager/ubuntu_14_04_1_sources.list /etc/apt/sources.list.d/smgr_sources.list
-  elif [ ${rel[1]} == "12.04"  ]; then
-    cp /opt/contrail/contrail_server_manager/ubuntu_12_04_3_sources.list /etc/apt/sources.list.d/smgr_sources.list
-  else
-    echo "$space$arrow This version of Ubuntu ${rel[1]} is not supported"
-    exit
-  fi
-
-  set +e
-  apt-get update >> $log_file 2>&1
-  set -e
-
-  # Dependencies to add apt-repos
-  apt-get --no-install-recommends -y install python-software-properties debmirror >> $log_file 2>&1
-  apt-get --no-install-recommends -y install software-properties-common >> $log_file 2>&1
-
-  puppet_list_file="/etc/apt/sources.list.d/puppet.list"
-  passenger_list_file="/etc/apt/sources.list.d/passenger.list"
-  dist='precise'
-  if [ ${rel[1]} == "16.04"  ]; then
-      dist='xenial'
-  fi
-  if [ ${rel[1]} == "14.04"  ]; then
-      dist='trusty'
-  fi
-  # Add puppet sources
-  if [ ! -f "$puppet_list_file" ]; then
-      echo "deb http://apt.puppetlabs.com $dist main" >> $puppet_list_file
-      echo "deb-src http://apt.puppetlabs.com $dist main" >> $puppet_list_file
-      echo "deb http://apt.puppetlabs.com $dist dependencies" >> $puppet_list_file
-      echo "deb-src http://apt.puppetlabs.com $dist dependencies" >> $puppet_list_file
-  fi
-
-  # Add passenger's sources
-  if [ ! -f "$passenger_list_file" ]; then
-      echo "deb https://oss-binaries.phusionpassenger.com/apt/passenger $dist main" >> $passenger_list_file
-  fi
-
-  # Repo to add for redis - required for contrail-web-core
-  #add-apt-repository ppa:rwky/redis --yes >> $log_file 2>&1
-
-  # Cobbler repo to be added if this is not an SMLITE install
-  if [ "$SMLITE" == "" ]; then
-      wget -qO - http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_14.04/Release.key | apt-key add - >> $log_file 2>&1
-      add-apt-repository "deb http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_14.04/ ./" >> $log_file 2>&1
-      if [ ${rel[1]} == "16.04"  ]; then
-          wget http://launchpadlibrarian.net/109052632/python-support_1.0.15_all.deb -P /var/tmp
-          apt-get -y install /var/tmp/python-support_1.0.15_all.deb
-      fi
-  fi
-
-  set +e
-  apt-get update >> $log_file 2>&1
-  set -e
-
-}
-
 function cleanup_passenger()
 {
   echo "$space$arrow Cleaning up passenger for Server Manager Ugrade"
@@ -310,11 +246,7 @@ done
 
 cleanup_smgr_repos
 setup_apt_conf
-if [ "$NOEXTERNALREPOS" == "" ]; then
-  setup_internet_repos
-else
-  touch /etc/apt/sources.list.d/smgr_sources.list
-fi
+touch /etc/apt/sources.list.d/smgr_sources.list
 setup_smgr_repos
 
 RESTART_SERVER_MANAGER=""
