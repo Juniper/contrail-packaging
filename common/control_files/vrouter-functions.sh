@@ -267,6 +267,13 @@ vrouter_dpdk_start() {
             echo "$(date): Error adding ${DPDK_VHOST} interface"
         fi
     fi
+
+    # For redhat, bringup vhost0 and set MAC address
+    if [ -f /etc/redhat-release ]; then
+        ifup ${DPDK_VHOST}
+        ifconfig ${DPDK_VHOST} hw ether ${DPDK_PHY_MAC}
+    fi
+
     echo "$(date): Done starting vRouter/DPDK."
     return 0
 }
