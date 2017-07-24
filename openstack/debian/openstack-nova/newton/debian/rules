@@ -17,6 +17,8 @@ VERSION := $(shell dpkg-parsechangelog | sed -rne 's,^Version: ([0-9]:)*([^-]+).
 export OSLO_PACKAGE_VERSION=$(VERSION)
 DEB_BUILD_OPTIONS += nodocs nocheck
 
+include /usr/share/openstack-pkg-tools/pkgos.make
+
 DH_WITH=python2,systemd
 
 BUILDTAG =
