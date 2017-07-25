@@ -142,11 +142,11 @@ set -e
 
 # start redis & supervisord
 service redis-server restart
-service supervisor restart
 
 # start webui
 rel=`lsb_release -r`
 if [[ "$rel" == *"14.04"* ]]; then
+    service supervisor restart
     service supervisor-webui-sm restart
 elif [[ "$rel" == *"16.04"* ]]; then
     service contrail-webui-sm restart
