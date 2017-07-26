@@ -11,7 +11,7 @@ fi
 LOG=/var/log/contrail.log
 echo "LOG=$LOG" > $CFG_FILE
 
-CONFIG=/etc/contrail/agent.conf
+CONFIG=/etc/contrail/contrail-vrouter-agent.conf
 echo CONFIG=$CONFIG >> $CFG_FILE
 
 prog=/usr/bin/contrail-vrouter-agent
@@ -25,6 +25,7 @@ echo pname=$pname >> $CFG_FILE
 
 echo "LIBDIR=/usr/lib64" >> $CFG_FILE
 echo "VHOST_CFG=/etc/sysconfig/network-scripts/ifcfg-vhost0" >> $CFG_FILE
+echo "DEVICE=vhost0" >> $CFG_FILE
 
 dev=$(cat /etc/contrail/default_if)
 echo dev=__DEVICE__ >> $CFG_FILE
