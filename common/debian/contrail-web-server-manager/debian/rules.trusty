@@ -16,13 +16,14 @@ export buildroot := $(SB_TOP)/build/debian/contrail-web-server-manager
 
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):debian/contrail-control/usr/lib64/contrail:debian/contrail-libs/usr/lib64/contrail
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
-export _contrailwebmgrsrc := /usr/src/contrail/contrail-web-server-manager
-export _contrailwebsrc := /usr/src/contrail/contrail-web-core
+export _contrailwebsrc := /usr/src/contrail/contrail-web-server-manager
 export _libdir := /usr/lib64
 export _contrailetc := /etc/contrail
+export _supervisordir := /etc/contrail/supervisord_webui_sm_files
+export _initdir := /etc/init
+export _initddir := /etc/init.d
 export _contraillog := /var/log/contrail
-export _src_config := $(SB_TOP)/tools/packaging/common/control_files
-export _servicedir := /lib/systemd/system
+export _distropkgdir := $(SB_TOP)/tools/packaging/common/control_files
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
@@ -43,22 +44,28 @@ override_dh_auto_build:
 	(cd $(SB_TOP)/contrail-web-core && make package REPO=$(SB_TOP)/contrail-web-server-manager,serverManager)
 
 override_dh_auto_install:
-	rm -rf $(buildroot)/$(_contrailwebmgrsrc)
-	mkdir -p $(buildroot)/$(_contrailwebmgrsrc)
-	cp -r -p $(SB_TOP)/contrail-web-server-manager/* $(buildroot)/$(_contrailwebmgrsrc)/.
-	ln -s $(_libdir)/node_modules $(buildroot)/$(_contrailwebmgrsrc)/node_modules
+	rm -rf $(buildroot)/$(_contrailwebsrc)
+	mkdir -p $(buildroot)/$(_contrailwebsrc)
+	cp -r -p $(SB_TOP)/contrail-web-server-manager/* $(buildroot)/$(_contrailwebsrc)/.
+	ln -s $(_libdir)/node_modules $(buildroot)/$(_contrailwebsrc)/node_modules
 	install -d -m 755 $(buildroot)$(_contraillog)
+	install -d -m 755 $(buildroot)$(_supervisordir)
 	install -d -m 755 $(buildroot)$(_contrailetc)
-	install -d -m 755 $(buildroot)$(_servicedir)
-	install -d -m 755 $(buildroot)$(_contrailwebsrc)
+	install -d -m 755 $(buildroot)$(_initdir)
+	install -d -m 755 $(buildroot)$(_initddir)
 	# Server Manager config file
-	install -p -m 755 $(_src_config)/contrailWebMgrServer.sh $(buildroot)/$(_contrailwebsrc)/
-	install -p -m 755 $(_src_config)/contrailWebMgrMiddleware.sh $(buildroot)/$(_contrailwebsrc)/
 	install -p -m 755 $(SB_TOP)/contrail-web-core/config/config.global.js $(buildroot)/$(_contrailetc)/config.global.sm.js
 	perl -pi -e '{ s/opencontrail-logo/juniper-networks-logo/g; }' $(buildroot)/$(_contrailetc)/config.global.sm.js
 	perl -pi -e '{ s/opencontrail-favicon/juniper-networks-favicon/g; }' $(buildroot)/$(_contrailetc)/config.global.sm.js
+	# supervisord conf file
+	install -p -m 755 $(_distropkgdir)/supervisord_webui_sm.conf $(buildroot)/$(_contrailetc)/supervisord_webui_sm.conf
+	# supervisord upstart file
+	install -p -m 755 $(_distropkgdir)/supervisor-webui-sm.upstart $(buildroot)$(_initdir)/supervisor-webui-sm.conf
+	# supervisord ini files
+	install -p -m 755 $(_distropkgdir)/contrail-webui-sm.ini $(buildroot)/$(_supervisordir)/contrail-webui-sm.ini
+	install -p -m 755 $(_distropkgdir)/contrail-webui-middleware-sm.ini $(buildroot)/$(_supervisordir)/contrail-webui-middleware-sm.ini
 	# init scripts for service command
-	install -p -m 755 $(_src_config)/contrail-webui-sm.service $(buildroot)/$(_servicedir)/contrail-webui-sm.service
-	install -p -m 755 $(_src_config)/contrail-webui-middleware-sm.service $(buildroot)/$(_servicedir)/contrail-webui-middleware-sm.service
+	install -p -m 755 $(_distropkgdir)/contrail-webui-sm.initd.supervisord $(buildroot)/$(_initddir)/contrail-webui-sm
+	install -p -m 755 $(_distropkgdir)/contrail-webui-middleware-sm.initd.supervisord $(buildroot)/$(_initddir)/contrail-webui-middleware-sm
 
 override_dh_shlibdeps:

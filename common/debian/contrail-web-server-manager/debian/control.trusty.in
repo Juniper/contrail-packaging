@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-web-server-manager
 Architecture: amd64
 Maintainer: czanpure <czanpure@juniper.net>
-Depends: contrail-web-core
+Depends: contrail-web-core, supervisor
 Section: contrail-web-server-manager
 Priority: extra
 Description: Contrail Systems Web UI Server Manager Feature
