@@ -503,6 +503,7 @@ vrouter_dpdk_if_bind() {
     if [ -n "${DPDK_BOND_MODE}" ]; then
         echo "${0##*/}: removing bond interface from Linux..."
         ifdown "${DPDK_PHY}"
+        ip link del "${DPDK_PHY}"
     fi
 
     ${DPDK_BIND} --status
