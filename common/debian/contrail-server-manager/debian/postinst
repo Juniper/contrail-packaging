@@ -22,15 +22,7 @@ SUBNET_MASK=`ifconfig -a | grep $HOST_IP -b4 | grep Mask | awk '{print $5}' | cu
 DOMAIN=`hostname -d`
 rel=`lsb_release -r`
 
-# Stage I - Install required packages
-easy_install argparse
-easy_install paramiko==1.17.0
-easy_install pycrypto
-easy_install ordereddict
-easy_install pycurl
-pip install xmltodict
-
-# Stage 2: Copy config files into place
+# Copy config files into place
 
 # Copy cobbler pxesystem template file for esxi
 mv /etc/cobbler/pxe/pxesystem_esxi.template /etc/cobbler/pxe/pxesystem_esxi.template-save
