@@ -1,0 +1,3 @@
+# Ubuntu specific patches below here. Note these can be dropped eventually.
+arm-console-patch.patch
+aarch64-libvirt-compat.patch
