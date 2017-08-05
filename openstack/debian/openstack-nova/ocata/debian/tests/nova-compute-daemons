@@ -1,0 +1,40 @@
+#!/bin/bash
+#---------------------
+# Testing nova-compute
+#---------------------
+set -e
+DAEMONS=('nova-compute-kvm' 'nova-compute-lxc' 'nova-compute-qemu')
+failure=false
+
+# Skip execution of tests if in a container
+systemd-detect-virt --container && exit 0
+
+for daemon in "${DAEMONS[@]}"; do
+    apt-get install -y nova-compute $daemon 2>&1
+
+    TIMEOUT=50
+    while [ "$TIMEOUT" -gt 0 ]; do
+        if pidof -x nova-compute > /dev/null; then
+            echo "OK"
+            break
+        fi
+        TIMEOUT=$((TIMEOUT - 1))
+        sleep 0.1
+    done
+
+    if [ "$TIMEOUT" -le 0 ]; then
+        echo "ERROR: NOVA-COMPUTE FOR $daemon IS NOT RUNNING"
+        echo "/var/log/nova/nova-compute.log:"
+        cat /var/log/nova/nova-compute.log
+        failure=true
+    else
+        echo "NOVA-COMPUTE FOR $daemon IS RUNNING"
+    fi
+
+    apt-get remove -y $daemon nova-compute 2>&1
+done
+
+if [ "$failure" = true ]
+then
+    exit 1
+fi
