@@ -19,6 +19,8 @@ DEB_BUILD_OPTIONS += nodocs nocheck
 
 DH_WITH=python2,systemd
 
+include /usr/share/openstack-pkg-tools/pkgos.make
+
 BUILDTAG =
 ifdef TAG
 BUILDTAG = $(TAG)
