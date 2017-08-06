@@ -42,6 +42,8 @@ function ansible_and_docker_configs()
     sed -i "/host_key_checking/c\host_key_checking = False" /etc/ansible/ansible.cfg
     sed -i "/record_host_keys/c\record_host_keys = False" /etc/ansible/ansible.cfg
     sed -i "/ssh_args/c\ssh_args = -o ControlMaster=auto -o ControlPersist=60s -o UserKnownHostsFile=/dev/null" /etc/ansible/ansible.cfg
+    sed -i "s/#remote_tmp.*/remote_tmp = \$HOME\/.ansible\/tmp/" /etc/ansible/ansible.cfg
+    sed -i "s/#local_tmp.*/local_tmp = \$HOME\/.ansible\/tmp/" /etc/ansible/ansible.cfg
 
     echo "Starting docker if required"
     # Docker behaves differently on Ubuntu 16.04 because of systemd
