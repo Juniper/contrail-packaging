@@ -92,6 +92,7 @@ override_dh_auto_install:
 	install -d -m 754 $(build_root)/etc/ansible/
 	install -d -m 754 $(build_root)/usr/sbin/
 	install -d -m 755 $(build_root)/usr/lib/$(python_dir)/dist-packages/cobbler/modules/
+	install -d -m 755 $(build_root)/var/lib/cobbler/loaders/
 	install -d -m 755 $(build_root)/opt/contrail/server_manager/reprepro/
 	install -d -m 755 $(build_root)/opt/contrail/server_manager/ansible/
 	install -d -m 755 $(build_root)/opt/contrail/server_manager/ansible/playbooks/
@@ -131,6 +132,7 @@ override_dh_auto_install:
 	cp -r $(src_path)/utils/send_mail.py $(build_root)/opt/contrail/server_manager/
 	cp -r $(src_path)/third_party/server_post_install.py $(build_root)/usr/lib/$(python_dir)/dist-packages/cobbler/modules/
 	cp -r $(src_path)/third_party/server_pre_install.py $(build_root)/usr/lib/$(python_dir)/dist-packages/cobbler/modules/
+	cp -r $(src_path)/cobbler/loaders/* $(build_root)/var/lib/cobbler/loaders/
 	
 	# Config files - Do not overwrite
 	install -p -m 755 $(src_path)/smgr.conf $(build_root)/etc/contrail_smgr/smgr.conf

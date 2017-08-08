@@ -183,4 +183,3 @@ update-rc.d cobblerd defaults
 service apache2 restart
 service xinetd restart
 service cobblerd restart
-cobbler get-loaders
