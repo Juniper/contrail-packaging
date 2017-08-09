@@ -127,7 +127,7 @@ all_vmware: ${PACKAGES_VMWARE}
 # Building vcenter-plugin 
 contrail-install-vcenter-plugin:
 	(cd vcenter-plugin && make all && \
-    cd build && cp contrail-install-vcenter-plugin*.deb $(SB_TOP)/build/debian)
+    cd build && cp *.deb $(SB_TOP)/build/debian)
 #end vcenter-plugin build
 
 server-manager-all: contrail-server-manager-deb \
