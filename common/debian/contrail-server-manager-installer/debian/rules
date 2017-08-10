@@ -44,10 +44,6 @@ else
 pkg_sources := /cs-shared/builder/cache/$(os_ver)/server-manager/
 endif
 
-ifndef SETUP_FILE
-SETUP_FILE := $(SB_TOP)/tools/packaging/build/deb_server_manager_setup.sh
-endif
-
 provision_file_location := $(src_path)../../../tools/packaging/common/debian/contrail-server-manager-installer/debian
 
 %:
@@ -68,7 +64,7 @@ override_dh_auto_install:
 	# Install files
 	install -p -m 755 $(src_path)../../../tools/packaging/build/contrail_local_preferences $(buildroot)$(_contrailopt)/contrail_server_manager/contrail_local_preferences
 	install -p -m 755 $(pkg_sources)/registry.tar.gz  $(buildroot)$(_contrailopt)/contrail_server_manager/
-	install -p -m 755 $(SETUP_FILE)  $(buildroot)$(_contrailopt)/contrail_server_manager/setup.sh
+	install -p -m 755 $(src_path)/deb_sm_setup.sh  $(buildroot)$(_contrailopt)/contrail_server_manager/setup.sh
 	install -p -m 755 $(src_path)/sm_provision.sh $(buildroot)$(_contrailopt)/contrail_server_manager/provision.sh
 	install -p -m 755 $(src_path)/sm_provision_containers.sh $(buildroot)$(_contrailopt)/contrail_server_manager/provision_containers.sh
 	install -p -m 755 $(src_path)/client/testbed_parser.py $(buildroot)$(_contrailopt)/contrail_server_manager/testbed_parser.py
