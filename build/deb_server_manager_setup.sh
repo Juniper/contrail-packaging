@@ -300,6 +300,8 @@ if [ "$SM" != "" ]; then
     apt-get --no-install-recommends -y install libpython2.7>=2.7.6-8ubuntu0.2 >> $log_file 2>&1
     PUPPET_VERSION="3.7.3-1puppetlabs1"
   fi
+  # explicit install ansible (with 4.0 onwards ansible2.3 is packaged) to take care of upgrade SM case
+  apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install ansible >> $log_file 2>&1
   apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install puppet-common=${PUPPET_VERSION} puppetmaster-common=${PUPPET_VERSION} >> $log_file 2>&1
   cp /opt/contrail/contrail_server_manager/puppet.conf /etc/puppet/
   apt-get -y --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install nodejs=0.10.35-1contrail1 >> $log_file 2>&1
