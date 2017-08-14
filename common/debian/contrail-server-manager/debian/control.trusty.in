@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-server-manager
 Architecture: all
 Maintainer: tsurendra <tsurendra@juniper.net>
-Depends: python , apache2, sqlite, cobbler (=2.6.11-1), puppetmaster-passenger (=3.7.3-1puppetlabs1), puppetmaster-common (=3.7.3-1puppetlabs1), xinetd, python-pip, python-gevent, isc-dhcp-server, ntp,autoconf, gcc, bind9, tftp, sendmail, dpkg-dev, syslinux, ipmitool, createrepo, libapache2-mod-wsgi, tftpd-hpa, python-urlgrabber, python-django, selinux-utils, python-simplejson, python-dev, fence-agents, python-requests, reprepro, python-netaddr, python-contrail, python-paste, docker-engine, ansible, python-urllib3 (=1.13.1-2), python-ipaddress, python-websocket, python-docker, ceph-common
+Depends: python , apache2, sqlite, cobbler (=2.6.11-1), puppetmaster-passenger (=3.7.3-1puppetlabs1), puppetmaster-common (=3.7.3-1puppetlabs1), xinetd, python-pip, python-gevent, isc-dhcp-server, ntp,autoconf, gcc, bind9, tftp, sendmail, dpkg-dev, syslinux, ipmitool, createrepo, libapache2-mod-wsgi, tftpd-hpa, python-urlgrabber, python-django, selinux-utils, python-simplejson, python-dev, fence-agents, python-requests, reprepro, python-netaddr, python-contrail, python-paste, docker-engine, ansible, python-urllib3 (=1.13.1-2), python-ipaddress, python-websocket, python-docker, ceph-common, python-yaml, libnss3-1d, python-paramiko, python-xmltodict, python-pycurl, python-crypto
 Section: contrail-server-manager
 Priority: extra
 Description: Contrail Server Manager - Server Package
