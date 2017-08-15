@@ -1,0 +1,19 @@
+#!/bin/sh -e
+
+if [ "$1" = "configure" ]; then
+    # libvirt switched from libvirtd group to libvirt group in 1.3.3
+    libvirt_group=$(getent group libvirt) || true
+    libvirtd_group=$(getent group libvirtd) || true
+
+    if [ $libvirt_group ]; then
+        if ! echo $libvirt_group | grep -qE '\<nova\>'; then
+            adduser nova libvirt
+        fi
+    elif [ $libvirtd_group ]; then
+        if ! echo $libvirtd_group | grep -qE '\<nova\>'; then
+            adduser nova libvirtd
+        fi
+    fi
+fi
+
+#DEBHELPER#
