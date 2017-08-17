@@ -1,0 +1,5 @@
+Name:     contrail-openstack-dashboard
+Maintainer: Rahul Sharma <rahuls@juniper.net>
+License:  Apache 2.0
+Files: *
+ Copyright (c) 2014 Juniper Networks, Inc. All rights reserved.
