@@ -140,3 +140,5 @@ override_dh_auto_install:
 override_dh_shlibdeps: 
 
 override_dh_usrlocal:
+
+override_dh_pysupport:
