@@ -39,6 +39,12 @@ else
 pkg_file := $(src_path)/../../../tools/packaging/tools/scripts/server-manager-thirdparty
 endif
 
+ifdef PIP_PKG_FILE
+pip_pkg_file :=  $(_pkgFile)
+else
+pip_pkg_file := $(src_path)/../../../tools/packaging/tools/scripts/server-manager-thirdparty-pip
+endif
+
 ifdef CENTOS_PKT_FILE
 centos_pkg_file := $(_centosPkgFile)
 else
@@ -54,7 +60,7 @@ endif
 ifdef PKG_DIRS
 pkg_sources := $(_pkgDirs)
 else
-pkg_sources := /cs-shared/builder/cache/$(os_ver)/server-manager/
+pkg_sources := /cs-shared/builder/cache/$(os_ver)/server-manager/ /cs-shared/builder/cache/$(os_ver)/server-manager/pip
 endif
 
 
@@ -93,6 +99,7 @@ override_dh_auto_install:
 	install -d -m 755 $(build_root)/var/www/html/contrail/images/
 	install -d -m 755 $(build_root)/var/www/html/contrail/config_file/
 	install -d -m 755 $(build_root)/var/www/html/thirdparty_packages/
+	install -d -m 755 $(build_root)/var/www/html/thirdparty_packages/pip_repo
 	install -d $(build_root)/var/log/contrail-server-manager/provision/
 	install -d -m 755 $(build_root)/etc/mail/
 
@@ -130,6 +137,9 @@ override_dh_auto_install:
 	$(src_path)/../../../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file $(pkg_file) \
  --destination-dir $(build_root)/var/www/html/thirdparty_packages \
  --source-dirs $(pkg_sources) || (echo "Copying Built packages failed"; exit 1)
+	$(src_path)/../../../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file $(pip_pkg_file) \
+ --destination-dir $(build_root)/var/www/html/thirdparty_packages/pip_repo \
+ --source-dirs $(pkg_sources) || (echo "Copying Built packages failed"; exit 1)
 	$(src_path)/../../../tools/packaging/tools/scripts/copy_thirdparty_packages.py --package-file $(centos_pkg_file) \
  --destination-dir $(build_root)/etc/contrail_smgr/contrail-centos-repo \
  --source-dirs $(pkg_sources) || (echo "Copying Built centos packages failed"; exit 1)
@@ -140,3 +150,5 @@ override_dh_auto_install:
 override_dh_shlibdeps: 
 
 override_dh_usrlocal:
+
+override_dh_pysupport:
