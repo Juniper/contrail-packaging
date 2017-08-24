@@ -51,7 +51,7 @@ function cleanup_smgr_repos()
 {
 
   echo "$space$arrow Cleaning up existing sources.list and Server Manager sources file"
-  local_repo="deb file:/opt/contrail/contrail_server_manager ./"
+  local_repo="deb file:/opt/contrail/contrail_server_manager/packages ./"
   sed -i "s|$local_repo||g" /etc/apt/sources.list
   if [ -f /etc/apt/sources.list.d/smgr_sources.list ]; then
     rm /etc/apt/sources.list.d/smgr_sources.list
@@ -85,75 +85,14 @@ function setup_smgr_repos()
 
   echo "$space$arrow Installing dependent packages for Setting up Smgr repos"
   #scan pkgs in local repo and create Packages.gz
-  apt-get --no-install-recommends -y install dpkg-dev >> $log_file 2>&1
-
-  pushd /opt/contrail/contrail_server_manager >> $log_file 2>&1
+  pushd /opt/contrail/contrail_server_manager/packages >> $log_file 2>&1
+  (DEBIAN_FRONTEND=noninteractive dpkg -i binutils_*.deb dpkg-dev_*.deb libdpkg-perl_*.deb make_*.deb patch_*.deb >> $log_file 2>&1)
   dpkg-scanpackages . | gzip -9c > Packages.gz | >> $log_file 2>&1
   popd >> $log_file 2>&1
 
-  echo "deb file:/opt/contrail/contrail_server_manager ./" > /tmp/local_repo
+  echo "deb file:/opt/contrail/contrail_server_manager/packages ./" > /tmp/local_repo
   cat /tmp/local_repo /etc/apt/sources.list.d/smgr_sources.list > /tmp/new_smgr_sources.list
   mv /tmp/new_smgr_sources.list /etc/apt/sources.list.d/smgr_sources.list
-
-  set +e
-  apt-get update >> $log_file 2>&1
-  set -e
-
-}
-
-function setup_internet_repos()
-{
-  echo "$space$arrow Setting up Internet Repos"
-  # Push this to makefile - Copy only the file we need into installer.
-  if [ ${rel[1]} == "14.04"  ]; then
-    cp /opt/contrail/contrail_server_manager/ubuntu_14_04_1_sources.list /etc/apt/sources.list.d/smgr_sources.list
-  elif [ ${rel[1]} == "12.04"  ]; then
-    cp /opt/contrail/contrail_server_manager/ubuntu_12_04_3_sources.list /etc/apt/sources.list.d/smgr_sources.list
-  else
-    echo "$space$arrow This version of Ubuntu ${rel[1]} is not supported"
-    exit
-  fi
-
-  set +e
-  apt-get update >> $log_file 2>&1
-  set -e
-
-  # Dependencies to add apt-repos
-  apt-get --no-install-recommends -y install python-software-properties debmirror >> $log_file 2>&1
-  apt-get --no-install-recommends -y install software-properties-common >> $log_file 2>&1
-
-  puppet_list_file="/etc/apt/sources.list.d/puppet.list"
-  passenger_list_file="/etc/apt/sources.list.d/passenger.list"
-  dist='precise'
-  if [ ${rel[1]} == "14.04"  ]; then
-      dist='trusty'
-  fi
-  # Add puppet sources
-  if [ ! -f "$puppet_list_file" ]; then
-      echo "deb http://apt.puppetlabs.com $dist main" >> $puppet_list_file
-      echo "deb-src http://apt.puppetlabs.com $dist main" >> $puppet_list_file
-      echo "deb http://apt.puppetlabs.com $dist dependencies" >> $puppet_list_file
-      echo "deb-src http://apt.puppetlabs.com $dist dependencies" >> $puppet_list_file
-  fi
-
-  # Add passenger's sources
-  if [ ! -f "$passenger_list_file" ]; then
-      echo "deb https://oss-binaries.phusionpassenger.com/apt/passenger $dist main" >> $passenger_list_file
-  fi
-
-  # Repo to add for redis - required for contrail-web-core
-  #add-apt-repository ppa:rwky/redis --yes >> $log_file 2>&1
-
-  # Cobbler repo to be added if this is not an SMLITE install
-  if [ "$SMLITE" == "" ]; then
-    if [ ${rel[1]} == "14.04"  ]; then
-      wget -qO - http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_14.04/Release.key | apt-key add - >> $log_file 2>&1
-      add-apt-repository "deb http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_14.04/ ./" >> $log_file 2>&1
-    elif [ ${rel[1]} == "12.04"  ]; then
-      wget -qO - http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/Release.key | apt-key add - >> $log_file 2>&1
-      add-apt-repository "deb http://download.opensuse.org/repositories/home:/libertas-ict:/cobbler26/xUbuntu_12.04/ ./" >> $log_file 2>&1
-    fi
-  fi
 
   set +e
   apt-get update >> $log_file 2>&1
@@ -232,11 +171,7 @@ done
 
 cleanup_smgr_repos
 setup_apt_conf
-if [ "$NOEXTERNALREPOS" == "" ]; then
-  setup_internet_repos
-else
-  touch /etc/apt/sources.list.d/smgr_sources.list
-fi
+touch /etc/apt/sources.list.d/smgr_sources.list
 setup_smgr_repos
 
 RESTART_SERVER_MANAGER=""
@@ -260,7 +195,7 @@ if [ "$SM" != "" ]; then
   fi
   check_upgrade=1
   if [ "$installed_version" != ""  ]; then
-      version_to_install=`ls /opt/contrail/contrail_server_manager/contrail-server-manager_* | cut -d'_' -f 4`
+      version_to_install=`ls /opt/contrail/contrail_server_manager/packages/contrail-server-manager_* | cut -d'_' -f 4`
       set +e
       comparison=`dpkg --compare-versions $installed_version lt $version_to_install`
       check_upgrade=`echo $?`
@@ -309,6 +244,8 @@ if [ "$SM" != "" ]; then
   fi
 
   if [ $check_upgrade == 0 ]; then
+    # Take a backup of the existing dhcp.template
+    cp /etc/cobbler/dhcp.template /var/tmp/dhcp.template
     # Upgrade
     echo "$space$arrow Upgrading Server Manager"
     RESTART_SERVER_MANAGER="1"
@@ -399,7 +336,14 @@ echo "$arrow Reverting Repos to old state"
 rm -f /etc/apt/sources.list.d/puppet.list >> $log_file 2>&1
 rm -f /etc/apt/sources.list.d/passenger.list >> $log_file 2>&1
 rm -f /etc/apt/sources.list.d/smgr_sources.list >> $log_file 2>&1
+set +e
 apt-get update >> $log_file 2>&1
+set -e
+
+# In case of upgrade restore the saved dhcp.template back
+if [ $check_upgrade == 0 ]; then
+    mv /var/tmp/dhcp.template /etc/cobbler/dhcp.template
+fi
 
 sm_installed=`dpkg -l | grep "contrail-server-manager " || true`
 if [ "$sm_installed" != "" ]; then
