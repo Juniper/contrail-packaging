@@ -27,8 +27,8 @@ rel=`lsb_release -r`
 # Copy cobbler pxesystem template file for esxi
 mv /etc/cobbler/pxe/pxesystem_esxi.template /etc/cobbler/pxe/pxesystem_esxi.template-save
 cp /etc/contrail_smgr/cobbler/pxesystem_esxi.template /etc/cobbler/pxe
-# Copy cobbler boot.cfg template file for esxi5.5
-cp -f /etc/contrail_smgr/cobbler/bootcfg_esxi55.template /etc/cobbler/pxe
+# Copy cobbler boot.cfg template file for esxi6.5
+cp -f /etc/contrail_smgr/cobbler/bootcfg_esxi65.template /etc/cobbler/pxe
 # Backup all the distro_signatures files
 if [ -f /etc/cobbler/distro_signatures.json ]; then
     mv /etc/cobbler/distro_signatures.json /etc/cobbler/distro_signatures.json-save
@@ -36,8 +36,8 @@ fi
 if [ -f /var/lib/cobbler/distro_signatures.json ]; then
     mv /var/lib/cobbler/distro_signatures.json /var/lib/cobbler/distro_signatures.json-save
 fi
-cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /etc/cobbler/distro_signatures.json
-cp /etc/contrail_smgr/cobbler/distro_signatures.json-esxi55 /var/lib/cobbler/distro_signatures.json
+cp /etc/contrail_smgr/cobbler/distro_signatures.json /etc/cobbler/distro_signatures.json
+cp /etc/contrail_smgr/cobbler/distro_signatures.json /var/lib/cobbler/distro_signatures.json
 
 cp /etc/contrail_smgr/smgr.conf /etc/apache2/sites-available/
 
