@@ -22,7 +22,7 @@ export BUILD_ONLY := TRUE
 G_TAG :=
 ifdef GIT_VER
  G_TAG := --define "_gitVer $(GIT_VER)"
-endif 
+endif
 ifdef TAG
  G_TAG += --define "_buildTag $(TAG)"
 endif
@@ -344,6 +344,10 @@ ifeq ($(DISTRO), Red Hat)
     RH_ONLY_TARGETS = puppet-contrail
   endif
   ifeq ($(CONTRAIL_SKU), newton)
+    RH_ONLY_TARGETS = contrail-tripleo-heat-templates \
+                      contrail-tripleo-puppet puppet-contrail
+  endif
+  ifeq ($(CONTRAIL_SKU), ocata)
     RH_ONLY_TARGETS = contrail-tripleo-heat-templates \
                       contrail-tripleo-puppet puppet-contrail
   endif
