@@ -4,3 +4,6 @@ set -e
 
 echo "running post install"
 tar -xvf /opt/contrail/contrail_server_manager/contrail_server_manager_packages.tgz -C /opt/contrail/contrail_server_manager/packages/ > /dev/null
+pushd /opt/contrail/contrail_server_manager/packages >> $log_file 2>&1
+(DEBIAN_FRONTEND=noninteractive dpkg -i python-paramiko_*.deb >> $log_file 2>&1)
+popd >> $log_file 2>&1
