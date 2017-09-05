@@ -4,3 +4,8 @@ set -e
 
 echo "running post install"
 tar -xvf /opt/contrail/contrail_server_manager/contrail_server_manager_packages.tgz -C /opt/contrail/contrail_server_manager/packages/ > /dev/null
+cd /opt/contrail/contrail_server_manager/packages > /dev/null
+# Install paramiko and dependencies to be able to do testbed parsing before SM install
+(DEBIAN_FRONTEND=noninteractive dpkg -i python-paramiko_*.deb python-ecdsa_*.deb python-crypto_*.deb libgmp10_*.deb > /dev/null)
+# Give time for paramiko to install
+sleep 20 > /dev/null
