@@ -83,7 +83,9 @@ PACKAGES = \
 	neutron-plugin-contrail-deb \
 	$(CEILOMETER_PLUGIN) \
 	contrail-f5-deb \
+	contrail-vmware-config-deb \
 	contrail-vmware-utils-deb \
+	contrail-vmware-vrouter-deb \
 	contrail-puppet-deb \
 	contrail-puppet-tgz \
 	contrail-install-vcenter-plugin \
@@ -127,7 +129,7 @@ all_vmware: ${PACKAGES_VMWARE}
 # Building vcenter-plugin 
 contrail-install-vcenter-plugin:
 	(cd vcenter-plugin && make all && \
-    cd build && cp contrail-install-vcenter-plugin*.deb $(SB_TOP)/build/debian)
+    cd build && cp *.deb $(SB_TOP)/build/debian)
 #end vcenter-plugin build
 
 server-manager-all: contrail-server-manager-deb \
