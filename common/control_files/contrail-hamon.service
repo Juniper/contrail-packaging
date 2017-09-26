@@ -1,0 +1,13 @@
+[Unit]
+Description=Contrail cmon checker - Check status of Galera cluster
+
+[Service]
+Type=simple
+ExecStart=/opt/contrail/bin/contrail-cmon-monitor.sh
+Restart=always
+RestartSec=5
+LimitNOFILE=8192
+TimeoutStartSec=infinity
+
+[Install]
+WantedBy=multi-user.target
