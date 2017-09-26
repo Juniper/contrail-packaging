@@ -50,6 +50,8 @@ Depends: python,
          python-ipaddress,
          python-websocket,
          python-docker,
+         python-beaker,
+         python-bottle-cork,
          ceph-common
 Section: contrail-server-manager-lite
 Priority: extra
