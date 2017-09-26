@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 8)
 Package: contrail-server-manager-lite
 Architecture: all
 Maintainer: tsurendra <tsurendra@juniper.net>
-Depends: python, apache2, sqlite, puppetmaster-passenger (=3.8.5-2), puppetmaster-common (=3.8.5-2), xinetd, python-pip, python-gevent, ntp,autoconf, gcc, tftp, sendmail, dpkg-dev, syslinux, ipmitool, createrepo, libapache2-mod-wsgi, python-urlgrabber, python-django, selinux-utils, python-simplejson, python-dev, fence-agents, python-requests, reprepro, python-netaddr, python-yaml, libnss3-1d, python-paramiko, python-xmltodict, python-pycurl, python-crypto, python-contrail, python-paste, docker-engine, ansible, python-oslo.config, python-urllib3, python-ipaddress, python-websocket, python-docker, ceph-common
+Depends: python, apache2, sqlite, puppetmaster-passenger (=3.8.5-2), puppetmaster-common (=3.8.5-2), xinetd, python-pip, python-gevent, ntp,autoconf, gcc, tftp, sendmail, dpkg-dev, syslinux, ipmitool, createrepo, libapache2-mod-wsgi, python-urlgrabber, python-django, selinux-utils, python-simplejson, python-dev, fence-agents, python-requests, reprepro, python-netaddr, python-yaml, libnss3-1d, python-paramiko, python-xmltodict, python-pycurl, python-crypto, python-contrail, python-paste, docker-engine, ansible, python-oslo.config, python-urllib3, python-ipaddress, python-websocket, python-docker, ceph-common, python-beaker, python-bottle-cork
 Section: contrail-server-manager-lite
 Priority: extra
 Description: Contrail Server Manager - Server Package, without cobbler, only provisioning supported package.
