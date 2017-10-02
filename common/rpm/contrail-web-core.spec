@@ -9,7 +9,9 @@
 %define		_nodemodules		node_modules/
 %define		_config			contrail-web-core/config
 %define		_contrailuitoolsdir	src/tools
-%define         _supervisordir /etc/contrail/supervisord_webui_files
+%define		_supervisordir		/etc/contrail/supervisord_webui_files
+%define		_websslpath		/etc/contrail/webui_ssl
+%define		_sslsub			/C=US/ST=CA/L=Sunnyvale/O=JuniperNetworks/OU=JuniperCA/CN=ContrailCA
 
 %if 0%{?_buildTag:1}
 %define         _relstr      %{_buildTag}
@@ -36,6 +38,7 @@ Vendor:             Juniper Networks Inc
 Requires:	redis
 Requires:	nodejs >= nodejs-0.10.35-1contrail
 Requires:	supervisor
+Requires:	openssl
 
 Obsoletes:      contrail-webui
 
@@ -71,6 +74,7 @@ install -d -m 755 %{buildroot}%{_initddir}
 %endif
 rm -rf %{buildroot}%{_libdir}/node_modules
 rm -rf %{buildroot}%{_contrailetc}
+rm -rf %{buildroot}%{_websslpath}
 
 mkdir -p %{buildroot}%{_contrailwebsrc}
 %if 0%{?fedora} >= 17
@@ -78,6 +82,7 @@ mkdir -p %{buildroot}%{_servicedir}
 %endif
 mkdir -p %{buildroot}%{_libdir}/node_modules
 mkdir -p %{buildroot}%{_contrailetc}
+mkdir -p %{buildroot}%{_websslpath}
 
 #cp -r -p %{_sourcedir}/%{name}/contrail-ui/* %{buildroot}%{_contrailwebsrc}/
 pushd %{_builddir}/..
@@ -134,8 +139,13 @@ rm -rf %{_specdir}/contrail-webui.spec
 %config(noreplace) %{_contrailetc}/contrail-webui-userauth.js
 %config(noreplace) %{_supervisordir}/*
 %config(noreplace) %{_contrailetc}/supervisord_webui.conf
+%dir %{_websslpath}
 
 %post
+if [ ! -e %{_websslpath}/cs-key.pem ] || [ ! -e %{_websslpath}/cs-cert.pem ] ; then
+	openssl req -new -newkey rsa:2048 -nodes -out %{_websslpath}/certrequest.csr -keyout %{_websslpath}/cs-key.pem -subj %{_sslsub}
+	openssl x509 -req -days 730 -in %{_websslpath}/certrequest.csr -signkey %{_websslpath}/cs-key.pem -out %{_websslpath}/cs-cert.pem
+fi
 %if 0%{?rhel}
 %else
 /bin/systemctl daemon-reload
@@ -159,6 +169,12 @@ elif [ $1 = 0 ] ; then
 %endif
 fi
 exit 0
+
+%postun
+if [ $1 = 0 ] ; then
+	# Backup the SSL keys in /tmp
+	mv %{_websslpath} /tmp/webui_ssl.%(date +%F_%R).backup
+fi
 
 %changelog
 * Tue Jan 30 2013 - bmandal@contrailsystems.com

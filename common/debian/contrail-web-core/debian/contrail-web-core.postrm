@@ -1,0 +1,13 @@
+#!/bin/sh
+# vim: set ts=2 et:
+
+set -e
+websslpath=/etc/contrail/webui_ssl
+
+if [ "$1" = "remove" ] || [ "$1" = "purge" ] ; then
+  if [ -e $websslpath ] ; then
+    mv $websslpath /tmp/webui_ssl.$(date +%F_%R).backup
+  fi
+fi
+#DEBHELPER#
+

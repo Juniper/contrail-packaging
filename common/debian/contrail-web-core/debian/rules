@@ -24,6 +24,7 @@ export _contrailwebsrc := /usr/src/contrail/contrail-web-core
 export _libdir := /usr/lib64
 export _nodemodules := node_modules
 export _config := $(SB_TOP)/contrail-web-core/config
+export _webuisslpath := /etc/contrail/webui_ssl
 
 export BUILDTIME := $(shell date -u +%y%m%d%H%M)
 
@@ -53,10 +54,12 @@ override_dh_auto_install:
 	rm -rf $(buildroot)/$(_contrailwebsrc)
 	rm -rf $(buildroot)/$(_libdir)/node_modules
 	rm -rf $(buildroot)/$(_contrailetc)
+	rm -rf $(buildroot)/$(_webuisslpath)
 
 	mkdir -p $(buildroot)/$(_contrailwebsrc)
 	mkdir -p $(buildroot)/$(_libdir)/node_modules
 	mkdir -p $(buildroot)/$(_contrailetc)
+	mkdir -p $(buildroot)/$(_webuisslpath)
 
 	cp -r -p $(SB_TOP)/contrail-web-core/* $(buildroot)/$(_contrailwebsrc)/.
 
