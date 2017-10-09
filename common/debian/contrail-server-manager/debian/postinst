@@ -55,8 +55,8 @@ fi
 cp /etc/contrail_smgr/cobbler/named.conf.options.u.sample /etc/bind/named.conf.options
 
 #cp /etc/contrail_smgr/sendmail.cf /etc/mail/
-#mv /etc/ntp.conf /etc/ntp.conf.default
-#cp /etc/contrail_smgr/ntp.conf /etc/ntp.conf
+mv /etc/ntp.conf /etc/ntp.conf.default
+cp /etc/contrail_smgr/ntp.conf >> /etc/ntp.conf
 chown -R puppet:puppet /var/log/contrail-server-manager/provision
 # Copying the specific puppet conf files needed for provisioning:
 cp /etc/contrail_smgr/puppet/auth.conf /etc/puppet/
