@@ -56,6 +56,27 @@ function create_virtual_gateway() {
    done
 }
 
+source /etc/contrail/agent_param
+if [ $vrouter_kmod_1G_hugepages != false ]
+then
+    echo "$(date): Creating files for vrouter kernel mode hugepages config ." &>> $LOG
+    for((i=0; i<=1; i++)); do
+        touch "/hugepage_1G/vrouter_1G_mem_${i}"
+    done
+else
+    rm -r "/hugepage_1G"
+fi
+
+if [ $vrouter_kmod_2M_hugepages != false ]
+then
+    echo "$(date): Creating files for vrouter kernel mode hugepages config ." &>> $LOG
+    for((i=0; i<=1; i++)); do
+        touch "/hugepage_2M/vrouter_2M_mem_${i}"
+    done
+else
+    rm -r "/hugepage_2M"
+fi
+
 insert_vrouter &>> $LOG
 echo "$(date): Value $vgw_subnet_ip" &>> $LOG
 if [ $vgw_subnet_ip != __VGW_SUBNET_IP__ ] 
