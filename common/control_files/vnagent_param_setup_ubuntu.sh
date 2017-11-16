@@ -30,6 +30,10 @@ echo vgw_intf=__VGW_INTF_LIST__ >> $CFG_FILE
 
 echo qos_enabled=false >> $CFG_FILE
 
+echo vrouter_kmod_1G_hugepages=false >> $CFG_FILE
+
+echo vrouter_kmod_2M_hugepages=false >> $CFG_FILE
+
 LOGFILE=/var/log/contrail/vrouter.log
 echo "LOGFILE=--log-file=${LOGFILE}" >> $CFG_FILE
 
