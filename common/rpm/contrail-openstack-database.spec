@@ -49,6 +49,8 @@ getent group contrail >/dev/null || groupadd -r contrail
 getent passwd contrail >/dev/null || \
   useradd -r -g contrail -d /var/lib/contrail -s /bin/false \
   -c "OpenContail daemon" contrail
+# Create the "kafka" user
+adduser --quiet --system --no-create-home kafka
 
 %changelog
 * Fri Jul  15 2016 <ijohnson@juniper.net>
