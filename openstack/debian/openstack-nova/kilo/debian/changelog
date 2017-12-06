@@ -1,3 +1,9 @@
+nova (1:2015.1.2-0ubuntu2~cloud0.1contrail2) trusty-kilo; urgency=medium
+
+  * Fixed issue in nova related to the cache call to pass interpath
+
+ -- Jeya ganesh babu J <jjeya@juniper.net>  Tue, 29 Nov 2017 15:01:10 +0000
+
 nova (1:2015.1.2-0ubuntu2~cloud0.1contrail1) trusty-kilo; urgency=medium
 
   * Fixed storage_scope changes for live-migration/block-migraition to work
