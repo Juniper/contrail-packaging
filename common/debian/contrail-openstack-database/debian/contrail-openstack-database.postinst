@@ -16,6 +16,12 @@ if [ "$1" = "configure" ]; then
         --gecos "OpenContrail daemon" contrail
     fi
 
+    # Create the "kafka" user
+    if ! getent passwd kafka > /dev/null 2>&1
+    then
+      adduser --quiet --system --no-create-home kafka
+    fi
+
     # Create the "contrail" group if it is missing and set the primary group
     # of the "contrail" user to this group.
     if ! getent group contrail > /dev/null 2>&1
@@ -76,5 +82,6 @@ if [ "$1" = "configure" ]; then
         sudo update-rc.d cassandra disable
         sudo update-rc.d contrail-database defaults
     fi
+    adduser --quiet --system --no-create-home kafka
 fi
 echo "Postinst for contrail-openstack-database done"
