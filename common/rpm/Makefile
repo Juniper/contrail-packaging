@@ -57,6 +57,14 @@ contrail: $(PREP)
 	@echo making rpm for contrail
 	rpmbuild $(RPMBLDOPTS) $(SB_TOP)/tools/packages/rpm/contrail/contrail.spec $(G_TAG) $(SB_TOPDIR)
 
+rpm-ifmap-server: $(PREP)
+	@echo making rpm for ifmap-server
+	rm -rf $(PKGBLDDIR)/ifmap-server/
+	mkdir -p $(PKGBLDDIR)/ifmap-server/
+	cp -ar $(SB_TOP)/tools/packages/rpm/ifmap-server/. $(BUILD_BASE)/SOURCES/
+	spectool -g -R $(SB_TOP)/tools/packages/rpm/ifmap-server/ifmap-server.spec -C $(BUILD_BASE)/SOURCES/
+	rpmbuild $(RPMBLDOPTS) --define '_builddir $(PKGBLDDIR)/ifmap-server' $(SB_TOP)/tools/packages/rpm/ifmap-server/ifmap-server.spec $(G_TAG) $(SB_TOPDIR)
+
 contrail-api-extension: $(PREP)
 	@echo making rpm for contrail-api-extension
 	rpmbuild $(RPMBLDOPTS) contrail-api-extension.spec $(G_TAG)
@@ -290,7 +298,7 @@ else
 CONTRAIL_NOVA_NETWORKAPI =
 endif
 
-all: $(PREP) contrail \
+all: $(PREP) contrail rpm-ifmap-server \
        contrail-interface-name ifmap-python-client \
        contrail-nodemgr contrail-setup contrail-openstack-all \
        contrail-web-core contrail-web-controller contrail-database \
