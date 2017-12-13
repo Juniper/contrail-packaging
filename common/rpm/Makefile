@@ -259,7 +259,16 @@ contrail-fabric-utils: $(PPREP)
 	rpmbuild $(RPMBLDOPTS) fabric-utils.spec $(G_TAG)
 	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-fabric-utils-$(TOOLS_VERSION).tgz fabric-utils
 
-contrail-test:
+contrail-test-rpm: $(PREP)
+	@echo making contrail-test rpm
+	if [ -d $(SB_TOP)/third_party/contrail-test ] && \
+	   [ -d $(SB_TOP)/tools/contrail-test-ci ]; then \
+	    rpmbuild $(RPMBLDOPTS) contrail-test.spec $(G_TAG) ;\
+	else \
+	    echo -e "\n\nWARNING: SKIPPING contrail-test-rpm. contrail-test or contrail-test-ci repo may be missing...\n\n" ;\
+	fi
+
+contrail-test: $(PREP)
 	@echo making tgz for contrail-test
 	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz contrail-test
 
@@ -363,7 +372,7 @@ all: $(PREP) contrail \
        contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet contrail-ansible \
        contrail-ansible-internal contrail-puppet-tgz \
        contrail-vrouter-dpdk-init contrail-vrouter-dpdk ${RH_ONLY_TARGETS} \
-       contrail-docker-tools
+       contrail-docker-tools contrail-test-rpm
 
 server-manager-all: contrail-server-manager contrail-server-manager-client \
     contrail-web-server-manager
