@@ -255,11 +255,10 @@ contrail-vrouter-common: $(PREP)
 	rpmbuild $(RPMBLDOPTS) contrail-vrouter-common.spec $(G_TAG)
 
 contrail-fabric-utils: $(PPREP)
-	@echo making rpm for contrail-fabric-utils
-	rpmbuild $(RPMBLDOPTS) fabric-utils.spec $(G_TAG)
+	@echo making TGZ for contrail-fabric-utils
 	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-fabric-utils-$(TOOLS_VERSION).tgz fabric-utils
 
-contrail-test:
+contrail-test: $(PREP)
 	@echo making tgz for contrail-test
 	cd $(THIRDPARTY_DIR) && tar -cvzf $(BUILD_BASE)/TOOLS/contrail-test-$(TOOLS_VERSION).tgz contrail-test
 
