@@ -82,6 +82,5 @@ if [ "$1" = "configure" ]; then
         sudo update-rc.d cassandra disable
         sudo update-rc.d contrail-database defaults
     fi
-    adduser --quiet --system --no-create-home kafka
 fi
 echo "Postinst for contrail-openstack-database done"
