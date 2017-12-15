@@ -42,6 +42,12 @@ popd
 %config(noreplace) /etc/contrail/contrail-database-nodemgr.conf
 /etc/init.d/contrail-database-nodemgr
 
+%pre
+set -e
+# Create the "kafka" user
+getent passwd kafka >/dev/null || \
+  useradd -r -s /bin/false -c "kafka user" kafka
+
 %changelog
 * Fri Jul  15 2016 <ijohnson@juniper.net>
 * Moving cassandra/zookeper to contrail database common package
