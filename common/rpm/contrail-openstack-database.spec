@@ -51,7 +51,7 @@ getent passwd contrail >/dev/null || \
   -c "OpenContail daemon" contrail
 # Create the "kafka" user
 getent passwd kafka >/dev/null || \
-  adduser --quiet --system --no-create-home kafka
+  useradd -r -s /bin/false -c "kafka user" kafka
 
 * Fri Jul  15 2016 <ijohnson@juniper.net>
 * Moving cassandra/zookeper to contrail database common package
