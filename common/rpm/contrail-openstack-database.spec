@@ -53,6 +53,7 @@ getent passwd contrail >/dev/null || \
 getent passwd kafka >/dev/null || \
   useradd -r -s /bin/false -c "kafka user" kafka
 
+%changelog
 * Fri Jul  15 2016 <ijohnson@juniper.net>
 * Moving cassandra/zookeper to contrail database common package
 
