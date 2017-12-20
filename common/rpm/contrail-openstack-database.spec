@@ -42,11 +42,15 @@ popd
 %config(noreplace) /etc/contrail/contrail-database-nodemgr.conf
 /etc/init.d/contrail-database-nodemgr
 
-%pre
+%post
 set -e
 # Create the "kafka" user
 getent passwd kafka >/dev/null || \
   useradd -r -s /bin/false -c "kafka user" kafka
+if [ "$1" = "2" ]; then
+    chown -R kafka /tmp/kafka-logs
+    chown -R kafka /var/log/kafka
+fi
 
 %changelog
 * Fri Jul  15 2016 <ijohnson@juniper.net>

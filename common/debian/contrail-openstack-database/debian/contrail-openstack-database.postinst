@@ -7,6 +7,10 @@ if [ "$1" = "configure" ]; then
     then
       adduser --quiet --system --no-create-home kafka
     fi
+    if [ ! -z "$2" ]; then
+        chown -R kafka /tmp/kafka-logs
+        chown -R kafka /var/log/kafka
+    fi
     if [ -z "$2" ]; then
         i=0
         while : ; do
