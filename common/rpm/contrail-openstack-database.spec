@@ -53,7 +53,13 @@ getent passwd contrail >/dev/null || \
 getent passwd kafka >/dev/null || \
   useradd -r -s /bin/false -c "kafka user" kafka
 
+if [ "$1" = "2" ]; then
+    chown -R kafka /tmp/kafka-logs
+    chown -R kafka /var/log/kafka
+fi
+
 %changelog
+* Wed Jan  3  2018 <arvindv@juniper.net>
 * Fri Jul  15 2016 <ijohnson@juniper.net>
 * Moving cassandra/zookeper to contrail database common package
 
