@@ -16,7 +16,8 @@ HOST_MAC=`ifconfig -a | grep $HOST_IP -b2 | grep HWaddr | awk '{print $5}'`
 HOST_FQDN=`hostname -f`
 HOST_NAME=`hostname`
 
-SUBNET_ADDRESS=`ip route | grep $HOST_IP | awk '{print $1}' | cut -d '/' -f 1`
+SUBNET_ADDRESS=`ip route | grep $HOST_IP | grep -v default | awk '{print $1}' | cut -d '/' -f 1`
+SUBNET_GATEWAY=`ip route | grep default | awk '{print $3}'`
 SUBNET_MASK=`ifconfig -a | grep $HOST_IP -b4 | grep Mask | awk '{print $5}' | cut -d ':' -f 2`
 
 DOMAIN=`hostname -d`
@@ -98,6 +99,7 @@ sed -i "s/__\$MACADDRESS__/$HOST_MAC/g" /opt/contrail/server_manager/generate_dh
 sed -i "s/__\$HOSTFQDN__/$HOST_FQDN/g" /opt/contrail/server_manager/generate_dhcp_template.py
 sed -i "s/__\$HOSTNAME__/$HOST_NAME/g" /opt/contrail/server_manager/generate_dhcp_template.py
 sed -i "s/__\$SUBNETADDRESS__/$SUBNET_ADDRESS/g" /opt/contrail/server_manager/generate_dhcp_template.py
+sed -i "s/__\$SUBNETGATEWAY__/$SUBNET_GATEWAY/g" /opt/contrail/server_manager/generate_dhcp_template.py
 sed -i "s/__\$SUBNETMASK__/$SUBNET_MASK/g" /opt/contrail/server_manager/generate_dhcp_template.py
 sed -i "s/__\$DOMAIN__/$DOMAIN/g" /opt/contrail/server_manager/generate_dhcp_template.py
 
@@ -106,6 +108,7 @@ sed -i "s/__\$MACADDRESS__/$HOST_MAC/g" /etc/contrail_smgr/cobbler/bootup_dhcp.t
 sed -i "s/__\$HOSTFQDN__/$HOST_FQDN/g" /etc/contrail_smgr/cobbler/bootup_dhcp.template.u
 sed -i "s/__\$HOSTNAME__/$HOST_NAME/g" /etc/contrail_smgr/cobbler/bootup_dhcp.template.u
 sed -i "s/__\$SUBNETADDRESS__/$SUBNET_ADDRESS/g" /etc/contrail_smgr/cobbler/bootup_dhcp.template.u
+sed -i "s/__\$SUBNETGATEWAY__/$SUBNET_GATEWAY/g" /etc/contrail_smgr/cobbler/bootup_dhcp.template.u
 sed -i "s/__\$SUBNETMASK__/$SUBNET_MASK/g" /etc/contrail_smgr/cobbler/bootup_dhcp.template.u
 sed -i "s/__\$DOMAIN__/$DOMAIN/g" /etc/contrail_smgr/cobbler/bootup_dhcp.template.u
 
