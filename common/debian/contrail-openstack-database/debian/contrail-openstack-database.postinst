@@ -35,10 +35,10 @@ if [ "$1" = "configure" ]; then
     chmod 0750 /var/log/contrail
     chown -R contrail. /var/lib/contrail/ /etc/contrail/
     chmod 0750 /etc/contrail/
+    chown -R kafka /var/log/kafka
 
     if [ ! -z "$2" ]; then
         chown -R kafka /tmp/kafka-logs
-        chown -R kafka /var/log/kafka
     fi
 
     if [ -z "$2" ]; then
