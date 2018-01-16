@@ -35,10 +35,16 @@ if [ "$1" = "configure" ]; then
     chmod 0750 /var/log/contrail
     chown -R contrail. /var/lib/contrail/ /etc/contrail/
     chmod 0750 /etc/contrail/
+    if [ -n "$is_systemd" ]; then
+        mkdir -p /usr/share/kafka/logs
+        chown -R kafka /usr/share/kafka/logs
+    else
+        mkdir -p /var/log/kafka
+        chown - R kafka /var/log/kafka
+    fi
 
     if [ ! -z "$2" ]; then
         chown -R kafka /tmp/kafka-logs
-        chown -R kafka /var/log/kafka
     fi
 
     if [ -z "$2" ]; then
