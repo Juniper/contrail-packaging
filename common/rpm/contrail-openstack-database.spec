@@ -52,10 +52,10 @@ getent passwd contrail >/dev/null || \
 # Create the "kafka" user
 getent passwd kafka >/dev/null || \
   useradd -r -s /bin/false -c "kafka user" kafka
-
+mkdir -p /var/log/kafka
+chown -R kafka /var/log/kafka
 if [ "$1" = "2" ]; then
     chown -R kafka /tmp/kafka-logs
-    chown -R kafka /var/log/kafka
 fi
 
 %changelog
