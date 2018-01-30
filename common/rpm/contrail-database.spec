@@ -147,6 +147,19 @@ if [ "$1" = "1" ]; then
   fi
   rm -rf /var/lib/cassandra
 fi
+if [ "$1" = "2" ]; then
+  PIDFILE=/var/run/cassandra/cassandra.pid
+  # Create the /var/run/cassandra if it does not exist
+  [ -e `dirname "$PIDFILE"` ] || \
+        install -d -ocassandra -gcassandra -m755 `dirname $PIDFILE`
+  # Write pid info to it
+  ps auxw | grep -Eq "Dcassandra-pidfile=.*cassandra\.pid" 2>/dev/null
+  if [ $? -eq 0 ] ; then
+          echo `ps auxw | grep -E "Dcassandra-pidfile=.*cassandra\.pid" | grep -v grep | awk '{print $2}'` > /var/run/cassandra/cassandra.pid
+          chown cassandra:cassandra /var/run/cassandra/cassandra.pid
+  fi
+fi
+
 chkconfig cassandra off
 chkconfig contrail-database on
 
