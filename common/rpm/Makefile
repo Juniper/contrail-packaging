@@ -332,6 +332,11 @@ puppet-contrail: $(PREP)
 	cp puppet-contrail.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/puppet-contrail.spec $(G_TAG)
 
+ironic-notification-manager: $(PREP)
+	@echo making rpm for ironic-notification-manager
+	cp ironic-notification-manager.spec $(BUILD_BASE)/SPECS/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/ironic-notification-manager.spec $(G_TAG)
+
 NEUTRON_PLUGIN = neutron-plugin-contrail
 CONTRAIL_HEAT = contrail-heat
 CEILOMETER_PLUGIN = ceilometer-plugin-contrail
@@ -362,7 +367,7 @@ all: $(PREP) contrail \
        contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet contrail-ansible \
        contrail-ansible-internal contrail-puppet-tgz \
        contrail-vrouter-dpdk-init contrail-vrouter-dpdk ${RH_ONLY_TARGETS} \
-       contrail-docker-tools
+       contrail-docker-tools ironic-notification-manager
 
 server-manager-all: contrail-server-manager contrail-server-manager-client \
     contrail-web-server-manager
