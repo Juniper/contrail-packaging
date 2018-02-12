@@ -10,7 +10,7 @@
 %define		_config			contrail-web-core/config
 %define		_contrailuitoolsdir	src/tools
 %define		_supervisordir		/etc/contrail/supervisord_webui_files
-%define		_websslpath		/etc/contrail/webui_ssl
+%define		_websslpath		/etc/pki/ca-trust/source/anchors/contrail_webui_ssl/
 %define		_sslsub			/C=US/ST=CA/L=Sunnyvale/O=JuniperNetworks/OU=JuniperCA/CN=ContrailCA
 
 %if 0%{?_buildTag:1}
