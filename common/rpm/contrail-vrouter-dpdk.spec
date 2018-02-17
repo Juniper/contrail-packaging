@@ -14,6 +14,8 @@
 %define _verstr 1
 %endif
 
+%bcond_without debuginfo
+
 Name:    contrail-vrouter-dpdk
 Version: %{_verstr}
 Release: %{_relstr}%{?dist}
@@ -30,6 +32,10 @@ Requires: contrail-vrouter-utils >= %{_verstr}-%{_relstr}
 
 %description
 Provides contrail-vrouter-dpdk binary
+
+%if %{with debuginfo}
+%debug_package
+%endif
 
 %prep
 # Cleanup
