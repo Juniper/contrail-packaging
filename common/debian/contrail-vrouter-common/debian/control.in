@@ -8,5 +8,5 @@ Build-Depends:
 Package: contrail-vrouter-common
 Architecture: all
 Maintainer: amoghe <ijohnson@juniper.net>
-Depends: contrail-nodemgr, contrail-setup, contrail-utils, contrail-vrouter-init | contrail-vrouter-dpdk-init, python-iniparse, linux-crashdump, contrail-vrouter, libunwind8, libgoogle-perftools4
+Depends: contrail-nodemgr, contrail-setup, contrail-utils, contrail-vrouter-init | contrail-vrouter-dpdk-init, python-iniparse, linux-crashdump, contrail-vrouter
 Description: Contrail vRouter composite debian package

@@ -35,8 +35,6 @@ Requires: kexec-tools
 Requires: kernel = 3.6.6-1.fc17
 %endif
 Requires: python-thrift >= 0.9.1
-Requires: libgoogle-perftools4
-Requires: libunwind8
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: contrail-utils >= %{_verstr}-%{_relstr}
 Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
