@@ -24,8 +24,10 @@ License: Commercial
 URL:     http://www.juniper.net/
 Vendor:  Juniper Networks Inc
 
-BuildRequires: liburcu2
-Requires: liburcu2
+BuildRequires: userspace-rcu-devel
+BuildRequires: libnl3-devel
+BuildRequires: numactl-devel
+Requires: userspace-rcu
 Requires: contrail-vrouter-utils >= %{_verstr}-%{_relstr}
 
 %description
