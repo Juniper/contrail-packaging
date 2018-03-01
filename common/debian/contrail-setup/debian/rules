@@ -70,9 +70,6 @@ override_dh_auto_install:
 	(cd $(SB_TOP)/tools/provisioning/ContrailProvisioning-* && ${__python} setup.py install --root=${buildroot} --install-scripts ${_contrailopt}/bin/)
 	install -D -m 755 $(SB_TOP)/tools/provisioning/tools/openstack-status-deb $(buildroot)/usr/bin/openstack-status
 	install -D -m 755 $(SB_TOP)/tools/provisioning/tools/openstack-db $(buildroot)/usr/bin/openstack-db
-	# install pkgs needed first
-	install -p -m 644 $(SB_TOP)/distro/third_party/ecdsa-*.tar.gz $(buildroot)$(_contrailopt)/python_packages/
-	install -p -m 644 $(SB_TOP)/distro/third_party/Fabric-*.tar.gz $(buildroot)$(_contrailopt)/python_packages/
 	echo BUILDID=`echo $(BUILDTAG) | cut -d '-' -f2 | cut -d '~' -f1` > $(SB_TOP)/tools/packaging/build/VERSION_ubuntu
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/VERSION_ubuntu  $(buildroot)$(_contrailopt)/contrail_packages/VERSION
 	install -p -m 755 $(SB_TOP)/tools/packaging/build/sources.list  $(buildroot)$(_contrailopt)/contrail_packages/sources.list
