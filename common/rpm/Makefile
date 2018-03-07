@@ -164,6 +164,14 @@ contrail-openstack-all: contrail-openstack contrail-openstack-analytics contrail
 	contrail-openstack-control contrail-openstack-database contrail-openstack-vrouter \
 	contrail-openstack-webui contrail-openstack-storage contrail-openstack-ha
 
+contrail-api-server:
+	@echo making rpm for contrail-api-server
+	cp contrail-api-server.spec $(BUILD_BASE)/SPECS/
+	cp $(CPLANE_GIT_ROOT)/../go/src/github.com/Juniper/contrail/packaging/rpm/init.d/contrail $(BUILD_SRC)/
+	cp $(CPLANE_GIT_ROOT)/../go/src/github.com/Juniper/contrail/packaging/rpm/sysconfig/contrail $(BUILD_SRC)/contrail_syslog
+	cp $(CPLANE_GIT_ROOT)/../go/src/github.com/Juniper/contrail/packaging/rpm/systemd/contrail.service $(BUILD_SRC)/
+	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-api-server.spec $(G_TAG)
+
 contrail-web-core:
 	@echo making rpm for contrail-web-core
 	cd $(CPLANE_GIT_ROOT)/../contrail-webui-third-party && python fetch_packages.py
