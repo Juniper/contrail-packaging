@@ -1,18 +1,32 @@
-%define _contrailetc  /etc/contrail
-%define _distropkgdir tools/packaging/common/control_files
-%define _usr_bin /usr/bin/
+%define     _contrailetc  /etc/contrail
+%define     _distropkgdir %{_sbtop}tools/packages/rpm/%{name}
 
 %if 0%{?_buildTag:1}
-%define _relstr %{_buildTag}
+%define     _relstr %{_buildTag}
 %else
-%define _relstr %(date -u +%y%m%d%H%M)
+%define     _relstr %(date -u +%y%m%d%H%M)
 %endif
-%{echo: "Building release %{_relstr}\n"}
+
 %if 0%{?_srcVer:1}
-%define _verstr %{_srcVer}
+%define     _verstr %{_srcVer}
 %else
-%define _verstr 1
+%define     _verstr 1
 %endif
+
+%if 0%{?_opt:1}
+%define         _sconsOpt      %{_opt}
+%else
+%define         _sconsOpt      debug
+%endif
+
+%if 0%{?_kVers:1}
+%define         _kvers      %{_kVers}
+%else
+%define         _kvers      3.10.0-327.10.1.el7.x86_64
+%endif
+
+%define         _kernel_dir /lib/modules/%{_kVers}/build
+
 
 %bcond_without debuginfo
 
@@ -40,10 +54,16 @@ Provides contrail-vrouter-dpdk binary
 %prep
 # Cleanup
 rm -rf %{buildroot}
-cd  %{_builddir}/../ && scons -c --opt=production vrouter/dpdk/
+cd  %{_builddir}/../ && RTE_KERNELDIR=%{_kernel_dir} scons -c \
+  --opt=production \
+  --kernel-dir=%{_kernel_dir} 
+  vrouter/dpdk
 
 %build
-cd  %{_builddir}/../ && scons --opt=production vrouter/dpdk
+cd  %{_builddir}/../ && RTE_KERNELDIR=%{_kernel_dir} scons \
+  --opt=production \
+  --kernel-dir=%{_kernel_dir} 
+  vrouter/dpdk
 
 %install
 # Install Directories
