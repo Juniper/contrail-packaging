@@ -37,7 +37,6 @@ Requires: kernel = 3.6.6-1.fc17
 Requires: python-thrift >= 0.9.1
 Requires: contrail-setup >= %{_verstr}-%{_relstr}
 Requires: contrail-utils >= %{_verstr}-%{_relstr}
-Requires: contrail-nodemgr >= %{_verstr}-%{_relstr}
 Requires: python-opencontrail-vrouter-netns >= %{_verstr}-%{_relstr}
 
 %if 0%{?centos} >= 7

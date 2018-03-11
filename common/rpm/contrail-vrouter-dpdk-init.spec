@@ -5,7 +5,6 @@
 %define _etc_init     /etc/init/
 %define _supervisorconf /etc/contrail/supervisord_vrouter_files
 %define SB_TOP          %{_builddir}/../
-%define _nodemgr_config %{_builddir}/../controller/src/nodemgr/vrouter_nodemgr
 
 %if 0%{?_buildTag:1}
 %define _relstr %{_buildTag}
@@ -62,7 +61,6 @@ install -p -m 755 %{SB_TOP}/tools/packaging/common/control_files/contrail_reboot
 install -p -m 755 %{SB_TOP}/tools/packaging/common/control_files/vrouter-functions.sh %{buildroot}%{_opt_bin}/vrouter-functions.sh
 install -p -m 755 %{SB_TOP}/tools/packaging/common/control_files/vnagent_param_setup.sh %{buildroot}%{_opt_bin}/vnagent_param_setup.sh
 install -p -m 755 %{SB_TOP}/tools/packaging/common/control_files/contrail-vrouter-dpdk.rules %{buildroot}/%{_supervisorconf}/contrail-vrouter-dpdk.rules
-install -p -m 755 %{_nodemgr_config}/contrail-vrouter-nodemgr.ini %{buildroot}/%{_supervisorconf}/contrail-vrouter-nodemgr.ini
 install -p -m 755 %{SB_TOP}/tools/packaging/common/control_files/if-vhost0 %{buildroot}%{_opt_bin}/if-vhost0
 install -p -m 755 %{SB_TOP}/tools/packaging/common/control_files/core-pattern.upstart %{buildroot}%{_etc_init}/core-pattern.conf
 
