@@ -1,5 +1,0 @@
-contrail-database-common (BUILDTAG) ijohnson; urgency=low
-
-  * Initial commit of contrail-database-common package
-
- -- ijohnson <ijohnson@juniper.net>  Wed, 29 Jun 2016 04:52:47 +0000

@@ -1,6 +1,0 @@
-# Sample debian/rules that uses debhelper.
-#!/bin/sh
-set -e
-
-echo "running pre rm"
-rm -rf /opt/contrail/contrail_server_manager/

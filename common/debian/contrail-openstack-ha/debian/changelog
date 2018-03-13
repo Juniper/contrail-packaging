@@ -1,6 +1,0 @@
-contrail-openstack-ha (BUILDTAG) ijohnson; urgency=low
-
-  [ijohnson ]
-  * debian/changelog: changelog
-
- -- ijohnson <ijohnson@juniper.net>  Tue, 27 May 2014 8:00:11 +0800

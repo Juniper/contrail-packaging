@@ -1,6 +1,0 @@
-contrail-server-manager (BUILDTAG) tsurendra; urgency=low
-
-  [tsurendra ]
-  * debian/changelog: changelog
-
- -- tsurendra <tsurendra@juniper.net>  Wed Jun 11 17:39:50 PDT 2014

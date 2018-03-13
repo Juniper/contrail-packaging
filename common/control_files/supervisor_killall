@@ -1,5 +1,0 @@
-#!/bin/bash +x
-for i in `cat $1/*.kill`
-    do
-        pkill -9 -f $i
-    done

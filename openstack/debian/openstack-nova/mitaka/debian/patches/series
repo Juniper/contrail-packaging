@@ -1,8 +1,0 @@
-# Ubuntu specific patches below here. Note these can be dropped eventually.
-skip-failing-wsgi-tests.patch
-doc-conf-git.patch
-arm-console-patch.patch
-disable-websockify-tests.patch
-neutron-floating-ip-list.patch
-skip-cinder-tests.patch
-ignore-proxies.patch

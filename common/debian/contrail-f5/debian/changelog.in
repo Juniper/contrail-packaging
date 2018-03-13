@@ -1,3 +1,0 @@
-contrail-f5 (BUILDTAG) builder; urgency=low
-   [builder]
-   * debian/changelog: initial version

@@ -1,5 +1,0 @@
-Tests: nova-compute-daemons nova-daemons nova-api python-nova
-Depends: nova-conductor, nova-cert, nova-scheduler, nova-novncproxy,
- nova-xvpvncproxy, nova-api, nova-network, nova-console,
- nova-consoleauth, python-nova, rabbitmq-server
-Restrictions: needs-root

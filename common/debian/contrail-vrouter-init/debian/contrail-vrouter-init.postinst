@@ -1,7 +1,0 @@
-#!/bin/sh
-echo "Running Postinst for contrail-vrouter-init"
-set -e
-
-echo "create the agent_param file..."
-/opt/contrail/bin/vnagent_param_setup.sh
-echo "Postinst for contrail-vrouter-init done"

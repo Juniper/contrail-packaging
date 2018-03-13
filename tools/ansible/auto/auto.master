@@ -1,9 +1,0 @@
-# Home directories
-/homes yp:auto.homes -intr,bg,tcp
-
-# All other available shares
-/volume yp:auto.vols -intr,bg,tcp
-
-# Include automount all exported file systems for given host
-/host /etc/auto.net
-

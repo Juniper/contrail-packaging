@@ -1,3 +1,0 @@
-cd /opt/contrail
-tar xzvf cfgm_utils.tgz
-tar xzvf dns_scripts.tgz -C utils
