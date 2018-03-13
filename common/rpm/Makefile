@@ -113,57 +113,6 @@ contrail-cloudstack-utils: $(PREP)
 	@echo making rpm for contrail-cloudstack-utils
 	rpmbuild $(RPMBLDOPTS) contrail-cloudstack-utils.spec $(G_TAG)
 
-# Contrail Openstack stuff
-contrail-openstack: $(PREP)
-	@echo making rpm for contrail-openstack $(CONTRAIL_SKU)
-	if [ "$(CONTRAIL_SKU)" == "juno" ]; then \
-	    rpmbuild $(RPMBLDOPTS) contrail-openstack-juno.spec $(G_TAG) ;\
-	else \
-	    rpmbuild $(RPMBLDOPTS) contrail-openstack-liberty.spec $(G_TAG) ;\
-	fi
-
-contrail-openstack-ha: $(PREP)
-	@echo making rpm for contrail-openstack-ha
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-ha.spec $(G_TAG)
-
-contrail-openstack-analytics: $(PREP)
-	@echo making rpm for contrail-openstack-analytics
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-analytics.spec $(G_TAG)
-
-contrail-openstack-config: $(PREP)
-	@echo making rpm for contrail-openstack-config
-	if [ "$(CONTRAIL_SKU)" == "juno" ]; then \
-	    rpmbuild $(RPMBLDOPTS) contrail-openstack-icehouse-config.spec $(G_TAG) ;\
-	else \
-	    rpmbuild $(RPMBLDOPTS) contrail-openstack-config-common.spec $(G_TAG) ;\
-	fi
-
-contrail-openstack-control: $(PREP)
-	@echo making rpm for contrail-openstack-control
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-control.spec $(G_TAG)
-
-contrail-openstack-database: $(PREP)
-	@echo making rpm for contrail-openstack-database
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-database.spec $(G_TAG)
-
-contrail-openstack-vrouter: $(PREP)
-	@echo making rpm for contrail-openstack-vrouter
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-vrouter.spec  $(G_TAG)
-
-contrail-openstack-webui: $(PREP)
-	@echo making rpm for contrail-openstack-webui
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-webui.spec $(G_TAG)
-
-contrail-openstack-storage: $(PREP)
-	@echo making rpm for contrail-openstack-storage
-	if [ "$(DISTRO)" == "CentOS" ]; then \
-		rpmbuild $(RPMBLDOPTS) contrail-openstack-storage.spec $(G_TAG); \
-	fi
-
-contrail-openstack-all: contrail-openstack contrail-openstack-analytics contrail-openstack-config \
-	contrail-openstack-control contrail-openstack-database contrail-openstack-vrouter \
-	contrail-openstack-webui contrail-openstack-storage contrail-openstack-ha
-
 contrail-web-core:
 	@echo making rpm for contrail-web-core
 	cd $(CPLANE_GIT_ROOT)/../contrail-webui-third-party && python fetch_packages.py
@@ -188,12 +137,6 @@ contrail-web-controller:
 	cp contrail-web-controller.spec $(BUILD_BASE)/SPECS/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-web-controller.spec $(G_TAG)
 
-contrail-web-server-manager: $(PREP)
-	@echo making rpm for contrail-web-server-manager
-	cd $(CPLANE_GIT_ROOT)/../contrail-web-core && make package REPO=$(CPLANE_GIT_ROOT)/../contrail-web-server-manager,serverManager
-	cp contrail-web-server-manager.spec $(BUILD_BASE)/SPECS/
-	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-web-server-manager.spec $(G_TAG)
-
 contrail-install-packages: $(PREP)
 	@echo making rpm for contrail-install-packages
 	rpmbuild $(RPMBLDOPTS) contrail-install-packages.spec  $(G_TAG)
@@ -213,38 +156,6 @@ contrail-thirdparty-packages: $(PREP)
 contrail-dependent-packages: $(PREP)
 	@echo making rpm for contrail-dependent-packages
 	rpmbuild $(RPMBLDOPTS) contrail-dependent-packages.spec  $(G_TAG)
-
-contrail-openstack-packages: $(PREP)
-	@echo making rpm for contrail-openstack-packages
-	rpmbuild $(RPMBLDOPTS) contrail-openstack-packages.spec  $(G_TAG)
-
-contrail-database: $(PREP)
-	@echo making rpm for contrail-database
-	cp contrail-database.spec $(BUILD_BASE)/SPECS/
-	cp ../control_files/contrail-database.initd $(BUILD_SRC)/
-	cp ../control_files/kafka.initd $(BUILD_SRC)/
-	cp ../control_files/supervisord_database.conf $(BUILD_SRC)/
-	cp ../control_files/supervisord_contrail_database.initd $(BUILD_SRC)/
-	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-database.spec $(G_TAG)
-
-contrail-database-common: $(PREP)
-	@echo making rpm for contrail-database-common
-	rpmbuild $(RPMBLDOPTS) contrail-database-common.spec $(G_TAG)
-
-contrail-server-manager: $(PREP)
-	@echo making rpm for contrail-server-manager
-	cp contrail-server-manager.spec $(BUILD_BASE)/SPECS/
-	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager.spec $(G_TAG)
-
-contrail-server-manager-installer: $(PREP)
-	@echo making rpm for contrail-server-manager-installer
-	cp contrail-server-manager-installer.spec $(BUILD_BASE)/SPECS/
-	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager-installer.spec $(G_TAG)
-
-contrail-server-manager-client: $(PREP)
-	@echo making rom for contrail-server-manager-client
-	cp contrail-server-manager-client.spec $(BUILD_BASE)/SPECS/
-	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-server-manager-client.spec $(G_TAG)
 
 contrail-vrouter-init: $(PREP)
 	@echo making rpm for contrail-vrouter-init
@@ -359,18 +270,14 @@ endif
 
 all: $(PREP) contrail \
        contrail-interface-name \
-       contrail-nodemgr contrail-setup contrail-openstack-all \
-       contrail-web-core contrail-web-controller contrail-database \
-	   contrail-database-common \
+       contrail-nodemgr contrail-setup \
+       contrail-web-core contrail-web-controller \
        ${NEUTRON_PLUGIN} ${CONTRAIL_HEAT} ${CEILOMETER_PLUGIN} \
        contrail-vrouter-init contrail-vrouter-common contrail-nova-networkapi \
        contrail-fabric-utils ${CONTRAIL_TEST} contrail-puppet contrail-ansible \
        contrail-ansible-internal contrail-puppet-tgz \
        contrail-vrouter-dpdk-init contrail-vrouter-dpdk ${RH_ONLY_TARGETS} \
        contrail-docker-tools ironic-notification-manager
-
-server-manager-all: contrail-server-manager contrail-server-manager-client \
-    contrail-web-server-manager
 
 clean:
 	@echo clean
