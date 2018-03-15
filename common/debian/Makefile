@@ -160,9 +160,8 @@ clean-%:
 	$(eval PACKAGE := $(patsubst clean-%,%,$@))
 	rm -rf $(SB_TOP)/build/packages/$(PACKAGE)
 
-KERNEL_VERSIONS := 3.8.0-29-generic 3.2.0-58-generic 3.2.0-51-generic 3.11.0-22-generic \
-                   3.13.0-24-generic 3.8.0-31-generic 3.13.0-34-generic 3.13.0-35-generic \
-                   3.13.0-40-generic 3.13.0-83-generic
+KERNEL_VERSIONS := 3.13.0-34-generic 3.13.0-35-generic 3.13.0-40-generic \
+                   3.13.0-83-generic 3.13.0-142-generic
 
 AVAILABLE_KERNEL_VERSIONS := $(foreach kname, $(KERNEL_VERSIONS), $(shell [ -d /lib/modules/$(kname)/build ] && echo $(kname)))
 
