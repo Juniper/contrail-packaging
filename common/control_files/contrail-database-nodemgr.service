@@ -8,6 +8,8 @@ ExecStart=/usr/bin/contrail-nodemgr --nodetype=contrail-database
 PIDFile=/var/run/contrail/contrail-database-nodemgr.pid
 TimeoutStopSec=0
 Restart=always
+User=contrail
+Group=contrail
 ExecStop=/bin/kill -s TERM $MAINPID
 RestartPreventExitStatus=0
 PrivateTmp=yes
