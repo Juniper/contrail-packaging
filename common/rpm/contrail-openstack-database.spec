@@ -44,14 +44,6 @@ popd
 
 %post
 set -e
-
-# Run nodemgr as contrail user
-if [ -f /var/log/contrail/contrail-analytics-nodemgr-stdout.log ]; then
-    chown contrail:contrail /var/log/contrail/process_statecontrail-database.json
-    chown contrail:contrail /var/log/contrail/contrail-database-nodemgr-stderr.log
-    chown contrail:contrail /var/log/contrail/contrail-database-nodemgr-stdout.log
-fi
-
 # Create the "kafka" user
 getent passwd kafka >/dev/null || \
   useradd -r -s /bin/false -c "kafka user" kafka
