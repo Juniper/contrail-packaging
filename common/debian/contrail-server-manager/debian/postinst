@@ -20,7 +20,7 @@ SUBNET_ADDRESS=`ip route | grep $HOST_IP | awk '{print $1}' | cut -d '/' -f 1`
 SUBNET_MASK=`ifconfig -a | grep $HOST_IP -b4 | grep Mask | awk '{print $5}' | cut -d ':' -f 2`
 
 DOMAIN=`hostname -d`
-rel=`lsb_release -r`
+rel=`cat /etc/os-release | grep VERSION_ID= | awk '{print $1}' | cut -d'"' -f2`
 
 # Copy config files into place
 

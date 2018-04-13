@@ -11,7 +11,7 @@ then
    HOST_IP=$(cat /opt/contrail/contrail_server_manager/IP.txt) 
 fi
 echo $HOST_IP
-rel=`lsb_release -r`
+rel=`cat /etc/os-release | grep VERSION_ID= | awk '{print $1}' | cut -d'"' -f2`
 
 cp -r /etc/contrail_smgr/puppet /etc/
 
