@@ -166,7 +166,7 @@ if ! grep -q '#for \$fact' $f; then
 cat << EOT >> $f
 #for \$fact, \$value in  \$ks_meta.items()
   #if \$fact=='ipmi_interface' and \$value == 'lanplus'
-    lanplus
+    lanplus=1
   #elif \$fact=='ipmi_interface' and \$value=='lan'
     lan
   #else
@@ -174,6 +174,8 @@ cat << EOT >> $f
   #end if
 #end for
 EOT
+else
+sed -i 's/lanplus$/lanplus=1/g' $f
 fi
 done
 
