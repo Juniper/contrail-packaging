@@ -144,7 +144,7 @@ set -e
 service redis-server restart
 
 # start webui
-rel=`lsb_release -r`
+rel=`cat /etc/os-release | grep VERSION_ID= | awk '{print $1}' | cut -d'"' -f2`
 if [[ "$rel" == *"14.04"* ]]; then
     service supervisor restart
     service supervisor-webui-sm restart
