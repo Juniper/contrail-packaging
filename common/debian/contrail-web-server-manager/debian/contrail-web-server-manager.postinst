@@ -149,6 +149,8 @@ if [[ "$rel" == *"14.04"* ]]; then
     service supervisor restart
     service supervisor-webui-sm restart
 elif [[ "$rel" == *"16.04"* ]]; then
-    service contrail-webui-sm restart
-    service contrail-webui-middleware-sm restart
+    sudo systemctl enable contrail-webui-sm.service
+    sudo systemctl enable contrail-webui-middleware-sm.service
+    systemctl restart contrail-webui-sm
+    systemctl restart contrail-webui-middleware-sm
 fi
