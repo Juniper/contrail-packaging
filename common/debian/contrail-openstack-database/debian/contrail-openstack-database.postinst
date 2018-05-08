@@ -2,6 +2,54 @@
 
 if [ "$1" = "configure" ]; then
     echo "Running Postinst for contrail-openstack-database install.."
+
+    # Create the "contrail" user
+    if ! getent passwd contrail > /dev/null 2>&1
+    then
+        adduser --quiet --system --group --home /var/lib/contrail \
+                --no-create-home \
+                --shell /bin/false \
+                --gecos "OpenContrail daemon" contrail
+    fi
+
+    # Create the "contrail" group if it is missing and set the primary group
+    # of the "contrail" user to this group.
+    if ! getent group contrail > /dev/null 2>&1
+    then
+        addgroup --quiet --system contrail
+        usermod -g contrail contrail
+    fi
+
+    mkdir -p /var/log/contrail /var/lib/contrail /etc/contrail
+    chown -R contrail:adm /var/log/contrail
+    chmod 0750 /var/log/contrail
+    chown -R contrail. /var/lib/contrail/ /etc/contrail/
+    chmod 0750 /etc/contrail/
+    chown contrail:contrail /usr/share/contrail-utils/contrail-cassandra-status.py
+    chown -h contrail:contrail /usr/bin/contrail-cassandra-status
+    chown contrail:contrail /usr/share/contrail-utils/contrail-cassandra-repair.py
+    chown -h contrail:contrail /usr/bin/contrail-cassandra-repair
+
+    if [ -f /var/log/cassandra/status-up]; then
+        mv /var/log/cassandra/status-up /var/log/contrail/cassandra-status-up
+        chown contrail:contrail /var/log/contrail/cassandra-status-up
+    fi
+    if [ -f /var/log/cassandra/status.log]; then
+        mv /var/log/cassandra/status.log /var/log/contrail/cassandra-status.log
+        chown contrail:contrail /var/log/contrail/cassandra-status.log
+    fi
+    if [ -f /var/log/cassandra/repair.log]; then
+        mv /var/log/cassandra/repair.log /var/log/contrail/cassandra-repair.log
+        chown contrail:contrail /var/log/contrail/cassandra-repair.log
+    fi
+
+    # Run nodemgr as contrail user
+    if [ -f /var/log/contrail/contrail-database-nodemgr-stdout.log ]; then
+        chown contrail:contrail /var/log/contrail/process_statecontrail-database.json
+        chown contrail:contrail /var/log/contrail/contrail-database-nodemgr-stderr.log
+        chown contrail:contrail /var/log/contrail/contrail-database-nodemgr-stdout.log
+    fi
+
     # Create the "kafka" user
     if ! getent passwd kafka > /dev/null 2>&1
     then
