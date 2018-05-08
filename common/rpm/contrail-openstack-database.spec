@@ -42,8 +42,38 @@ popd
 %config(noreplace) /etc/contrail/contrail-database-nodemgr.conf
 /etc/init.d/contrail-database-nodemgr
 
+%pre
+set -e
+# Create the "contrail" user
+getent group contrail >/dev/null || groupadd -r contrail
+getent passwd contrail >/dev/null || \
+    useradd -r -g contrail -d /var/lib/contrail -s /bin/false \
+    -c "OpenContrail daemon" contrail
+
 %post
 set -e
+mkdir -p /var/log/contrail /var/lib/contrail/ /etc/contrail/
+chown -R contrail:adm /var/log/contrail
+chmod 0750 /var/log/contrail
+chown -R contrail:contrail /var/lib/contrail/ /etc/contrail/
+chmod 0750 /etc/contrail/
+chown contrail:contrail /usr/share/contrail-utils/contrail-cassandra-status.py
+chown -h contrail:contrail /usr/bin/contrail-cassandra-status
+
+if [ -f /var/log/cassandra/status.log]; then
+    mv /var/log/cassandra/status-up /var/log/contrail/cassandra-status-up
+    chown contrail:contrail /var/log/contrail/cassandra-status-up
+    mv /var/log/cassandra/status.log /var/log/contrail/cassandra-status.log
+    chown contrail:contrail /var/log/contrail/cassandra-status.log
+fi
+
+# Run nodemgr as contrail user
+if [ -f /var/log/contrail/contrail-analytics-nodemgr-stdout.log ]; then
+    chown contrail:contrail /var/log/contrail/process_statecontrail-database.json
+    chown contrail:contrail /var/log/contrail/contrail-database-nodemgr-stderr.log
+    chown contrail:contrail /var/log/contrail/contrail-database-nodemgr-stdout.log
+fi
+
 # Create the "kafka" user
 getent passwd kafka >/dev/null || \
   useradd -r -s /bin/false -c "kafka user" kafka
