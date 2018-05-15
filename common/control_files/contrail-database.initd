@@ -135,8 +135,8 @@ do_start()
                 return 0
             fi
             # Start nodetool repair
-            echo "Starting cassandra repair, check /var/log/cassandra/repair-*.log for progress"
-            $REPAIR --log-file /var/log/cassandra/repair.log &> /dev/null &
+            echo "Starting cassandra repair, check /var/log/contrail/cassandra-repair-*.log for progress"
+            $REPAIR --log-file /var/log/contrail/cassandra-repair.log &> /dev/null &
         fi
     else
         echo "Cassandra has been down for at least $MAX_ALLOWED_DOWN_SECONDS seconds, not starting"
