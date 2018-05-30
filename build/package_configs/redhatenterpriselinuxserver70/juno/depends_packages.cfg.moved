@@ -781,11 +781,6 @@ md5   = b529406534f53b01137b43aff7d17791
 file  = json-c-0.11-4.el7_0.x86_64.rpm
 md5   = 31736cbc9ff03d3600f286be1fabb540
 
-[kafka-2.11-0.9.0.1.0contrail0.el7]
-file           = kafka-2.11-0.9.0.1.0contrail0.el7.x86_64.rpm
-md5            = 9514e5bd9f7a7f02a3ca0c2642430973
-package_type  = contrail-install-packages
-
 [kbd-legacy_1.15.5_11.el7]
 file  = kbd-legacy-1.15.5-11.el7.noarch.rpm
 md5   = 112b4c37ac62822440f346f36b9aa476
@@ -1094,15 +1089,20 @@ md5   = 371bfc2d56df16030379717990f6f8a4
 file  = librbd1-0.80.7-2.el7.x86_64.rpm
 md5   = 7ca2a815462a6e3771df8b9255eb98ae
 
-[librdkafka-devel_0.8.5_2.0contrail0.el7.centos]
-file  = librdkafka-devel-0.8.5-2.0contrail0.el7.centos.x86_64.rpm
-md5   = 031fadbf1a27758a9bbdb168b4015842
-package_type = contrail-install-packages
+[kafka-2.11-1.1.1-1.noarch.rpm]
+file           = kafka-2.11-1.1.1-1.noarch.rpm
+md5            = 0a99621b5a3ccd36daba893483e0b052
+package_type   = contrail-install-packages
 
-[librdkafka1_0.8.5_2.0contrail0.el7.centos]
-file  = librdkafka1-0.8.5-2.0contrail0.el7.centos.x86_64.rpm
-md5   = 31d466cee10e29c3c5e8811163879828
-package_type = contrail-install-packages
+[librdkafka1-0.11.4_confluent4.1.1-1.el7.x86_64.rpm]
+file           = librdkafka1-0.11.4_confluent4.1.1-1.el7.x86_64.rpm
+md5            = 02c38daed6d5db435728770bfb38f5d4
+package_type   = contrail-install-packages
+
+[librdkafka-devel-0.11.4_confluent4.1.1-1.el7.x86_64]
+file           = librdkafka-devel-0.11.4_confluent4.1.1-1.el7.x86_64.rpm
+md5            = 7d4c5409e121f0778541fc975f285f11
+package_type   = contrail-install-packages
 
 [librdmacm_1.0.19.1_1.el7]
 file  = librdmacm-1.0.19.1-1.el7.x86_64.rpm

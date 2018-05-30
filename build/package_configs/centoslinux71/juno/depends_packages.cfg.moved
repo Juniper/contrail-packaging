@@ -574,11 +574,6 @@ md5   = 3b99b35e4059311fdcec4f83c7373e0a
 file  = jemalloc-3.6.0-1.el7.x86_64.rpm
 md5   = b3a15b12ce051c18948e47deeeeb7849
 
-[kafka-2.9.2-0.8.1.1.0contrail0.el7.centos]
-file  = kafka-2.9.2-0.8.1.1.0contrail0.el7.centos.x86_64.rpm
-md5   = 1c0f10088857e9dd6c41c272ea351db0
-package_type = contrail-install-packages, contrail-thirdparty-packages
-
 [keepalived-1.2.13-6.el7]
 file  = keepalived-1.2.13-6.el7.x86_64.rpm
 md5   = d516b65092bb8e83c7d8a5474dfeefa8
@@ -804,15 +799,20 @@ md5   = 9c8a5b4c173c5d686dd7cd3d62621d61
 file  = librbd1-0.80.7-2.el7.x86_64.rpm
 md5   = ab6088de48acdd5ba10f62a60cdfcf2e
 
-[librdkafka-devel-0.8.5-2.0contrail0.el7.centos]
-file  = librdkafka-devel-0.8.5-2.0contrail0.el7.centos.x86_64.rpm
-md5   = 031fadbf1a27758a9bbdb168b4015842
-package_type = contrail-install-packages, contrail-thirdparty-packages
+[kafka-2.11-1.1.1-1.noarch.rpm]
+file           = kafka-2.11-1.1.1-1.noarch.rpm
+md5            = 0a99621b5a3ccd36daba893483e0b052
+package_type   = contrail-install-packages, contrail-thirdparty-packages
 
-[librdkafka1-0.8.5-2.0contrail0.el7.centos]
-file  = librdkafka1-0.8.5-2.0contrail0.el7.centos.x86_64.rpm
-md5   = 31d466cee10e29c3c5e8811163879828
-package_type = contrail-install-packages, contrail-thirdparty-packages
+[librdkafka1-0.11.4_confluent4.1.1-1.el7.x86_64.rpm]
+file           = librdkafka1-0.11.4_confluent4.1.1-1.el7.x86_64.rpm
+md5            = 02c38daed6d5db435728770bfb38f5d4
+package_type   = contrail-install-packages, contrail-thirdparty-packages
+
+[librdkafka-devel-0.11.4_confluent4.1.1-1.el7.x86_64]
+file           = librdkafka-devel-0.11.4_confluent4.1.1-1.el7.x86_64.rpm
+md5            = 7d4c5409e121f0778541fc975f285f11
+package_type   = contrail-install-packages, contrail-thirdparty-packages
 
 [librdmacm-1.0.19.1-1.el7]
 file  = librdmacm-1.0.19.1-1.el7.x86_64.rpm
