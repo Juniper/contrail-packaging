@@ -574,10 +574,10 @@ md5   = 3b99b35e4059311fdcec4f83c7373e0a
 file  = jemalloc-3.6.0-1.el7.x86_64.rpm
 md5   = b3a15b12ce051c18948e47deeeeb7849
 
-[kafka-2.9.2-0.8.1.1.0contrail0.el7.centos]
-file  = kafka-2.9.2-0.8.1.1.0contrail0.el7.centos.x86_64.rpm
-md5   = 1c0f10088857e9dd6c41c272ea351db0
-package_type = contrail-install-packages, contrail-thirdparty-packages
+[kafka-2.11-1.1.1-1.noarch.rpm]
+file           = kafka-2.11-1.1.1-1.noarch.rpm
+md5            = 0a99621b5a3ccd36daba893483e0b052
+package_type   = contrail-install-packages, contrail-thirdparty-packages
 
 [keepalived-1.2.13-6.el7]
 file  = keepalived-1.2.13-6.el7.x86_64.rpm
