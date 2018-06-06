@@ -57,7 +57,7 @@ chown -R contrail:adm /var/log/contrail
 chmod 0750 /var/log/contrail
 chown -R contrail:contrail /var/lib/contrail/ /etc/contrail/
 chmod 0750 /etc/contrail/
-chown contrail:contrail /usr/share/contrail-utils/contrail-cassandra-status.py
+chown contrail:contrail /usr/share/contrail/contrail-cassandra-status.py
 chown -h contrail:contrail /usr/bin/contrail-cassandra-status
 
 if [ -f /var/log/cassandra/status.log]; then
