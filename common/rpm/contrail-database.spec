@@ -36,7 +36,7 @@ Requires: cassandra >= 3.11.2
 %endif
 Requires: supervisor
 Requires: java-1.7.0-openjdk
-Requires: kafka >= 2.11
+Requires: confluent-kafka-2.11 >= 1.1.1-1
 Requires: python-psutil
 
 Source1: supervisord_contrail_database.initd
