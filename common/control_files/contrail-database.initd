@@ -19,7 +19,7 @@
 NAME=cassandra
 PIDFILE=/var/run/$NAME/$NAME.pid
 SERVICE="service $NAME"
-CLUSTER_STATUS_UP_FILE=/var/log/cassandra/status-up
+CLUSTER_STATUS_UP_FILE=/var/log/contrail/cassandra-status-up
 DEFAULT_GC_GRACE_SECONDS=864000
 DEFAULT_HINTED_HANDOFF_SECONDS=10800
 REPAIR=/usr/bin/contrail-cassandra-repair
