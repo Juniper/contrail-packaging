@@ -910,10 +910,6 @@ md5   = c926826585305a9d2fa9defd4cfe5410
 file  = libssl0.9.8_0.9.8o-7ubuntu3.2.14.04.1_amd64.deb
 md5   = 67303b5e19bf90c0538564669685483e
 
-[libtbb2_4.2~20130725-1.1ubuntu1]
-file  = libtbb2_4.2~20130725-1.1ubuntu1_amd64.deb
-md5   = 5113cda4c289295e7ed4b83dfa0b91d1
-
 [libterm-readkey-perl_2.31-1]
 file  = libterm-readkey-perl_2.31-1_amd64.deb
 md5   = c68d9e65673823e4d60d0029cc26ea89
