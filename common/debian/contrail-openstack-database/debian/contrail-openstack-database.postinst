@@ -45,6 +45,9 @@ if [ "$1" = "configure" ]; then
         chown contrail:contrail /var/log/contrail/contrail-database-nodemgr-stderr.log
         chown contrail:contrail /var/log/contrail/contrail-database-nodemgr-stdout.log
     fi
+    if [ -f /var/log/contrail/contrail-database-nodemgr.log ]; then
+        chown contrail:contrail /var/log/contrail/contrail-database-nodemgr.log
+    fi
 
     if [ -z "$2" ]; then
         i=0
