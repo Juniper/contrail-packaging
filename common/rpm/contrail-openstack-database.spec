@@ -72,6 +72,9 @@ if [ -f /var/log/contrail/contrail-analytics-nodemgr-stdout.log ]; then
     chown contrail:contrail /var/log/contrail/contrail-database-nodemgr-stderr.log
     chown contrail:contrail /var/log/contrail/contrail-database-nodemgr-stdout.log
 fi
+if [ -f /var/log/contrail/contrail-database-nodemgr.log ]; then
+    chown contrail:contrail /var/log/contrail/contrail-database-nodemgr.log
+fi
 
 %changelog
 * Fri Jul  15 2016 <ijohnson@juniper.net>
