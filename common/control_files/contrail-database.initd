@@ -125,7 +125,7 @@ do_start()
             nodeid=$($NODETOOL info | grep ID | awk '{print $3}')
             nstatus=$($NODETOOL status | grep $nodeid | awk '{print $1}')
             ncounter=0
-            while [ -z $(echo $nstatus | grep U) ] && [ "$ncounter" -lt 10 ]; do
+            while [ -z $(echo $nstatus | grep UN) ] && [ "$ncounter" -lt 10 ]; do
                 sleep 1
                 nstatus=$($NODETOOL status | grep $nodeid | awk '{print $1}')
                 ncounter=$(($ncounter + 1))
