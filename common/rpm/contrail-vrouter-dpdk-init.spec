@@ -70,9 +70,9 @@ install -p -m 755 %{SB_TOP}/tools/packaging/common/control_files/core-pattern.up
 %defattr(-,root,root,-)
 %{_opt_bin}/*
 %{_usr_bin}/*
-%{_contrailetc}/*
-%{_supervisorconf}/*
-%{_etc_init}/*
+%config(noreplace) %{_contrailetc}/*
+%config(noreplace) %{_supervisorconf}/*
+%config(noreplace) %{_etc_init}/*
 
 %post
 echo "Running Postinst for contrail-vrouter-dpkd-init"
