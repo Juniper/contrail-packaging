@@ -70,8 +70,8 @@ install -p -m 755 %{SB_TOP}/tools/packaging/common/control_files/core-pattern.up
 %defattr(-,root,root,-)
 %{_opt_bin}/*
 %{_usr_bin}/*
-%{_contrailetc}/*
-%{_supervisorconf}/*
+%config(noreplace) %{_contrailetc}/*
+%config(noreplace) %{_supervisorconf}/*
 %{_etc_init}/*
 
 %post
