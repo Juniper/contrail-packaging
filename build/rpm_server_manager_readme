@@ -9,7 +9,7 @@ Installs
 /opt/contrail/contrail_server_manager/packages  - Contains contrail-server-manager and related packages
 /etc/yum.repos.d/server_manager.repo            - Local yum repo (server_manager_repo) pointing to /opt/contrail/contrail_server_manager/packages
 
-# To Remove
+# To Remove 
 Removing this package will remove all packages under /opt/contrail/contrail_server_manager/packages.
 Also remove the local yum repo server_manager_repo
 Command:
