@@ -163,3 +163,5 @@ then
     create_virtual_gateway &>>$LOG
 fi
 
+# Setup QOS for kernel mode vrouter
+[ -f /etc/contrail/vrouter-post-start.sh ] && /etc/contrail/vrouter-post-start.sh

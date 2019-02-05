@@ -47,6 +47,7 @@ install -p -m 644 %{_distropkgdir}/contrail-vrouter.rules %{buildroot}%{_supervi
 install -p -m 755 %{_distropkgdir}/vnagent_ExecStartPre.sh  %{buildroot}%{_contrailetc}/vnagent_ExecStartPre.sh
 install -p -m 755 %{_distropkgdir}/vnagent_ExecStartPost.sh %{buildroot}%{_contrailetc}/vnagent_ExecStartPost.sh
 install -p -m 755 %{_distropkgdir}/vnagent_ExecStopPost.sh  %{buildroot}%{_contrailetc}/vnagent_ExecStopPost.sh
+install -p -m 755 %{_distropkgdir}/vrouter-post-start.sh  %{buildroot}%{_contrailetc}/vrouter-post-start.sh
 install -p -m 755 %{_distropkgdir}/vnagent_param_setup.sh   %{buildroot}%{_opt_bin}/vnagent_param_setup.sh
 install -p -m 755 %{_distropkgdir}/if-vhost0 %{buildroot}%{_opt_bin}/if-vhost0
 install -p -m 755 %{_distropkgdir}/vrouter-functions.sh %{buildroot}%{_opt_bin}/vrouter-functions.sh
