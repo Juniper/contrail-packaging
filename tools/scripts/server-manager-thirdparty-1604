@@ -39,7 +39,7 @@ unzip_6.0-20ubuntu1_amd64.deb, 059c9f15163425d4c5f818e2ad599597
 vlan_1.9-3.2ubuntu1_amd64.deb, 4c6029fff27b470f4a486e5ab46d6037
 zip_3.0-11_amd64.deb, 863c44a05d3ba30c77285b8f53927913
 binutils_2.26.1-1ubuntu1~16.04.3_amd64.deb, 04b00c4b3ba1d86afbb679b63476d05a
-bnxt-en-dkms_1.7.9-contrail~xenial3_all.deb, c05591dae7e5a1bf9e657908d1f88268
+bnxt-en-dkms_1.7.9-contrail~xenial4_all.deb, 37ca70041457282f60d3546c28c92eb4
 build-essential_12.1ubuntu2_amd64.deb, 731c3a328f87a14bf4f887ceffc51241
 cpp_4%3a5.3.1-1ubuntu1_amd64.deb, 4c291e4aaf6406f61e3188d526479d51
 cpp-5_5.4.0-6ubuntu1~16.04.4_amd64.deb, 95c5a34a437e2fd3fac60c3b911c73f4
@@ -49,7 +49,7 @@ fakeroot_1.20.2-1ubuntu1_amd64.deb, b153b1ed316419be55f3f575c092e73b
 gcc_4%3a5.3.1-1ubuntu1_amd64.deb, df1516b203a66a86a728eab7a4c349e8
 gcc-5_5.4.0-6ubuntu1~16.04.4_amd64.deb, 1f98521f896a3c1c528f5953a9063ac1
 gcc-5-base_5.4.0-6ubuntu1~16.04.4_amd64.deb, 376937778a114defb614754043c40977
-i40e-dkms_2.0.19-contrail~xenial3_all.deb, 3a3cf6f8c696cb4810ba667bdece00b1
+i40e-dkms_2.0.19-contrail~xenial4_all.deb, 0681f05f74adcd14b87586dbd8813a07
 libasan2_5.4.0-6ubuntu1~16.04.4_amd64.deb, bf412ced66f2fae39b50c5f74f0cbd5d
 libatomic1_5.4.0-6ubuntu1~16.04.4_amd64.deb, 05f0d545dce15b8e9d2388b3709ad753
 libc6_2.23-0ubuntu7_amd64.deb, b0a08315aab0ebfe8b5a20a1298ba89f

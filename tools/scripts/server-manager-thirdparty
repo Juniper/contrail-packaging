@@ -54,7 +54,7 @@ ethtool_1%3a3.13-1_amd64.deb, b23c4d504e5b13decc47276ee40927b6
 sysstat_10.2.0-1_amd64.deb, c85d3d8c3d3162c4d6b2efe1b963e0d2
 vlan_1.9-3ubuntu10.1_amd64.deb, 9028b0f7b014bdbdf07ea99dadaa4d2e
 binutils_2.24-5ubuntu14.1_amd64.deb, 85dd95077b946a274f9814639eba4d06
-bnxt-en-dkms_1.7.9-contrail3_all.deb, 2f8c4f876247eb3512358faf413bfd74
+bnxt-en-dkms_1.7.9-contrail4_all.deb, 718d9f66d73631d5bd4c82d929f9719f
 build-essential_11.6ubuntu6_amd64.deb, 6fa3d082885a7440d512236685cd24fd
 cpp_4%3a4.8.2-1ubuntu6_amd64.deb, 2ced23b24cf068b16b5a69222506fd79
 cpp-4.8_4.8.4-2ubuntu1~14.04.3_amd64.deb, c87a404428865790862aeb6195811066
@@ -63,7 +63,7 @@ dpkg-dev_1.17.5ubuntu5.7_all.deb, c1d73ee78c457f5f557c0cd4340fd5d3
 fakeroot_1.20-3ubuntu2_amd64.deb, fad29881d632a463f5235f399fa65a14
 gcc_4%3a4.8.2-1ubuntu6_amd64.deb, 83b25d71df6df1c47a4b983596896f0b
 gcc-4.8_4.8.4-2ubuntu1~14.04.3_amd64.deb, c53635e53f577687409b4c3c93f4da80
-i40e-dkms_2.0.19-contrail3_all.deb, 5b4554bcd7cc6b2bad23a4b22827ab30
+i40e-dkms_2.0.19-contrail4_all.deb, b9fa3294466648f8d5c7f86e798ddba9
 libasan0_4.8.4-2ubuntu1~14.04.3_amd64.deb, ff04bb046aeec86af2bb90c5d90a166c
 libatomic1_4.8.4-2ubuntu1~14.04.3_amd64.deb, ec6ce0fb6e66e8b8c95534ab9e77a67e
 libc6_2.19-0ubuntu6.9_amd64.deb, 422dff6f1563aa40a0ab3ea2a9509025
