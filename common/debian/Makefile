@@ -240,7 +240,7 @@ clean-%:
 	rm -rf $(SB_TOP)/build/packages/$(PACKAGE)
 
 KERNEL_VERSIONS := 3.13.0-83-generic 3.13.0-85-generic 3.13.0-100-generic \
-                   3.13.0-106-generic 3.13.0-110-generic 3.13.0-142-generic
+                   3.13.0-106-generic 3.13.0-110-generic 3.13.0-171-generic
 
 AVAILABLE_KERNEL_VERSIONS := $(foreach kname, $(KERNEL_VERSIONS), $(shell [ -d /lib/modules/$(kname)/build ] && echo $(kname)))
 
