@@ -16,6 +16,24 @@
       "revId": "0dc958f0e98dd8fc225635edbe6fe88802325885",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "360c69fd_f1842bf8",
+        "filename": "common/debian/Makefile",
+        "patchSetId": 1
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 641
+      },
+      "writtenOn": "2019-07-12T08:06:52Z",
+      "side": 1,
+      "message": "HE is replacing 142 with 171. Is that a problem?",
+      "parentUuid": "a8ddb6d0_fec377e1",
+      "revId": "0dc958f0e98dd8fc225635edbe6fe88802325885",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
     }
   ]
 }
