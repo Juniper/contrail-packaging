@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "aa265f75_88d27e51",
+        "filename": "build/package_configs/ubuntu1404/kilo/depends_contrail_thirdparty_packages.cfg",
+        "patchSetId": 2
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 16
+      },
+      "writtenOn": "2019-07-18T09:07:22Z",
+      "side": 1,
+      "message": "If you have edited the package, then there should be contrail tagged with the file.\nThe packages which are downloaded from mirrors other than the standard one, doesn\u0027t have contrail appended.",
+      "revId": "982d1376a1f8499a8eca6fefea4cf4ae6534170c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
