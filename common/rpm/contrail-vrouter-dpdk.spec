@@ -27,8 +27,8 @@ Vendor:  Juniper Networks Inc
 BuildRequires: liburcu2
 %define is_rhel %(cat /etc/os-release | grep ^NAME | cut -d = -f 2 | sed  's/\"//g')
 %if "%{is_rhel}" == "Red Hat Enterprise Linux Server"
-BuildRequires: kernel = 3.10.0-1062.1.2.el7
-BuildRequires: kernel-devel = 3.10.0-1062.1.2.el7
+BuildRequires: kernel = 3.10.0-1062.el7
+BuildRequires: kernel-devel = 3.10.0-1062.el7
 %endif
 Requires: liburcu2
 Requires: contrail-vrouter-utils >= %{_verstr}-%{_relstr}
