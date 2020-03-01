@@ -33,6 +33,8 @@ BuildRequires: liburcu2
 %if "%{is_rhel}" == "Red Hat Enterprise Linux Server"
 BuildRequires: kernel = 3.10.0-1062.el7
 BuildRequires: kernel-devel = 3.10.0-1062.el7
+BuildRequires: kernel = 3.10.0-862.el7
+BuildRequires: kernel-devel = 3.10.0-862.el7
 %endif
 Requires: liburcu2
 Requires: contrail-vrouter-utils >= %{_verstr}-%{_relstr}
