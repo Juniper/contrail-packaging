@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b4fe82d_7e36c307",
+        "filename": "build/package_configs/redhatenterpriselinuxserver70/newton/depends_contrail_thirdparty_packages.cfg",
+        "patchSetId": 2
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 752
+      },
+      "writtenOn": "2020-06-03T05:51:47Z",
+      "side": 1,
+      "message": "md5 is not correct\n\npchoudhary@ubuntu-build02:/cs-shared/builder/cache/redhatenterpriselinuxserver70/newton/net-snmp$ md5sum net-snmp-python-5.7.2-48.el7_8.x86_64.rpm \nd1431f854b4095cdd7e175f5c019c2e1  net-snmp-python-5.7.2-48.el7_8.x86_64.rpm",
+      "revId": "48e52aa6f7bd9f79612e81210dc0bb32be720679",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
