@@ -21,6 +21,13 @@ function pkt_setup () {
     ifconfig $1 up
 }
 
+# For CX4 Mlnx NICs, disable tx offloads since
+# they don't work
+function process_kmod_mlnx_intf() {
+    echo "Processing kmod Mellanox interface" $1
+    ethtool -K $1 tx off
+}
+
 function insert_vrouter() {
     if cat $CONFIG | grep '^\s*platform\s*=\s*dpdk\b' &>/dev/null; then
         vrouter_dpdk_start
@@ -30,7 +37,7 @@ function insert_vrouter() {
     grep $kmod /proc/modules 1>/dev/null 2>&1
     if [ $? != 0 ]; then
         # if the running vrouter doesnt match kernel version, remove it
-        modinfo vrouter | grep filename | grep `/usr/bin/uname -r`
+        modinfo vrouter | grep filename | grep `uname -r`
         if [ $? != 0 ]
         then
             echo "$(date) : Removing old vrouter module"
@@ -90,6 +97,31 @@ function insert_vrouter() {
             echo "$(date): Error adding $DEVICE to vrouter"
         fi
     fi
+
+    # For mlx slave NIC, disable offloads
+    ethtool -i $dev | grep "bonding"
+    if [ $? -eq 0 ];
+    then
+        echo "$(date): Bonding driver detected"
+        slave_intfs=$(cat /proc/net/bonding/bond0 |grep -i "slave interface" | cut -d: -f2)
+        for intf in $slave_intfs;
+        do
+            # Check if the slave is mellanox
+            ethtool -i $intf | grep driver | grep mlx
+            if [ $? -eq 0 ];
+            then
+                process_kmod_mlnx_intf $intf
+            fi
+        done
+    fi
+
+    # For mlx NIC, disable offloads
+    ethtool -i $dev | grep mlx
+    if [ $? -eq 0 ];
+    then
+        process_kmod_mlnx_intf $dev
+    fi
+
     return 0
 }
 
