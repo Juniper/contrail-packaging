@@ -49,11 +49,18 @@ source /etc/contrail/agent_param
 
 source $VHOST_CFG
 
+# For CX4 Mlnx NICs, disable tx offloads since
+# they don't work
+function process_kmod_mlnx_intf() {
+    echo "Processing kmod Mellanox interface" $1
+    ethtool -K $1 tx off
+}
+
 function insert_vrouter() {
     depmod -a
 
     # if the running vrouter doesnt match kernel version, remove it
-    modinfo vrouter | grep filename | grep `/usr/bin/uname -r`
+    modinfo vrouter | grep filename | grep `uname -r`
     if [ $? != 0 ]
     then
         rmmod vrouter; modprobe $kmod
@@ -114,6 +121,39 @@ function insert_vrouter() {
     fi
 
     ifup $DEVICE
+
+    # For mlx slave NIC, disable offloads
+    echo " Enter MLNX"
+    # If it's a VLAN device, fetch the underlying device
+    ethtool -i $dev | grep 802.1Q
+    if [ $? -eq 0 ];
+    then
+        dev=$(cat /proc/net/vlan/$dev|grep Device | cut -d' ' -f2)
+    fi
+    # Is it a bond?
+    ethtool -i $dev | grep "bonding"
+    if [ $? -eq 0 ];
+    then
+        echo "$(date): Bonding driver detected"
+        slave_intfs=$(cat /proc/net/bonding/$dev |grep -i "slave interface" | cut -d: -f2)
+        for intf in $slave_intfs;
+        do
+            # Check if the slave is mellanox
+            ethtool -i $intf | grep driver | grep mlx
+            if [ $? -eq 0 ];
+            then
+                process_kmod_mlnx_intf $intf
+            fi
+        done
+    fi
+
+    # For mlx NIC, disable offloads
+    ethtool -i $dev | grep mlx
+    if [ $? -eq 0 ];
+    then
+        process_kmod_mlnx_intf $dev
+    fi
+
     return 0
 }
 
