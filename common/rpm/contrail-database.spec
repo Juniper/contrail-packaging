@@ -32,7 +32,7 @@ BuildArch: noarch
 %if 0%{?el6}
 Requires: cassandra12
 %else
-Requires: cassandra >= 2.2.12
+Requires: cassandra >= 2.2.17
 %endif
 Requires: supervisor
 Requires: java-1.7.0-openjdk
