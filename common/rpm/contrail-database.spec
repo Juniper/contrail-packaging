@@ -42,7 +42,6 @@ Requires: python-psutil
 Source1: supervisord_contrail_database.initd
 Source2: supervisord_database.conf
 Source3: contrail-database.initd
-Source4: kafka.initd
 
 %description
 Contrail Database package
@@ -126,7 +125,6 @@ install -D -m 755 %{_distropkgdir}/supervisord_contrail_database.initd          
 install -D -m 755 %{SOURCE1} %{buildroot}%{_initddir}/supervisor-database
 install -D -m 755 %{SOURCE2} %{buildroot}%{_sysconfdir}/contrail/supervisord_database.conf
 install -D -m 755 %{SOURCE3} %{buildroot}%{_initddir}/contrail-database
-install -D -m 755 %{SOURCE4} %{buildroot}%{_initddir}/kafka
 
 
 pushd %{buildroot}
@@ -183,7 +181,6 @@ chkconfig contrail-database on
 %endif
 %doc
 %{_initddir}/contrail-database
-%{_initddir}/kafka
 %{_initddir}/supervisor-database
 %config(noreplace) %{_sysconfdir}/contrail/supervisord_database.conf
 
