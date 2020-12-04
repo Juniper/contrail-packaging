@@ -248,7 +248,6 @@ contrail-database: $(PREP)
 	@echo making rpm for contrail-database
 	cp contrail-database.spec $(BUILD_BASE)/SPECS/
 	cp ../control_files/contrail-database.initd $(BUILD_SRC)/
-	cp ../control_files/kafka.initd $(BUILD_SRC)/
 	cp ../control_files/supervisord_database.conf $(BUILD_SRC)/
 	cp ../control_files/supervisord_contrail_database.initd $(BUILD_SRC)/
 	rpmbuild $(RPMBLDOPTS) $(BUILD_BASE)/SPECS/contrail-database.spec $(G_TAG)
