@@ -35,7 +35,7 @@ Requires: cassandra12
 Requires: cassandra >= 2.2.12
 %endif
 Requires: supervisor
-Requires: java-1.7.0-openjdk
+Requires: java-1.8.0-openjdk
 Requires: kafka >= 2.11
 Requires: python-psutil
 
