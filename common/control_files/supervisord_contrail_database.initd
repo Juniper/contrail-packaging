@@ -17,6 +17,11 @@ PID_FILE=/var/run/supervisord_contrail_database.pid
 
 function daemon_start() {
      echo  -n "Starting Supervisor Daemon for Contrail Database Package"
+     FILE=/opt/kafka/bin/kafka-server-start.sh
+     if test -f "$FILE"; then
+	mkdir /usr/share/kafka
+	cp -r /opt/kafka /usr/share/
+     fi
      /usr/bin/supervisord -c /etc/contrail/supervisord_database.conf
      RETVAL=$?
      [ $RETVAL -eq 0 ] && log_success_msg || log_failure_msg
