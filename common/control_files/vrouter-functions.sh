@@ -274,6 +274,12 @@ vrouter_dpdk_start() {
         ifconfig ${DPDK_VHOST} hw ether ${DPDK_PHY_MAC}
     fi
 
+    DPDK_FLOW_HOLD_LIMIT=$(cat ${VROUTER_DPDK_INI} | grep "VR_DPDK_FLOW_HOLD_LIMIT")
+    export ${DPDK_FLOW_HOLD_LIMIT}
+    if [ -n "VR_DPDK_FLOW_HOLD_LIMIT" ]; then
+	    vrouter --flow_hold_limit ${VR_DPDK_FLOW_HOLD_LIMIT}
+    fi
+
     echo "$(date): Done starting vRouter/DPDK."
     return 0
 }
