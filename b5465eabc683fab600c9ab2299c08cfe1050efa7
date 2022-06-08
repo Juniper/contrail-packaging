@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1c1f8774_827715dd",
+        "filename": "common/control_files/vrouter-functions.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2022-06-08T08:24:56Z",
+      "side": 1,
+      "message": "if would do it conditionally as well like: if [[ -n \"$DPDK_FLOW_HOLD_LIMIT\" ]] ; then ... fi",
+      "range": {
+        "startLine": 278,
+        "startChar": 3,
+        "endLine": 278,
+        "endChar": 34
+      },
+      "revId": "b5465eabc683fab600c9ab2299c08cfe1050efa7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
